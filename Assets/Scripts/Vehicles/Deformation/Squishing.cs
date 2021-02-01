@@ -17,7 +17,7 @@ public class Squishing : MonoBehaviour
         mesh = GetComponent<MeshFilter>().mesh;
         vertices = new List<Vector3>(mesh.vertices);
 
-        //  Group similar vertices
+        //  Group similar vertices.
         vertexGroups = VertexGroup.GroupVertices(vertices, groupRadius);
 
         Vector3 pos = new Vector3(1.5f, 0, 0);
