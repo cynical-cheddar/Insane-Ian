@@ -19,7 +19,7 @@ public class Squishing : MonoBehaviour
 
         vertexGroups = VertexGroup.GroupVertices(vertices, groupRadius);
 
-        Vector3 pos = new Vector3(0f, 0, 0);
+        Vector3 pos = new Vector3(1.5f, 0, 0);
         Instantiate<GameObject>(testMarker, pos, Quaternion.identity);
 
         ExplodeMeshAt(pos, 1);
@@ -75,6 +75,7 @@ public class Squishing : MonoBehaviour
                         //  Add vertex to group
                         groups[j].vertices.Add(i);
                         grouped = true;
+                        break;
                     }
                 }
 
