@@ -40,16 +40,34 @@ namespace GraphBending {
                 VertexGroup groupC = FindGroupContainingVertex(vertexIndexC);
 
                 if (groupA != groupB) {
-                    if (!groupA.adjacentVertexGroups.Contains(groupB)) groupA.adjacentVertexGroups.Add(groupB);
-                    if (!groupB.adjacentVertexGroups.Contains(groupA)) groupB.adjacentVertexGroups.Add(groupA);
+                    if (!groupA.adjacentVertexGroups.Contains(groupB)) {
+                        groupA.adjacentVertexGroups.Add(groupB);
+                        groupA.connectingEdgeLengths.Add((vertices[groupA.vertexIndices[0]] - vertices[groupB.vertexIndices[0]]).magnitude);
+                    }
+                    if (!groupB.adjacentVertexGroups.Contains(groupA)) {
+                        groupB.adjacentVertexGroups.Add(groupA);
+                        groupB.connectingEdgeLengths.Add((vertices[groupB.vertexIndices[0]] - vertices[groupA.vertexIndices[0]]).magnitude);
+                    }
                 }
                 if (groupA != groupC) {
-                    if (!groupA.adjacentVertexGroups.Contains(groupC)) groupA.adjacentVertexGroups.Add(groupC);
-                    if (!groupC.adjacentVertexGroups.Contains(groupA)) groupC.adjacentVertexGroups.Add(groupA);
+                    if (!groupA.adjacentVertexGroups.Contains(groupC)) {
+                        groupA.adjacentVertexGroups.Add(groupC);
+                        groupA.connectingEdgeLengths.Add((vertices[groupA.vertexIndices[0]] - vertices[groupC.vertexIndices[0]]).magnitude);
+                    }
+                    if (!groupC.adjacentVertexGroups.Contains(groupA)) {
+                        groupC.adjacentVertexGroups.Add(groupA);
+                        groupC.connectingEdgeLengths.Add((vertices[groupC.vertexIndices[0]] - vertices[groupA.vertexIndices[0]]).magnitude);
+                    }
                 }
                 if (groupC != groupB) {
-                    if (!groupC.adjacentVertexGroups.Contains(groupB)) groupC.adjacentVertexGroups.Add(groupB);
-                    if (!groupB.adjacentVertexGroups.Contains(groupC)) groupB.adjacentVertexGroups.Add(groupC);
+                    if (!groupC.adjacentVertexGroups.Contains(groupB)) {
+                        groupC.adjacentVertexGroups.Add(groupB);
+                        groupC.connectingEdgeLengths.Add((vertices[groupC.vertexIndices[0]] - vertices[groupB.vertexIndices[0]]).magnitude);
+                    }
+                    if (!groupB.adjacentVertexGroups.Contains(groupC)) {
+                        groupB.adjacentVertexGroups.Add(groupC);
+                        groupB.connectingEdgeLengths.Add((vertices[groupB.vertexIndices[0]] - vertices[groupC.vertexIndices[0]]).magnitude);
+                    }
                 }
             }
         }
