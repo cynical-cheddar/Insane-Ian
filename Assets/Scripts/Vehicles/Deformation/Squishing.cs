@@ -39,11 +39,15 @@ public class Squishing : MonoBehaviour
 
     public void ExplodeMeshTowardsCentreAt(Vector3 pos, float force) {
         for (int i = 0; i < vertexGroups.Count; i++) {
+            // Calculate deformation force.
             Vector3 deformation = vertices[vertexGroups[i].vertices[0]] - pos;
             float deformationForce = (force * (Random.value * 0.2f + 0.9f)) / (1 + deformation.sqrMagnitude);
+            // Get the direction towards the centre of the mesh.
             Vector3 direction = vertices[vertexGroups[i].vertices[0]] - transform.position;
+            // Scale the sirection by the force.
             direction *= deformationForce / vertexWeight;
             for (int j = 0; j < vertexGroups[i].vertices.Count; j++) {
+                // Only move the vertex if it is close to the deformation point.
                 if (deformation.magnitude < explosionRadius) {
                     vertices[vertexGroups[i].vertices[j]] -= direction;
                 }
