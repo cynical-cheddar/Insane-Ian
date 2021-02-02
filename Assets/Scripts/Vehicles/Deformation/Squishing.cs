@@ -11,6 +11,7 @@ public class Squishing : MonoBehaviour
     public List<GameObject> deformationPoints;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
+    public float explosionRadius = 1f;
 
     // Start is called before the first frame update
     void Start()
@@ -27,13 +28,31 @@ public class Squishing : MonoBehaviour
         //ExplodeMeshAt(pos, 1);
 
         foreach (GameObject deformationPoint in deformationPoints) {
-            ExplodeMeshAt(deformationPoint.transform.position, 1f);
+            ExplodeMeshTowardsCentreAt(deformationPoint.transform.position, 1f);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+    }
+
+    public void ExplodeMeshTowardsCentreAt(Vector3 pos, float force) {
+        for (int i = 0; i < vertexGroups.Count; i++) {
+            Vector3 deformation = vertices[vertexGroups[i].vertices[0]] - pos;
+            float deformationForce = (force * (Random.value * 0.2f + 0.9f)) / (1 + deformation.sqrMagnitude);
+            Vector3 direction = vertices[vertexGroups[i].vertices[0]] - transform.position;
+            direction *= deformationForce / vertexWeight;
+            for (int j = 0; j < vertexGroups[i].vertices.Count; j++) {
+                if (deformation.magnitude < explosionRadius) {
+                    vertices[vertexGroups[i].vertices[j]] -= direction;
+                }
+            }
+        }
+
+        mesh.vertices = vertices.ToArray();
+        mesh.RecalculateNormals();
+        mesh.UploadMeshData(false);
     }
 
     public void ExplodeMeshAt(Vector3 pos, float force) {
