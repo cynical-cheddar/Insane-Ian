@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class LobbyButtonScript : MonoBehaviourPunCallbacks
 {
@@ -15,6 +16,11 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
 
     public bool driverSlotEmpty = true;
     public bool gunnerSlotEmpty = true;
+
+    public Text driverPlayerText;
+    public Text gunnerPlayerText;
+    
+    
     
     public void SetParent()
     {
@@ -46,9 +52,21 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         }
     }
 
-    public void setButtonInfo(List<(Player, string, string, string, int)> playersInTeam)
+    public void setButtonInfo(PlayerSchema playersInTeam)
     {
-        
+        foreach (PlayerSchema.Record record in playersInTeam.schema)
+        {
+            // check if we have a driver
+            if (record.role == "Driver")
+            {
+                driverPlayerText.text = record.nickName;
+            }
+            // check if we have a driver
+            if (record.role == "Gunner")
+            {
+                driverPlayerText.text = record.nickName;
+            }
+        }
     }
 
 
