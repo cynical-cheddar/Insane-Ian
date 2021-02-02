@@ -7,7 +7,8 @@ public class Squishing : MonoBehaviour
     Mesh mesh;
     List<Vector3> vertices;
     List<VertexGroup> vertexGroups;
-    public GameObject testMarker;
+    //public GameObject testMarker;
+    public List<GameObject> deformationPoints;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
 
@@ -20,16 +21,19 @@ public class Squishing : MonoBehaviour
         //  Group similar vertices.
         vertexGroups = VertexGroup.GroupVertices(vertices, groupRadius);
 
-        Vector3 pos = new Vector3(1.5f, 0, 0);
-        Instantiate<GameObject>(testMarker, pos, Quaternion.identity);
+        //Vector3 pos = new Vector3(1.5f, 0, 0);
+        //Instantiate<GameObject>(testMarker, pos, Quaternion.identity);
 
-        ExplodeMeshAt(pos, 1);
+        //ExplodeMeshAt(pos, 1);
+
+        foreach (GameObject deformationPoint in deformationPoints) {
+            ExplodeMeshAt(deformationPoint.transform.position, 1f);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     public void ExplodeMeshAt(Vector3 pos, float force) {
