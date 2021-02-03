@@ -14,7 +14,7 @@ public class Squishing : MonoBehaviour
     public float groupRadius = 0.05f;
     public float stretchiness = 1.2f;
 
-    // Start is called before the first frame update
+    // Start is called before the first frame update.
     void Start()
     {
         mesh = GetComponent<MeshFilter>().mesh;
