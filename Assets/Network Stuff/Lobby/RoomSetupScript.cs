@@ -12,14 +12,38 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
     private int maxPlayers = 2;
     private string roomName = "room";
     public string mainLobbySceneName = "";
-
+    
+    public Text observedMyNameText;
     public Text observedMaxPlayersText;
     public Text roomNameText;
-
+    string gameVersion = "0.9";
     private void Start()
     {
         Random rnd = new Random();
         roomName = roomName + rnd.Next(1,9999).ToString();
+        
+        PhotonNetwork.AutomaticallySyncScene = true;
+
+        if (!PhotonNetwork.IsConnected)
+        {
+            //Set the App version before connecting
+            PhotonNetwork.PhotonServerSettings.AppSettings.AppVersion = gameVersion;
+            // Connect to the photon master-server. We use the settings saved in PhotonServerSettings (a .asset file in this project)
+            PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.NickName = "host";
+        }
+    }
+    
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        Debug.Log("OnFailedToConnectToPhoton. StatusCode: " + cause.ToString() + " ServerAddress: " + PhotonNetwork.ServerAddress);
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("OnConnectedToMaster");
+        //After we connected to Master server, join the Lobby
+        PhotonNetwork.JoinLobby(TypedLobby.Default);
     }
 
     public void SetMaxPlayers(int newMaxPlayers)
@@ -40,16 +64,17 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
         
         // now we have got the settings we need, create the room and load the main lobby scene
         RoomOptions roomOptions = new RoomOptions();
+        
         roomOptions.IsOpen = true;
         roomOptions.IsVisible = true;
         roomOptions.MaxPlayers = (byte) maxPlayers; //Set any number
-
+        PhotonNetwork.NickName = observedMyNameText.text;
         PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
         // load the lobby scene for the room
-        PhotonNetwork.LoadLevel(mainLobbySceneName);
+      
     }
 
-
+    
     
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
