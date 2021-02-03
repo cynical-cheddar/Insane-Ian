@@ -16,7 +16,7 @@ using Photon.Realtime;
             public int team;
         }
         
-        
+ 
         
         public PlayerSchema(List<Record> schema)
         {
