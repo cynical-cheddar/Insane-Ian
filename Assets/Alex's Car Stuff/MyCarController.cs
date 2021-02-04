@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MyCarController : MonoBehaviour
-{
+public class MyCarController : MonoBehaviour { 
     // Start is called before the first frame update
     public WheelCollider frontLeftW;
     public WheelCollider frontRightW;
