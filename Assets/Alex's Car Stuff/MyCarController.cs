@@ -91,22 +91,22 @@ public class MyCarController : MonoBehaviour
 
     private void Accellerate() {
         if (Input.GetKey(KeyCode.W)) {
-            frontLeftW.motorTorque = motorTorque;
-            frontRightW.motorTorque = motorTorque;
-            //rearLeftW.motorTorque = motorTorque;
-            //rearRightW.motorTorque = motorTorque;
+            //frontLeftW.motorTorque = motorTorque;
+            //frontRightW.motorTorque = motorTorque;
+            rearLeftW.motorTorque = motorTorque;
+            rearRightW.motorTorque = motorTorque;
         } else {
             frontLeftW.motorTorque = 0;
             frontRightW.motorTorque = 0;
-            //rearLeftW.motorTorque = 0;
-            //rearRightW.motorTorque = 0;
+            rearLeftW.motorTorque = 0;
+            rearRightW.motorTorque = 0;
         }
     }
 
     private void Brake() {
         if (Input.GetKey(KeyCode.S)) {
-            frontLeftW.brakeTorque = brakeTorque;
-            frontRightW.brakeTorque = brakeTorque;
+            //frontLeftW.brakeTorque = brakeTorque;
+            //frontRightW.brakeTorque = brakeTorque;
             rearLeftW.brakeTorque = brakeTorque;
             rearRightW.brakeTorque = brakeTorque;
         } else {
