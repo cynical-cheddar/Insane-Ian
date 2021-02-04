@@ -911,10 +911,10 @@ MonoBehaviour:
   rearLeftT: {fileID: 1949517853}
   rearRightT: {fileID: 1880176002}
   rb: {fileID: 383169956}
-  maxSteerAngle: 22
+  maxSteerAngle: 15
   motorTorque: 2000
   brakeTorque: 4000
-  steerRate: 2
+  steerRate: 1
   steerRateCoefficent: 0.05
 --- !u!114 &383169955
 MonoBehaviour:
@@ -1344,8 +1344,8 @@ MonoBehaviour:
   target: {fileID: 383169953}
   distance: 6
   height: 2
-  heightDamping: 100
-  rotationDamping: 100
+  heightDamping: 4
+  rotationDamping: 4
 --- !u!1001 &493989411
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1985,7 +1985,7 @@ WheelCollider:
     damper: 9000
     targetPosition: 0.5
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0
+  m_ForceAppPointDistance: 0.1
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1999,7 +1999,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1.2
+    m_Stiffness: 2.4
   m_Enabled: 1
 --- !u!1 &747339286
 GameObject:
@@ -2046,7 +2046,7 @@ WheelCollider:
     damper: 9000
     targetPosition: 0.5
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0
+  m_ForceAppPointDistance: 0.1
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2060,7 +2060,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 2
+    m_Stiffness: 3
   m_Enabled: 1
 --- !u!1001 &855016074
 PrefabInstance:
@@ -3230,7 +3230,7 @@ WheelCollider:
     damper: 9000
     targetPosition: 0.5
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0
+  m_ForceAppPointDistance: 0.1
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -3244,7 +3244,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1.2
+    m_Stiffness: 2.4
   m_Enabled: 1
 --- !u!1 &1880176001
 GameObject:
@@ -3454,7 +3454,7 @@ WheelCollider:
     damper: 9000
     targetPosition: 0.5
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0
+  m_ForceAppPointDistance: 0.1
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -3468,7 +3468,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 2
+    m_Stiffness: 3
   m_Enabled: 1
 --- !u!4 &1911560686
 Transform:
