@@ -915,7 +915,7 @@ MonoBehaviour:
   motorTorque: 2000
   brakeTorque: 4000
   steerRate: 2
-  steerRateCoefficent: 0.2
+  steerRateCoefficent: 0.05
 --- !u!114 &383169955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -929,7 +929,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 383169956}
-  Shift: {x: 0, y: -1.1, z: 0}
+  Shift: {x: 0, y: -0.4, z: 0}
 --- !u!54 &383169956
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1984,7 +1984,7 @@ WheelCollider:
     spring: 90000
     damper: 9000
     targetPosition: 0.5
-  m_SuspensionDistance: 1
+  m_SuspensionDistance: 0.3
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -2045,7 +2045,7 @@ WheelCollider:
     spring: 90000
     damper: 9000
     targetPosition: 0.5
-  m_SuspensionDistance: 1
+  m_SuspensionDistance: 0.3
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -2060,7 +2060,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1.2
+    m_Stiffness: 2
   m_Enabled: 1
 --- !u!1001 &855016074
 PrefabInstance:
@@ -3229,7 +3229,7 @@ WheelCollider:
     spring: 90000
     damper: 9000
     targetPosition: 0.5
-  m_SuspensionDistance: 1
+  m_SuspensionDistance: 0.3
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -3453,7 +3453,7 @@ WheelCollider:
     spring: 90000
     damper: 9000
     targetPosition: 0.5
-  m_SuspensionDistance: 1
+  m_SuspensionDistance: 0.3
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -3468,7 +3468,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1.2
+    m_Stiffness: 2
   m_Enabled: 1
 --- !u!4 &1911560686
 Transform:
