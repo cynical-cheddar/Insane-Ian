@@ -80,6 +80,16 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         UpdateWheelPoses();
         accellerateCalled = true;
     }
+    void IDrivable.Reverse() {
+
+        //frontLeftW.motorTorque = motorTorque;
+        //frontRightW.motorTorque = motorTorque;
+        rearLeftW.motorTorque = -motorTorque;
+        rearRightW.motorTorque = -motorTorque;
+
+        UpdateWheelPoses();
+        accellerateCalled = true;
+    }
 
     void IDrivable.Brake() {
         //frontLeftW.brakeTorque = brakeTorque;
@@ -112,6 +122,12 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.StopAccellerate() {
+        frontLeftW.motorTorque = 0;
+        frontRightW.motorTorque = 0;
+        rearLeftW.motorTorque = 0;
+        rearRightW.motorTorque = 0;
+    }
+    void IDrivable.StopReverse() {
         frontLeftW.motorTorque = 0;
         frontRightW.motorTorque = 0;
         rearLeftW.motorTorque = 0;

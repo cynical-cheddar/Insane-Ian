@@ -22,6 +22,7 @@ public class MyCarController : MonoBehaviour {
     public float brakeForce = 15000;
     public float steerRate =2.0f;
     public float steerRateCoefficent = 0.9f;
+    public Vector3 addedDownforce;
 
 
     private void Steer() {
@@ -90,6 +91,14 @@ public class MyCarController : MonoBehaviour {
             rearRightW.motorTorque = 0;
         }
     }
+    private void Reverse() {
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            //frontLeftW.motorTorque = -motorTorque;
+            //frontRightW.motorTorque = -motorTorque;
+            rearLeftW.motorTorque = -motorTorque;
+            rearRightW.motorTorque = -motorTorque;
+        } 
+    }
 
     private void Brake() {
         if (Input.GetKey(KeyCode.S)) {
@@ -130,8 +139,10 @@ public class MyCarController : MonoBehaviour {
         //GetInput();
         Steer();
         Accellerate();
+        Reverse();
         Brake();
         UpdateWheelPoses();
+        rb.AddForce(addedDownforce);
     }
 }
 
