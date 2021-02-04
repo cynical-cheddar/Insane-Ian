@@ -8,7 +8,7 @@ public class Squishing : MonoBehaviour
     Mesh mesh;
     List<Vector3> vertices;
     MeshGraph meshGraph;
-    //public GameObject testMarker;
+    public GameObject testMarker;
     public List<GameObject> deformationPoints;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
@@ -24,13 +24,15 @@ public class Squishing : MonoBehaviour
         meshGraph = new MeshGraph(mesh, groupRadius);
 
         //Vector3 pos = new Vector3(1.5f, 0, 0);
-        //Instantiate<GameObject>(testMarker, pos, Quaternion.identity);
+        foreach (Vector3 vertex in vertices) {
+            //Instantiate<GameObject>(testMarker, vertex, Quaternion.identity);
+        }
 
         //ExplodeMeshAt(pos, 1);
 
         foreach (GameObject deformationPoint in deformationPoints) {
             //ExplodeMeshTowardsCentreAt(deformationPoint.transform.position, 1f);
-            ExplodeMeshAtStretchClamped(deformationPoint.transform.position, 1f);
+            ExplodeMeshAtStretchClamped(deformationPoint.transform.position, 0.3f);
         }
     }
 
@@ -54,7 +56,6 @@ public class Squishing : MonoBehaviour
 
         Queue<VertexGroup> vertexQueue = new Queue<VertexGroup>();
         vertexQueue.Enqueue(closest);
-        moved.Add(closest);
 
         int noplsstop = 0;
 
@@ -63,7 +64,7 @@ public class Squishing : MonoBehaviour
 
             Vector3 deformation = vertices[current.vertexIndices[0]] - pos;
             float deformationForce = force / deformation.sqrMagnitude;
-            //deformationForce *= Random.value * 0.2f + 0.9f;
+            deformationForce *= Random.value * 0.2f + 0.9f;
             deformation.Normalize();
             deformation *= Mathf.Clamp(deformationForce / vertexWeight, 0, 0.5f);
             for (int j = 0; j < current.vertexIndices.Count; j++) {
@@ -80,7 +81,8 @@ public class Squishing : MonoBehaviour
                     if (edge.sqrMagnitude > stretchiness * stretchiness * current.connectingEdgeLengths[j] * current.connectingEdgeLengths[j]) {
                         //  make edge right length
                         edge.Normalize();
-                        edge *= stretchiness * current.connectingEdgeLengths[j];
+                        float edgeStretchiness = stretchiness * (Random.value * 0.2f + 0.9f);
+                        edge *= edgeStretchiness * current.connectingEdgeLengths[j];
 
                         //  move vertices so edge is not too long.
                         for (int k = 0; k < current.vertexIndices.Count; k++) {
@@ -99,11 +101,10 @@ public class Squishing : MonoBehaviour
                     }
                 }
             }
-
+            moved.Add(current);
             for (int j = 0; j < current.adjacentVertexGroups.Count; j++) {
-                if (!moved.Contains(current.adjacentVertexGroups[j])) {
+                if (!vertexQueue.Contains(current.adjacentVertexGroups[j]) && !moved.Contains(current.adjacentVertexGroups[j])) {
                     vertexQueue.Enqueue(current.adjacentVertexGroups[j]);
-                    moved.Add(current.adjacentVertexGroups[j]);
                 }
             }
 
