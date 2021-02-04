@@ -13,30 +13,18 @@ public class MyCarController : MonoBehaviour {
     public Transform frontRightT;
     public Transform rearLeftT;
     public Transform rearRightT;
+    public Transform car;
 
     public Rigidbody rb;
     public float maxSteerAngle = 30;
     public float motorTorque = 50;
     public float brakeTorque = 50;
+    public float brakeForce = 15000;
     public float steerRate =2.0f;
     public float steerRateCoefficent = 0.9f;
 
 
     private void Steer() {
-        /*steerAngle = maxSteerAngle;
-        if (Input.GetKey(KeyCode.A)) {
-            frontLeftW.steerAngle = steerAngle;
-            frontRightW.steerAngle = steerAngle;
-        }
-        if (Input.GetKey(KeyCode.D)) {
-            frontLeftW.steerAngle = steerAngle*-1;
-            frontRightW.steerAngle = steerAngle*-1;
-        }
-        if (Input.GetKey(KeyCode.D) & Input.GetKey(KeyCode.A))  {
-            frontLeftW.steerAngle = 0;
-            frontRightW.steerAngle = 0;
-        }*/
-
         float targetAngle;
         float inLeft = 0;
         float inRight = 0;
@@ -76,6 +64,7 @@ public class MyCarController : MonoBehaviour {
         //if the target is zero, 
         if (!(targetAngle == 0)) {
             delta *= targetDirection;
+            
         } else if(steerAngle > 0) {
             delta *= -1;
         }  
@@ -108,6 +97,7 @@ public class MyCarController : MonoBehaviour {
             //frontRightW.brakeTorque = brakeTorque;
             rearLeftW.brakeTorque = brakeTorque;
             rearRightW.brakeTorque = brakeTorque;
+            rb.AddForce(car.forward * -brakeForce);
         } else {
             frontLeftW.brakeTorque = 0;
             frontRightW.brakeTorque = 0;
