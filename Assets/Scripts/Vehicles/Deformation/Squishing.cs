@@ -8,6 +8,7 @@ public class Squishing : MonoBehaviour
     Mesh mesh;
     List<Vector3> vertices;
     MeshGraph meshGraph;
+    MeshCollider meshCollider;
     public GameObject testMarker;
     public List<GameObject> deformationPoints;
     public float vertexWeight = 1;
@@ -18,6 +19,7 @@ public class Squishing : MonoBehaviour
     void Start() {
         mesh = GetComponent<MeshFilter>().mesh;
         vertices = new List<Vector3>(mesh.vertices);
+        meshCollider = GetComponent<MeshCollider>();
 
         //  Group similar vertices.
         meshGraph = new MeshGraph(mesh, groupRadius);
@@ -114,5 +116,7 @@ public class Squishing : MonoBehaviour
         //  Update the mesh
         mesh.vertices = vertices.ToArray();
         mesh.RecalculateNormals();
+
+        meshCollider.sharedMesh = mesh;
     }
 }
