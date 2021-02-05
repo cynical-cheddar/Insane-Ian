@@ -10,7 +10,6 @@ public class Squishing : MonoBehaviour
     MeshGraph meshGraph;
     MeshCollider meshCollider;
     public GameObject testMarker;
-    public List<GameObject> deformationPoints;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
     public float stretchiness = 1.2f;
@@ -23,11 +22,6 @@ public class Squishing : MonoBehaviour
 
         //  Group similar vertices.
         meshGraph = new MeshGraph(mesh, groupRadius);
-        
-        // TEST PLACEMENT -- Explode the mesh from each input deformation point
-        foreach (GameObject deformationPoint in deformationPoints) {
-            ExplodeMeshAt(deformationPoint.transform.position, 0.3f, true);
-        }
     }
 
     // Update is called once per frame
