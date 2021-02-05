@@ -16,6 +16,7 @@ public class MyCarController : MonoBehaviour {
     public Transform car;
 
     public Rigidbody rb;
+
     public float maxSteerAngle = 30;
     public float motorTorque = 50;
     public float brakeTorque = 50;
@@ -47,9 +48,11 @@ public class MyCarController : MonoBehaviour {
 
         //targetDirection is the direction of the input
         targetDirection = inRight - inLeft;
-        Debug.Log("Target direction = " + targetDirection);
         //targetAngle is the angle we want to tend towards
         targetAngle = targetDirection*maxSteerAngle;
+
+        //Wheels can return to zero at full speed
+        if (targetAngle == 0) steerRateCoefficent = 0;
 
         horizontalVelocity = Mathf.Sqrt(Mathf.Pow(rb.velocity.x, 2) + Mathf.Pow(rb.velocity.z, 2));
         newSteerRate = steerRate / (steerRateCoefficent*horizontalVelocity);
