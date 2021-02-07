@@ -5,22 +5,38 @@ using UnityEngine;
 
 public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     // Start is called before the first frame update
+
+    [Header("Wheel Colliders:")]
     public WheelCollider frontLeftW;
     public WheelCollider frontRightW;
     public WheelCollider rearLeftW;
     public WheelCollider rearRightW;
+    [Space(5)]
 
+    [Header("Wheel Geometry Transforms")]
     public Transform frontLeftT;
     public Transform frontRightT;
     public Transform rearLeftT;
     public Transform rearRightT;
+    [Space(5)]
 
-    public Rigidbody rb;
+    [Header("Main Car")]
+    public Rigidbody carRB;
+    public Transform carTransform;
+    [Space(5)]
+
+    [Header("Force Parameters")]
+    [Range(12,35)]
     public float maxSteerAngle = 20;
+    [Range(1000, 10000)]
     public float motorTorque = 2000;
+    [Range(2000, 20000)]
     public float brakeTorque = 4000;
+    [Range(2000, 30000)]
     public float brakeForce = 20000;
+    [Range(0, 5)]
     public float steerRate = 1.0f;
+    [Range(0.01f,0.5f)]
     public float steerRateCoefficent = 0.05f;
     public Vector3 addedDownforce;
 
@@ -39,7 +55,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         targetAngle = targetDirection * maxSteerAngle;
 
         //Get the velocity in x and z dimensions
-        horizontalVelocity = Mathf.Sqrt(Mathf.Pow(rb.velocity.x, 2) + Mathf.Pow(rb.velocity.z, 2));
+        horizontalVelocity = Mathf.Sqrt(Mathf.Pow(carRB.velocity.x, 2) + Mathf.Pow(carRB.velocity.z, 2));
 
         //set the steer rate to the minimum of normal steer rate and adjusted steer rate
         newSteerRate = steerRate / (steerRateCoefficent * horizontalVelocity);
@@ -82,6 +98,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         rearLeftW.motorTorque = -motorTorque;
         rearRightW.motorTorque = -motorTorque;
 
+
     }
 
     void IDrivable.Brake() {
@@ -89,7 +106,8 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         //frontRightW.brakeTorque = brakeTorque;
         rearLeftW.brakeTorque = brakeTorque;
         rearRightW.brakeTorque = brakeTorque;
-        
+        carRB.AddForce(carTransform.forward * -brakeForce);
+
     }
 
     void IDrivable.UpdateWheelPoses() {
