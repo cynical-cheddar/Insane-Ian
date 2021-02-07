@@ -16,15 +16,13 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     public Transform rearRightT;
 
     public Rigidbody rb;
-    public float maxSteerAngle = 30;
-    public float motorTorque = 50;
-    public float brakeTorque = 50;
-    public float steerRate = 2.0f;
-    public float steerRateCoefficent = 0.9f;
-
-    private bool accellerateCalled = false;
-    private bool       steerCalled = false;
-    private bool       brakeCalled = false;
+    public float maxSteerAngle = 20;
+    public float motorTorque = 2000;
+    public float brakeTorque = 4000;
+    public float brakeForce = 20000;
+    public float steerRate = 1.0f;
+    public float steerRateCoefficent = 0.05f;
+    public Vector3 addedDownforce;
 
     //direction is +1 for right and -1 for left
     void IDrivable.Steer(int targetDirection) {
@@ -66,7 +64,6 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         steerAngle += delta;
         frontLeftW.steerAngle = steerAngle;
         frontRightW.steerAngle = steerAngle;
-        steerCalled = true;
 
     }
 
@@ -77,8 +74,6 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         rearLeftW.motorTorque = motorTorque;
         rearRightW.motorTorque = motorTorque;
         
-        UpdateWheelPoses();
-        accellerateCalled = true;
     }
     void IDrivable.Reverse() {
 
@@ -87,8 +82,6 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         rearLeftW.motorTorque = -motorTorque;
         rearRightW.motorTorque = -motorTorque;
 
-        UpdateWheelPoses();
-        accellerateCalled = true;
     }
 
     void IDrivable.Brake() {
@@ -97,11 +90,9 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         rearLeftW.brakeTorque = brakeTorque;
         rearRightW.brakeTorque = brakeTorque;
         
-        UpdateWheelPoses();
-        brakeCalled = true;
     }
 
-    private void UpdateWheelPoses() {
+    void IDrivable.UpdateWheelPoses() {
         UpdateWheelPose(frontLeftW, frontLeftT, true);
         UpdateWheelPose(frontRightW, frontRightT, false);
         UpdateWheelPose(rearLeftW, rearLeftT, true);
@@ -126,12 +117,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         frontRightW.motorTorque = 0;
         rearLeftW.motorTorque = 0;
         rearRightW.motorTorque = 0;
-    }
-    void IDrivable.StopReverse() {
-        frontLeftW.motorTorque = 0;
-        frontRightW.motorTorque = 0;
-        rearLeftW.motorTorque = 0;
-        rearRightW.motorTorque = 0;
+
     }
 
     void IDrivable.StopBrake() {
@@ -139,6 +125,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         frontRightW.brakeTorque = 0;
         rearLeftW.brakeTorque = 0;
         rearRightW.brakeTorque = 0;
+
     }
 
     void IDrivable.StopSteer() {
