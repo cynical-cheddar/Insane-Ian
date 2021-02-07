@@ -3,11 +3,12 @@ using UnityEngine;
 
 namespace GraphBending {
     public class VertexGroup {
-        public VertexGroup(int vertex) {
+        public VertexGroup(int vertexIndex, List<Vector3> vertices) {
             vertexIndices = new List<int>();
             connectingEdges = new List<Edge>();
             connectingEdgeLengths = new List<float>();
-            vertexIndices.Add(vertex);
+            vertexIndices.Add(vertexIndex);
+            UpdatePos(vertices);
         }
 
         public void UpdatePos(List<Vector3> vertices, bool updateEdgeLengths) {
@@ -33,7 +34,7 @@ namespace GraphBending {
             foreach (int index in vertexIndices) {
                 vertices[index] = pos;
             }
-            UpdatePos(vertices);
+            UpdatePos(vertices, updateEdgeLengths);
         }
 
         public void MoveBy(List<Vector3> vertices, Vector3 shift) {
@@ -44,7 +45,7 @@ namespace GraphBending {
             foreach (int index in vertexIndices) {
                 vertices[index] += shift;
             }
-            UpdatePos(vertices);
+            UpdatePos(vertices, updateEdgeLengths);
         }
 
         public bool IsAdjacentTo(VertexGroup vertexGroup) {

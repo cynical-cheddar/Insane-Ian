@@ -26,7 +26,7 @@ namespace GraphBending {
 
                 // If no group found for vertex, create new group.
                 if (!grouped) {
-                    groups.Add(new VertexGroup(i));
+                    groups.Add(new VertexGroup(i, vertices));
                 }
             }
 
@@ -46,14 +46,14 @@ namespace GraphBending {
                         groupB.connectingEdges.Add(edge);
                     }
                 }
-                if (groupA != groupC) {
+                if (groupB != groupC) {
                     if (!groupC.IsAdjacentTo(groupB)) {
                         Edge edge = new Edge(groupC, groupB);
                         groupC.connectingEdges.Add(edge);
                         groupB.connectingEdges.Add(edge);
                     }
                 }
-                if (groupC != groupB) {
+                if (groupC != groupA) {
                     if (!groupA.IsAdjacentTo(groupC)) {
                         Edge edge = new Edge(groupA, groupC);
                         groupA.connectingEdges.Add(edge);
