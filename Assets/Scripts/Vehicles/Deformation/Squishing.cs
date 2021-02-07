@@ -56,8 +56,13 @@ public class Squishing : MonoBehaviour
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
 
+            List<float> oldEdgeSqrLengths = new List<float>();
+            for (int j = 0; j < current.connectingEdges.Count; j++) {
+                oldEdgeSqrLengths.Add(current.connectingEdges[j].sqrLength);
+            }
+
             //  Calculate deformation vector
-            Vector3 deformation = vertices[current.vertexIndices[0]] - pos;
+            Vector3 deformation = current.pos - pos;
             float deformationForce = force / deformation.sqrMagnitude;
             if (addNoise) deformationForce *= Random.value * 0.2f + 0.9f;
             deformation.Normalize();
@@ -65,34 +70,24 @@ public class Squishing : MonoBehaviour
 
             current.MoveBy(vertices, deformation);
 
-            for (int j = 0; j < current.adjacentVertexGroups.Count; j++) {
+            for (int j = 0; j < current.connectingEdges.Count; j++) {
+                VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
+
                 //  Check if adjacent vertex has been moved.
-                if (moved.Contains(current.adjacentVertexGroups[j])) {
-                    //  Get position of adjacent moved vertex.
-                    Vector3 adjacentVertex = vertices[current.adjacentVertexGroups[j].vertexIndices[0]];
+                if (moved.Contains(adjacent)) {
                     //  Get vector of edge between vertices.
-                    Vector3 edge = vertices[current.vertexIndices[0]] - adjacentVertex;
+                    Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
-                    if (edge.sqrMagnitude > stretchiness * stretchiness * current.connectingEdgeLengths[j] * current.connectingEdgeLengths[j]) {
+                    if (edge.sqrMagnitude > stretchiness * stretchiness * oldEdgeSqrLengths[j]) {
                         //  make edge right length
                         edge.Normalize();
                         float randomNoise = 1; 
                         if (addNoise) randomNoise = Random.value * 0.2f + 0.9f;
                         float edgeStretchiness = stretchiness * randomNoise;
-                        edge *= edgeStretchiness * current.connectingEdgeLengths[j];
+                        edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
 
                         //  move vertices so edge is not too long.
-                        current.MoveTo(vertices, adjacentVertex + edge);
-
-                        //  Update stored edge length
-                        current.connectingEdgeLengths[j] = edge.magnitude;
-                        for (int k = 0; k < current.vertexIndices.Count; k++) {
-                            //  Find the index of the current vertex in the adjacent vertex's adjacent vertices
-                            if (current.adjacentVertexGroups[j].adjacentVertexGroups[k] == current) {
-                                current.adjacentVertexGroups[j].connectingEdgeLengths[k] = edge.magnitude;
-                                break;
-                            }
-                        }
+                        current.MoveTo(vertices, adjacent.pos + edge);
                     }
                 }
             }
@@ -100,9 +95,13 @@ public class Squishing : MonoBehaviour
             moved.Add(current);
 
             //  Add adjacent, unmoved vertices into the queue for traversal
-            for (int j = 0; j < current.adjacentVertexGroups.Count; j++) {
-                if (!vertexQueue.Contains(current.adjacentVertexGroups[j]) && !moved.Contains(current.adjacentVertexGroups[j])) {
-                    vertexQueue.Enqueue(current.adjacentVertexGroups[j]);
+            for (int j = 0; j < current.connectingEdges.Count; j++) {
+                //  Get adjacent vertex group
+                VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
+
+                //  Add it to the queue if it hasn't already been moved
+                if (!vertexQueue.Contains(adjacent) && !moved.Contains(adjacent)) {
+                    vertexQueue.Enqueue(adjacent);
                 }
             }
         }
@@ -112,5 +111,25 @@ public class Squishing : MonoBehaviour
         mesh.RecalculateNormals();
 
         meshCollider.sharedMesh = mesh;
+    }
+
+    public void CollideMesh(Collider collider, Vector3 collisionForce, bool addNoise) {
+        List<VertexGroup> moved = new List<VertexGroup>();
+
+        for (int i = 0; i < meshGraph.groups.Count; i++) {
+            VertexGroup current = meshGraph.groups[i];
+            Vector3 vertex = vertices[current.vertexIndices[0]];
+
+            if (collider.ClosestPoint(vertex) == vertex) {
+                Vector3 deformation = collisionForce;
+                deformation /= vertexWeight;
+                if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
+
+                //  Maybe clamp magnitude?
+
+                current.MoveBy(vertices, deformation);
+                moved.Add(current);
+            }
+        }
     }
 }
