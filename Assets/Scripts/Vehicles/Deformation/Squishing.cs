@@ -68,7 +68,7 @@ public class Squishing : MonoBehaviour
             deformation.Normalize();
             deformation *= Mathf.Clamp(deformationForce / vertexWeight, 0, 0.5f);
 
-            current.MoveBy(vertices, deformation);
+            current.MoveBy(vertices, deformation, false);
 
             for (int j = 0; j < current.connectingEdges.Count; j++) {
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
@@ -87,7 +87,8 @@ public class Squishing : MonoBehaviour
                         edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
 
                         //  move vertices so edge is not too long.
-                        current.MoveTo(vertices, adjacent.pos + edge);
+                        current.MoveTo(vertices, adjacent.pos + edge, false);
+                        current.connectingEdges[j].UpdateEdgeLength();
                     }
                 }
             }

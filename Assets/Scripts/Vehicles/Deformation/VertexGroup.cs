@@ -10,9 +10,13 @@ namespace GraphBending {
             vertexIndices.Add(vertex);
         }
 
-        public void UpdatePos(List<Vector3> vertices) {
+        public void UpdatePos(List<Vector3> vertices, bool updateEdgeLengths) {
             pos = vertices[vertexIndices[0]];
-            UpdateEdgeLengths();
+            if (updateEdgeLengths) UpdateEdgeLengths();
+        }
+
+        public void UpdatePos(List<Vector3> vertices) {
+            UpdatePos(vertices, true);
         }
 
         public void UpdateEdgeLengths() {
@@ -22,6 +26,10 @@ namespace GraphBending {
         }
 
         public void MoveTo(List<Vector3> vertices, Vector3 pos) {
+            MoveTo(vertices, pos, true);
+        }
+
+        public void MoveTo(List<Vector3> vertices, Vector3 pos, bool updateEdgeLengths) {
             foreach (int index in vertexIndices) {
                 vertices[index] = pos;
             }
@@ -29,6 +37,10 @@ namespace GraphBending {
         }
 
         public void MoveBy(List<Vector3> vertices, Vector3 shift) {
+            MoveBy(vertices, shift, true);
+        }
+
+        public void MoveBy(List<Vector3> vertices, Vector3 shift, bool updateEdgeLengths) {
             foreach (int index in vertexIndices) {
                 vertices[index] += shift;
             }
