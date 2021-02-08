@@ -13,6 +13,7 @@ public class Squishing : MonoBehaviour
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
     public float stretchiness = 1.2f;
+    public float collisionResistance = 2000;
 
     // Start is called before the first frame update.
     void Start() {
@@ -44,6 +45,8 @@ public class Squishing : MonoBehaviour
 
     // Explode the mesh at a given position, with a given force
     public void ExplodeMeshAt(Vector3 pos, float force, bool addNoise) {
+        pos = transform.InverseTransformPoint(pos);
+
         List<VertexGroup> moved = new List<VertexGroup>();
 
         VertexGroup closest = GetClosestVertexGroup(pos);
@@ -118,7 +121,8 @@ public class Squishing : MonoBehaviour
     private void OnCollisionEnter(Collision collision) {
         Vector3 collisionForce = collision.impulse;
         collisionForce /= Time.fixedDeltaTime;
-        collisionForce /= 200;
+        collisionForce /= collisionResistance;
+        collisionForce = transform.InverseTransformDirection(collisionForce);
 
         if (collisionForce.sqrMagnitude >= 0.01f) CollideMesh(collision.collider, collisionForce, true);
     }
@@ -131,7 +135,7 @@ public class Squishing : MonoBehaviour
 
         for (int i = 0; i < meshGraph.groups.Count; i++) {
             VertexGroup current = meshGraph.groups[i];
-            Vector3 vertex = vertices[current.vertexIndices[0]];
+            Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
 
             if (collider.ClosestPoint(vertex) == vertex) {
                 Vector3 deformation = collisionForce;
