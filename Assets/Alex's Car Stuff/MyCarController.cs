@@ -17,12 +17,12 @@ public class MyCarController : MonoBehaviour {
 
     public Rigidbody rb;
 
-    public float maxSteerAngle = 30;
-    public float motorTorque = 50;
-    public float brakeTorque = 50;
-    public float brakeForce = 15000;
-    public float steerRate =2.0f;
-    public float steerRateCoefficent = 0.9f;
+    public float maxSteerAngle = 20;
+    public float motorTorque = 2000;
+    public float brakeTorque = 4000;
+    public float brakeForce = 20000;
+    public float steerRate =1.0f;
+    public float steerRateCoefficent = 0.05f;
     public Vector3 addedDownforce;
 
 
