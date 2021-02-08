@@ -8,10 +8,10 @@ using UnityEngine.UI;
 public class LobbyButtonScript : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
-    [SerializeField] private int teamId = 0;
-    private Player driverPlayer;
+    [SerializeField] public int teamId = 0 ;
+
     [SerializeField] private string driverPlayerNickName;
-    private Player gunnerPlayer;
+
     [SerializeField] private string gunnerPlayerNickName;
 
     public bool driverSlotEmpty = true;
@@ -25,13 +25,18 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     private LobbySlotMaster lobbySlotMaster;
 
     public GamestateTracker gamestateTracker;
-    
+
+    public Image addBotDriver;
+    public Image kickBotDriver;
+
+    public Image addBotGunner;
+    public Image kickBotGunner;
     
     public void SetParent()
     {
         transform.parent = FindObjectOfType<LobbySlotMaster>().gameObject.transform;
     }
-
+    // called when a player wants to be in this slot
     public void clickGunner()
     {
         if (gunnerSlotEmpty && !lobbySlotMaster.getHasPicked())
@@ -39,13 +44,13 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             lobbySlotMaster.setHasPicked(true);
             GetComponent<PhotonView>().RPC("selectGunner", RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer);
         }
-        else if (!gunnerSlotEmpty && gunnerPlayer.Equals(PhotonNetwork.LocalPlayer))
+        else if (!gunnerSlotEmpty && gunnerPlayerNickName.Equals(PhotonNetwork.LocalPlayer.NickName))
         {
             lobbySlotMaster.setHasPicked(false);
             GetComponent<PhotonView>().RPC("deselectGunner", RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer);
         }
     }
-
+    // called when a player wants to be this slot
     public void clickDriver()
     {
         if (driverSlotEmpty && !lobbySlotMaster.getHasPicked())
@@ -53,37 +58,132 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             lobbySlotMaster.setHasPicked(true);
             GetComponent<PhotonView>().RPC("selectDriver", RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer);
         }
-        else if (!driverSlotEmpty && driverPlayer.Equals(PhotonNetwork.LocalPlayer) && lobbySlotMaster.getHasPicked())
+        else if (!driverSlotEmpty && driverPlayerNickName.Equals(PhotonNetwork.LocalPlayer.NickName) && lobbySlotMaster.getHasPicked())
         {
             lobbySlotMaster.setHasPicked(false);
             GetComponent<PhotonView>().RPC("deselectDriver", RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer);
         }
-       
     }
 
+    public void AddBotGunner()
+    {
+        if (gunnerSlotEmpty && PhotonNetwork.IsMasterClient)
+        {
+            // ask the lobbySlotMaster to add a bot to this slot
+            GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
+            botDetails.role = "Gunner";
+            botDetails.teamId = teamId;
+            lobbySlotMaster.fillSlotWithBot(botDetails);
+            gunnerPlayerNickName = botDetails.nickName;
+            GetComponent<PhotonView>().RPC("botSelectGunner", RpcTarget.AllBufferedViaServer, gunnerPlayerNickName);
+        }
+    }
+    public void AddBotDriver()
+    {
+        if (driverSlotEmpty && PhotonNetwork.IsMasterClient)
+        {
+            // ask the lobbySlotMaster to add a bot to this slot
+            GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
+            botDetails.role = "Driver";
+            botDetails.teamId = teamId;
+            lobbySlotMaster.fillSlotWithBot(botDetails);
+            driverPlayerNickName = botDetails.nickName;
+            GetComponent<PhotonView>().RPC("botSelectDriver", RpcTarget.AllBufferedViaServer, driverPlayerNickName);
+        }
+    }
+
+    public void RemoveBotGunner()
+    {
+        if (!gunnerSlotEmpty&& PhotonNetwork.IsMasterClient)
+        {
+            GamestateTracker.PlayerDetails pd = gamestateTracker.getPlayerDetails(gunnerPlayerNickName);
+            if(pd.isBot)GetComponent<PhotonView>().RPC("botDeselectGunner", RpcTarget.AllBufferedViaServer, gunnerPlayerNickName);
+        }
+    }
+
+    public void RemoveBotDriver()
+    {
+        if (!driverSlotEmpty&& PhotonNetwork.IsMasterClient)
+        {
+            // check if the driver is a bot
+            GamestateTracker.PlayerDetails pd = gamestateTracker.getPlayerDetails(driverPlayerNickName);
+            
+            if(pd.isBot)GetComponent<PhotonView>().RPC("botDeselectDriver", RpcTarget.AllBufferedViaServer, driverPlayerNickName);
+        }
+    }
+    
+
+
+    [PunRPC]
+    void botSelectGunner(string botName)
+    {
+        addBotGunner.enabled = false;
+        kickBotGunner.enabled = true;
+        gunnerPlayerNickName = botName;
+        gunnerSlotEmpty = false;
+        gunnerPlayerText.text = botName;
+        
+        gamestateTracker.UpdatePlayerRole(botName, "Gunner");
+        gamestateTracker.UpdatePlayerTeam(botName, teamId);
+        
+    }
+    [PunRPC]
+    void botSelectDriver(string botName)
+    {
+        addBotDriver.enabled = false;
+        kickBotDriver.enabled = true;
+        driverPlayerNickName = botName;
+        driverSlotEmpty = false;
+        driverPlayerText.text = botName;
+        gamestateTracker.UpdatePlayerRole(botName, "Driver");
+        gamestateTracker.UpdatePlayerTeam(botName, teamId);
+        
+    }
+    [PunRPC]
+    void botDeselectDriver(string botName)
+    {
+        driverPlayerNickName = "empty";
+        driverSlotEmpty = true;
+        driverPlayerText.text = "empty";
+        gamestateTracker.RemovePlayerFromSchema(botName);
+        addBotDriver.enabled = true;
+        kickBotDriver.enabled = false;
+    }
+
+    [PunRPC]
+    void botDeselectGunner(string botName)
+    {
+        gunnerPlayerNickName = "empty";
+        gunnerSlotEmpty = true;
+        gunnerPlayerText.text = "empty";
+        gamestateTracker.RemovePlayerFromSchema(botName);
+        addBotGunner.enabled = true;
+        kickBotGunner.enabled = false;
+    }
+    
     [PunRPC]
     public void selectDriver(Player selectPlayer)
     {
         // if we have not picked and nobody else has picked our slot, then pick it
         // clear the player's last slot
             //select the slot
-            driverPlayer = selectPlayer;
+           
             driverPlayerNickName = selectPlayer.NickName;
             driverSlotEmpty = false;
             driverPlayerText.text = driverPlayerNickName;
-            gamestateTracker.UpdatePlayerRole(selectPlayer, "Driver");
-            gamestateTracker.UpdatePlayerTeam(selectPlayer, teamId);
+            gamestateTracker.UpdatePlayerRole(selectPlayer.NickName, "Driver");
+            gamestateTracker.UpdatePlayerTeam(selectPlayer.NickName, teamId);
             if(PhotonNetwork.IsMasterClient) lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, 1);
     }
     [PunRPC]
     public void deselectDriver(Player deselectPlayer)
     {
-        driverPlayer = null;
+    
         driverPlayerNickName = "empty";
         driverSlotEmpty = true;
         driverPlayerText.text = "empty";
-        gamestateTracker.UpdatePlayerRole(deselectPlayer, "null");
-        gamestateTracker.UpdatePlayerTeam(deselectPlayer, 0);
+        gamestateTracker.UpdatePlayerRole(deselectPlayer.NickName, "null");
+        gamestateTracker.UpdatePlayerTeam(deselectPlayer.NickName, 0);
         if(PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
         readyToggle.setReadyStatus(false);
     }
@@ -95,7 +195,7 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         // clear the player's last slot
             // get all other LobbyButtons and clear 
             //select the slot
-            gunnerPlayer = selectPlayer;
+         
             gunnerPlayerNickName = selectPlayer.NickName;
             gunnerSlotEmpty = false;
             gunnerPlayerText.text = gunnerPlayerNickName;
@@ -104,8 +204,8 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
           //  newPd.role = "Gunner";
           //  newPd.teamId = teamId;
           //  gamestateTracker.UpdatePlayerInSchema();
-            gamestateTracker.UpdatePlayerTeam(selectPlayer, teamId);
-            gamestateTracker.UpdatePlayerRole(selectPlayer, "Gunner");
+            gamestateTracker.UpdatePlayerTeam(selectPlayer.NickName, teamId);
+            gamestateTracker.UpdatePlayerRole(selectPlayer.NickName, "Gunner");
             
             if(PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, 1);
     }
@@ -113,12 +213,12 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     [PunRPC]
     public void deselectGunner(Player deselectPlayer)
     {
-        gunnerPlayer = null;
+       
         gunnerPlayerNickName = "empty";
         gunnerSlotEmpty = true;
         gunnerPlayerText.text = "empty";
-        gamestateTracker.UpdatePlayerRole(deselectPlayer, "null");
-        gamestateTracker.UpdatePlayerTeam(deselectPlayer, 0);
+        gamestateTracker.UpdatePlayerRole(deselectPlayer.NickName, "null");
+        gamestateTracker.UpdatePlayerTeam(deselectPlayer.NickName, 0);
         if(PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
         readyToggle.setReadyStatus(false);
     }

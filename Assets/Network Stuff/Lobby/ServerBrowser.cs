@@ -77,20 +77,7 @@ public class ServerBrowser : MonoBehaviourPunCallbacks
         //Room name text field
         roomName = GUILayout.TextField(roomName, GUILayout.Width(250));
 
-        if (GUILayout.Button("Create Room", GUILayout.Width(125)))
-        {
-            if (roomName != "")
-            {
-                joiningRoom = true;
-
-                RoomOptions roomOptions = new RoomOptions();
-                roomOptions.IsOpen = true;
-                roomOptions.IsVisible = true;
-                roomOptions.MaxPlayers = (byte)10; //Set any number
-
-                PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
-            }
-        }
+        
 
         GUILayout.EndHorizontal();
 
