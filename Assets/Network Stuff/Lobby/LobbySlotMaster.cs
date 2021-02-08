@@ -152,10 +152,10 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     public void fillIncompleteTeamsWithBots()
     {
         GamestateTracker tracker = FindObjectOfType<GamestateTracker>();
-        List<GamestateTracker.PlayerDetails> playerDetailsList = tracker.playerList;
+        List<GamestateTracker.PlayerDetails> playerDetailsList = tracker.schema.playerList;
         List<int> uniqueTeamIds = new List<int>();
         // iterate through list to get all of the team ids
-        foreach (GamestateTracker.PlayerDetails record in tracker.playerList)
+        foreach (GamestateTracker.PlayerDetails record in tracker.schema.playerList)
         {
             if (!uniqueTeamIds.Contains(record.teamId))
             {
@@ -169,7 +169,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         {
             // search our current team for players belonging to team i
             List<GamestateTracker.PlayerDetails> pair = new List<GamestateTracker.PlayerDetails>();
-            foreach (GamestateTracker.PlayerDetails record in tracker.playerList)
+            foreach (GamestateTracker.PlayerDetails record in tracker.schema.playerList)
             {
                 if (record.teamId == team)
                 {
@@ -224,6 +224,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             {
                 // get all info from lobby buttons and fill in the gametracker object
                 fillIncompleteTeamsWithBots();
+                gamestateTracker.ForceSynchronisePlayerList();
                 Debug.Log("load new scene");
                 // delayed load just to make sure sync and for Jordan to check the network update. Remove in build
                 Invoke(nameof(delayedLoad), 2f);
