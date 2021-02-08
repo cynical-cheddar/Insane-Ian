@@ -8,6 +8,8 @@ using Photon.Realtime;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    public int maxPlayerPairs = 24;
+    
     // Start is called before the first frame update
     public List<Transform> spawnPoints;
     public Text statusText;
@@ -15,11 +17,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public string version = "1.0";
     public string roomName = "room";
 
-    public string playerVehiclePrefabName;
-
+    public string defaultPlayerVehiclePrefabName;
+    
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
+        spawnPlayers();
     }
 
     void Update()
@@ -51,61 +54,61 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // spawn each player pair at a respective spawnpoint
     // to do this, loop through each player in the gamestate tracker and get a list of the unique teams
     // once we have this, get the driver and gunner from both.
-    // if a real player driver/gunner is missing, then instantiate a bot player (dummy for now)
-    // to instantiate a bot player, add a new record to the gamestate tracker via server buffered rpc
+
     // instantiate the driver's vehicle for each of them (driver character)
     // instantiate the gunner attached to the vehicle for each of them (gunner character)
     
     // only to be called by the master client when we can be sure that everyone has loaded into the game
     public void spawnPlayers()
     {
-        GamestateTracker tracker = FindObjectOfType<GamestateTracker>();
-        List<GamestateTracker.PlayerDetails> playerDetailsList = tracker.playerList;
-        List<int> uniqueTeamIds = new List<int>();
-        // iterate through list to get all of the team ids
-        foreach (GamestateTracker.PlayerDetails record in tracker.playerList)
-        {
-            if (!uniqueTeamIds.Contains(record.teamId))
-            {
-                uniqueTeamIds.Add(record.teamId);
-            }
-        }
-        // get a gunner and driver from each unique team, compiling a list of player detail pairs
-        List<List<GamestateTracker.PlayerDetails>> playerDetailsPairs = new List<List<GamestateTracker.PlayerDetails>>();
-        foreach (int team in uniqueTeamIds)
-        {
-            // search our current team for players belonging to team i
-            List<GamestateTracker.PlayerDetails> pair = new List<GamestateTracker.PlayerDetails>();
-            foreach (GamestateTracker.PlayerDetails record in tracker.playerList)
-            {
-                if (record.teamId == team)
-                {
-                    pair.Add(record);
-                }
-            }
-            // avoid adding the null pair (it shouldn't exist, but it might)
-            if (pair.Count > 0)
-            {
-                playerDetailsPairs.Add(pair);
-            }
-        }
-        
-        // we now have a list of players in teams
-        
-        
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>(); 
+        gamestateTracker.ForceSynchronisePlayerList();
+        Invoke(nameof(actuallySpawn), 2f);
+    }
 
+    void actuallySpawn()
+    { 
+        
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GamestateTracker tracker = FindObjectOfType<GamestateTracker>();
+            List<GamestateTracker.PlayerDetails> playerDetailsList = tracker.schema.playerList;
+            List<List<GamestateTracker.PlayerDetails>> playerDetailsPairs = tracker.GetPlayerPairs();
+            
+            
+            // players should have already had their teams validated through the lobby screen
+            // If we end up with bugs, get Jordan to add extra checks to fill slots with bots at this point.
+
+
+            // we now have a list of the players in each team
+            foreach (List<GamestateTracker.PlayerDetails> playersPair in playerDetailsPairs)
+            {
+                // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
+                GameObject vehicle = new GameObject();
+                Transform sp = spawnPoints[Random.Range(0, spawnPoints.Count - 1)];
+                if (!(playersPair[0].vehiclePrefabName == "null" || playersPair[0].vehiclePrefabName == null ||
+                      playersPair[0].vehiclePrefabName == ""))
+                    vehicle = PhotonNetwork.Instantiate(playersPair[0].vehiclePrefabName, sp.position, sp.rotation);
+                else vehicle = PhotonNetwork.Instantiate(defaultPlayerVehiclePrefabName, sp.position, sp.rotation);
+
+                // on the testing truck, get the vehicle network controller script and set the pair details
+                // when this is assigned, a method on the vehicle's script will enable/disable the appropriate scripts
+                // it takes the player pair as an argument
+                // the method is called AssignPairDetailsToVehicle(string serializedJson);
+                Debug.Log("serialized pair size" + playersPair.Count.ToString());
+                string serializedPlayer1 = JsonUtility.ToJson(playersPair[0]);
+                Debug.Log("serialized 1: " + serializedPlayer1);
+                string serializedPlayer2 = JsonUtility.ToJson(playersPair[1]);
+                Debug.Log("serialized 2: " + serializedPlayer2);
+                vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.AssignPairDetailsToVehicle),
+                    RpcTarget.AllBufferedViaServer, serializedPlayer1, serializedPlayer2);
+
+
+            }
+        }
     }
     
-    
-    public void spawnPlayer()
-    {
-        
-        
-        
-        Transform sp = spawnPoints[Random.Range(0, spawnPoints.Count - 1)];
-        GameObject myPlayer =
-            PhotonNetwork.Instantiate(playerVehiclePrefabName,sp.position, sp.rotation);
-    }
+
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {

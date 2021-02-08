@@ -89,10 +89,30 @@ public class CameraLookController : MonoBehaviourPunCallbacks
             {
                 freeLookCam.enabled = false;
             }
-
+            // get photon view in children
 
     }
-    
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        if (vehicleTransform == null) vehicleTransform = transform;
+        Debug.Log("spawning camera rig");
+        freelookcamInstance = Instantiate(freelookCamGameObject, transform.position, transform.rotation);
+        freeLookCam = freelookcamInstance.GetComponent<CinemachineFreeLook>();
+        freeLookCam.m_Follow = vehicleTransform;
+        freeLookCam.m_LookAt = vehicleTransform;
+
+        if (photonView.IsMine== false)
+        {
+            freeLookCam.enabled = false;
+        }
+        // get photon view in children
+        if (GetComponentInChildren<PhotonView>().IsMine)
+        {
+            freeLookCam.enabled = true;
+        }
+    }
 
 
     void selectCamera(CinemachineVirtualCameraBase cam){
@@ -101,6 +121,10 @@ public class CameraLookController : MonoBehaviourPunCallbacks
     }
     void Update()
     {
+        if (GetComponentInChildren<PhotonView>().IsMine)
+        {
+            freeLookCam.enabled = true;
+        }
         if(directControl){
         // Rotation
             if(Input.GetMouseButton(mouseButton)){

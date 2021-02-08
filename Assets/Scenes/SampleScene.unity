@@ -289,6 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22bd28fdb3912284eb905e1060ad2fe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxPlayerPairs: 24
   spawnPoints:
   - {fileID: 1497049548}
   - {fileID: 1192365534}
@@ -296,7 +297,7 @@ MonoBehaviour:
   statusText: {fileID: 2067646781}
   version: 1.0
   roomName: room
-  playerVehiclePrefabName: testingTruck
+  defaultPlayerVehiclePrefabName: testingTruck
 --- !u!4 &536706691
 Transform:
   m_ObjectHideFlags: 0
@@ -540,7 +541,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1069338099
 RectTransform:
   m_ObjectHideFlags: 0
@@ -607,7 +608,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 536706690}
         m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
-        m_MethodName: spawnPlayer
+        m_MethodName: spawnPlayers
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

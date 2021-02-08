@@ -64,6 +64,7 @@ Shader "BurnableShader"
                         col = burnCol * (1 - burnLevel) + col * burnLevel;
                     }
                 }
+                col.a = burnLevel;
                 return col;
             }
             ENDCG
