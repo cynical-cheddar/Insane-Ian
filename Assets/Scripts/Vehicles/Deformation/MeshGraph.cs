@@ -26,7 +26,7 @@ namespace GraphBending {
 
                 // If no group found for vertex, create new group.
                 if (!grouped) {
-                    groups.Add(new VertexGroup(i));
+                    groups.Add(new VertexGroup(i, vertices));
                 }
             }
 
@@ -40,33 +40,24 @@ namespace GraphBending {
                 VertexGroup groupC = FindGroupContainingVertex(vertexIndexC);
 
                 if (groupA != groupB) {
-                    if (!groupA.adjacentVertexGroups.Contains(groupB)) {
-                        groupA.adjacentVertexGroups.Add(groupB);
-                        groupA.connectingEdgeLengths.Add((vertices[groupA.vertexIndices[0]] - vertices[groupB.vertexIndices[0]]).magnitude);
-                    }
-                    if (!groupB.adjacentVertexGroups.Contains(groupA)) {
-                        groupB.adjacentVertexGroups.Add(groupA);
-                        groupB.connectingEdgeLengths.Add((vertices[groupB.vertexIndices[0]] - vertices[groupA.vertexIndices[0]]).magnitude);
+                    if (!groupA.IsAdjacentTo(groupB)) {
+                        Edge edge = new Edge(groupA, groupB);
+                        groupA.connectingEdges.Add(edge);
+                        groupB.connectingEdges.Add(edge);
                     }
                 }
-                if (groupA != groupC) {
-                    if (!groupA.adjacentVertexGroups.Contains(groupC)) {
-                        groupA.adjacentVertexGroups.Add(groupC);
-                        groupA.connectingEdgeLengths.Add((vertices[groupA.vertexIndices[0]] - vertices[groupC.vertexIndices[0]]).magnitude);
-                    }
-                    if (!groupC.adjacentVertexGroups.Contains(groupA)) {
-                        groupC.adjacentVertexGroups.Add(groupA);
-                        groupC.connectingEdgeLengths.Add((vertices[groupC.vertexIndices[0]] - vertices[groupA.vertexIndices[0]]).magnitude);
+                if (groupB != groupC) {
+                    if (!groupC.IsAdjacentTo(groupB)) {
+                        Edge edge = new Edge(groupC, groupB);
+                        groupC.connectingEdges.Add(edge);
+                        groupB.connectingEdges.Add(edge);
                     }
                 }
-                if (groupC != groupB) {
-                    if (!groupC.adjacentVertexGroups.Contains(groupB)) {
-                        groupC.adjacentVertexGroups.Add(groupB);
-                        groupC.connectingEdgeLengths.Add((vertices[groupC.vertexIndices[0]] - vertices[groupB.vertexIndices[0]]).magnitude);
-                    }
-                    if (!groupB.adjacentVertexGroups.Contains(groupC)) {
-                        groupB.adjacentVertexGroups.Add(groupC);
-                        groupB.connectingEdgeLengths.Add((vertices[groupB.vertexIndices[0]] - vertices[groupC.vertexIndices[0]]).magnitude);
+                if (groupC != groupA) {
+                    if (!groupA.IsAdjacentTo(groupC)) {
+                        Edge edge = new Edge(groupA, groupC);
+                        groupA.connectingEdges.Add(edge);
+                        groupC.connectingEdges.Add(edge);
                     }
                 }
             }
