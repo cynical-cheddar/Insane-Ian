@@ -127,22 +127,29 @@ public class Squishing : MonoBehaviour
         collisionForce /= collisionResistance;
         collisionForce = transform.InverseTransformDirection(collisionForce);
 
-        if (collisionForce.sqrMagnitude >= 0.01f) CollideMesh(collision.collider, collisionForce, true);
+        if (collisionForce.sqrMagnitude >= 0.01f) {
+            if (collision.collider is TerrainCollider || (collision.collider is MeshCollider && !((MeshCollider)collision.collider).convex)) {
+                /*Ray ray = new Ray(, -transform.TransformDirection(collisionForce));
+                RaycastHit raycastHit = new RaycastHit();
+                if (collision.collider.Raycast(ray, out raycastHit, 20)) {*/
+                    collisionResolver.transform.position = collision.GetContact(0).point;
+                    collisionResolver.transform.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
+                    Collider collider = collisionResolver.GetComponent<BoxCollider>();
+                    CollideMesh(collider, collisionForce, true);
+                /*}
+                else {
+                    throw new System.Exception("well, fuck");
+                }*/
+                collisionResolver.transform.position = new Vector3(0, 10000, 0);
+            }
+            else {
+                CollideMesh(collision.collider, collisionForce, true);
+            }
+        }
     }
 
     public void CollideMesh(Collider collider, Vector3 collisionForce, bool addNoise) {
-        if (collider is TerrainCollider || (collider is MeshCollider && !((MeshCollider)collider).convex)) {
-            Ray ray = new Ray(transform.position, -transform.TransformDirection(collisionForce));
-            RaycastHit raycastHit = new RaycastHit();
-            if (collider.Raycast(ray, out raycastHit, 20)) {
-                collisionResolver.transform.position = raycastHit.point;
-                collisionResolver.transform.rotation = Quaternion.LookRotation(ray.direction);
-                collider = collisionResolver.GetComponent<BoxCollider>();
-            }
-            else {
-                throw new System.Exception("well, fuck");
-            }
-        }
+        
 
         List<VertexGroup> moved = new List<VertexGroup>();
 
@@ -214,8 +221,6 @@ public class Squishing : MonoBehaviour
                 }
             }
         }
-
-        collisionResolver.transform.position = new Vector3(0, 10000, 0);
 
         //  Update the mesh
         mesh.vertices = vertices.ToArray();
