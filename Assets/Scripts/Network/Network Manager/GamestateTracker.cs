@@ -16,9 +16,8 @@ public class GamestateTracker : MonoBehaviour
     public int maxPlayers = 24;
 
     [SerializeField] public PlayerSchema schema = new PlayerSchema();
-    [SerializeField]
-    public MapDetails mapDetails = new MapDetails();
-
+    [SerializeField] public MapDetails mapDetails = new MapDetails();
+    
 
     [Serializable]
     public struct PlayerSchema
@@ -56,7 +55,7 @@ public class GamestateTracker : MonoBehaviour
         public MapDetails(string sn, string sdn)
         {
             sceneName = sn; sceneDisplayName = sdn;}
-    }
+    }  
 
     private void Awake()
     {
@@ -413,7 +412,6 @@ public class GamestateTracker : MonoBehaviour
         return playerDetailsPairs;
     }
 
-        
     
     
     
