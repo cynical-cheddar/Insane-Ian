@@ -10,7 +10,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public int maxPlayerPairs = 24;
     
-    // Start is called before the first frame update
     public List<Transform> spawnPoints;
     public Text statusText;
     public TimerBehaviour timer;
@@ -19,7 +18,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public string roomName = "room";
 
     public string defaultPlayerVehiclePrefabName;
-    
+
+    // Start is called before the first frame update
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();

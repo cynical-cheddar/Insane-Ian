@@ -1,12 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using ExitGames.Client.Photon;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TimerBehaviour : MonoBehaviour
@@ -24,6 +20,12 @@ public class TimerBehaviour : MonoBehaviour
     }
 
     // Time in seconds
+    [PunRPC]
+    void setTimer(float time) {
+        timer.timeLeft = time;
+    }
+
+    // Time in seconds
     public void hostStartTimer(float time) {
         if (PhotonNetwork.IsMasterClient) {
             GetComponent<PhotonView>().RPC(nameof(setTimer), RpcTarget.AllBufferedViaServer, time);
@@ -31,11 +33,7 @@ public class TimerBehaviour : MonoBehaviour
         }
     }
 
-    // Time in seconds
-    [PunRPC]
-    void setTimer(float time) {
-        timer.timeLeft = time;
-    }
+
 
     private void Update() {
         timer.timeLeft -= Time.deltaTime;
@@ -52,7 +50,6 @@ public class TimerBehaviour : MonoBehaviour
         while (true) {
             yield return new WaitForSecondsRealtime(5);
             updateTimersForClients();
-            Debug.Log("Timer updates to: " + timer.timeLeft);
         }
     }
 }

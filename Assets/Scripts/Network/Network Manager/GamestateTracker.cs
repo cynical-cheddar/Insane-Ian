@@ -40,11 +40,16 @@ public class GamestateTracker : MonoBehaviour
         public int teamId;
         public bool isBot;
         public string vehiclePrefabName;
-        public PlayerDetails(string n, string r, string c, int t, bool b, string v)
+        public int score, kills, deaths, assists;
+        public PlayerDetails(string n, string r, string c, int t, bool b, string v, int k, int d, int a, int s)
         {
             nickName = n; role = r; character = c; teamId = t;
             isBot = b;
             vehiclePrefabName = v;
+            score = s;
+            kills = k;
+            deaths = d;
+            assists = a;
         }
     }
     
@@ -62,7 +67,8 @@ public class GamestateTracker : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         schema = new PlayerSchema(new List<PlayerDetails>());
-        
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+
         if (PhotonNetwork.IsMasterClient)
         {
             PlayerDetails firstPd = GenerateDefaultPlayerDetails("null");
@@ -308,10 +314,11 @@ public class GamestateTracker : MonoBehaviour
             schema.playerList.Remove(oldRecord);
             schema.playerList.Add(newRecord);
         }
-        ForceSynchronisePlayerList();
         if (scoreboard != null) {
-            scoreboard.loadPlayerSchema();
+            scoreboard.updateScores();
         }
+        ForceSynchronisePlayerList();
+        
     }
     [PunRPC]
     public void UpdatePlayerRole(string p, string role)
