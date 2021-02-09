@@ -13,6 +13,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     public List<Transform> spawnPoints;
     public Text statusText;
+    public TimerBehaviour timer;
 
     public string version = "1.0";
     public string roomName = "room";
@@ -22,7 +23,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
-        spawnPlayers();
+        startGame();
     }
 
     void Update()
@@ -51,6 +52,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
     }
     
+    public void startGame() {
+        spawnPlayers();
+        timer.hostStartTimer(300);
+    }
+
     // spawn each player pair at a respective spawnpoint
     // to do this, loop through each player in the gamestate tracker and get a list of the unique teams
     // once we have this, get the driver and gunner from both.

@@ -14,11 +14,11 @@ public class GamestateTracker : MonoBehaviour
     // Start is called before the first frame update
     public List<string> destoryOnTheseLevels = new List<string>();
     public int maxPlayers = 24;
+    ScoreboardBehaviour scoreboard;
 
     [SerializeField] public PlayerSchema schema = new PlayerSchema();
-    [SerializeField]
-    public MapDetails mapDetails = new MapDetails();
-
+    [SerializeField] public MapDetails mapDetails = new MapDetails();
+    
 
     [Serializable]
     public struct PlayerSchema
@@ -56,7 +56,7 @@ public class GamestateTracker : MonoBehaviour
         public MapDetails(string sn, string sdn)
         {
             sceneName = sn; sceneDisplayName = sdn;}
-    }
+    }  
 
     private void Awake()
     {
@@ -96,6 +96,12 @@ public class GamestateTracker : MonoBehaviour
         if (destoryOnTheseLevels.Contains(scene.name))
         {
             PhotonNetwork.Destroy(gameObject);
+        }
+
+        if (FindObjectOfType<ScoreboardBehaviour>() != null) {
+            scoreboard = FindObjectOfType<ScoreboardBehaviour>();
+        } else {
+            scoreboard = null;
         }
     }
 
@@ -217,6 +223,7 @@ public class GamestateTracker : MonoBehaviour
     // gets the player list of the master client and forces synchronisation
     // this is network costly so we do not buffer it.
     // may deprecate older ways of doing things, such as RPC calls to gamestate tracker
+    // Called to double check that everyone is synchronised correctly
     public void ForceSynchronisePlayerList()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -282,8 +289,9 @@ public class GamestateTracker : MonoBehaviour
     
     // preferred method
     [PunRPC]
-    public void UpdatePlayerWithNewRecord(string p, PlayerDetails newDetails)
+    public void UpdatePlayerWithNewRecord(string p, string newDetailsSerialized)
     {
+        PlayerDetails newRecord = JsonUtility.FromJson<PlayerDetails>(newDetailsSerialized);
         bool found = false;
         PlayerDetails oldRecord= schema.playerList[0];
         foreach (PlayerDetails record in schema.playerList)
@@ -298,9 +306,12 @@ public class GamestateTracker : MonoBehaviour
         if (found)
         {
             schema.playerList.Remove(oldRecord);
-            schema.playerList.Add(newDetails);
+            schema.playerList.Add(newRecord);
         }
         ForceSynchronisePlayerList();
+        if (scoreboard != null) {
+            scoreboard.loadPlayerSchema();
+        }
     }
     [PunRPC]
     public void UpdatePlayerRole(string p, string role)
@@ -413,7 +424,6 @@ public class GamestateTracker : MonoBehaviour
         return playerDetailsPairs;
     }
 
-        
     
     
     
