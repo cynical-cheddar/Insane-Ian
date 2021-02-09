@@ -29,15 +29,16 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
 
     public void updateValue() {
         GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(playerChoice.captionText.text);
-
-        if (statChoice.captionText.text == "Score") {
-            playerDetails.score += int.Parse(value.text);
-        } else if (statChoice.captionText.text == "Kills") {
+        
+        if (statChoice.captionText.text == "Kills") {
             playerDetails.kills += int.Parse(value.text);
+            playerDetails.score += 10 * int.Parse(value.text);
         } else if (statChoice.captionText.text == "Deaths") {
             playerDetails.deaths += int.Parse(value.text);
+            playerDetails.score -= 5 * int.Parse(value.text);
         } else if (statChoice.captionText.text == "Assists") {
             playerDetails.assists += int.Parse(value.text);
+            playerDetails.score += 5 * int.Parse(value.text);
         }
 
         gamestateTracker.UpdatePlayerWithNewRecord(playerChoice.captionText.text, JsonUtility.ToJson(playerDetails));

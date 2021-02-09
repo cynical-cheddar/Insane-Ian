@@ -67,7 +67,8 @@ public class GamestateTracker : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         schema = new PlayerSchema(new List<PlayerDetails>());
-        
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+
         if (PhotonNetwork.IsMasterClient)
         {
             PlayerDetails firstPd = GenerateDefaultPlayerDetails("null");
