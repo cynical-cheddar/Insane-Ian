@@ -23,11 +23,21 @@ public class TurretFollowTarget : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(dir);
         float missAngle = Quaternion.Angle(transform.rotation, targetRotation);
         if (missAngle > deadZone) {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, trackingSpeed * Time.deltaTime);
+            float rotationTime = Time.deltaTime;
+            float maxRotation = trackingSpeed * rotationTime;
+            if (maxRotation > (missAngle - deadZone)) {
+                maxRotation = (missAngle - deadZone);
+                rotationTime -= maxRotation / trackingSpeed;
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotation);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, deadZoneTrackingSpeed * rotationTime);
+            }
+            else transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotation);
+            if (inDeadZone == true) Debug.Log("Left dead zone.");
             inDeadZone = false;
         }
         else {
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, deadZoneTrackingSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, deadZoneTrackingSpeed * Time.deltaTime);
+            if (inDeadZone == false) Debug.Log("Entered dead zone.");
             inDeadZone = true;
         }
     }
