@@ -83,8 +83,8 @@ public class MyCarController : MonoBehaviour {
 
     private void Accellerate() {
         if (Input.GetKey(KeyCode.W)) {
-            //frontLeftW.motorTorque = motorTorque;
-            //frontRightW.motorTorque = motorTorque;
+            frontLeftW.motorTorque = motorTorque;
+            frontRightW.motorTorque = motorTorque;
             rearLeftW.motorTorque = motorTorque;
             rearRightW.motorTorque = motorTorque;
         } else {
