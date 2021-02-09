@@ -50,7 +50,6 @@ public class TimerBehaviour : MonoBehaviour
         while (true) {
             yield return new WaitForSecondsRealtime(5);
             updateTimersForClients();
-            Debug.Log("Timer updates to: " + timer.timeLeft);
         }
     }
 }

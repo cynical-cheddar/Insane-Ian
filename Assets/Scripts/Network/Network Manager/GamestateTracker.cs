@@ -313,10 +313,11 @@ public class GamestateTracker : MonoBehaviour
             schema.playerList.Remove(oldRecord);
             schema.playerList.Add(newRecord);
         }
-        ForceSynchronisePlayerList();
         if (scoreboard != null) {
             scoreboard.updateScores();
         }
+        ForceSynchronisePlayerList();
+        
     }
     [PunRPC]
     public void UpdatePlayerRole(string p, string role)
