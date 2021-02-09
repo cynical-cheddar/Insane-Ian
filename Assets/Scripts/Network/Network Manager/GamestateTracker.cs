@@ -40,11 +40,16 @@ public class GamestateTracker : MonoBehaviour
         public int teamId;
         public bool isBot;
         public string vehiclePrefabName;
-        public PlayerDetails(string n, string r, string c, int t, bool b, string v)
+        public int score, kills, deaths, assists;
+        public PlayerDetails(string n, string r, string c, int t, bool b, string v, int k, int d, int a, int s)
         {
             nickName = n; role = r; character = c; teamId = t;
             isBot = b;
             vehiclePrefabName = v;
+            score = s;
+            kills = k;
+            deaths = d;
+            assists = a;
         }
     }
     
@@ -310,7 +315,7 @@ public class GamestateTracker : MonoBehaviour
         }
         ForceSynchronisePlayerList();
         if (scoreboard != null) {
-            scoreboard.loadPlayerSchema();
+            scoreboard.updateScores();
         }
     }
     [PunRPC]
