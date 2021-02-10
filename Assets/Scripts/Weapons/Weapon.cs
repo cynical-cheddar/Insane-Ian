@@ -21,6 +21,8 @@ public class Weapon : MonoBehaviour
 
     }
     
+   
+    
     
     // Start is called before the first frame update
     [Header("Damage Falloff")]
@@ -32,20 +34,19 @@ public class Weapon : MonoBehaviour
     protected int salvoSize = 1;
     protected int currentSalvo=0;
     [SerializeField] protected ReloadType reloadType;
-    [Header("Damage")] [SerializeField] protected float baseDamage = 10f;
+    [SerializeField] protected float reloadTime = 1f;
+    [SerializeField] protected float fireRate = 0.5f;
+    [Header("Damage")]
+    [SerializeField] protected float baseDamage = 10f;
     [SerializeField] protected DamageType damageType;
-    [SerializeField] protected float damageMultiplier;
+    [SerializeField] protected float damageMultiplier = 1f;
     
     void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
     protected void decrementSalvo(){
         currentSalvo -=1;
         if(currentSalvo < 0) currentSalvo = 0;
@@ -57,6 +58,14 @@ public class Weapon : MonoBehaviour
     protected void reloadFull(){
         currentSalvo += salvoSize;
         if(currentSalvo > salvoSize) currentSalvo = salvoSize;
+    }
+
+    protected void Update()
+    {
+        if (reloadType == ReloadType.recharge)
+        {
+            // recharge the current salvo
+        }
     }
 
     public void Fire(Vector3 barrelEnd, Vector3 targetPoint)
