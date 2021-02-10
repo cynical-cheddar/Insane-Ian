@@ -145,6 +145,17 @@ public class GamestateTracker : MonoBehaviour
         
         return bd;
     }
+
+    public int GetNumberOfBotsInGame()
+    {
+        int botCount = 0;
+        foreach (PlayerDetails pd in schema.playerList)
+        {
+            if (pd.isBot) botCount++;
+        }
+
+        return botCount;
+    }
     public PlayerDetails generateBotDetails(string nickName)
     {
         PlayerDetails bd = new PlayerDetails();

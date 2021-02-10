@@ -118,7 +118,8 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         if (passedAddTests)
         {
             // public void AddBotToSchema(string p, string role, string character, int team)
-            gamestateTracker.GetComponent<PhotonView>().RPC("AddPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));
+           // gamestateTracker.GetComponent<PhotonView>().RPC("AddPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));
+            gamestateTracker.AddBotToSchema(JsonUtility.ToJson((pd)));
         }
     }
     
@@ -183,7 +184,9 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             }
         }
         Debug.Log("playerDetailsPairs: " + playerDetailsPairs.ToString());
-        
+        // First bot details
+       // GamestateTracker.PlayerDetails firstBotDetails = gamestateTracker.generateBotDetails();
+        int currentBotNumber = gamestateTracker.GetNumberOfBotsInGame() + 1;
         // now we have a list of pairs, foreach free team space, bring in a bot
         foreach(List<GamestateTracker.PlayerDetails> pair in playerDetailsPairs)
         {
@@ -192,6 +195,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             {
                 // define a new bot
                 GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
+                botDetails.nickName = "Bot: " + currentBotNumber.ToString();
                 botDetails.teamId = pair[0].teamId;
                 // check if the other player is a gunner or a driver
                 if (pair[0].role == "Gunner") botDetails.role = "Driver";
@@ -199,6 +203,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 // call the method to fill a slot with our defined bot details
                 
                 fillSlotWithBot(botDetails);
+                currentBotNumber++;
                 ForceUpdateLobbyButtonAddBot(botDetails);
             }   
         }
