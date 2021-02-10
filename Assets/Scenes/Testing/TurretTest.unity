@@ -288,7 +288,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 639416268}
-  m_LocalRotation: {x: 0.01868181, y: -0.0000000010752111, z: 2.0090395e-11, w: 0.9998255}
+  m_LocalRotation: {x: 0.01868181, y: 0.0000000010752111, z: -2.0090395e-11, w: 0.9998255}
   m_LocalPosition: {x: 0, y: 0.40000015, z: -0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -357,7 +357,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 700779171}
-  m_LocalRotation: {x: 0.01868181, y: -0.0000000010752111, z: 2.0090395e-11, w: 0.9998255}
+  m_LocalRotation: {x: 0.01868181, y: 0.0000000010752111, z: -2.0090395e-11, w: 0.9998255}
   m_LocalPosition: {x: 0, y: 0.40000015, z: -0.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -509,8 +509,8 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 0.5
-  m_VerticalDamping: 0.5
+  m_HorizontalDamping: 0.1
+  m_VerticalDamping: 0.1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
   m_DeadZoneWidth: 0
@@ -948,8 +948,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1987561813}
   trackingSpeed: 360
-  deadZone: 15
-  deadZoneTrackingSpeed: 24
+  deadZone: 10
+  deadZoneTrackingSpeed: 36
   inDeadZone: 1
 --- !u!1 &1987561813
 GameObject:
