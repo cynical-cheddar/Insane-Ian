@@ -7,12 +7,13 @@ public class PlinthManager : MonoBehaviour
 {
     public List<TextMesh> plinthTexts;
     GamestateTracker gamestateTracker;
-    List<List<GamestateTracker.PlayerDetails>> playerPairs;
-    List<List<GamestateTracker.PlayerDetails>> topThreePlayerPairs;
+    [SerializeField] List<List<GamestateTracker.PlayerDetails>> playerPairs;
+    [SerializeField] List<List<GamestateTracker.PlayerDetails>> topThreePlayerPairs;
 
     // Start is called before the first frame update
     void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
+        topThreePlayerPairs = new List<List<GamestateTracker.PlayerDetails>>();
         // Wait for the host to finish loading first
         Invoke("updatePlinths", 0.1f);
     }
@@ -26,6 +27,7 @@ public class PlinthManager : MonoBehaviour
     }
 
     void updatePlinths() {
+        playerPairs = gamestateTracker.GetPlayerPairs();
         calculateTopThreePlayerPairs();
         plinthTexts[0].text = $"Team {topThreePlayerPairs[0][0].teamId}";
         if (topThreePlayerPairs.Count > 1) plinthTexts[1].text = $"Team {topThreePlayerPairs[1][0].teamId}";
