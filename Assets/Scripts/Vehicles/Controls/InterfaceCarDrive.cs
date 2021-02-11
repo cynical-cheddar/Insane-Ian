@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InterfaceCarDrive : MonoBehaviour, IDrivable {
-    // Start is called before the first frame update
 
     [Header("Wheel Colliders:")]
     public WheelCollider frontLeftW;
