@@ -29,11 +29,11 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     [Range(12,35)]
     public float maxSteerAngle = 20;
     [Range(1000, 10000)]
-    public float motorTorque = 2000;
+    public float motorTorque = 4000;
     [Range(2000, 20000)]
     public float brakeTorque = 4000;
     [Range(0, 30000)]
-    public float brakeForce = 5000;
+    public float brakeForce = 16000;
     [Range(0, 5)]
     public float steerRate = 1.0f;
     [Range(0.01f,0.5f)]
