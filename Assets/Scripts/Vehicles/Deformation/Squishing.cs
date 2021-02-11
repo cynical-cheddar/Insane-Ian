@@ -10,6 +10,7 @@ public class Squishing : MonoBehaviour
     MeshGraph meshGraph;
     MeshCollider meshCollider;
     public GameObject testMarker;
+    public GameObject collisionResolver;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
     public float stretchiness = 1.2f;
@@ -23,6 +24,8 @@ public class Squishing : MonoBehaviour
 
         //  Group similar vertices.
         meshGraph = new MeshGraph(mesh, groupRadius);
+
+        collisionResolver = Instantiate(collisionResolver);
     }
 
     // Update is called once per frame
@@ -124,10 +127,30 @@ public class Squishing : MonoBehaviour
         collisionForce /= collisionResistance;
         collisionForce = transform.InverseTransformDirection(collisionForce);
 
-        if (collisionForce.sqrMagnitude >= 0.01f) CollideMesh(collision.collider, collisionForce, true);
+        if (collisionForce.sqrMagnitude >= 0.01f) {
+            if (collision.collider is TerrainCollider || (collision.collider is MeshCollider && !((MeshCollider)collision.collider).convex)) {
+                /*Ray ray = new Ray(, -transform.TransformDirection(collisionForce));
+                RaycastHit raycastHit = new RaycastHit();
+                if (collision.collider.Raycast(ray, out raycastHit, 20)) {*/
+                    collisionResolver.transform.position = collision.GetContact(0).point;
+                    collisionResolver.transform.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
+                    Collider collider = collisionResolver.GetComponent<BoxCollider>();
+                    CollideMesh(collider, collisionForce, true);
+                /*}
+                else {
+                    throw new System.Exception("well, fuck");
+                }*/
+                collisionResolver.transform.position = new Vector3(0, 10000, 0);
+            }
+            else {
+                CollideMesh(collision.collider, collisionForce, true);
+            }
+        }
     }
 
     public void CollideMesh(Collider collider, Vector3 collisionForce, bool addNoise) {
+        
+
         List<VertexGroup> moved = new List<VertexGroup>();
 
         //  Make a queue (it breadth first traversal time)
@@ -204,5 +227,6 @@ public class Squishing : MonoBehaviour
         mesh.RecalculateNormals();
 
         meshCollider.sharedMesh = mesh;
+
     }
 }
