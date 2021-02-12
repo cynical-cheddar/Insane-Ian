@@ -1,22 +1,26 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InterfaceCarDrive : MonoBehaviour, IDrivable {
+public class InterfaceController6 : MonoBehaviour, IDrivable {
+    // Start is called before the first frame update
 
     [Header("Wheel Colliders:")]
     public WheelCollider frontLeftW;
     public WheelCollider frontRightW;
-    public WheelCollider rearLeftW;
-    public WheelCollider rearRightW;
+    public WheelCollider rearLeft1W;
+    public WheelCollider rearLeft2W;
+    public WheelCollider rearRight1W;
+    public WheelCollider rearRight2W;
     [Space(5)]
 
     [Header("Wheel Geometry Transforms")]
     public Transform frontLeftT;
     public Transform frontRightT;
-    public Transform rearLeftT;
-    public Transform rearRightT;
+    public Transform rearLeft1T;
+    public Transform rearLeft2T;
+    public Transform rearRight1T;
+    public Transform rearRight2T;
     [Space(5)]
 
     [Header("Main Car")]
@@ -25,7 +29,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     [Space(5)]
 
     [Header("Force Parameters")]
-    [Range(12,35)]
+    [Range(12, 35)]
     public float maxSteerAngle = 20;
     [Range(1000, 10000)]
     public float motorTorque = 4000;
@@ -35,7 +39,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     public float brakeForce = 16000;
     [Range(0, 5)]
     public float steerRate = 1.0f;
-    [Range(0.01f,0.5f)]
+    [Range(0.01f, 0.5f)]
     public float steerRateCoefficent = 0.05f;
     public Vector3 addedDownforce;
 
@@ -83,19 +87,23 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.Accellerate() {
-        
+
         //frontLeftW.motorTorque = motorTorque;
         //frontRightW.motorTorque = motorTorque;
-        rearLeftW.motorTorque = motorTorque;
-        rearRightW.motorTorque = motorTorque;
-        
+        rearLeft1W.motorTorque  = motorTorque;
+        rearLeft2W.motorTorque  = motorTorque;
+        rearRight1W.motorTorque = motorTorque;
+        rearRight2W.motorTorque = motorTorque;
+
     }
     void IDrivable.Reverse() {
 
         //frontLeftW.motorTorque = motorTorque;
         //frontRightW.motorTorque = motorTorque;
-        rearLeftW.motorTorque = -motorTorque;
-        rearRightW.motorTorque = -motorTorque;
+        rearLeft1W.motorTorque  = -motorTorque;
+        rearLeft2W.motorTorque  = -motorTorque;
+        rearRight1W.motorTorque = -motorTorque; 
+        rearRight2W.motorTorque = -motorTorque;
 
 
     }
@@ -103,8 +111,10 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     void IDrivable.Brake() {
         //frontLeftW.brakeTorque = brakeTorque;
         //frontRightW.brakeTorque = brakeTorque;
-        rearLeftW.brakeTorque = brakeTorque;
-        rearRightW.brakeTorque = brakeTorque;
+        rearLeft1W.brakeTorque  = brakeTorque;
+        rearLeft2W.brakeTorque  = brakeTorque;
+        rearRight1W.brakeTorque = brakeTorque; 
+        rearRight2W.brakeTorque = brakeTorque;
         if (AllWheelsGrounded()) {
             if (transform.InverseTransformDirection(carRB.velocity).z < 0) {
                 carRB.AddForce(carTransform.forward * brakeForce);
@@ -116,7 +126,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     private bool AllWheelsGrounded() {
-        if (frontLeftW.isGrounded & frontRightW.isGrounded & rearLeftW.isGrounded & rearRightW.isGrounded) {
+        if (frontLeftW.isGrounded & frontRightW.isGrounded & rearLeft1W.isGrounded & rearRight1W.isGrounded & rearLeft2W.isGrounded & rearRight2W.isGrounded) {
             return true;
         } else return false;
     }
@@ -124,8 +134,10 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     void IDrivable.UpdateWheelPoses() {
         UpdateWheelPose(frontLeftW, frontLeftT, true);
         UpdateWheelPose(frontRightW, frontRightT, false);
-        UpdateWheelPose(rearLeftW, rearLeftT, true);
-        UpdateWheelPose(rearRightW, rearRightT, false);
+        UpdateWheelPose(rearLeft1W, rearLeft1T, true);
+        UpdateWheelPose(rearLeft2W, rearLeft2T, true);
+        UpdateWheelPose(rearRight1W, rearRight1T, false);
+        UpdateWheelPose(rearRight2W, rearRight2T, false);
     }
 
     private void UpdateWheelPose(WheelCollider collider, Transform transform, bool flip) {
@@ -142,18 +154,22 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.StopAccellerate() {
-        frontLeftW.motorTorque = 0;
+        frontLeftW.motorTorque  = 0;
         frontRightW.motorTorque = 0;
-        rearLeftW.motorTorque = 0;
-        rearRightW.motorTorque = 0;
+        rearLeft1W.motorTorque  = 0;
+        rearLeft2W.motorTorque  = 0;
+        rearRight1W.motorTorque = 0;
+        rearRight2W.motorTorque = 0;
 
     }
 
     void IDrivable.StopBrake() {
-        frontLeftW.brakeTorque = 0;
+        frontLeftW.brakeTorque  = 0;
         frontRightW.brakeTorque = 0;
-        rearLeftW.brakeTorque = 0;
-        rearRightW.brakeTorque = 0;
+        rearLeft1W.brakeTorque  = 0;
+        rearLeft2W.brakeTorque  = 0;
+        rearRight1W.brakeTorque = 0;
+        rearRight2W.brakeTorque = 0;
 
     }
 
@@ -161,4 +177,3 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         ((IDrivable)this).Steer(0);
     }
 }
-
