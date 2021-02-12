@@ -54,7 +54,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public void startGame() {
         spawnPlayers();
-        timer.hostStartTimer(300);
+        timer.hostStartTimer();
     }
 
     // spawn each player pair at a respective spawnpoint
