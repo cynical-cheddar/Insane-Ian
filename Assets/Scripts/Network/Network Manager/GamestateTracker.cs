@@ -41,27 +41,29 @@ public class GamestateTracker : MonoBehaviour
         public string character;
         public int teamId;
         public bool isBot;
-        public string vehiclePrefabName;
+        
         
         public PlayerDetails(string n, string r, string c, int t, bool b, string v)
         {
             nickName = n; role = r; character = c; teamId = t;
             isBot = b;
-            vehiclePrefabName = v;
+            
         }
     }
     
     [Serializable]
     public struct TeamDetails {
-        public int teamID, kills, deaths, assists;
+        public int teamId, kills, deaths, assists;
         public bool isDead;
+        public string vehiclePrefabName;
 
         public TeamDetails(int id) {
-            teamID = id;
+            teamId = id;
             kills = 0;
             deaths = 0;
             assists = 0;
             isDead = false;
+            vehiclePrefabName = null;
         }
 
     }
@@ -130,7 +132,6 @@ public class GamestateTracker : MonoBehaviour
         bd.nickName = nickName;
         bd.character = "null";
         bd.role = "null";
-        bd.vehiclePrefabName = "null";
         bd.teamId = 0;
         bd.isBot = false;
         return bd;
@@ -154,7 +155,6 @@ public class GamestateTracker : MonoBehaviour
         bd.role = "null";
         bd.teamId = 0;
         bd.isBot = true;
-        bd.vehiclePrefabName = "null";
         
         return bd;
     }
@@ -185,7 +185,6 @@ public class GamestateTracker : MonoBehaviour
         bd.character = "null";
         bd.role = "null";
         bd.teamId = 0;
-        bd.vehiclePrefabName = "null";
         
         return bd;
     }
@@ -209,7 +208,7 @@ public class GamestateTracker : MonoBehaviour
     public TeamDetails getTeamDetails(int teamId) {
         TeamDetails td = new TeamDetails();
         foreach (TeamDetails record in schema.teamsList) {
-            if (record.teamID.Equals(teamId)) {
+            if (record.teamId.Equals(teamId)) {
                 return record;
             }
         }
@@ -355,7 +354,7 @@ public class GamestateTracker : MonoBehaviour
         bool found = false;
         TeamDetails oldRecord = schema.teamsList[0];
         foreach (TeamDetails record in schema.teamsList) {
-            if (record.teamID.Equals(teamId)) {
+            if (record.teamId.Equals(teamId)) {
                 found = true;
                 oldRecord = record;
             }

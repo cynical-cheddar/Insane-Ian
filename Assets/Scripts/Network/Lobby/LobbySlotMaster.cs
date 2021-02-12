@@ -45,7 +45,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     public void UpdateMapName(string sceneName, string sceneDisplayName)
     {
         selectedMap = sceneName;
-        selectedMapDisplayName = selectedMapDisplayName;
+        selectedMapDisplayName = sceneDisplayName;
     }
     [PunRPC]
     public void changeSelectedPlayers(int amt)

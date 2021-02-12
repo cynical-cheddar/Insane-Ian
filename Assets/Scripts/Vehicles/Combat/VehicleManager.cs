@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VehicleStats : MonoBehaviour
+public class VehicleManager : MonoBehaviour
 {
     GamestateTracker gamestateTracker;
+    NetworkManager networkManager;
+    Rigidbody rb;
+    InterfaceCarDrive icd;
+    InputDriver inputDriver;
+    IDrivable carDriver;
     public int teamId;
     public float health = 100f;
     float maxHealth;
@@ -12,7 +17,12 @@ public class VehicleStats : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
+        networkManager = FindObjectOfType<NetworkManager>();
         maxHealth = health;
+        rb = GetComponent<Rigidbody>();
+        icd = GetComponent<InterfaceCarDrive>();
+        carDriver = icd.GetComponent<IDrivable>();
+        inputDriver = GetComponent<InputDriver>();
     }
 
     // Update is called once per frame
@@ -30,21 +40,25 @@ public class VehicleStats : MonoBehaviour
     }
 
     void die() {
+        // Update gamestate
         GamestateTracker.TeamDetails record = gamestateTracker.getTeamDetails(teamId);
         record.deaths += 1;
         record.isDead = true;
         gamestateTracker.UpdateTeamWithNewRecord(teamId, JsonUtility.ToJson(record));
-        StartCoroutine(respawn(3f, transform));
+
+        StartCoroutine(networkManager.respawnVehicle(3f, teamId));
+        inputDriver.enabled = false;
+        rb.drag = 0.75f;
+        rb.angularDrag = 0.75f;
+        StartCoroutine(stopControls(3f));
     }
 
-    IEnumerator respawn(float time, Transform respawnLocation) {
+    IEnumerator stopControls(float time) {
+        // Wait for respawn time
         yield return new WaitForSecondsRealtime(time);
-        GamestateTracker.TeamDetails record = gamestateTracker.getTeamDetails(teamId);
-        record.isDead = false;
-        health = maxHealth;
-        transform.position = respawnLocation.position;
-        transform.rotation = respawnLocation.rotation;
-        gamestateTracker.UpdateTeamWithNewRecord(teamId, JsonUtility.ToJson(record));
+        carDriver.StopAccellerate();
+        carDriver.StopBrake();
+        carDriver.StopSteer();
     }
 
 }

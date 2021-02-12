@@ -20,7 +20,7 @@ public class ScoreboardBehaviour : MonoBehaviour
         string scoreboardDetails = "";
         foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList) {
             int score = team.kills * killValue + team.deaths * deathValue + team.assists * assistValue;
-            scoreboardDetails += $"Team {team.teamID} -- Score: {score} -- K/D/A: {team.kills}/{team.deaths}/{team.assists} \n";
+            scoreboardDetails += $"Team {team.teamId} -- Score: {score} -- K/D/A: {team.kills}/{team.deaths}/{team.assists} \n";
         }
         scoreboardText.text = scoreboardDetails;
     }

@@ -23,7 +23,7 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
     void populateOptions() {
         List<string> options = new List<string>();
         foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList) {
-            options.Add(team.teamID.ToString());
+            options.Add(team.teamId.ToString());
         }
         playerChoice.AddOptions(options);
     }
@@ -39,7 +39,7 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
             team.assists += int.Parse(value.text);
         }
 
-        gamestateTracker.UpdateTeamWithNewRecord(team.teamID, JsonUtility.ToJson(team));
+        gamestateTracker.UpdateTeamWithNewRecord(team.teamId, JsonUtility.ToJson(team));
     }
 
     public void EndGame() {
@@ -49,8 +49,8 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
     public void damageVehicle() {
         int teamId = 1;
         float amount = 25f;
-        VehicleStats[] vehicles = FindObjectsOfType<VehicleStats>();
-        foreach (VehicleStats vehicle in vehicles) {
+        VehicleManager[] vehicles = FindObjectsOfType<VehicleManager>();
+        foreach (VehicleManager vehicle in vehicles) {
             if (teamId == vehicle.teamId) {
                 vehicle.takeDamage(amount);
             }

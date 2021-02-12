@@ -76,16 +76,16 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
     [PunRPC]
     public void AssignPairDetailsToVehicle(string serializedPlayer1, string serializedPlayer2)
     {
-        Debug.Log("GOT HERE -2");
+        //Debug.Log("GOT HERE -2");
         GamestateTracker.PlayerDetails player1 =
             JsonUtility.FromJson <GamestateTracker.PlayerDetails>(serializedPlayer1);
         GamestateTracker.PlayerDetails player2 =
             JsonUtility.FromJson <GamestateTracker.PlayerDetails>(serializedPlayer2);
-        Debug.Log("GOT HERE -1");
+        //Debug.Log("GOT HERE -1");
         GamestateTracker.PlayerDetails driverDetails = new GamestateTracker.PlayerDetails();
         GamestateTracker.PlayerDetails gunnerDetails = new GamestateTracker.PlayerDetails();
-        Debug.Log(serializedPlayer1);
-        Debug.Log(serializedPlayer2);
+        //Debug.Log(serializedPlayer1);
+        //Debug.Log(serializedPlayer2);
         if (player1.role == "Driver")
         {
             driverDetails = player1;
@@ -111,17 +111,17 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         
         // check if the driver is a human or a bot
         if (driverDetails.isBot) botDriver = true;
-        Debug.Log("GOT HERE 0");
+        //Debug.Log("GOT HERE 0");
         // if they are a bot, then get the MASTER CLIENT to turn on ai controls
         if (botDriver && PhotonNetwork.IsMasterClient)EnableMonobehaviours(aiDriverScripts);
         // otherwise, find the driver player by their nickname. Tell their client to turn on player driver controls
-        Debug.Log("My local name is " + PhotonNetwork.LocalPlayer.NickName);
+        //Debug.Log("My local name is " + PhotonNetwork.LocalPlayer.NickName);
         if(PhotonNetwork.LocalPlayer.NickName == driverDetails.nickName) EnableMonobehaviours(playerDriverScripts);
-        Debug.Log("GOT HERE");
+        //Debug.Log("GOT HERE");
         // Do the same again for the gunner
         if (gunnerDetails.isBot) botGunner = true;
         if (botGunner && PhotonNetwork.IsMasterClient)EnableMonobehaviours(aiGunnerScripts);
-        if(PhotonNetwork.LocalPlayer.NickName == gunnerDetails.nickName){ EnableMonobehaviours(playerGunnerScripts); Debug.Log("enabling playerGunnerScripts");}
-        Debug.Log("GOT HERE2");
+        if(PhotonNetwork.LocalPlayer.NickName == gunnerDetails.nickName) EnableMonobehaviours(playerGunnerScripts);
+        //Debug.Log("GOT HERE2");
     }
 }
