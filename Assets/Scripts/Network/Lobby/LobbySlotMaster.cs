@@ -229,7 +229,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             {
                 // get all info from lobby buttons and fill in the gametracker object
                 fillIncompleteTeamsWithBots();
-                gamestateTracker.ForceSynchronisePlayerList();
+                gamestateTracker.ForceSynchronisePlayerSchema();
                 Debug.Log("load new scene");
                 // delayed load just to make sure sync and for Jordan to check the network update. Remove in build
                 Invoke(nameof(delayedLoad), 2f);

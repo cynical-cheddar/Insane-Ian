@@ -22,27 +22,27 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
 
     void populateOptions() {
         List<string> options = new List<string>();
-        foreach (GamestateTracker.PlayerDetails playerDetails in gamestateTracker.schema.playerList) {
-            options.Add(playerDetails.nickName);
+        foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList) {
+            options.Add(team.teamID.ToString());
         }
         playerChoice.AddOptions(options);
     }
 
     public void updateValue() {
-        GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(playerChoice.captionText.text);
+        GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(int.Parse(playerChoice.captionText.text));
         
         if (statChoice.captionText.text == "Kills") {
-            playerDetails.kills += int.Parse(value.text);
-            playerDetails.score += 10 * int.Parse(value.text);
+            team.kills += int.Parse(value.text);
+            team.score += 10 * int.Parse(value.text);
         } else if (statChoice.captionText.text == "Deaths") {
-            playerDetails.deaths += int.Parse(value.text);
-            playerDetails.score -= 5 * int.Parse(value.text);
+            team.deaths += int.Parse(value.text);
+            team.score -= 5 * int.Parse(value.text);
         } else if (statChoice.captionText.text == "Assists") {
-            playerDetails.assists += int.Parse(value.text);
-            playerDetails.score += 5 * int.Parse(value.text);
+            team.assists += int.Parse(value.text);
+            team.score += 5 * int.Parse(value.text);
         }
 
-        gamestateTracker.UpdatePlayerWithNewRecord(playerChoice.captionText.text, JsonUtility.ToJson(playerDetails));
+        gamestateTracker.UpdateTeamWithNewRecord(team.teamID, JsonUtility.ToJson(team));
     }
 
     public void EndGame() {
