@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InterfaceCarDrive : MonoBehaviour, IDrivable {
-    // Start is called before the first frame update
 
     [Header("Wheel Colliders:")]
     public WheelCollider frontLeftW;
@@ -29,11 +28,11 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     [Range(12,35)]
     public float maxSteerAngle = 20;
     [Range(1000, 10000)]
-    public float motorTorque = 2000;
+    public float motorTorque = 4000;
     [Range(2000, 20000)]
     public float brakeTorque = 4000;
-    [Range(2000, 30000)]
-    public float brakeForce = 20000;
+    [Range(0, 30000)]
+    public float brakeForce = 16000;
     [Range(0, 5)]
     public float steerRate = 1.0f;
     [Range(0.01f,0.5f)]
@@ -106,8 +105,20 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         //frontRightW.brakeTorque = brakeTorque;
         rearLeftW.brakeTorque = brakeTorque;
         rearRightW.brakeTorque = brakeTorque;
-        carRB.AddForce(carTransform.forward * -brakeForce);
+        if (AllWheelsGrounded()) {
+            if (transform.InverseTransformDirection(carRB.velocity).z < 0) {
+                carRB.AddForce(carTransform.forward * brakeForce);
+            } else {
+                carRB.AddForce(carTransform.forward * -brakeForce);
+            }
+        }
 
+    }
+
+    private bool AllWheelsGrounded() {
+        if (frontLeftW.isGrounded & frontRightW.isGrounded & rearLeftW.isGrounded & rearRightW.isGrounded) {
+            return true;
+        } else return false;
     }
 
     void IDrivable.UpdateWheelPoses() {
