@@ -122,7 +122,9 @@ public class Squishing : MonoBehaviour
 
     //  This breaks if this is on a kinematic object (big sad)
     private void OnCollisionEnter(Collision collision) {
+        Vector3 collisionNormal = collision.GetContact(0).normal;
         Vector3 collisionForce = collision.impulse;
+        if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
         collisionForce /= Time.fixedDeltaTime;
         collisionForce /= collisionResistance;
         collisionForce = transform.InverseTransformDirection(collisionForce);
@@ -226,7 +228,7 @@ public class Squishing : MonoBehaviour
         mesh.vertices = vertices.ToArray();
         mesh.RecalculateNormals();
 
-        meshCollider.sharedMesh = mesh;
+        //meshCollider.sharedMesh = mesh;
 
     }
 }
