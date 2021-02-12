@@ -33,13 +33,10 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
         
         if (statChoice.captionText.text == "Kills") {
             team.kills += int.Parse(value.text);
-            team.score += 10 * int.Parse(value.text);
         } else if (statChoice.captionText.text == "Deaths") {
             team.deaths += int.Parse(value.text);
-            team.score -= 5 * int.Parse(value.text);
         } else if (statChoice.captionText.text == "Assists") {
             team.assists += int.Parse(value.text);
-            team.score += 5 * int.Parse(value.text);
         }
 
         gamestateTracker.UpdateTeamWithNewRecord(team.teamID, JsonUtility.ToJson(team));
@@ -47,6 +44,17 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
 
     public void EndGame() {
         PhotonNetwork.LoadLevel("GameOver");
+    }
+
+    public void damageVehicle() {
+        int teamId = 1;
+        float amount = 25f;
+        VehicleStats[] vehicles = FindObjectsOfType<VehicleStats>();
+        foreach (VehicleStats vehicle in vehicles) {
+            if (teamId == vehicle.teamId) {
+                vehicle.takeDamage(amount);
+            }
+        }
     }
 
 }

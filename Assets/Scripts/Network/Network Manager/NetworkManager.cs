@@ -23,7 +23,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
-        startGame();
+        StartGame();
     }
 
     void Update()
@@ -52,9 +52,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
     }
     
-    public void startGame() {
-        spawnPlayers();
-        timer.hostStartTimer(300);
+    public void StartGame() {
+        SynchroniseSchemaBeforeSpawn();
+        timer.hostStartTimer();
     }
 
     // spawn each player pair at a respective spawnpoint
@@ -65,14 +65,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // instantiate the gunner attached to the vehicle for each of them (gunner character)
     
     // only to be called by the master client when we can be sure that everyone has loaded into the game
-    public void spawnPlayers()
+    public void SynchroniseSchemaBeforeSpawn()
     {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>(); 
         gamestateTracker.ForceSynchronisePlayerSchema();
-        Invoke(nameof(actuallySpawn), 2f);
+        Invoke(nameof(SpawnPlayers), 2f);
     }
 
-    void actuallySpawn()
+    void SpawnPlayers()
     { 
         
         if (PhotonNetwork.IsMasterClient)
@@ -91,7 +91,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
                 GameObject vehicle = new GameObject();
-                Transform sp = spawnPoints[Random.Range(0, spawnPoints.Count - 1)];
+                Transform sp;
+                if (playersPair[0].teamId > spawnPoints.Count) {
+                    sp = spawnPoints[0];
+                } else {
+                    sp = spawnPoints[playersPair[0].teamId - 1];
+                }
                 if (!(playersPair[0].vehiclePrefabName == "null" || playersPair[0].vehiclePrefabName == null ||
                       playersPair[0].vehiclePrefabName == ""))
                     vehicle = PhotonNetwork.Instantiate(playersPair[0].vehiclePrefabName, sp.position, sp.rotation);

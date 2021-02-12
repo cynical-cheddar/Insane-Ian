@@ -53,15 +53,17 @@ public class GamestateTracker : MonoBehaviour
     
     [Serializable]
     public struct TeamDetails {
-        public int teamID, score, kills, deaths, assists;
+        public int teamID, kills, deaths, assists;
+        public bool isDead;
 
         public TeamDetails(int id) {
             teamID = id;
-            score = 0;
             kills = 0;
             deaths = 0;
             assists = 0;
+            isDead = false;
         }
+
     }
 
     [Serializable]
