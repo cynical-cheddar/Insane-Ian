@@ -15,10 +15,10 @@ public class PlinthManager : MonoBehaviour
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         topThreePlayerPairs = new List<List<GamestateTracker.PlayerDetails>>();
         // Wait for the host to finish loading first
-        Invoke("updatePlinths", 0.1f);
+        //Invoke("updatePlinths", 0.1f);
     }
-
-    void calculateTopThreePlayerPairs() {
+    /*
+    void calculateTopThreeTeams() {
         List<List<GamestateTracker.PlayerDetails>> sortedPlayerPairs = playerPairs;
         sortedPlayerPairs.Sort((x, y) => (x[0].score + x[1].score).CompareTo(y[0].score + y[1].score));
         topThreePlayerPairs.Add(sortedPlayerPairs[0]);
@@ -28,9 +28,9 @@ public class PlinthManager : MonoBehaviour
 
     void updatePlinths() {
         playerPairs = gamestateTracker.GetPlayerPairs();
-        calculateTopThreePlayerPairs();
+        calculateTopThreeTeams();
         plinthTexts[0].text = $"Team {topThreePlayerPairs[0][0].teamId}";
         if (topThreePlayerPairs.Count > 1) plinthTexts[1].text = $"Team {topThreePlayerPairs[1][0].teamId}";
         if (topThreePlayerPairs.Count > 2) plinthTexts[2].text = $"Team {topThreePlayerPairs[2][0].teamId}";
-    }
+    }*/
 }
