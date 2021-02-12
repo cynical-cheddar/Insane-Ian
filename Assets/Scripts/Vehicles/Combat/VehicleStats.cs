@@ -45,7 +45,6 @@ public class VehicleStats : MonoBehaviour
         transform.position = respawnLocation.position;
         transform.rotation = respawnLocation.rotation;
         gamestateTracker.UpdateTeamWithNewRecord(teamId, JsonUtility.ToJson(record));
-        Debug.Log("Respawned!!!");
     }
 
 }
