@@ -7,6 +7,7 @@ public class ScoreboardBehaviour : MonoBehaviour
 {
     public Text scoreboardText;
     GamestateTracker gamestateTracker;
+    public int killValue, deathValue, assistValue;
 
     // Start is called before the first frame update
     void Start() {
@@ -18,7 +19,8 @@ public class ScoreboardBehaviour : MonoBehaviour
     public void updateScores() {
         string scoreboardDetails = "";
         foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList) {
-            scoreboardDetails += $"Team {team.teamID} -- Score: {team.score} -- K/D/A: {team.kills}/{team.deaths}/{team.assists} \n";
+            int score = team.kills * killValue + team.deaths * deathValue + team.assists * assistValue;
+            scoreboardDetails += $"Team {team.teamId} -- Score: {score} -- K/D/A: {team.kills}/{team.deaths}/{team.assists} \n";
         }
         scoreboardText.text = scoreboardDetails;
     }

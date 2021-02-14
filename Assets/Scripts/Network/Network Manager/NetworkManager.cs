@@ -23,7 +23,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
-        startGame();
+        StartGame();
     }
 
     void Update()
@@ -52,9 +52,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
     }
     
-    public void startGame() {
-        spawnPlayers();
-        timer.hostStartTimer(300);
+    public void StartGame() {
+        SynchroniseSchemaBeforeSpawn();
+        timer.hostStartTimer();
     }
 
     // spawn each player pair at a respective spawnpoint
@@ -65,21 +65,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // instantiate the gunner attached to the vehicle for each of them (gunner character)
     
     // only to be called by the master client when we can be sure that everyone has loaded into the game
-    public void spawnPlayers()
+    public void SynchroniseSchemaBeforeSpawn()
     {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>(); 
         gamestateTracker.ForceSynchronisePlayerSchema();
-        Invoke(nameof(actuallySpawn), 2f);
+        Invoke(nameof(SpawnPlayers), 2f);
     }
 
-    void actuallySpawn()
+    void SpawnPlayers()
     { 
         
         if (PhotonNetwork.IsMasterClient)
         {
-            GamestateTracker tracker = FindObjectOfType<GamestateTracker>();
-            List<GamestateTracker.PlayerDetails> playerDetailsList = tracker.schema.playerList;
-            List<List<GamestateTracker.PlayerDetails>> playerDetailsPairs = tracker.GetPlayerPairs();
+            GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+            List<GamestateTracker.PlayerDetails> playerDetailsList = gamestateTracker.schema.playerList;
+            List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
             
             
             // players should have already had their teams validated through the lobby screen
@@ -87,34 +87,70 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 
             // we now have a list of the players in each team
-            foreach (List<GamestateTracker.PlayerDetails> playersPair in playerDetailsPairs)
+            foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList)
             {
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
                 GameObject vehicle = new GameObject();
-                Transform sp = spawnPoints[Random.Range(0, spawnPoints.Count - 1)];
-                if (!(playersPair[0].vehiclePrefabName == "null" || playersPair[0].vehiclePrefabName == null ||
-                      playersPair[0].vehiclePrefabName == ""))
-                    vehicle = PhotonNetwork.Instantiate(playersPair[0].vehiclePrefabName, sp.position, sp.rotation);
+                Transform sp;
+                if (team.teamId > spawnPoints.Count) {
+                    sp = spawnPoints[0];
+                } else {
+                    sp = spawnPoints[team.teamId - 1];
+                }
+                if (!(team.vehiclePrefabName == "null" || team.vehiclePrefabName == null ||
+                      team.vehiclePrefabName == ""))
+                    vehicle = PhotonNetwork.Instantiate(team.vehiclePrefabName, sp.position, sp.rotation);
                 else vehicle = PhotonNetwork.Instantiate(defaultPlayerVehiclePrefabName, sp.position, sp.rotation);
-
+                vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
                 // on the testing truck, get the vehicle network controller script and set the pair details
                 // when this is assigned, a method on the vehicle's script will enable/disable the appropriate scripts
                 // it takes the player pair as an argument
                 // the method is called AssignPairDetailsToVehicle(string serializedJson);
-                Debug.Log("serialized pair size" + playersPair.Count.ToString());
-                string serializedPlayer1 = JsonUtility.ToJson(playersPair[0]);
-                Debug.Log("serialized 1: " + serializedPlayer1);
-                string serializedPlayer2 = JsonUtility.ToJson(playersPair[1]);
-                Debug.Log("serialized 2: " + serializedPlayer2);
-                vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.AssignPairDetailsToVehicle),
-                    RpcTarget.AllBufferedViaServer, serializedPlayer1, serializedPlayer2);
-
-
+                //Debug.Log("serialized pair size" + playersPair.Count.ToString());
+                foreach (List<GamestateTracker.PlayerDetails> playerPair in playerPairs) {
+                    if (playerPair[0].teamId == team.teamId) {
+                        string serializedPlayer1 = JsonUtility.ToJson(playerPair[0]);
+                        //Debug.Log("serialized 1: " + serializedPlayer1);
+                        string serializedPlayer2 = JsonUtility.ToJson(playerPair[1]);
+                        //Debug.Log("serialized 2: " + serializedPlayer2);
+                        vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.AssignPairDetailsToVehicle),
+                            RpcTarget.AllBufferedViaServer, serializedPlayer1, serializedPlayer2);
+                        break;
+                    }
+                }
             }
         }
     }
-    
 
+    public IEnumerator respawnVehicle(float time, int teamId) {
+        Debug.Log("Respawn started.");
+        yield return new WaitForSecondsRealtime(time);
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+        List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
+        GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(teamId);
+        GameObject vehicle = new GameObject();
+        Transform sp;
+        if (teamId > spawnPoints.Count) {
+            sp = spawnPoints[0];
+        } else {
+            sp = spawnPoints[teamId - 1];
+        }
+        if (!(team.vehiclePrefabName == "null" || team.vehiclePrefabName == null ||
+              team.vehiclePrefabName == ""))
+            vehicle = PhotonNetwork.Instantiate(team.vehiclePrefabName, sp.position, sp.rotation);
+        else vehicle = PhotonNetwork.Instantiate(defaultPlayerVehiclePrefabName, sp.position, sp.rotation);
+
+        foreach (List<GamestateTracker.PlayerDetails> playerPair in playerPairs) {
+            if (playerPair[0].teamId == team.teamId) {
+                string serializedPlayer1 = JsonUtility.ToJson(playerPair[0]);
+                string serializedPlayer2 = JsonUtility.ToJson(playerPair[1]);
+                vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.AssignPairDetailsToVehicle),
+                    RpcTarget.AllBufferedViaServer, serializedPlayer1, serializedPlayer2);
+                break;
+            }
+        }
+        Debug.Log("Respawn complete.");
+    }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
