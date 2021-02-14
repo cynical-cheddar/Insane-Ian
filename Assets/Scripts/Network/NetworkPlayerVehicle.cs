@@ -21,7 +21,9 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
     public bool botGunner = false;
 
     private string driverNickName = "null";
+    private int driverId = 0;
     private string gunnerNickName = "null";
+    private int gunnerId = 0;
 
     private GamestateTracker gamestateTracker;
     
@@ -98,7 +100,9 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         }
 
         driverNickName = driverDetails.nickName;
+        driverId = driverDetails.playerId;
         gunnerNickName = gunnerDetails.nickName;
+        gunnerId = gunnerDetails.playerId;
         
         // firstly, if the gunner is a human, transfer the photonview ownership to the player's client
         
@@ -116,12 +120,12 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         if (botDriver && PhotonNetwork.IsMasterClient)EnableMonobehaviours(aiDriverScripts);
         // otherwise, find the driver player by their nickname. Tell their client to turn on player driver controls
         //Debug.Log("My local name is " + PhotonNetwork.LocalPlayer.NickName);
-        if(PhotonNetwork.LocalPlayer.NickName == driverDetails.nickName) EnableMonobehaviours(playerDriverScripts);
+        if(PhotonNetwork.LocalPlayer.ActorNumber == driverDetails.playerId) EnableMonobehaviours(playerDriverScripts);
         //Debug.Log("GOT HERE");
         // Do the same again for the gunner
         if (gunnerDetails.isBot) botGunner = true;
         if (botGunner && PhotonNetwork.IsMasterClient)EnableMonobehaviours(aiGunnerScripts);
-        if(PhotonNetwork.LocalPlayer.NickName == gunnerDetails.nickName) EnableMonobehaviours(playerGunnerScripts);
+        if(PhotonNetwork.LocalPlayer.ActorNumber == gunnerDetails.playerId) EnableMonobehaviours(playerGunnerScripts);
         //Debug.Log("GOT HERE2");
     }
 }

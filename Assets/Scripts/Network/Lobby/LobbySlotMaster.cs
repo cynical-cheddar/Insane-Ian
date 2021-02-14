@@ -84,7 +84,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            GamestateTracker.PlayerDetails pd = gamestateTracker.GenerateDefaultPlayerDetails(PhotonNetwork.LocalPlayer.NickName);
+            GamestateTracker.PlayerDetails pd = gamestateTracker.GenerateDefaultPlayerDetails(PhotonNetwork.LocalPlayer.NickName, PhotonNetwork.LocalPlayer.ActorNumber);
             
             gamestateTracker.GetComponent<PhotonView>().RPC("AddFirstPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));
         }
@@ -102,7 +102,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         {
             GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
             // define the new player record
-            GamestateTracker.PlayerDetails pd = gamestateTracker.GenerateDefaultPlayerDetails(newPlayer.NickName);
+            GamestateTracker.PlayerDetails pd = gamestateTracker.GenerateDefaultPlayerDetails(newPlayer.NickName, newPlayer.ActorNumber);
             gamestateTracker.GetComponent<PhotonView>().RPC("AddPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));
         }
     }
@@ -136,12 +136,12 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 if (pd.role == "Gunner")
                 {
                     // call this botSelectGunner()
-                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectGunner", RpcTarget.All, pd.nickName);
+                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectGunner", RpcTarget.All, pd.playerId);
                 }
                 if (pd.role == "Driver")
                 {
                     // call this botSelectDriver()
-                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectDriver", RpcTarget.All, pd.nickName);
+                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectDriver", RpcTarget.All, pd.playerId);
                 }
             }
         }
@@ -195,7 +195,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             {
                 // define a new bot
                 GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
-                botDetails.nickName = "Bot: " + currentBotNumber.ToString();
+                //botDetails.nickName = "Bot: " + currentBotNumber.ToString();
                 botDetails.teamId = pair[0].teamId;
                 // check if the other player is a gunner or a driver
                 if (pair[0].role == "Gunner") botDetails.role = "Driver";
