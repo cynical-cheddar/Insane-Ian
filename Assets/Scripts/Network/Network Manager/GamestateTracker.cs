@@ -367,6 +367,25 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
         ForceSynchronisePlayerSchema();
     }
 
+    public void UpdateTeamWithNewRecord(int teamId, TeamDetails newDetails) {
+        bool found = false;
+        TeamDetails oldRecord = schema.teamsList[0];
+        foreach (TeamDetails record in schema.teamsList) {
+            if (record.teamId.Equals(teamId)) {
+                found = true;
+                oldRecord = record;
+            }
+        }
+        if (found) {
+            schema.teamsList.Remove(oldRecord);
+            schema.teamsList.Add(newDetails);
+        }
+        if (scoreboard != null) {
+            scoreboard.updateScores();
+        }
+        ForceSynchronisePlayerSchema();
+    }
+
     // JORDAN WILL DEPRECATE EVENTUALLY, DO NOT USE
     [PunRPC]
     public void UpdatePlayerRole(int id, string role)
@@ -479,6 +498,23 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
         }
 
         return playerDetailsPairs;
+    }
+
+    public PlayerDetails GetPlayerWithDetails(string nickname = null, int playerId = 0, string role = null, string character = null, int teamId = 0)
+    {
+        foreach (GamestateTracker.PlayerDetails record in schema.playerList)
+        {
+            if ((nickname  == null || record.nickName  == nickname)  &&
+                (playerId  == 0    || record.playerId  == playerId)  &&
+                (role      == null || record.role      == role)      &&
+                (character == null || record.character == character) &&
+                (teamId    == 0    || record.teamId    == teamId))
+            {
+                return record;
+            }
+        }
+
+        return new PlayerDetails();
     }
 
     
