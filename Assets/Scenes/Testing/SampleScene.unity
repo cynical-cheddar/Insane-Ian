@@ -174,6 +174,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreboardText: {fileID: 1229163756}
+  killValue: 0
+  deathValue: 0
+  assistValue: 0
 --- !u!850595691 &104873951
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -1223,7 +1226,7 @@ MonoBehaviour:
   timer: {fileID: 1406327163}
   version: 1.0
   roomName: room
-  defaultPlayerVehiclePrefabName: testingTruck
+  defaultPlayerVehiclePrefabName: VehiclePrefabs/testingTruck
 --- !u!224 &536706691
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3385,6 +3388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf7a1e308f820154dbc1443351d84d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialTime: 300
   timerText: {fileID: 325831390}
   timer:
     timeLeft: 0
