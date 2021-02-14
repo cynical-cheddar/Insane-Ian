@@ -9,7 +9,7 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GamestateTracker : MonoBehaviour
+public class GamestateTracker : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
     public List<string> destoryOnTheseLevels = new List<string>();
@@ -23,11 +23,13 @@ public class GamestateTracker : MonoBehaviour
     [Serializable]
     public struct PlayerSchema
     {
-        public  List<PlayerDetails> playerList;
+        public List<PlayerDetails> playerList;
+        public List<TeamDetails> teamsList;
 
-        public PlayerSchema(List<PlayerDetails> pdl)
+        public PlayerSchema(List<PlayerDetails> pdl, List<TeamDetails> tdl)
         {
             playerList = pdl;
+            teamsList = tdl;
         }
     }
     
@@ -35,24 +37,42 @@ public class GamestateTracker : MonoBehaviour
     public struct PlayerDetails
     {
         public string nickName;
+        public int playerId;
         public string role;
         public string character;
         public int teamId;
         public bool isBot;
-        public string vehiclePrefabName;
-        public int score, kills, deaths, assists;
-        public PlayerDetails(string n, string r, string c, int t, bool b, string v, int k, int d, int a, int s)
+        
+        
+        public PlayerDetails(string n, int p, string r, string c, int t, bool b, string v)
         {
-            nickName = n; role = r; character = c; teamId = t;
+            nickName = n;
+            playerId = p;
+            role = r;
+            character = c;
+            teamId = t;
             isBot = b;
-            vehiclePrefabName = v;
-            score = s;
-            kills = k;
-            deaths = d;
-            assists = a;
+            
         }
     }
     
+    [Serializable]
+    public struct TeamDetails {
+        public int teamId, kills, deaths, assists;
+        public bool isDead;
+        public string vehiclePrefabName;
+
+        public TeamDetails(int id) {
+            teamId = id;
+            kills = 0;
+            deaths = 0;
+            assists = 0;
+            isDead = false;
+            vehiclePrefabName = null;
+        }
+
+    }
+
     [Serializable]
     public struct MapDetails
     {
@@ -66,12 +86,12 @@ public class GamestateTracker : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
-        schema = new PlayerSchema(new List<PlayerDetails>());
+        schema = new PlayerSchema(new List<PlayerDetails>(), new List<TeamDetails>());
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
 
         if (PhotonNetwork.IsMasterClient)
         {
-            PlayerDetails firstPd = GenerateDefaultPlayerDetails("null");
+            PlayerDetails firstPd = GenerateDefaultPlayerDetails("null", PhotonNetwork.LocalPlayer.ActorNumber);
             string pdJson = JsonUtility.ToJson(firstPd);
             GetComponent<PhotonView>().RPC(nameof(AddPlayerToSchema), RpcTarget.AllViaServer, pdJson);
             
@@ -81,7 +101,9 @@ public class GamestateTracker : MonoBehaviour
     // returns a photonPlayer by looking up allplayers in room
     public Player GetPlayerFromDetails(PlayerDetails pd)
     {
-        Player[] players = PhotonNetwork.PlayerList;
+        return PhotonNetwork.CurrentRoom.GetPlayer(pd.playerId);
+
+        /*Player[] players = PhotonNetwork.PlayerList;
 
         foreach (Player p in players)
         {
@@ -91,7 +113,7 @@ public class GamestateTracker : MonoBehaviour
             }
         }
 
-        return null;
+        return null;*/
     }
 
 
@@ -111,13 +133,13 @@ public class GamestateTracker : MonoBehaviour
         }
     }
 
-    public PlayerDetails GenerateDefaultPlayerDetails(string nickName)
+    public PlayerDetails GenerateDefaultPlayerDetails(string nickName, int playerId)
     {
         PlayerDetails bd = new PlayerDetails();
         bd.nickName = nickName;
+        bd.playerId = playerId;
         bd.character = "null";
         bd.role = "null";
-        bd.vehiclePrefabName = "null";
         bd.teamId = 0;
         bd.isBot = false;
         return bd;
@@ -129,19 +151,20 @@ public class GamestateTracker : MonoBehaviour
         PlayerDetails bd = new PlayerDetails();
         
         // get the number of bots in the game
-        int botCount = 0;
-        foreach (PlayerDetails pd in schema.playerList)
-        {
-            if (pd.isBot) botCount++;
+        bd.playerId = -1;
+        for (int i = 0; i < schema.playerList.Count; i++) {
+            if (schema.playerList[i].isBot && bd.playerId == schema.playerList[i].playerId) {
+                bd.playerId--;
+                i = 0;
+            }
         }
 
-        bd.nickName = "Bot " + botCount.ToString();
+        bd.nickName = "Bot " + bd.playerId;
 
         bd.character = "null";
         bd.role = "null";
         bd.teamId = 0;
         bd.isBot = true;
-        bd.vehiclePrefabName = "null";
         
         return bd;
     }
@@ -158,39 +181,36 @@ public class GamestateTracker : MonoBehaviour
     }
     public PlayerDetails generateBotDetails(string nickName)
     {
-        PlayerDetails bd = new PlayerDetails();
-        
-        // get the number of bots in the game
-        int botCount = 0;
-        foreach (PlayerDetails pd in schema.playerList)
-        {
-            if (pd.nickName == nickName) botCount++;
-        }
-
-        bd.nickName = nickName + botCount.ToString();
-
-        bd.character = "null";
-        bd.role = "null";
-        bd.teamId = 0;
-        bd.vehiclePrefabName = "null";
+        PlayerDetails bd = generateBotDetails();
+        bd.nickName = nickName;
         
         return bd;
     }
     
     
-    public PlayerDetails getPlayerDetails(string p)
+    public PlayerDetails getPlayerDetails(int id)
     {
 
         PlayerDetails pd = new PlayerDetails();
         foreach (PlayerDetails record in schema.playerList)
         {
-            if (record.nickName.Equals(p))
+            if (record.playerId.Equals(id))
             {
                 return record;
             }
         }
 
         return pd;
+    }
+
+    public TeamDetails getTeamDetails(int teamId) {
+        TeamDetails td = new TeamDetails();
+        foreach (TeamDetails record in schema.teamsList) {
+            if (record.teamId.Equals(teamId)) {
+                return record;
+            }
+        }
+        return td;
     }
 
     [PunRPC]
@@ -213,13 +233,13 @@ public class GamestateTracker : MonoBehaviour
     
     
     [PunRPC]
-    public void RemovePlayerFromSchema(string p)
+    public void RemovePlayerFromSchema(int id)
     {
         PlayerDetails recordToRemove = new PlayerDetails();
         bool found = false;
         foreach (PlayerDetails record in schema.playerList)
         {
-            if (record.nickName.Equals(p))
+            if (record.playerId == id)
             {
                 found = true;
                 recordToRemove = record;
@@ -241,19 +261,17 @@ public class GamestateTracker : MonoBehaviour
     // this is network costly so we do not buffer it.
     // may deprecate older ways of doing things, such as RPC calls to gamestate tracker
     // Called to double check that everyone is synchronised correctly
-    public void ForceSynchronisePlayerList()
+    public void ForceSynchronisePlayerSchema()
     {
         if (PhotonNetwork.IsMasterClient)
         {
             // get the whole schema and convert it to a json
             string schemaJson = JsonUtility.ToJson(schema);
-            Debug.Log("playerListJSON = " + schemaJson);
+            //Debug.Log("playerListJSON = " + schemaJson);
             GetComponent<PhotonView>().RPC(nameof(UpdatePlayerListFromMasterClient), RpcTarget.All, schemaJson);
         }
     }
-    
-    
-    
+
     // received by non master clients. Updates player list to the true version
 
     [PunRPC]
@@ -268,7 +286,7 @@ public class GamestateTracker : MonoBehaviour
     {
         PlayerDetails pd = JsonUtility.FromJson<PlayerDetails>(serialisedPlayerDetails);
         schema.playerList.Add(pd);
-        ForceSynchronisePlayerList();
+        ForceSynchronisePlayerSchema();
     }
     
     [PunRPC]
@@ -276,9 +294,9 @@ public class GamestateTracker : MonoBehaviour
     {
         
         PlayerDetails pd = JsonUtility.FromJson<PlayerDetails>(serialisedPlayerDetails);
-        Debug.Log("adding player to schema: " + pd.nickName + " " + pd.role + " " + pd.teamId.ToString() + " bot status: " + pd.isBot.ToString());
+        Debug.Log("adding player to schema: " + pd.nickName + " " + pd.playerId + " " + pd.role + " " + pd.teamId.ToString() + " bot status: " + pd.isBot.ToString());
         schema.playerList.Add(pd);
-        ForceSynchronisePlayerList();
+        ForceSynchronisePlayerSchema();
     }
 
     public bool mayAddBotToSchema(PlayerDetails bd)
@@ -290,7 +308,7 @@ public class GamestateTracker : MonoBehaviour
         // if this is cool and good, then return true
         foreach (PlayerDetails pd in schema.playerList)
         {
-            if (pd.nickName == bd.nickName) passed = false;
+            if (pd.playerId == bd.playerId) passed = false;
             if (pd.role == bd.role && pd.teamId == bd.teamId) passed = false;
         }
 
@@ -306,14 +324,14 @@ public class GamestateTracker : MonoBehaviour
     
     // preferred method
     [PunRPC]
-    public void UpdatePlayerWithNewRecord(string p, string newDetailsSerialized)
+    public void UpdatePlayerWithNewRecord(int id, string newDetailsSerialized)
     {
         PlayerDetails newRecord = JsonUtility.FromJson<PlayerDetails>(newDetailsSerialized);
         bool found = false;
-        PlayerDetails oldRecord= schema.playerList[0];
+        PlayerDetails oldRecord = schema.playerList[0];
         foreach (PlayerDetails record in schema.playerList)
         {
-            if (record.nickName.Equals(p))
+            if (record.playerId == id)
             {
                 found = true;
                 oldRecord = record;
@@ -325,21 +343,40 @@ public class GamestateTracker : MonoBehaviour
             schema.playerList.Remove(oldRecord);
             schema.playerList.Add(newRecord);
         }
+        ForceSynchronisePlayerSchema();
+    }
+
+    [PunRPC]
+    public void UpdateTeamWithNewRecord(int teamId, string newDetailsSerialized) {
+        TeamDetails newRecord = JsonUtility.FromJson<TeamDetails>(newDetailsSerialized);
+        bool found = false;
+        TeamDetails oldRecord = schema.teamsList[0];
+        foreach (TeamDetails record in schema.teamsList) {
+            if (record.teamId.Equals(teamId)) {
+                found = true;
+                oldRecord = record;
+            }
+        }
+        if (found) {
+            schema.teamsList.Remove(oldRecord);
+            schema.teamsList.Add(newRecord);
+        }
         if (scoreboard != null) {
             scoreboard.updateScores();
         }
-        ForceSynchronisePlayerList();
-        
+        ForceSynchronisePlayerSchema();
     }
+
+    // JORDAN WILL DEPRECATE EVENTUALLY, DO NOT USE
     [PunRPC]
-    public void UpdatePlayerRole(string p, string role)
+    public void UpdatePlayerRole(int id, string role)
     {
         bool found = false;
         PlayerDetails oldRecord= schema.playerList[0];
         PlayerDetails newRecord = schema.playerList[0];
         foreach (PlayerDetails record in schema.playerList)
         {
-            if (record.nickName.Equals(p))
+            if (record.playerId == id)
             {
                 found = true;
                 oldRecord = record;
@@ -353,17 +390,18 @@ public class GamestateTracker : MonoBehaviour
             schema.playerList.Remove(oldRecord);
             schema.playerList.Add(newRecord);
         }
-        ForceSynchronisePlayerList();
+        ForceSynchronisePlayerSchema();
     }
+    // JORDAN WILL DEPRECATE EVENTUALLY, DO NOT USE
     [PunRPC]
-    public void UpdatePlayerCharacter(string p, string character)
+    public void UpdatePlayerCharacter(int id, string character)
     {
         bool found = false;
         PlayerDetails oldRecord= schema.playerList[0];
         PlayerDetails newRecord = schema.playerList[0];
         foreach (PlayerDetails record in schema.playerList)
         {
-            if (record.nickName.Equals(p))
+            if (record.playerId == id)
             {
                 found = true;
                 oldRecord = record;
@@ -377,17 +415,18 @@ public class GamestateTracker : MonoBehaviour
             schema.playerList.Remove(oldRecord);
             schema.playerList.Add(newRecord);
         }
-        ForceSynchronisePlayerList();
+        ForceSynchronisePlayerSchema();
     }
+    // JORDAN WILL DEPRECATE EVENTUALLY, DO NOT USE
     [PunRPC]
-    public void UpdatePlayerTeam(string p, int team)
+    public void UpdatePlayerTeam(int id, int team)
     {
         bool found = false;
         PlayerDetails oldRecord= schema.playerList[0];
         PlayerDetails newRecord = schema.playerList[0];
         foreach (PlayerDetails record in schema.playerList)
         {
-            if (record.nickName.Equals(p))
+            if (record.playerId == id)
             {
                 found = true;
                 oldRecord = record;
@@ -401,7 +440,7 @@ public class GamestateTracker : MonoBehaviour
             schema.playerList.Remove(oldRecord);
             schema.playerList.Add(newRecord);
         }
-        ForceSynchronisePlayerList();
+        ForceSynchronisePlayerSchema();
     }
 
 
