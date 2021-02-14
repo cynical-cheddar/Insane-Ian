@@ -69,7 +69,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>(); 
         gamestateTracker.ForceSynchronisePlayerList();
-        Invoke(nameof(actuallySpawn), 2f);
+        Invoke(nameof(actuallySpawn), 0.5f);
     }
 
     void actuallySpawn()
@@ -108,8 +108,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 Debug.Log("serialized 2: " + serializedPlayer2);
                 vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.AssignPairDetailsToVehicle),
                     RpcTarget.AllBufferedViaServer, serializedPlayer1, serializedPlayer2);
-
-
             }
         }
     }

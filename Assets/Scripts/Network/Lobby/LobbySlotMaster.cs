@@ -207,6 +207,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 ForceUpdateLobbyButtonAddBot(botDetails);
             }   
         }
+        gamestateTracker.ForceSynchronisePlayerList();
     }
     
 
@@ -243,6 +244,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     void delayedLoad()
     {
+        gamestateTracker.ForceSynchronisePlayerList();
         PhotonNetwork.LoadLevel(loadingSceneName);
     }
 
