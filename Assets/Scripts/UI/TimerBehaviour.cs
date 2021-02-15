@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class TimerBehaviour : MonoBehaviour
 {
-
+    public float initialTime = 300;
     public Text timerText;
     [SerializeField] public Timer timer = new Timer();
 
@@ -26,10 +26,10 @@ public class TimerBehaviour : MonoBehaviour
     }
 
     // Time in seconds
-    public void hostStartTimer(float time) {
+    public void hostStartTimer() {
         if (PhotonNetwork.IsMasterClient) {
-            GetComponent<PhotonView>().RPC(nameof(setTimer), RpcTarget.AllBufferedViaServer, time);
-            StartCoroutine(nameof(syncTime));
+            GetComponent<PhotonView>().RPC(nameof(setTimer), RpcTarget.AllBufferedViaServer, initialTime);
+            StartCoroutine(syncTime());
         }
     }
 

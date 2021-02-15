@@ -284,11 +284,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.03
-    damper: 9328.005
+    spring: 58300.65
+    damper: 9328.1045
     targetPosition: 0.5
-  m_SuspensionDistance: 0.19620001
-  m_ForceAppPointDistance: 1.9363815
+  m_SuspensionDistance: 0.1962
+  m_ForceAppPointDistance: 1.9363822
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -394,7 +394,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5e5aaa0ee9a4ed240a3c38a87943b618, type: 2}
+  - {fileID: 2100000, guid: 7478c7a33cd7f456d868360af913fb77, type: 2}
   - {fileID: 2100000, guid: c6149a582aab26c41acb68a6a6855771, type: 2}
   - {fileID: 2100000, guid: 7144ce432a49daa45a1c70dab9769ffe, type: 2}
   - {fileID: 2100000, guid: 00742b481a47f124d85fddc8a77fdcc8, type: 2}
@@ -478,11 +478,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.96
-    damper: 14671.994
+    spring: 91699.75
+    damper: 14671.961
     targetPosition: 0.5
-  m_SuspensionDistance: 0.1962
-  m_ForceAppPointDistance: 1.9363815
+  m_SuspensionDistance: 0.19620003
+  m_ForceAppPointDistance: 1.9363822
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -547,9 +547,9 @@ GameObject:
   - component: {fileID: 3905643496873552232}
   - component: {fileID: 8073676156685063422}
   - component: {fileID: 6808530692672840039}
-  - component: {fileID: 2816914891932429244}
+  - component: {fileID: 8993467066786911323}
   m_Layer: 0
-  m_Name: testingTruck
+  m_Name: healthyTruck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -619,11 +619,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36ed7128051760b42bc56c15e5a6657d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxAngle: 50
-  maxTorque: 10000
+  maxAngle: 30
+  maxTorque: 3000
   brakeTorque: 30000
   wheelShape: {fileID: 1000010734295496, guid: 8a4e2f69ac0ecf242a1b727a7c204359, type: 3}
-  criticalSpeed: 8
+  criticalSpeed: 5
   stepsBelow: 5
   stepsAbove: 1
   driveType: 0
@@ -782,7 +782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ICD: {fileID: 8073676156685063422}
---- !u!114 &2816914891932429244
+--- !u!114 &8993467066786911323
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -837,11 +837,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.04
-    damper: 9328.007
+    spring: 58300.26
+    damper: 9328.042
     targetPosition: 0.5
-  m_SuspensionDistance: 0.1962
-  m_ForceAppPointDistance: 1.9363815
+  m_SuspensionDistance: 0.19619998
+  m_ForceAppPointDistance: 1.9363822
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -898,11 +898,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.96
-    damper: 14671.994
+    spring: 91699.36
+    damper: 14671.898
     targetPosition: 0.5
   m_SuspensionDistance: 0.19620001
-  m_ForceAppPointDistance: 1.9363815
+  m_ForceAppPointDistance: 1.9363822
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
