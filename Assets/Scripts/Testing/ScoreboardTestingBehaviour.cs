@@ -52,7 +52,8 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
         VehicleManager[] vehicles = FindObjectsOfType<VehicleManager>();
         foreach (VehicleManager vehicle in vehicles) {
             if (teamId == vehicle.teamId) {
-                vehicle.takeDamage(amount);
+
+                vehicle.TakeDamage(amount);
             }
         }
     }
