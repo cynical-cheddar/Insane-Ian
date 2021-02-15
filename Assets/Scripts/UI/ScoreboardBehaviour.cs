@@ -27,14 +27,8 @@ public class ScoreboardBehaviour : MonoBehaviour
 
     void toggleExpandedScoreboard() {
         scoreboardIsExpanded = !scoreboardIsExpanded;
-        if (scoreboardIsExpanded) {
-            for (int i = 1; i < teamPanels.Count; i++) {
-                teamPanels[i].gameObject.SetActive(true);
-            }
-        } else {
-            for (int i = 1; i < teamPanels.Count; i++) {
-                teamPanels[i].gameObject.SetActive(false);
-            }
+        for (int i = 1; i < teamPanels.Count; i++) {
+            teamPanels[i].gameObject.SetActive(scoreboardIsExpanded);
         }
         updateScores();
     }
