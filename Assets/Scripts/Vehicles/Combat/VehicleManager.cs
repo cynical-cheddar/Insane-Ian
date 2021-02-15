@@ -95,7 +95,7 @@ public class VehicleManager : MonoBehaviour
 
         PlayDeathTrailEffects(true);
 
-        StartCoroutine(networkManager.respawnVehicle(3f, teamId));
+        StartCoroutine(networkManager.RespawnVehicle(3f, teamId));
         inputDriver.enabled = false;
         rb.drag = 0.75f;
         rb.angularDrag = 0.75f;
