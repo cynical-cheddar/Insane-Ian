@@ -8,4 +8,6 @@ public class TeamPanelBehaviour : MonoBehaviour
     public Text TeamName;
     public Text TeamScore;
     public Text TeamKDA;
+    public Image Position;
+    public Image PositionShadow;
 }
