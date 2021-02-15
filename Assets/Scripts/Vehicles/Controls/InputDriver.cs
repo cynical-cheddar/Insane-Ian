@@ -21,16 +21,14 @@ public class InputDriver : MonoBehaviour
 
     private void Brake() {
         var CarDriver = ICD.GetComponent<IDrivable>();
-        if (Input.GetKey(KeyCode.S)) {
+        if (Input.GetKey(KeyCode.LeftShift)) {
             CarDriver.Brake();
-        } else {
-            CarDriver.StopBrake();
-        }
+        } 
     }
 
     private void Reverse() {
         var CarDriver = ICD.GetComponent<IDrivable>();
-        if (Input.GetKey(KeyCode.LeftShift)) {
+        if (Input.GetKey(KeyCode.S)) {
             CarDriver.Reverse();
         }
     }

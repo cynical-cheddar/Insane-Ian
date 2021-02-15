@@ -88,14 +88,24 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         //frontRightW.motorTorque = motorTorque;
         rearLeftW.motorTorque = motorTorque;
         rearRightW.motorTorque = motorTorque;
-        
+        if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
+            rearLeftW.motorTorque = motorTorque;
+            rearRightW.motorTorque = motorTorque;
+        } else {
+            ((IDrivable)this).Brake();
+        }
+
     }
     void IDrivable.Reverse() {
 
         //frontLeftW.motorTorque = motorTorque;
         //frontRightW.motorTorque = motorTorque;
-        rearLeftW.motorTorque = -motorTorque;
-        rearRightW.motorTorque = -motorTorque;
+        if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
+            rearLeftW.motorTorque = -motorTorque;
+            rearRightW.motorTorque = -motorTorque;
+        } else {
+            ((IDrivable)this).Brake();
+        }
 
 
     }
