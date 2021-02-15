@@ -32,9 +32,17 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
     {
         return gunnerNickName;
     }
+    public int GetGunnerID()
+    {
+        return gunnerId;
+    }
     public string GetDriverNickName()
     {
         return driverNickName;
+    }
+    public int GetDriverID()
+    {
+        return driverId;
     }
     void Start()
     {

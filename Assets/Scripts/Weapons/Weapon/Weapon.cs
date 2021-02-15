@@ -31,10 +31,12 @@ public class Weapon : MonoBehaviour
     public struct WeaponDamageDetails
     {
         public string sourcePlayerNickName;
+        public int sourcePlayerId;
         public DamageType damageType;
         public float damage;
-        public WeaponDamageDetails(string nickName, DamageType dt, float d)
+        public WeaponDamageDetails(string nickName, int id, DamageType dt, float d)
         {
+            sourcePlayerId = id;
             sourcePlayerNickName = nickName;
             damageType = dt;
             damage = d;
@@ -44,6 +46,8 @@ public class Weapon : MonoBehaviour
 
 
     protected string myNickName = "null";
+
+    protected int myPlayerId = 0;
     // Start is called before the first frame update
     [Header("Primary Properties")]
     public string weaponName = "defaultWeapon"; 
@@ -168,6 +172,7 @@ public class Weapon : MonoBehaviour
         if (GetComponentInParent<NetworkPlayerVehicle>() != null)
         {
             myNickName = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerNickName();
+            myPlayerId = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerID();
         }
         else
         {

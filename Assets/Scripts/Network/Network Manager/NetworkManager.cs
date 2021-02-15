@@ -99,7 +99,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 }
                 if (!(team.vehiclePrefabName == "null" || team.vehiclePrefabName == null ||
                       team.vehiclePrefabName == ""))
-                    vehicle = PhotonNetwork.Instantiate(team.vehiclePrefabName, sp.position, sp.rotation);
+                     vehicle = PhotonNetwork.Instantiate(team.vehiclePrefabName, sp.position, sp.rotation);
                 else vehicle = PhotonNetwork.Instantiate(defaultPlayerVehiclePrefabName, sp.position, sp.rotation);
                 vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
                 // on the testing truck, get the vehicle network controller script and set the pair details
