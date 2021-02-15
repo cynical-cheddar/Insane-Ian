@@ -5,6 +5,7 @@ using System.Collections;
 public class ProjectileScript : MonoBehaviour
 {
     public GameObject impactParticle;
+    public GameObject missImpactParticle;
     public GameObject projectileParticle;
     public GameObject[] trailParticles;
     [HideInInspector]
@@ -14,10 +15,12 @@ public class ProjectileScript : MonoBehaviour
     private bool hasCollided = false;
 
     public float impactParticleVolume = 1f;
+    public float missImpactParticleVolume = 0.75f;
     public AudioClip hitSound;
-    
+    public AudioClip missSound;
     private Weapon.WeaponDamageDetails weaponDamageDetails = new Weapon.WeaponDamageDetails();
 
+    VehicleManager hitVm;
     public void SetWeaponDamageDetails(Weapon.WeaponDamageDetails wdd)
     {
         weaponDamageDetails = wdd;
@@ -40,7 +43,8 @@ public class ProjectileScript : MonoBehaviour
         {
             // if we are the true projectile, then deal with game altering stuff like damage n that
             impactNormal = hit.contacts[0].normal;
-            if(trueProjectile)DamageCollisionHandler();
+            hitVm = hit.gameObject.GetComponentInParent<VehicleManager>();
+            if(trueProjectile)DamageCollisionHandler(hit);
             VisualCollisionHandler();
         }
     }
@@ -48,10 +52,14 @@ public class ProjectileScript : MonoBehaviour
     // applies damage to the enemy (if we hit an enemy)
     
     // TODO - get health and apply damage
-    void DamageCollisionHandler()
+    void DamageCollisionHandler(Collision hit)
     {
-        // get health script and apply weaponDamageDetails in the applydamage function
         
+        if (hitVm != null)
+        {
+            hitVm.TakeDamage(weaponDamageDetails);
+        }
+
     }
     
     // destroys gameobject and does impact effects and such
@@ -59,10 +67,33 @@ public class ProjectileScript : MonoBehaviour
     {
         // calculate
         hasCollided = true;
-        impactParticle = Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
-        if (impactParticle.GetComponent<AudioSource>() != null && hitSound!=null)
+        
+        
+        // WE HAVE HIT A PLAYER, PLAY THE HIT PLAYER IMPACT STUFF
+        if (hitVm != null)
         {
-            impactParticle.GetComponent<AudioSource>().PlayOneShot(hitSound, impactParticleVolume);
+            GameObject impactParticleInstance = Instantiate(impactParticle, transform.position,
+                Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
+            if (impactParticleInstance.GetComponent<AudioSource>() != null && hitSound != null)
+            {
+                impactParticleInstance.GetComponent<AudioSource>().clip = hitSound;
+                impactParticleInstance.GetComponent<AudioSource>().volume = impactParticleVolume;
+                impactParticleInstance.GetComponent<AudioSource>().PlayOneShot(hitSound, impactParticleVolume);
+            }
+            Destroy(impactParticleInstance, 5f);
+        }
+        // WE HAVE NOT HIT A PLAYER
+        else
+        {
+            GameObject missImpactParticleInstance = Instantiate(missImpactParticle, transform.position,
+                Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
+            if (missImpactParticleInstance.GetComponent<AudioSource>() != null && missSound != null)
+            {
+                missImpactParticleInstance.GetComponent<AudioSource>().clip = missSound;
+                missImpactParticleInstance.GetComponent<AudioSource>().volume = missImpactParticleVolume;
+                missImpactParticleInstance.GetComponent<AudioSource>().PlayOneShot(missSound, missImpactParticleVolume);
+            }
+            Destroy(missImpactParticleInstance, 5f);
         }
 
         foreach (GameObject trail in trailParticles)
@@ -72,7 +103,8 @@ public class ProjectileScript : MonoBehaviour
             Destroy(curTrail, 3f);
         }
         Destroy(projectileParticle, 3f);
-        Destroy(impactParticle, 5f);
+
+        
         Destroy(gameObject);
 			
         ParticleSystem[] trails = GetComponentsInChildren<ParticleSystem>();

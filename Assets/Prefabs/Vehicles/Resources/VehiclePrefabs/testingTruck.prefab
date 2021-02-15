@@ -202,11 +202,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.03
-    damper: 9328.005
+    spring: 58639.7
+    damper: 9382.353
     targetPosition: 0.5
-  m_SuspensionDistance: 0.19620001
-  m_ForceAppPointDistance: 1.9363815
+  m_SuspensionDistance: 0.1962
+  m_ForceAppPointDistance: 1.9409513
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -396,11 +396,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.96
-    damper: 14671.994
+    spring: 91360.7
+    damper: 14617.713
     targetPosition: 0.5
   m_SuspensionDistance: 0.1962
-  m_ForceAppPointDistance: 1.9363815
+  m_ForceAppPointDistance: 1.9409513
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -617,7 +617,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: 2284656620238966636}
-  viewIdField: 0
+  viewIdField: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &1038595067741417621
@@ -715,8 +715,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68bbae13aade3fc429be63367b27bf68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teamId: 1
+  teamId: 0
   health: 100
+  temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
+    type: 3}
 --- !u!1 &2285355357818630399
 GameObject:
   m_ObjectHideFlags: 0
@@ -758,11 +760,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.04
-    damper: 9328.007
+    spring: 58639.293
+    damper: 9382.287
     targetPosition: 0.5
-  m_SuspensionDistance: 0.1962
-  m_ForceAppPointDistance: 1.9363815
+  m_SuspensionDistance: 0.19620001
+  m_ForceAppPointDistance: 1.9409513
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -819,11 +821,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.96
-    damper: 14671.994
+    spring: 91360.31
+    damper: 14617.65
     targetPosition: 0.5
   m_SuspensionDistance: 0.19620001
-  m_ForceAppPointDistance: 1.9363815
+  m_ForceAppPointDistance: 1.9409513
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1373,7 +1375,7 @@ PrefabInstance:
     - target: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: viewIdField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6870663108256298800, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}

@@ -77,6 +77,7 @@ public class ProjectileWeapon : Weapon
         GameObject projectile = Instantiate(projectilePrefab, barrelTransform.position, barrelTransform.rotation);
         ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();
         projScript.impactParticle = imapactParticle;
+        projScript.missImpactParticle = missImpactParticle;
         StopProjectileCollisionsWithSelf(projectile);
         DoMuzzleFlashEffect();
         projectile.transform.LookAt(targetPoint);
@@ -84,7 +85,9 @@ public class ProjectileWeapon : Weapon
         // set projscript stuff
         projScript.SetWeaponDamageDetails(weaponDamageDetails);
         projScript.impactParticleVolume = imapactParticleVolume;
+        projScript.missImpactParticleVolume = missImpactParticleVolume;
         projScript.hitSound = impactParticleSound;
+        projScript.missSound = impactParticleSoundMiss;
         PlayAudioClipOneShot(weaponFireSound);
         // FIRE REAL PROJECTILE
         if (gunnerPhotonView.IsMine)

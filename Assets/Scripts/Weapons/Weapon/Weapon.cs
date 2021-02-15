@@ -96,6 +96,7 @@ public class Weapon : MonoBehaviour
      [Header("Audio")]
     public AudioClip weaponFireSound;
     public AudioClip impactParticleSound;
+    public AudioClip impactParticleSoundMiss;
     public GameObject audioSourcePrefab;
     
     [Header("Effects")]
@@ -105,7 +106,9 @@ public class Weapon : MonoBehaviour
     [SerializeField] protected GameObject imapactParticle;
     [Range(0.0f, 1.0f)]
     [SerializeField] protected float imapactParticleVolume=1f;
-    
+    [Range(0.0f, 1.0f)]
+    [SerializeField] protected float missImpactParticleVolume=0.75f;
+    [SerializeField] protected GameObject missImpactParticle;
     
     // ---------------------- COPY THESE FUNCTIONS FOR EACH CHILD CLASS --------------------------------//
     // ---------------------- RPCs DO NOT INHERIT FROM PARENT ------------------------------------------//

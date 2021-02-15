@@ -210,6 +210,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
                 return record;
             }
         }
+        
         return td;
     }
 
@@ -346,6 +347,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
         ForceSynchronisePlayerSchema();
     }
 
+    // call this via rpc
     [PunRPC]
     public void UpdateTeamWithNewRecord(int teamId, string newDetailsSerialized) {
         TeamDetails newRecord = JsonUtility.FromJson<TeamDetails>(newDetailsSerialized);
