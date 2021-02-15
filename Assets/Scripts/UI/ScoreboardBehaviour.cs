@@ -28,7 +28,7 @@ public class ScoreboardBehaviour : MonoBehaviour
 
     void ToggleExpandedScoreboard() {
         scoreboardIsExpanded = !scoreboardIsExpanded;
-        for (int i = 1; i < teamPanels.Count; i++) {
+        for (int i = 1; i < gamestateTracker.schema.teamsList.Count; i++) {
             teamPanels[i].gameObject.SetActive(scoreboardIsExpanded);
         }
         UpdateScores();
@@ -42,7 +42,7 @@ public class ScoreboardBehaviour : MonoBehaviour
             teams.Reverse();
 
             // Display teams in order
-            for (int i = 0; i < teamPanels.Count; i++) {
+            for (int i = 0; i < teams.Count; i++) {
                 int score = teams[i].kills * killValue + teams[i].deaths * deathValue + teams[i].assists * assistValue;
                 teamPanels[i].TeamName.text = $"Team {teams[i].teamId}";
                 teamPanels[i].TeamScore.text = $"Score: {score}";
