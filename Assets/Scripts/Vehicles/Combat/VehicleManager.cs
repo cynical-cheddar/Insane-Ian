@@ -30,30 +30,30 @@ public class VehicleManager : MonoBehaviour
         
     }
 
-    public void takeDamage(float amount) {
+    public void TakeDamage(float amount) {
         if (health > 0) {
             health -= amount;
             if (health <= 0) {
-                die();
+                Die();
             }
         }
     }
 
-    void die() {
+    void Die() {
         // Update gamestate
         GamestateTracker.TeamDetails record = gamestateTracker.getTeamDetails(teamId);
         record.deaths += 1;
         record.isDead = true;
         gamestateTracker.UpdateTeamWithNewRecord(teamId, JsonUtility.ToJson(record));
 
-        StartCoroutine(networkManager.respawnVehicle(3f, teamId));
+        StartCoroutine(networkManager.RespawnVehicle(3f, teamId));
         inputDriver.enabled = false;
         rb.drag = 0.75f;
         rb.angularDrag = 0.75f;
-        StartCoroutine(stopControls(3f));
+        StartCoroutine(StopControls(3f));
     }
 
-    IEnumerator stopControls(float time) {
+    IEnumerator StopControls(float time) {
         // Wait for respawn time
         yield return new WaitForSecondsRealtime(time);
         carDriver.StopAccellerate();

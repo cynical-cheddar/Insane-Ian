@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class ScoreboardBehaviour : MonoBehaviour
 {
@@ -21,28 +22,34 @@ public class ScoreboardBehaviour : MonoBehaviour
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Tab)) {
-            toggleExpandedScoreboard();
+            ToggleExpandedScoreboard();
         }
     }
 
-    void toggleExpandedScoreboard() {
+    void ToggleExpandedScoreboard() {
         scoreboardIsExpanded = !scoreboardIsExpanded;
         for (int i = 1; i < teamPanels.Count; i++) {
             teamPanels[i].gameObject.SetActive(scoreboardIsExpanded);
         }
-        updateScores();
+        UpdateScores();
     }
 
-    public void updateScores() {
+    public void UpdateScores() {
         if (scoreboardIsExpanded) {
+            // Sort teams by score
+            List<GamestateTracker.TeamDetails> teams = gamestateTracker.schema.teamsList;
+            teams.Sort((t1, t2) => (t1.kills * killValue + t1.deaths * deathValue + t1.assists * assistValue).CompareTo(t2.kills * killValue + t2.deaths * deathValue + t2.assists * assistValue));
+            teams.Reverse();
+
+            // Display teams in order
             for (int i = 0; i < teamPanels.Count; i++) {
-                GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(i+1);
-                int score = team.kills * killValue + team.deaths * deathValue + team.assists * assistValue;
-                teamPanels[i].TeamName.text = $"Team {i+1}";
+                int score = teams[i].kills * killValue + teams[i].deaths * deathValue + teams[i].assists * assistValue;
+                teamPanels[i].TeamName.text = $"Team {teams[i].teamId}";
                 teamPanels[i].TeamScore.text = $"Score: {score}";
-                teamPanels[i].TeamKDA.text = $"K/D/A: {team.kills}/{team.deaths}/{team.assists}";
+                teamPanels[i].TeamKDA.text = $"K/D/A: {teams[i].kills}/{teams[i].deaths}/{teams[i].assists}";
             }
         } else {
+            // Display player's team score
             int teamId = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId;
             GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(teamId);
             int score = team.kills * killValue + team.deaths * deathValue + team.assists * assistValue;

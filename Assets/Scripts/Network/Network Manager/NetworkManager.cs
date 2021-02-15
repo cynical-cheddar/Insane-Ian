@@ -54,7 +54,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public void StartGame() {
         SynchroniseSchemaBeforeSpawn();
-        timer.hostStartTimer();
+        timer.HostStartTimer();
     }
 
     // spawn each player pair at a respective spawnpoint
@@ -122,7 +122,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public IEnumerator respawnVehicle(float time, int teamId) {
+    public IEnumerator RespawnVehicle(float time, int teamId) {
         Debug.Log("Respawn started.");
         yield return new WaitForSecondsRealtime(time);
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();

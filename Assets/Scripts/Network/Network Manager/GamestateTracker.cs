@@ -362,7 +362,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
             schema.teamsList.Add(newRecord);
         }
         if (scoreboard != null) {
-            scoreboard.updateScores();
+            scoreboard.UpdateScores();
         }
         ForceSynchronisePlayerSchema();
     }
@@ -381,7 +381,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
             schema.teamsList.Add(newDetails);
         }
         if (scoreboard != null) {
-            scoreboard.updateScores();
+            scoreboard.UpdateScores();
         }
         ForceSynchronisePlayerSchema();
     }
