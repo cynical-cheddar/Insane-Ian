@@ -17,10 +17,10 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
     private void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Give the host a chance to load.
-        Invoke("PopulateOptions", 0.1f);
+        Invoke("populateOptions", 0.1f);
     }
 
-    void PopulateOptions() {
+    void populateOptions() {
         List<string> options = new List<string>();
         foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList) {
             options.Add(team.teamId.ToString());
@@ -28,7 +28,7 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
         playerChoice.AddOptions(options);
     }
 
-    public void UpdateValue() {
+    public void updateValue() {
         GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(int.Parse(playerChoice.captionText.text));
         
         if (statChoice.captionText.text == "Kills") {
@@ -46,12 +46,13 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
         PhotonNetwork.LoadLevel("GameOver");
     }
 
-    public void DamageVehicle() {
+    public void damageVehicle() {
         int teamId = 1;
         float amount = 25f;
         VehicleManager[] vehicles = FindObjectsOfType<VehicleManager>();
         foreach (VehicleManager vehicle in vehicles) {
             if (teamId == vehicle.teamId) {
+
                 vehicle.TakeDamage(amount);
             }
         }

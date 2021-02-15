@@ -26,8 +26,24 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
     private int gunnerId = 0;
 
     private GamestateTracker gamestateTracker;
-    
 
+
+    public string GetGunnerNickName()
+    {
+        return gunnerNickName;
+    }
+    public int GetGunnerID()
+    {
+        return gunnerId;
+    }
+    public string GetDriverNickName()
+    {
+        return driverNickName;
+    }
+    public int GetDriverID()
+    {
+        return driverId;
+    }
     void Start()
     {
         if (FindObjectOfType<GamestateTracker>() != null)
@@ -51,28 +67,37 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         }
         
     }
-    
+
 
     void TransferGunnerPhotonViewOwnership(GamestateTracker.PlayerDetails gunnerDetails)
     {
         // lookup the player from the gamestate tracker
-        gamestateTracker = FindObjectOfType<GamestateTracker>();
-          //  gamestateTracker.ForceSynchronisePlayerList();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            gamestateTracker = FindObjectOfType<GamestateTracker>();
+            // gamestateTracker.ForceSynchronisePlayerList();
             Player p = gamestateTracker.GetPlayerFromDetails(gunnerDetails);
             Debug.Log("gunner nickname in transfer: " + p.NickName);
             gunnerPhotonView.TransferOwnership(p);
+
         }
+
+    }
+
     void TransferDriverPhotonViewOwnership(GamestateTracker.PlayerDetails driverDetails)
     {
         // lookup the player from the gamestate tracker
-
+        if (PhotonNetwork.IsMasterClient)
+        {
             gamestateTracker = FindObjectOfType<GamestateTracker>();
-          //  gamestateTracker.ForceSynchronisePlayerList();
+            // gamestateTracker.ForceSynchronisePlayerList();
             Player p = gamestateTracker.GetPlayerFromDetails(driverDetails);
+            Debug.Log("Player p in driver transfer: " + p.ToString() + " name: " + p.NickName);
             Debug.Log("driver in transfer: " + p.NickName);
             driverPhotonView.TransferOwnership(p);
+        }
     }
-    
+
     // RPC is called on all instances of the game  by Network Manager
     // Handles script separation and the likes
     [PunRPC]
@@ -110,10 +135,10 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         if(!gunnerDetails.isBot) TransferGunnerPhotonViewOwnership(gunnerDetails);
         
         // transfer control to master client if bot
-        if(driverDetails.isBot) driverPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
-        if(gunnerDetails.isBot) gunnerPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
-        
-        // check if the driver is a human or a bot
+        if (driverDetails.isBot) driverPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
+        if (gunnerDetails.isBot) gunnerPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
+
+            // check if the driver is a human or a bot
         if (driverDetails.isBot) botDriver = true;
         //Debug.Log("GOT HERE 0");
         // if they are a bot, then get the MASTER CLIENT to turn on ai controls

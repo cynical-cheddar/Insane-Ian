@@ -99,9 +99,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 }
                 if (!(team.vehiclePrefabName == "null" || team.vehiclePrefabName == null ||
                       team.vehiclePrefabName == ""))
-                    vehicle = PhotonNetwork.Instantiate(team.vehiclePrefabName, sp.position, sp.rotation);
+                     vehicle = PhotonNetwork.Instantiate(team.vehiclePrefabName, sp.position, sp.rotation);
                 else vehicle = PhotonNetwork.Instantiate(defaultPlayerVehiclePrefabName, sp.position, sp.rotation);
-                vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+                if (vehicle.GetComponent<VehicleManager>() != null)
+                {
+                    vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+                }
+                else
+                {
+                    Debug.LogError("Vehicle manager not found on vehicle prefab");
+                }
+               
                 // on the testing truck, get the vehicle network controller script and set the pair details
                 // when this is assigned, a method on the vehicle's script will enable/disable the appropriate scripts
                 // it takes the player pair as an argument
