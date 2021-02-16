@@ -13,10 +13,10 @@ public class PlinthManager : MonoBehaviour
     void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Wait for the host to finish loading first
-        Invoke("updatePlinths", 0.1f);
+        Invoke(nameof(UpdatePlinths), 0.1f);
     }
 
-    void updatePlinths() {
+    void UpdatePlinths() {
 
         List<GamestateTracker.TeamDetails> sortedTeams = scoringHelper.SortTeams(gamestateTracker.schema.teamsList);
         plinthTexts[0].text = $"Team {sortedTeams[0].teamId}";
