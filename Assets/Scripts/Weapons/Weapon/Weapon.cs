@@ -166,12 +166,7 @@ public class Weapon : MonoBehaviour
     {
         // assign photon view to the gunner
         Player gunnerPlayer = gunnerPhotonView.Owner;
-  
-        if (gunnerPhotonView.IsMine)
-        {
-            UpdateHud();
-        }
-
+        
         if (GetComponentInParent<NetworkPlayerVehicle>() != null)
         {
             myNickName = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerNickName();
@@ -189,12 +184,12 @@ public class Weapon : MonoBehaviour
         cam = Camera.main.transform;
     }
 
-    // temporary fire solution
+    // temporary fire solutionUpdateHud
 
 
     protected void UpdateHud()
     {
-        if (weaponUi != null)
+        if (weaponUi != null && gunnerPhotonView.IsMine && myPlayerId == gunnerPhotonView.Owner.ActorNumber)
         {
             weaponUi.UpdateAmmo(currentSalvo, salvoSize, reserveAmmo);
             weaponUi.SetWeaponNameText(weaponName);

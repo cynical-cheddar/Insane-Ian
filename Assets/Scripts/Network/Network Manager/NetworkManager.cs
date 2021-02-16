@@ -130,12 +130,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public IEnumerator respawnVehicle(float time, int teamId) {
+    public void CallRespawnVehicle(float time, int teamId)
+    {
+        StartCoroutine(respawnVehicle(time, teamId));
+    }
+
+    IEnumerator respawnVehicle(float time, int teamId) {
         Debug.Log("Respawn started.");
-        yield return new WaitForSecondsRealtime(time);
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+        yield return new WaitForSecondsRealtime(time);
+        
         List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
         GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(teamId);
+        
+        // set dead = false for team 
+        team.isDead = false;
+        string serializedTeamJson = JsonUtility.ToJson(team);
+        gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.AllBufferedViaServer, teamId, serializedTeamJson);
+       // gamestateTracker.UpdateTeamWithNewRecord(teamId, serializedTeamJson);
+        
         GameObject vehicle = new GameObject();
         Transform sp;
         if (teamId > spawnPoints.Count) {
@@ -147,14 +160,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
               team.vehiclePrefabName == ""))
             vehicle = PhotonNetwork.Instantiate(team.vehiclePrefabName, sp.position, sp.rotation);
         else vehicle = PhotonNetwork.Instantiate(defaultPlayerVehiclePrefabName, sp.position, sp.rotation);
-
+        if (vehicle.GetComponent<VehicleManager>() != null)
+        {
+            vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+        }
         foreach (List<GamestateTracker.PlayerDetails> playerPair in playerPairs) {
             if (playerPair[0].teamId == team.teamId) {
                 string serializedPlayer1 = JsonUtility.ToJson(playerPair[0]);
                 string serializedPlayer2 = JsonUtility.ToJson(playerPair[1]);
-                vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.AssignPairDetailsToVehicle),
-                    RpcTarget.AllBufferedViaServer, serializedPlayer1, serializedPlayer2);
-                break;
+                vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.AssignPairDetailsToVehicle),  RpcTarget.AllBufferedViaServer, serializedPlayer1, serializedPlayer2);
+                //break;
             }
         }
         Debug.Log("Respawn complete.");
