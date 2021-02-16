@@ -21,15 +21,15 @@ public class TimerBehaviour : MonoBehaviour
 
     // Time in seconds
     [PunRPC]
-    void setTimer(float time) {
+    void SetTimer(float time) {
         timer.timeLeft = time;
     }
 
     // Time in seconds
-    public void hostStartTimer() {
+    public void HostStartTimer() {
         if (PhotonNetwork.IsMasterClient) {
-            GetComponent<PhotonView>().RPC(nameof(setTimer), RpcTarget.AllBufferedViaServer, initialTime);
-            StartCoroutine(syncTime());
+            GetComponent<PhotonView>().RPC(nameof(SetTimer), RpcTarget.AllBufferedViaServer, initialTime);
+            StartCoroutine(SyncTime());
         }
     }
 
@@ -40,16 +40,16 @@ public class TimerBehaviour : MonoBehaviour
         timerText.text = Mathf.RoundToInt(timer.timeLeft).ToString();
     }
 
-    void updateTimersForClients() {
+    void UpdateTimersForClients() {
         if (PhotonNetwork.IsMasterClient) {
-            GetComponent<PhotonView>().RPC(nameof(setTimer), RpcTarget.AllBufferedViaServer, timer.timeLeft);
+            GetComponent<PhotonView>().RPC(nameof(SetTimer), RpcTarget.AllBufferedViaServer, timer.timeLeft);
         }
     }
 
-    IEnumerator syncTime() {
+    IEnumerator SyncTime() {
         while (true) {
             yield return new WaitForSecondsRealtime(5);
-            updateTimersForClients();
+            UpdateTimersForClients();
         }
     }
 }
