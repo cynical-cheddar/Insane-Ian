@@ -17,7 +17,7 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
     private void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Give the host a chance to load.
-        Invoke("populateOptions", 0.1f);
+        Invoke(nameof(populateOptions), 0.1f);
     }
 
     void populateOptions() {
