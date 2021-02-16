@@ -17,6 +17,7 @@ public class VehicleManager : MonoBehaviour
     float maxHealth;
     public GameObject temporaryDeathExplosion;
     PhotonView gamestateTrackerPhotonView;
+    bool isDead = false;
     
     Weapon.WeaponDamageDetails lastHitDetails;
 
@@ -44,7 +45,9 @@ public class VehicleManager : MonoBehaviour
         Debug.Log("Damage taken by: " + hitDetails.sourcePlayerNickName);
         if (health > 0) {
             health -= amount;
-            if (health <= 0) {
+            if (health <= 0&&!isDead)
+            {
+                isDead = true;
                 Die(true, true);
             }
         }
@@ -55,9 +58,12 @@ public class VehicleManager : MonoBehaviour
     {
         if (health > 0) {
             health -= amount;
-            if (health <= 0) {
+            if (health <= 0 && !isDead)
+            {
+                isDead=true;
                 // don't take kill
                 Die(true, false);
+                
             }
         }
     }
@@ -82,6 +88,7 @@ public class VehicleManager : MonoBehaviour
             myRecord.isDead = true;
             gamestateTrackerPhotonView.RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.All, teamId,
                 JsonUtility.ToJson(myRecord));
+            
         }
 
         if (updateKill)
@@ -95,11 +102,11 @@ public class VehicleManager : MonoBehaviour
 
         PlayDeathTrailEffects(true);
 
-        StartCoroutine(networkManager.RespawnVehicle(3f, teamId));
+        networkManager.CallRespawnVehicle(5f, teamId);
         inputDriver.enabled = false;
         rb.drag = 0.75f;
         rb.angularDrag = 0.75f;
-        StartCoroutine(stopControls(2.9f));
+        StartCoroutine(stopControls(2.95f));
     }
 
     IEnumerator stopControls(float time) {
