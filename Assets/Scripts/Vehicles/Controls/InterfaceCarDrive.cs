@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InterfaceCarDrive : MonoBehaviour, IDrivable {
@@ -28,7 +25,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     [Space(5)]
 
     [Header("Force Parameters")]
-    [Range(12,35)]
+    [Range(12, 35)]
     public float maxSteerAngle = 20;
     [Range(1000, 20000)]
     public float motorTorque = 6000;
@@ -38,7 +35,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     public float brakeForce = 16000;
     [Range(0, 5)]
     public float steerRate = 1.0f;
-    [Range(0.01f,0.5f)]
+    [Range(0.01f, 0.5f)]
     public float steerRateCoefficent = 0.05f;
     public Vector3 addedDownforce;
 
@@ -148,7 +145,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         } else return false;
     }
 
-    void IDrivable.UpdateWheelPoses() { 
+    void IDrivable.UpdateWheelPoses() {
         //make geometry match collider position
         UpdateWheelPose(frontLeftW, frontLeftT, true);
         UpdateWheelPose(frontRightW, frontRightT, false);
