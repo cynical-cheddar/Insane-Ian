@@ -125,13 +125,13 @@ public class Weapon : MonoBehaviour
             Destroy(audioInstance, weaponFireSound.length);
         }
     }
-    public virtual void Fire(Vector3 barrelEnd, Vector3 targetPoint){
+    public virtual void Fire( Vector3 targetPoint){
 
     }
     // only called on success
     // deals with firing the actual projectiles, and lag compensated dummy ones
     [PunRPC]
-    protected void FireRPC(Vector3 barrelEnd, Vector3 targetPoint, float distanceDamageMultiplier)
+    protected void FireRPC(Vector3 targetPoint, float distanceDamageMultiplier)
     {
         
         // debug function to fire weapon
@@ -158,7 +158,6 @@ public class Weapon : MonoBehaviour
     protected void Start()
     {
         weaponUi = FindObjectOfType<WeaponUi>();
-        Invoke(nameof(ActivateWeapon), 1f);
     }
 
     // called to activate UI elements and transfer photonview
