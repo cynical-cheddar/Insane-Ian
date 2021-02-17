@@ -177,9 +177,16 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         }
     }
 
+    void FillRoleSlotWithBot(int teamId, string roleName) {
+        GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
+        botDetails.role = roleName;
+        botDetails.teamId = teamId;
+        fillSlotWithBot(botDetails);
+        ForceUpdateLobbyButtonAddBot(botDetails);
+    }
+
     // gets incomplete teams in the gamestate tracker and puts in a bot
     // only to be called by master client
-    
     public void FillIncompleteTeamsWithBots() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         int currentBotNumber = gamestateTracker.GetNumberOfBotsInGame() + 1;
@@ -194,20 +201,12 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 if (driverFilled && gunnerFilled) break;
             }
             if (!driverFilled) {
-                GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
-                botDetails.role = "Driver";
-                botDetails.teamId = team.teamId;
-                fillSlotWithBot(botDetails);
+                FillRoleSlotWithBot(team.teamId, "Driver");
                 currentBotNumber++;
-                ForceUpdateLobbyButtonAddBot(botDetails);
             }
             if (!gunnerFilled) {
-                GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
-                botDetails.role = "Gunner";
-                botDetails.teamId = team.teamId;
-                fillSlotWithBot(botDetails);
+                FillRoleSlotWithBot(team.teamId, "Gunner");
                 currentBotNumber++;
-                ForceUpdateLobbyButtonAddBot(botDetails);
             }
         }
         gamestateTracker.ForceSynchronisePlayerSchema();
