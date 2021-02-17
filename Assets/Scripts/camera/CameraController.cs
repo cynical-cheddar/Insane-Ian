@@ -37,6 +37,14 @@ public class CameraController : MonoBehaviour
         driveCamRev.Priority = 0;
         driveCamFix.Priority = 1;
         driveCamFixRev.Priority = 0;
+        driveCam.LookAt = focus.transform;
+        driveCam.Follow = focus.transform;
+        driveCamRev.LookAt = focus.transform;
+        driveCamRev.Follow = focus.transform;
+        driveCamFix.LookAt = focus.transform;
+        driveCamFix.Follow = focus.transform;
+        driveCamFixRev.LookAt = focus.transform;
+        driveCamFixRev.Follow = focus.transform;
 
     }
 
