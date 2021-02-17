@@ -10,6 +10,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     public WheelCollider frontRightW;
     public WheelCollider rearLeftW;
     public WheelCollider rearRightW;
+    public bool is4WD = false;
     [Space(5)]
 
     [Header("Wheel Geometry Transforms")]
@@ -84,25 +85,32 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
 
     void IDrivable.Accellerate() {
         
-        //frontLeftW.motorTorque = motorTorque;
-        //frontRightW.motorTorque = motorTorque;
+        if (is4WD) {
+            frontLeftW.motorTorque = motorTorque;
+            frontRightW.motorTorque = motorTorque;
+        }
         rearLeftW.motorTorque = motorTorque;
         rearRightW.motorTorque = motorTorque;
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
             rearLeftW.motorTorque = motorTorque;
             rearRightW.motorTorque = motorTorque;
+            if (is4WD) {
+                frontLeftW.motorTorque = motorTorque;
+                frontRightW.motorTorque = motorTorque;
+            }
         } else {
             ((IDrivable)this).Brake();
         }
 
     }
     void IDrivable.Reverse() {
-
-        //frontLeftW.motorTorque = motorTorque;
-        //frontRightW.motorTorque = motorTorque;
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
             rearLeftW.motorTorque = -motorTorque;
             rearRightW.motorTorque = -motorTorque;
+            if (is4WD) {
+                frontLeftW.motorTorque = -motorTorque;
+                frontRightW.motorTorque = -motorTorque;
+            }
         } else {
             ((IDrivable)this).Brake();
         }
