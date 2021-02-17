@@ -8,6 +8,8 @@ namespace GraphBending {
             connectingEdges = new List<Edge>();
             connectingEdgeLengths = new List<float>();
             vertexIndices.Add(vertexIndex);
+            wasMoved = false;
+            enqueued = false;
             UpdatePos(vertices);
         }
 
@@ -59,6 +61,8 @@ namespace GraphBending {
 
         public List<Edge> connectingEdges;
         public Vector3 pos;
+        public bool wasMoved;
+        public bool enqueued;
         public List<float> connectingEdgeLengths;
     }
 }
