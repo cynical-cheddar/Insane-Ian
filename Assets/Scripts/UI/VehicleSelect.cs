@@ -65,7 +65,7 @@ public class VehicleSelect : MonoBehaviour
 
         GamestateTracker.TeamDetails teamDetails = gamestateTracker.getTeamDetails(me.teamId);
         if (changedTeam && interactable) {
-            Debug.Log("AAA");
+            //Debug.Log("AAA");
             teamDetails.vehiclePrefabName = "VehiclePrefabs/" + selectedVehicle.name;
             if (PhotonNetwork.IsMasterClient) gamestateTracker.UpdateTeamWithNewRecord(me.teamId, teamDetails);
             else gamestateTracker.gameObject.GetComponent<PhotonView>().RPC("UpdateTeamWithNewRecord", RpcTarget.All, me.teamId, JsonUtility.ToJson(teamDetails));

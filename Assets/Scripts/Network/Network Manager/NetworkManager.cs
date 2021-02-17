@@ -101,6 +101,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 if (vehicle.GetComponent<VehicleManager>() != null)
                 {
                     vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+                    vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.SetNetworkTeam_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
                 }
                 else
                 {
@@ -133,7 +134,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator respawnVehicle(float time, int teamId) {
-        Debug.Log("Respawn started.");
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
         
@@ -160,6 +160,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (vehicle.GetComponent<VehicleManager>() != null)
         {
             vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+            vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.SetNetworkTeam_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
         }
         foreach (List<GamestateTracker.PlayerDetails> playerPair in playerPairs) {
             if (playerPair[0].teamId == team.teamId) {
@@ -169,12 +170,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 //break;
             }
         }
-        Debug.Log("Respawn complete.");
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("newPlayerJoined");
+        //Debug.Log("newPlayerJoined");
     }
     
     

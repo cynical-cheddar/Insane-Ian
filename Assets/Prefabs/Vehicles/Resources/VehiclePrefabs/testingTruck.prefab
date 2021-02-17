@@ -648,6 +648,7 @@ MonoBehaviour:
   aiGunnerScripts: []
   botDriver: 0
   botGunner: 0
+  teamId: 0
 --- !u!114 &3905643496873552232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -982,7 +983,7 @@ MonoBehaviour:
   CameraDistance: 2
   CameraCollisionFilter:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 0
   IgnoreTag: 
   CameraRadius: 0.2
 --- !u!1 &3372004575671224031
@@ -1679,9 +1680,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5252993461221679491, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
+      propertyPath: barrelTransform
+      value: 
+      objectReference: {fileID: 2916141348327223427}
+    - target: {fileID: 5252993461221679491, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
       propertyPath: gunnerPhotonView
       value: 
       objectReference: {fileID: 7049704973741281341}
+    - target: {fileID: 5252993461221679491, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: turretFollowTarget
+      value: 
+      objectReference: {fileID: 2916141348304363308}
     - target: {fileID: 5252993461221679491, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: gunnerWeaponManager

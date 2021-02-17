@@ -11,8 +11,8 @@ public class PlayerGunnerController : MonoBehaviour
     public float cameraSensitivity = 1;
     private TurretController turretController;
     public GunnerWeaponManager gunnerWeaponManager;
-
-    
+    public TurretFollowTarget turretFollowTarget;
+    public Transform barrelTransform;
     public PhotonView gunnerPhotonView;
     Transform cam;
     Collider[] colliders;
@@ -43,8 +43,7 @@ public class PlayerGunnerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        turretController.ChangeTargetYaw(cameraSensitivity * Input.GetAxis("Mouse X") * Time.fixedDeltaTime);
-        turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.fixedDeltaTime));
+
     }
 
     void Update()
@@ -53,11 +52,17 @@ public class PlayerGunnerController : MonoBehaviour
         {
             if (gunnerPhotonView.IsMine)
             {
-                Vector3 targetHitpoint = CalculateTargetingHitpoint(cam);
+                Vector3 targetHitpoint;
+                if (turretFollowTarget.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
+                else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
+                
                 gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
             }
             
         }
+        
+        turretController.ChangeTargetYaw(cameraSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime);
+        turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime));
     }
 
     Vector3 CalculateTargetingHitpoint(Transform sourceTransform)

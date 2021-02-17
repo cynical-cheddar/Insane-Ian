@@ -53,7 +53,7 @@ public class ProjectileWeapon : Weapon
             UseAmmo(ammoPerShot);
             float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId ,damageType, baseDamage*distanceMultiplier);
+            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier);
             string weaponDamageDetailsJson = JsonUtility.ToJson(weaponDamageDetails);
             weaponPhotonView.RPC(nameof(FireRPC_ProjectileWeapon), RpcTarget.All, targetPoint, weaponDamageDetailsJson);
             // do the rest in subclass

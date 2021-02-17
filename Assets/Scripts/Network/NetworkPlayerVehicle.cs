@@ -25,6 +25,8 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
     private string gunnerNickName = "null";
     private int gunnerId = 0;
 
+    public int teamId;
+
     private GamestateTracker gamestateTracker;
 
 
@@ -54,6 +56,12 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         
     }
 
+    [PunRPC]
+    public void SetNetworkTeam_RPC(int newTeamId)
+    {
+        teamId = newTeamId;
+    }
+
     void EnableMonobehaviours(MonoBehaviour[] scripts)
     {
         
@@ -61,7 +69,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         {
             foreach (MonoBehaviour behaviour in scripts)
             {
-                Debug.Log("Enabled monobehaviour " + behaviour.name);
+                //Debug.Log("Enabled monobehaviour " + behaviour.name);
                 behaviour.enabled = true;
             }
         }
@@ -77,7 +85,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
             gamestateTracker = FindObjectOfType<GamestateTracker>();
             // gamestateTracker.ForceSynchronisePlayerList();
             Player p = gamestateTracker.GetPlayerFromDetails(gunnerDetails);
-            Debug.Log("gunner nickname in transfer: " + p.NickName);
+            //Debug.Log("gunner nickname in transfer: " + p.NickName);
             gunnerPhotonView.TransferOwnership(p);
 
         }
@@ -92,8 +100,8 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
             gamestateTracker = FindObjectOfType<GamestateTracker>();
             // gamestateTracker.ForceSynchronisePlayerList();
             Player p = gamestateTracker.GetPlayerFromDetails(driverDetails);
-            Debug.Log("Player p in driver transfer: " + p.ToString() + " name: " + p.NickName);
-            Debug.Log("driver in transfer: " + p.NickName);
+            //Debug.Log("Player p in driver transfer: " + p.ToString() + " name: " + p.NickName);
+            //Debug.Log("driver in transfer: " + p.NickName);
             driverPhotonView.TransferOwnership(p);
         }
     }
