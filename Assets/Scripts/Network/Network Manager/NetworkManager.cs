@@ -133,7 +133,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator respawnVehicle(float time, int teamId) {
-        Debug.Log("Respawn started.");
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
         
@@ -169,12 +168,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 //break;
             }
         }
-        Debug.Log("Respawn complete.");
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("newPlayerJoined");
+        //Debug.Log("newPlayerJoined");
     }
     
     
