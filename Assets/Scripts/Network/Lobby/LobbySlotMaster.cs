@@ -180,62 +180,35 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     // gets incomplete teams in the gamestate tracker and puts in a bot
     // only to be called by master client
     
-    public void fillIncompleteTeamsWithBots()
-    {
-        GamestateTracker tracker = FindObjectOfType<GamestateTracker>();
-        List<GamestateTracker.PlayerDetails> playerDetailsList = tracker.schema.playerList;
-        List<int> uniqueTeamIds = new List<int>();
-        // iterate through list to get all of the team ids
-        foreach (GamestateTracker.PlayerDetails record in tracker.schema.playerList)
-        {
-            if (!uniqueTeamIds.Contains(record.teamId))
-            {
-                uniqueTeamIds.Add(record.teamId);
-            }
-        }
-        Debug.Log("Unique teams: " + uniqueTeamIds.ToString());
-        // get a gunner and driver from each unique team, compiling a list of player detail pairs
-        List<List<GamestateTracker.PlayerDetails>> playerDetailsPairs = new List<List<GamestateTracker.PlayerDetails>>();
-        foreach (int team in uniqueTeamIds)
-        {
-            // search our current team for players belonging to team i
-            List<GamestateTracker.PlayerDetails> pair = new List<GamestateTracker.PlayerDetails>();
-            foreach (GamestateTracker.PlayerDetails record in tracker.schema.playerList)
-            {
-                if (record.teamId == team)
-                {
-                    pair.Add(record);
-                }
-            }
-            // avoid adding the null pair (it shouldn't exist, but it might)
-            if (pair.Count > 0)
-            {
-                playerDetailsPairs.Add(pair);
-            }
-        }
-        Debug.Log("playerDetailsPairs: " + playerDetailsPairs.ToString());
-        // First bot details
-       // GamestateTracker.PlayerDetails firstBotDetails = gamestateTracker.generateBotDetails();
+    public void FillIncompleteTeamsWithBots() {
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         int currentBotNumber = gamestateTracker.GetNumberOfBotsInGame() + 1;
-        // now we have a list of pairs, foreach free team space, bring in a bot
-        foreach(List<GamestateTracker.PlayerDetails> pair in playerDetailsPairs)
-        {
-            // if there is only one player in a team, see what they are. Give them a friend
-            if (pair.Count == 1)
-            {
-                // define a new bot
+        foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList) {
+            bool driverFilled = false;
+            bool gunnerFilled = false;
+            foreach (GamestateTracker.PlayerDetails player in gamestateTracker.schema.playerList) {
+                if (player.teamId == team.teamId) {
+                    if (player.role == "Driver") driverFilled = true;
+                    if (player.role == "Gunner") gunnerFilled = true;
+                }
+                if (driverFilled && gunnerFilled) break;
+            }
+            if (!driverFilled) {
                 GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
-                //botDetails.nickName = "Bot: " + currentBotNumber.ToString();
-                botDetails.teamId = pair[0].teamId;
-                // check if the other player is a gunner or a driver
-                if (pair[0].role == "Gunner") botDetails.role = "Driver";
-                if (pair[0].role == "Driver") botDetails.role = "Gunner";
-                // call the method to fill a slot with our defined bot details
-                
+                botDetails.role = "Driver";
+                botDetails.teamId = team.teamId;
                 fillSlotWithBot(botDetails);
                 currentBotNumber++;
                 ForceUpdateLobbyButtonAddBot(botDetails);
-            }   
+            }
+            if (!gunnerFilled) {
+                GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
+                botDetails.role = "Gunner";
+                botDetails.teamId = team.teamId;
+                fillSlotWithBot(botDetails);
+                currentBotNumber++;
+                ForceUpdateLobbyButtonAddBot(botDetails);
+            }
         }
         gamestateTracker.ForceSynchronisePlayerSchema();
     }
@@ -259,7 +232,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             if (readyPlayers == selectedPlayers && readyPlayers == playersInLobby && selectedMap != "null")
             {
                 // get all info from lobby buttons and fill in the gametracker object
-                fillIncompleteTeamsWithBots();
+                FillIncompleteTeamsWithBots();
                 gamestateTracker.ForceSynchronisePlayerSchema();
                 Debug.Log("load new scene");
                 // delayed load just to make sure sync and for Jordan to check the network update. Remove in build
