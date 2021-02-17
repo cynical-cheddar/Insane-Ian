@@ -831,10 +831,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8178f50fb2ce8f1409dd16b791394e3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreboardText: {fileID: 565874406}
-  killValue: 0
-  deathValue: 0
-  assistValue: 0
+  teamPanels: []
+  positionImages: []
 --- !u!1 &239950170
 GameObject:
   m_ObjectHideFlags: 0
@@ -947,7 +945,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 2d84c47122ffe9346a13e5d8e2abbd9f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.32754803
+      value: 2.8
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2d84c47122ffe9346a13e5d8e2abbd9f,
         type: 3}
@@ -5891,7 +5889,6 @@ MonoBehaviour:
   - {fileID: 1984748942}
   - {fileID: 1215215702}
   - {fileID: 1688336631}
-  statusText: {fileID: 2100066014}
   timer: {fileID: 239950172}
   version: 1.0
   roomName: room

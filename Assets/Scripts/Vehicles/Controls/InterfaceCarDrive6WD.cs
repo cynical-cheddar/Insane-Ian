@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InterfaceController6 : MonoBehaviour, IDrivable {
@@ -88,17 +86,17 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
 
     void IDrivable.Accellerate() {
         //assume accellerating
-        frontLeftW.motorTorque  = motorTorque;
+        frontLeftW.motorTorque = motorTorque;
         frontRightW.motorTorque = motorTorque;
-        rearLeft1W.motorTorque  = motorTorque;
-        rearLeft2W.motorTorque  = motorTorque;
+        rearLeft1W.motorTorque = motorTorque;
+        rearLeft2W.motorTorque = motorTorque;
         rearRight1W.motorTorque = motorTorque;
         rearRight2W.motorTorque = motorTorque;
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
-            frontLeftW.motorTorque  = motorTorque;
+            frontLeftW.motorTorque = motorTorque;
             frontRightW.motorTorque = motorTorque;
-            rearLeft1W.motorTorque  = motorTorque;
-            rearLeft2W.motorTorque  = motorTorque;
+            rearLeft1W.motorTorque = motorTorque;
+            rearLeft2W.motorTorque = motorTorque;
             rearRight1W.motorTorque = motorTorque;
             rearRight2W.motorTorque = motorTorque;
 
@@ -109,7 +107,7 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
     }
     void IDrivable.Reverse() {
 
-        
+
 
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
@@ -129,11 +127,11 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
     void IDrivable.Brake() {
 
         //brake all wheels
-        frontLeftW.brakeTorque  = brakeTorque;
+        frontLeftW.brakeTorque = brakeTorque;
         frontRightW.brakeTorque = brakeTorque;
-        rearLeft1W.brakeTorque  = brakeTorque;
-        rearLeft2W.brakeTorque  = brakeTorque;
-        rearRight1W.brakeTorque = brakeTorque; 
+        rearLeft1W.brakeTorque = brakeTorque;
+        rearLeft2W.brakeTorque = brakeTorque;
+        rearRight1W.brakeTorque = brakeTorque;
         rearRight2W.brakeTorque = brakeTorque;
 
         //if all wheels grounded, add additional brake force
@@ -155,10 +153,10 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
 
     void IDrivable.UpdateWheelPoses() {
         //make geometry match collider position
-        UpdateWheelPose(frontLeftW,  frontLeftT,  true);
+        UpdateWheelPose(frontLeftW, frontLeftT, true);
         UpdateWheelPose(frontRightW, frontRightT, false);
-        UpdateWheelPose(rearLeft1W,  rearLeft1T,  true);
-        UpdateWheelPose(rearLeft2W,  rearLeft2T,  true);
+        UpdateWheelPose(rearLeft1W, rearLeft1T, true);
+        UpdateWheelPose(rearLeft2W, rearLeft2T, true);
         UpdateWheelPose(rearRight1W, rearRight1T, false);
         UpdateWheelPose(rearRight2W, rearRight2T, false);
     }
@@ -178,20 +176,20 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.StopAccellerate() {
-        frontLeftW.motorTorque  = 0;
+        frontLeftW.motorTorque = 0;
         frontRightW.motorTorque = 0;
-        rearLeft1W.motorTorque  = 0;
-        rearLeft2W.motorTorque  = 0;
+        rearLeft1W.motorTorque = 0;
+        rearLeft2W.motorTorque = 0;
         rearRight1W.motorTorque = 0;
         rearRight2W.motorTorque = 0;
 
     }
 
     void IDrivable.StopBrake() {
-        frontLeftW.brakeTorque  = 0;
+        frontLeftW.brakeTorque = 0;
         frontRightW.brakeTorque = 0;
-        rearLeft1W.brakeTorque  = 0;
-        rearLeft2W.brakeTorque  = 0;
+        rearLeft1W.brakeTorque = 0;
+        rearLeft2W.brakeTorque = 0;
         rearRight1W.brakeTorque = 0;
         rearRight2W.brakeTorque = 0;
 
