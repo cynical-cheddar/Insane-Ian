@@ -593,7 +593,6 @@ GameObject:
   - component: {fileID: 8668883948890399546}
   - component: {fileID: 8668883948890399547}
   - component: {fileID: 468455218}
-  - component: {fileID: 3463681165119317923}
   m_Layer: 5
   m_Name: SlotMaster
   m_TagString: Untagged
@@ -677,8 +676,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamId: 1
-  driverPlayerNickName: 
-  gunnerPlayerNickName: 
+  driverPlayerId: 0
+  gunnerPlayerId: 0
   driverSlotEmpty: 1
   gunnerSlotEmpty: 1
   driverPlayerText: {fileID: 8668883949496380437}
@@ -711,19 +710,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &3463681165119317923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8668883948890399545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6798af0366f6024e84d8179d40f8a3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lbs: {fileID: 8668883948890399547}
 --- !u!1 &8668883948943829254
 GameObject:
   m_ObjectHideFlags: 0
