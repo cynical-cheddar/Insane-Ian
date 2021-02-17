@@ -11,7 +11,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public int maxPlayerPairs = 24;
     
     public List<Transform> spawnPoints;
-    public Text statusText;
+
     public TimerBehaviour timer;
 
     public string version = "1.0";
@@ -26,10 +26,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartGame();
     }
 
-    void Update()
-    {
-        statusText.text = PhotonNetwork.NetworkClientState.ToString();
-    }
+
 
     public override void OnConnectedToMaster()
     {
@@ -54,7 +51,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public void StartGame() {
         SynchroniseSchemaBeforeSpawn();
-        timer.HostStartTimer();
+        if (timer != null) timer.HostStartTimer();
     }
 
     // spawn each player pair at a respective spawnpoint
@@ -104,6 +101,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 if (vehicle.GetComponent<VehicleManager>() != null)
                 {
                     vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+                    vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.SetNetworkTeam_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
                 }
                 else
                 {
@@ -136,7 +134,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator respawnVehicle(float time, int teamId) {
-        Debug.Log("Respawn started.");
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
         
@@ -163,6 +160,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (vehicle.GetComponent<VehicleManager>() != null)
         {
             vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+            vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.SetNetworkTeam_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
         }
         foreach (List<GamestateTracker.PlayerDetails> playerPair in playerPairs) {
             if (playerPair[0].teamId == team.teamId) {
@@ -172,12 +170,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 //break;
             }
         }
-        Debug.Log("Respawn complete.");
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("newPlayerJoined");
+        //Debug.Log("newPlayerJoined");
     }
     
     

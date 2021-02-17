@@ -32,11 +32,13 @@ public class Weapon : MonoBehaviour
     {
         public string sourcePlayerNickName;
         public int sourcePlayerId;
+        public int sourceTeamId;
         public DamageType damageType;
         public float damage;
-        public WeaponDamageDetails(string nickName, int id, DamageType dt, float d)
+        public WeaponDamageDetails(string nickName, int id, int teamId ,DamageType dt, float d)
         {
             sourcePlayerId = id;
+            sourceTeamId = teamId;
             sourcePlayerNickName = nickName;
             damageType = dt;
             damage = d;
@@ -48,6 +50,8 @@ public class Weapon : MonoBehaviour
     protected string myNickName = "null";
 
     protected int myPlayerId = 0;
+
+    protected int myTeamId = 0;
     // Start is called before the first frame update
     [Header("Primary Properties")]
     public string weaponName = "defaultWeapon"; 
@@ -125,13 +129,13 @@ public class Weapon : MonoBehaviour
             Destroy(audioInstance, weaponFireSound.length);
         }
     }
-    public virtual void Fire(Vector3 barrelEnd, Vector3 targetPoint){
+    public virtual void Fire( Vector3 targetPoint){
 
     }
     // only called on success
     // deals with firing the actual projectiles, and lag compensated dummy ones
     [PunRPC]
-    protected void FireRPC(Vector3 barrelEnd, Vector3 targetPoint, float distanceDamageMultiplier)
+    protected void FireRPC(Vector3 targetPoint, float distanceDamageMultiplier)
     {
         
         // debug function to fire weapon
@@ -158,7 +162,6 @@ public class Weapon : MonoBehaviour
     protected void Start()
     {
         weaponUi = FindObjectOfType<WeaponUi>();
-        Invoke(nameof(ActivateWeapon), 1f);
     }
 
     // called to activate UI elements and transfer photonview
@@ -171,6 +174,7 @@ public class Weapon : MonoBehaviour
         {
             myNickName = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerNickName();
             myPlayerId = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerID();
+            myTeamId = GetComponentInParent<NetworkPlayerVehicle>().teamId;
         }
         else
         {

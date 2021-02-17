@@ -45,17 +45,17 @@ public class ProjectileWeapon : Weapon
     
     // method called by weaponController
     // we need a new version of this for every child class, otherwise the top level RPC will be called
-    public override void Fire(Vector3 startPoint, Vector3 targetPoint)
+    public override void Fire(Vector3 targetPoint)
     {
         if (CanFire() && gunnerPhotonView.IsMine)
         {
             currentCooldown = fireRate;
             UseAmmo(ammoPerShot);
-            float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(startPoint, targetPoint));
+            float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId ,damageType, baseDamage*distanceMultiplier);
+            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier);
             string weaponDamageDetailsJson = JsonUtility.ToJson(weaponDamageDetails);
-            weaponPhotonView.RPC(nameof(FireRPC_ProjectileWeapon), RpcTarget.All, startPoint, targetPoint, weaponDamageDetailsJson);
+            weaponPhotonView.RPC(nameof(FireRPC_ProjectileWeapon), RpcTarget.All, targetPoint, weaponDamageDetailsJson);
             // do the rest in subclass
         }
     }
@@ -65,7 +65,7 @@ public class ProjectileWeapon : Weapon
     // RENAME THIS METHOD AS PER THE NAMING CONVENTION TO AVOID RPC SHENANIGANS
     // Convention: FireRPC_ClassName
     [PunRPC]
-    protected new void FireRPC_ProjectileWeapon(Vector3 barrelEnd, Vector3 targetPoint, string serializedDamageDetails)
+    protected new void FireRPC_ProjectileWeapon(Vector3 targetPoint, string serializedDamageDetails)
     {
         WeaponDamageDetails weaponDamageDetails = JsonUtility.FromJson<WeaponDamageDetails>(serializedDamageDetails);
         parentRigidbody = transform.root.GetComponent<Rigidbody>();

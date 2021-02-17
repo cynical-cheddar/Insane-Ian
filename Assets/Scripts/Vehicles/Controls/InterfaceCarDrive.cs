@@ -27,8 +27,8 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     [Header("Force Parameters")]
     [Range(12,35)]
     public float maxSteerAngle = 20;
-    [Range(1000, 10000)]
-    public float motorTorque = 4000;
+    [Range(1000, 20000)]
+    public float motorTorque = 5000;
     [Range(2000, 20000)]
     public float brakeTorque = 4000;
     [Range(0, 30000)]
@@ -88,21 +88,31 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         //frontRightW.motorTorque = motorTorque;
         rearLeftW.motorTorque = motorTorque;
         rearRightW.motorTorque = motorTorque;
-        
+        if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
+            rearLeftW.motorTorque = motorTorque;
+            rearRightW.motorTorque = motorTorque;
+        } else {
+            ((IDrivable)this).Brake();
+        }
+
     }
     void IDrivable.Reverse() {
 
         //frontLeftW.motorTorque = motorTorque;
         //frontRightW.motorTorque = motorTorque;
-        rearLeftW.motorTorque = -motorTorque;
-        rearRightW.motorTorque = -motorTorque;
+        if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
+            rearLeftW.motorTorque = -motorTorque;
+            rearRightW.motorTorque = -motorTorque;
+        } else {
+            ((IDrivable)this).Brake();
+        }
 
 
     }
 
     void IDrivable.Brake() {
-        //frontLeftW.brakeTorque = brakeTorque;
-        //frontRightW.brakeTorque = brakeTorque;
+        frontLeftW.brakeTorque = brakeTorque;
+        frontRightW.brakeTorque = brakeTorque;
         rearLeftW.brakeTorque = brakeTorque;
         rearRightW.brakeTorque = brakeTorque;
         if (AllWheelsGrounded()) {
