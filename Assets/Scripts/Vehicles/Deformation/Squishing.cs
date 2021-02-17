@@ -153,7 +153,7 @@ public class Squishing : MonoBehaviour
     public void CollideMesh(Collider collider, Vector3 collisionForce, bool addNoise) {
         
 
-        List<VertexGroup> moved = new List<VertexGroup>();
+        //List<VertexGroup> moved = new List<VertexGroup>();
 
         //  Make a queue (it breadth first traversal time)
         Queue<VertexGroup> vertexQueue = new Queue<VertexGroup>();
@@ -173,14 +173,17 @@ public class Squishing : MonoBehaviour
                 if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
 
                 current.MoveBy(vertices, deformation, false);
-                moved.Add(current);
+                current.wasMoved = true;
+                //moved.Add(current);
                 vertexQueue.Enqueue(current);
+                current.enqueued = true;
             }
         }
 
         // Move each vertex, making sure that it doesn't stretch too far from its neighbours
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
+            current.enqueued = false;
 
             List<float> oldEdgeSqrLengths = new List<float>();
             for (int j = 0; j < current.connectingEdges.Count; j++) {
@@ -191,7 +194,8 @@ public class Squishing : MonoBehaviour
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Check if adjacent vertex has been moved.
-                if (moved.Contains(adjacent)) {
+                //if (moved.Contains(adjacent)) {
+                if (adjacent.wasMoved) {
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
@@ -210,7 +214,8 @@ public class Squishing : MonoBehaviour
                 }
             }
 
-            moved.Add(current);
+            //moved.Add(current);
+            current.wasMoved = true;
 
             //  Add adjacent, unmoved vertices into the queue for traversal
             for (int j = 0; j < current.connectingEdges.Count; j++) {
@@ -218,9 +223,18 @@ public class Squishing : MonoBehaviour
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Add it to the queue if it hasn't already been moved
-                if (!vertexQueue.Contains(adjacent) && !moved.Contains(adjacent)) {
+                if (!adjacent.enqueued && !adjacent.wasMoved) {
                     vertexQueue.Enqueue(adjacent);
+                    adjacent.enqueued = true;
                 }
+            }
+        }
+
+        for (int i = 0; i < meshGraph.groups.Count; i++) {
+            meshGraph.groups[i].wasMoved = false;
+            if (meshGraph.groups[i].enqueued) {
+                Debug.LogWarning("Vertex marked as still in queue.");
+                meshGraph.groups[i].enqueued = false;
             }
         }
 
