@@ -25,7 +25,7 @@ public class TurretFollowTarget : MonoBehaviour
         //foreach (TurretBody body in bodyComponents) {
         //    body.SetupParents();
         //}
-        barrelTransform = transform.Find("Barrel");
+        barrelTransform = transform.Find("BarrelHinge");
         virtualRotation = transform.rotation;
     }
 
@@ -58,12 +58,10 @@ public class TurretFollowTarget : MonoBehaviour
         transform.rotation = virtualRotation;
         float pitch = transform.localEulerAngles.x;
         if (pitch > 180) pitch -= 360;
-        Debug.Log("Before clamp: " + pitch);
         pitch = Mathf.Clamp(pitch, -upTraverse, downTraverse);
-        Debug.Log("After clamp: " + pitch);
         transform.localRotation = Quaternion.Euler(pitch, transform.localEulerAngles.y, transform.localEulerAngles.z);
         virtualRotation = transform.rotation;
-        //transform.localRotation = Quaternion.Euler(0, transform.localEulerAngles.y, transform.localEulerAngles.z);
-        //barrelTransform.localRotation = Quaternion.Euler(pitch, 0, 0);
+        transform.localRotation = Quaternion.Euler(0, transform.localEulerAngles.y, transform.localEulerAngles.z);
+        barrelTransform.localRotation = Quaternion.Euler(pitch, 0, 0);
     }
 }

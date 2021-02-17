@@ -16,5 +16,7 @@ public class TurretTarget : MonoBehaviour
         float localPitch = transform.localEulerAngles.x;
         if (localPitch > 180) localPitch -= 360;
         transform.localRotation = Quaternion.Euler(Mathf.Clamp(localPitch, -upTraverse, downTraverse), transform.localEulerAngles.y, transform.localEulerAngles.z);
+        pitch = transform.eulerAngles.x;
+        yaw = transform.eulerAngles.y;
     }
 }
