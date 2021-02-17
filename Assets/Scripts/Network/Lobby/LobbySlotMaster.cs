@@ -33,16 +33,14 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     public GamestateTracker gamestateTracker;
 
-    public List<SlotMaster> teamSlots;
-
     bool hasPicked = false;
     
     public void AddTeam() {
         if (PhotonNetwork.IsMasterClient) {
-            foreach (SlotMaster teamSlot in teamSlots) {
-                if (!teamSlot.gameObject.activeInHierarchy) {
-                    teamSlot.gameObject.SetActive(true);
-                    gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(teamSlot.GetComponent<LobbyButtonScript>().teamId));
+            foreach (LobbyButtonScript lobbyButton in lobbyButtons) {
+                if (!lobbyButton.gameObject.activeInHierarchy) {
+                    lobbyButton.gameObject.SetActive(true);
+                    gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButton.teamId));
                     break;
                 }
             }
@@ -51,10 +49,10 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     public void RemoveTeam() {
         if (PhotonNetwork.IsMasterClient) {
-            for (int i = teamSlots.Count - 1; i >= 0; i--) {
-                if (teamSlots[i].gameObject.activeInHierarchy) {
-                    teamSlots[i].gameObject.SetActive(false);
-                    gamestateTracker.schema.teamsList.Remove(gamestateTracker.getTeamDetails(teamSlots[i].GetComponent<LobbyButtonScript>().teamId));
+            for (int i = lobbyButtons.Count - 1; i >= 0; i--) {
+                if (lobbyButtons[i].gameObject.activeInHierarchy) {
+                    lobbyButtons[i].gameObject.SetActive(false);
+                    gamestateTracker.schema.teamsList.Remove(gamestateTracker.getTeamDetails(lobbyButtons[i].teamId));
                     break;
                 }
             }
@@ -118,9 +116,9 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         // update the lobby stats on screen
         if(PhotonNetwork.IsMasterClient)GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
 
-        foreach (SlotMaster teamSlot in teamSlots) {
-            if (teamSlot.gameObject.activeInHierarchy) {
-                gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(teamSlot.GetComponent<LobbyButtonScript>().teamId));
+        foreach (LobbyButtonScript lobbyButton in lobbyButtons) {
+            if (lobbyButton.gameObject.activeInHierarchy) {
+                gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButton.teamId));
             }
         }
     }
