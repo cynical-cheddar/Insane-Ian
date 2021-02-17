@@ -9,6 +9,7 @@ public class PlinthManager : MonoBehaviour
     public List<TextMesh> plinthTexts;
     public List<Transform> spawnpoints;
     public TextMesh scoreboardText;
+    public string defaultVehiclePrefabName;
     GamestateTracker gamestateTracker;
     ScoringHelper scoringHelper = new ScoringHelper();
     List<GamestateTracker.TeamDetails> sortedTeams;
@@ -24,6 +25,8 @@ public class PlinthManager : MonoBehaviour
         for (int i = 0; i < spawnpoints.Count; i++) {
             if (sortedTeams[i].vehiclePrefabName != "" && sortedTeams[i].vehiclePrefabName != null && sortedTeams[i].vehiclePrefabName != "null") {
                 PhotonNetwork.Instantiate(sortedTeams[i].vehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation);
+            } else {
+                PhotonNetwork.Instantiate(defaultVehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation);
             }
         }
     }

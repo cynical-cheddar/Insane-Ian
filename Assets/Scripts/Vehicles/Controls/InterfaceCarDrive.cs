@@ -111,8 +111,8 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.Brake() {
-        //frontLeftW.brakeTorque = brakeTorque;
-        //frontRightW.brakeTorque = brakeTorque;
+        frontLeftW.brakeTorque = brakeTorque;
+        frontRightW.brakeTorque = brakeTorque;
         rearLeftW.brakeTorque = brakeTorque;
         rearRightW.brakeTorque = brakeTorque;
         if (AllWheelsGrounded()) {

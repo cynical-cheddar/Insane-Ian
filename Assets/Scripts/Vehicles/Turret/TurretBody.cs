@@ -11,8 +11,8 @@ public class TurretBody : MonoBehaviour
     }
 
     public void SetupParents() {
-        turretTransform = transform.parent;
-        transform.parent = transform.parent.parent;
+       // turretTransform = transform.parent;
+      //  transform.parent = transform.parent.parent;
     }
     
     public void UpdateAngle() {

@@ -74,7 +74,7 @@ public class WeaponTestFireController : MonoBehaviour
                     Debug.Log("HitTransform:" + hitTransform + " hitVector: " + hitVector);
                 }
                 
-                weapon.Fire(barrelTransform.position, hp);
+                weapon.Fire(hp);
                 
             }
         }
