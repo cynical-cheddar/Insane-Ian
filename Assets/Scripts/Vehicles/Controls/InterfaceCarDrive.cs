@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InterfaceCarDrive : MonoBehaviour, IDrivable {
+    // Start is called before the first frame update
+
 
     [Header("Wheel Colliders:")]
     public WheelCollider frontLeftW;
@@ -29,9 +31,9 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     [Range(12,35)]
     public float maxSteerAngle = 20;
     [Range(1000, 20000)]
-    public float motorTorque = 5000;
+    public float motorTorque = 6000;
     [Range(2000, 20000)]
-    public float brakeTorque = 4000;
+    public float brakeTorque = 8000;
     [Range(0, 30000)]
     public float brakeForce = 16000;
     [Range(0, 5)]
@@ -40,7 +42,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     public float steerRateCoefficent = 0.05f;
     public Vector3 addedDownforce;
 
-    //direction is +1 for right and -1 for left
+    //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(int targetDirection) {
         float targetAngle;
         float delta;
@@ -76,7 +78,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         }
 
 
-
+        //set the steer angle
         steerAngle += delta;
         frontLeftW.steerAngle = steerAngle;
         frontRightW.steerAngle = steerAngle;
@@ -84,13 +86,15 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.Accellerate() {
-        
+        //assume accellerating
         if (is4WD) {
             frontLeftW.motorTorque = motorTorque;
             frontRightW.motorTorque = motorTorque;
         }
         rearLeftW.motorTorque = motorTorque;
         rearRightW.motorTorque = motorTorque;
+
+        //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
             rearLeftW.motorTorque = motorTorque;
             rearRightW.motorTorque = motorTorque;
@@ -104,6 +108,8 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
 
     }
     void IDrivable.Reverse() {
+
+        //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
             rearLeftW.motorTorque = -motorTorque;
             rearRightW.motorTorque = -motorTorque;
@@ -119,10 +125,13 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.Brake() {
+        //brake all wheels
         frontLeftW.brakeTorque = brakeTorque;
         frontRightW.brakeTorque = brakeTorque;
         rearLeftW.brakeTorque = brakeTorque;
         rearRightW.brakeTorque = brakeTorque;
+
+        //if all wheels grounded, add additional brake force
         if (AllWheelsGrounded()) {
             if (transform.InverseTransformDirection(carRB.velocity).z < 0) {
                 carRB.AddForce(carTransform.forward * brakeForce);
@@ -139,7 +148,8 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
         } else return false;
     }
 
-    void IDrivable.UpdateWheelPoses() {
+    void IDrivable.UpdateWheelPoses() { 
+        //make geometry match collider position
         UpdateWheelPose(frontLeftW, frontLeftT, true);
         UpdateWheelPose(frontRightW, frontRightT, false);
         UpdateWheelPose(rearLeftW, rearLeftT, true);
@@ -154,6 +164,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
 
         transform.position = pos;
         transform.rotation = quat;
+        //if wheel is on the opposite side of the car, flip the wheel
         if (flip) {
             transform.rotation *= new Quaternion(0, 0, -1, 0);
         }
@@ -176,6 +187,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.StopSteer() {
+        //steer towards 0
         ((IDrivable)this).Steer(0);
     }
 }
