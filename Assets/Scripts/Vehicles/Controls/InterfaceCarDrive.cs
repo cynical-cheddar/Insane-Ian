@@ -10,7 +10,7 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     public WheelCollider frontRightW;
     public WheelCollider rearLeftW;
     public WheelCollider rearRightW;
-    public bool is4WD = false;
+    public bool is4WD = true;
     [Space(5)]
 
     [Header("Wheel Geometry Transforms")]
