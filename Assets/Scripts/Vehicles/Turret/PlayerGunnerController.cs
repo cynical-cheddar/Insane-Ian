@@ -5,6 +5,7 @@ using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
 
+[VehicleScript(ScriptType.playerGunnerScript)]
 public class PlayerGunnerController : MonoBehaviour
 {
     new public CinemachineVirtualCamera camera;

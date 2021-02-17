@@ -53,7 +53,31 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
             gamestateTracker = FindObjectOfType<GamestateTracker>();
             gamestateTracker.ForceSynchronisePlayerSchema();
         }
+
+        MonoBehaviour[] scripts = GetComponentsInChildren<MonoBehaviour>(true);
+        List<MonoBehaviour> playerDriverScriptsList = new List<MonoBehaviour>();
+        List<MonoBehaviour> playerGunnerScriptsList = new List<MonoBehaviour>();
+        List<MonoBehaviour> aiDriverScriptsList = new List<MonoBehaviour>();
+        List<MonoBehaviour> aiGunnerScriptsList = new List<MonoBehaviour>();
         
+        foreach (MonoBehaviour script in scripts) {
+             object[] vehicleScriptAttributes = script.GetType().GetCustomAttributes(typeof(VehicleScript), false);
+             foreach (object attribute in vehicleScriptAttributes) {
+                 VehicleScript vehicleScript = attribute as VehicleScript;
+                 if (vehicleScript == null) Debug.LogWarning("Non-VehicleScript script picked up");
+                 else {
+                     if (vehicleScript.scriptType == ScriptType.playerDriverScript) playerDriverScriptsList.Add(script);
+                     if (vehicleScript.scriptType == ScriptType.playerGunnerScript) playerGunnerScriptsList.Add(script);
+                     if (vehicleScript.scriptType == ScriptType.aiDriverScript) aiDriverScriptsList.Add(script);
+                     if (vehicleScript.scriptType == ScriptType.aiGunnerScript) aiGunnerScriptsList.Add(script);
+                 }
+             }
+        }
+
+        playerDriverScripts = playerDriverScriptsList.ToArray();
+        playerGunnerScripts = playerGunnerScriptsList.ToArray();
+        aiDriverScripts = aiDriverScriptsList.ToArray();
+        aiGunnerScripts = aiGunnerScriptsList.ToArray();
     }
 
     [PunRPC]

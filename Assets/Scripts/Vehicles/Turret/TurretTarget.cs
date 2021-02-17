@@ -1,5 +1,7 @@
 using UnityEngine;
 
+[VehicleScript(ScriptType.playerGunnerScript)]
+[VehicleScript(ScriptType.aiGunnerScript)]
 public class TurretTarget : MonoBehaviour
 {
     public float pitch = 0;

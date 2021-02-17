@@ -38,7 +38,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 980698644}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -213,6 +213,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 8611565674475950278}
   cameraSensitivity: 100
+  gunnerWeaponManager: {fileID: 0}
+  turretFollowTarget: {fileID: 0}
+  barrelTransform: {fileID: 0}
+  gunnerPhotonView: {fileID: 0}
 --- !u!114 &4481027835023491696
 MonoBehaviour:
   m_ObjectHideFlags: 0
