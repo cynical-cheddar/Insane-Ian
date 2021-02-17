@@ -25,6 +25,8 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
     private string gunnerNickName = "null";
     private int gunnerId = 0;
 
+    public int teamId;
+
     private GamestateTracker gamestateTracker;
 
 
@@ -52,6 +54,12 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
             gamestateTracker.ForceSynchronisePlayerSchema();
         }
         
+    }
+
+    [PunRPC]
+    public void SetNetworkTeam_RPC(int newTeamId)
+    {
+        teamId = newTeamId;
     }
 
     void EnableMonobehaviours(MonoBehaviour[] scripts)

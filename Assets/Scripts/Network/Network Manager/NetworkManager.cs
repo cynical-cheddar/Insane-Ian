@@ -101,6 +101,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 if (vehicle.GetComponent<VehicleManager>() != null)
                 {
                     vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+                    vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.SetNetworkTeam_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
                 }
                 else
                 {
@@ -160,6 +161,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (vehicle.GetComponent<VehicleManager>() != null)
         {
             vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+            vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.SetNetworkTeam_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
         }
         foreach (List<GamestateTracker.PlayerDetails> playerPair in playerPairs) {
             if (playerPair[0].teamId == team.teamId) {

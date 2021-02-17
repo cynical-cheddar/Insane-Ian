@@ -94,10 +94,11 @@ public class VehicleManager : MonoBehaviour
         if (updateKill)
         {
             // update their kills
-            GamestateTracker.TeamDetails theirRecord = gamestateTracker.getTeamDetails(lastHitDetails.sourcePlayerId);
+            Debug.Log("Kill earned by: " + lastHitDetails.sourceTeamId + " team");
+            GamestateTracker.TeamDetails theirRecord = gamestateTracker.getTeamDetails(lastHitDetails.sourceTeamId);
             theirRecord.kills += 1;
             gamestateTrackerPhotonView.RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.All,
-                lastHitDetails.sourcePlayerId, JsonUtility.ToJson(theirRecord));
+                lastHitDetails.sourceTeamId, JsonUtility.ToJson(theirRecord));
         }
 
         PlayDeathTrailEffects(true);
