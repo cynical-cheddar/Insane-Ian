@@ -144,11 +144,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1310663333430824932}
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: -0.06999993, y: -0.57000005, z: -3.657}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: -1.1, y: -0.5, z: -3.629}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 944022558608448744}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!33 &8095896355306293618
 MeshFilter:
@@ -307,11 +307,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1825281129479403517}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5700002, y: -0.57000005, z: -3.657}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 1.0999999, y: -0.5, z: -3.629}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 944022558608448744}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6940878368020605076
 MeshFilter:
@@ -389,11 +389,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950359809290912706}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5700002, y: -0.57000005, z: 2}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 1.0999999, y: -0.5, z: 2}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 944022558608448744}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3126120469811044889
 MeshFilter:
@@ -925,11 +925,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.73
-    damper: 14671.956
+    spring: 91699.96
+    damper: 14671.994
     targetPosition: 0.5
   m_SuspensionDistance: 0.19620001
-  m_ForceAppPointDistance: 1.9363822
+  m_ForceAppPointDistance: 1.9363815
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -937,13 +937,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 2.2
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 2.6
   m_Enabled: 1
 --- !u!1 &4562750068400220587
 GameObject:
@@ -1031,8 +1031,8 @@ Rigidbody:
   m_GameObject: {fileID: 4562750068558335707}
   serializedVersion: 2
   m_Mass: 3000
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Drag: 0.05
+  m_AngularDrag: 0.1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
@@ -1211,8 +1211,8 @@ MonoBehaviour:
   carRB: {fileID: 4606742867621491589}
   carTransform: {fileID: 4566541717405194563}
   maxSteerAngle: 20
-  motorTorque: 2000
-  brakeTorque: 4000
+  motorTorque: 7000
+  brakeTorque: 7000
   brakeForce: 20000
   steerRate: 1
   steerRateCoefficent: 0.05
@@ -1287,11 +1287,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.277
-    damper: 9328.044
+    spring: 58300.04
+    damper: 9328.007
     targetPosition: 0.5
   m_SuspensionDistance: 0.1962
-  m_ForceAppPointDistance: 1.9363822
+  m_ForceAppPointDistance: 1.9363815
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1299,13 +1299,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 2.2
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 3
   m_Enabled: 1
 --- !u!1 &4562750069391195577
 GameObject:
@@ -1348,11 +1348,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.35
-    damper: 14671.897
+    spring: 91699.96
+    damper: 14671.994
     targetPosition: 0.5
-  m_SuspensionDistance: 0.19620001
-  m_ForceAppPointDistance: 1.9363822
+  m_SuspensionDistance: 0.1962
+  m_ForceAppPointDistance: 1.9363815
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1360,13 +1360,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 2.2
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 2.6
   m_Enabled: 1
 --- !u!1 &4562750069615607605
 GameObject:
@@ -1472,11 +1472,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.65
-    damper: 9328.1045
+    spring: 58300.03
+    damper: 9328.005
     targetPosition: 0.5
-  m_SuspensionDistance: 0.1962
-  m_ForceAppPointDistance: 1.9363822
+  m_SuspensionDistance: 0.19620001
+  m_ForceAppPointDistance: 1.9363815
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1484,13 +1484,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
     m_AsymptoteValue: 0.5
-    m_Stiffness: 1
+    m_Stiffness: 2.2
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 3
   m_Enabled: 1
 --- !u!1 &4562750070788645255
 GameObject:
@@ -1763,11 +1763,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5764310552537337729}
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: -0.07, y: -0.57, z: 2}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: -1.1, y: -0.5, z: 2}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 944022558608448744}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!33 &7221992215154519491
 MeshFilter:
@@ -2182,10 +2182,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1280429839076925135}
   - {fileID: 2267064702744004611}
-  - {fileID: 2350484168904068345}
+  - {fileID: 1280429839076925135}
   - {fileID: 3448713082600409448}
+  - {fileID: 2350484168904068345}
   - {fileID: 5235046220188221716}
   m_Father: {fileID: 4566541717405194563}
   m_RootOrder: 5
