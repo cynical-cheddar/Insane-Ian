@@ -17,7 +17,7 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
     private void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Give the host a chance to load.
-        Invoke("populateOptions", 0.1f);
+        Invoke(nameof(populateOptions), 0.1f);
     }
 
     void populateOptions() {
@@ -52,7 +52,8 @@ public class ScoreboardTestingBehaviour : MonoBehaviour
         VehicleManager[] vehicles = FindObjectsOfType<VehicleManager>();
         foreach (VehicleManager vehicle in vehicles) {
             if (teamId == vehicle.teamId) {
-                vehicle.takeDamage(amount);
+
+                vehicle.TakeDamage(amount);
             }
         }
     }
