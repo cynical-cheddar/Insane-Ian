@@ -10,10 +10,15 @@ public class TurretController : MonoBehaviour
     private TurretFollowTarget turretFollowTarget;
     private GameObject defaultTarget;
     private GameObject targeter;
+    public bool inDeadZone {
+        get {
+            return turretFollowTarget.inDeadZone;
+        }
+    }
 
     void Start() {
         turretTarget = GetComponentInChildren<TurretTarget>();
-        turretFollowTarget = GetComponent<TurretFollowTarget>();
+        turretFollowTarget = GetComponentInChildren<TurretFollowTarget>();
         defaultTarget = turretFollowTarget.target;
     }
 

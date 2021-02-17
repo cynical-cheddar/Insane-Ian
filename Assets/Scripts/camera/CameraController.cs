@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+[VehicleScript(ScriptType.playerDriverScript)]
 public class CameraController : MonoBehaviour
 {
     public GameObject focus;
