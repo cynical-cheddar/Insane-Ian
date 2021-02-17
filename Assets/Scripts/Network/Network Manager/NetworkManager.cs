@@ -11,7 +11,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public int maxPlayerPairs = 24;
     
     public List<Transform> spawnPoints;
-    public Text statusText;
+
     public TimerBehaviour timer;
 
     public string version = "1.0";
@@ -26,10 +26,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartGame();
     }
 
-    void Update()
-    {
-        statusText.text = PhotonNetwork.NetworkClientState.ToString();
-    }
+
 
     public override void OnConnectedToMaster()
     {
