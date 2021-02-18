@@ -46,14 +46,8 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
     {
         return driverId;
     }
-    void Start()
+    void Awake()
     {
-        if (FindObjectOfType<GamestateTracker>() != null)
-        {
-            gamestateTracker = FindObjectOfType<GamestateTracker>();
-            gamestateTracker.ForceSynchronisePlayerSchema();
-        }
-
         MonoBehaviour[] scripts = GetComponentsInChildren<MonoBehaviour>(true);
         List<MonoBehaviour> playerDriverScriptsList = new List<MonoBehaviour>();
         List<MonoBehaviour> playerGunnerScriptsList = new List<MonoBehaviour>();
@@ -78,6 +72,14 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         playerGunnerScripts = playerGunnerScriptsList.ToArray();
         aiDriverScripts = aiDriverScriptsList.ToArray();
         aiGunnerScripts = aiGunnerScriptsList.ToArray();
+    }
+
+    void Start() {
+        if (FindObjectOfType<GamestateTracker>() != null)
+        {
+            gamestateTracker = FindObjectOfType<GamestateTracker>();
+            gamestateTracker.ForceSynchronisePlayerSchema();
+        }
     }
 
     [PunRPC]
