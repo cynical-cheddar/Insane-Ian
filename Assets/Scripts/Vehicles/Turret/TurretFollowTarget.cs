@@ -26,7 +26,7 @@ public class TurretFollowTarget : MonoBehaviour
         //foreach (TurretBody body in bodyComponents) {
         //    body.SetupParents();
         //}
-        if(barrelTransform == null)barrelTransform = transform.Find("BarrelHinge");
+        if (barrelTransform == null) barrelTransform = transform.Find("BarrelHinge");
         
         virtualRotation = transform.rotation;
     }
