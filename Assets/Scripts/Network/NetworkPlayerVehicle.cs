@@ -51,7 +51,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         if (FindObjectOfType<GamestateTracker>() != null)
         {
             gamestateTracker = FindObjectOfType<GamestateTracker>();
-            gamestateTracker.ForceSynchronisePlayerSchema();
+         //   gamestateTracker.ForceSynchronisePlayerSchema();
         }
 
         MonoBehaviour[] scripts = GetComponentsInChildren<MonoBehaviour>(true);

@@ -23,6 +23,7 @@ public class VehicleManager : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
+        if(GetComponent<PhotonView>().IsMine){
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
         networkManager = FindObjectOfType<NetworkManager>();
@@ -31,6 +32,7 @@ public class VehicleManager : MonoBehaviour
         icd = GetComponent<InterfaceCarDrive>();
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
+        }
     }
 
     // Update is called once per frame
