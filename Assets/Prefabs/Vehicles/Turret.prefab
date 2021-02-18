@@ -476,10 +476,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c374555457d445e3b7a800f56c9ed36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 0
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
+  bodyTransform: {fileID: 8611565673943315438}
+  barrelTransform: {fileID: 8611565673112314574}
 --- !u!95 &477244515141974662
 Animator:
   serializedVersion: 3
@@ -732,6 +730,7 @@ MonoBehaviour:
   upTraverse: 60
   downTraverse: 30
   inDeadZone: 1
+  barrelTransform: {fileID: 0}
 --- !u!1 &8611565674323517063
 GameObject:
   m_ObjectHideFlags: 0
