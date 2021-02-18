@@ -193,7 +193,7 @@ public class Weapon : MonoBehaviour
 
     protected void UpdateHud()
     {
-        if (weaponUi != null && gunnerPhotonView.IsMine && myPlayerId == gunnerPhotonView.Owner.ActorNumber)
+        if (weaponUi != null && gunnerPhotonView.IsMine && myPlayerId == gunnerPhotonView.Controller.ActorNumber)
         {
             weaponUi.UpdateAmmo(currentSalvo, salvoSize, reserveAmmo);
             weaponUi.SetWeaponNameText(weaponName);

@@ -13,8 +13,9 @@ public class TurretFollowTarget : MonoBehaviour
     public float upTraverse = 45;
     public float downTraverse = 45;
     public bool inDeadZone = true;
-    private Transform barrelTransform;
+    public  Transform barrelTransform;
     private Quaternion virtualRotation;
+    
     //private List<TurretBody> bodyComponents;
 
     // Start is called before the first frame update
@@ -25,7 +26,8 @@ public class TurretFollowTarget : MonoBehaviour
         //foreach (TurretBody body in bodyComponents) {
         //    body.SetupParents();
         //}
-        barrelTransform = transform.Find("BarrelHinge");
+        if (barrelTransform == null) barrelTransform = transform.Find("BarrelHinge");
+        
         virtualRotation = transform.rotation;
     }
 

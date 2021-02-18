@@ -203,11 +203,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58639.707
-    damper: 11141.544
+    spring: 58300.65
+    damper: 11077.123
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7409515
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -397,11 +397,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91360.695
-    damper: 17358.531
+    spring: 91699.35
+    damper: 17422.875
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7409515
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -508,7 +508,7 @@ Rigidbody:
   m_AngularDrag: 0.1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &2171220454253089731
@@ -639,12 +639,7 @@ MonoBehaviour:
   playerDriverScripts:
   - {fileID: 8841597533830405743}
   - {fileID: 6808530692672840039}
-  playerGunnerScripts:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  playerGunnerScripts: []
   aiDriverScripts: []
   aiGunnerScripts: []
   botDriver: 0
@@ -764,11 +759,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58639.32
-    damper: 11141.471
+    spring: 58300.637
+    damper: 11077.12
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7409515
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -825,11 +820,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91360.3
-    damper: 17358.455
+    spring: 91699.35
+    damper: 17422.877
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7409515
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1607,6 +1602,46 @@ PrefabInstance:
       propertyPath: m_Heading.m_Definition
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7413485984374019376, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: field of view
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485984374019383, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.4920354
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485984374019383, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -6.420718
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485984374019383, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -13.575864
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485984374019383, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99251485
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485984374019383, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.12212425
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485984374019383, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.000000004269397
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485984374019383, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -5.2532906e-10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bd39d35559cd7847a797f87b4c3577e, type: 3}
 --- !u!4 &8841597533830405740 stripped
@@ -1634,6 +1669,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8777839310869841355}
     m_Modifications:
+    - target: {fileID: 3260919148378322424, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: ShoulderOffset.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3933001930605163425, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: barrelTransform
+      value: 
+      objectReference: {fileID: 2916141348327223427}
+    - target: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[0].weapons.Array.data[0]
@@ -1699,8 +1749,39 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turret
       objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.8999997
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950278, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f84a8310268c4376bb6a418458e0579, type: 3}
+--- !u!4 &2916141348304363309 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8611565673091648864, guid: 8f84a8310268c4376bb6a418458e0579,
+    type: 3}
+  m_PrefabInstance: {fileID: 6915939415484387917}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7049704973741281341 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
@@ -1713,21 +1794,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &2916141348304363309 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8611565673091648864, guid: 8f84a8310268c4376bb6a418458e0579,
+--- !u!95 &6441793548522858699 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
     type: 3}
   m_PrefabInstance: {fileID: 6915939415484387917}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &2916141348327223427 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8611565673112314574, guid: 8f84a8310268c4376bb6a418458e0579,
-    type: 3}
-  m_PrefabInstance: {fileID: 6915939415484387917}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &6441793548522858699 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
     type: 3}
   m_PrefabInstance: {fileID: 6915939415484387917}
   m_PrefabAsset: {fileID: 0}
