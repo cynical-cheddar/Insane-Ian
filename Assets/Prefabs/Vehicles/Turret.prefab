@@ -140,9 +140,8 @@ GameObject:
   - component: {fileID: 1777683947695822236}
   - component: {fileID: 3901734203457642238}
   - component: {fileID: 3579069706293912947}
-  - component: {fileID: 9063615403132185881}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,7 +157,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.8, y: 0.3, z: 0.8}
-  m_Children: []
+  m_Children:
+  - {fileID: 5034970401424759040}
   m_Father: {fileID: 8611565673943315438}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -211,19 +211,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &9063615403132185881
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 296801962707912058}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2328535958084676606
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,7 +222,6 @@ GameObject:
   - component: {fileID: 7125790997404546552}
   - component: {fileID: 6049922466073093750}
   - component: {fileID: 3010185096703292688}
-  - component: {fileID: 7747525155636376708}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -306,19 +292,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &7747525155636376708
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2328535958084676606}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5477086731389664978
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,12 +317,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5477086731389664978}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0.294}
-  m_LocalScale: {x: 0.78246343, y: 0.35095343, z: 0.058796}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.3674984}
+  m_LocalScale: {x: 0.9780793, y: 1.1698446, z: 0.073495}
   m_Children: []
-  m_Father: {fileID: 8611565673091648864}
-  m_RootOrder: 3
+  m_Father: {fileID: 1777683947695822236}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1114384448433578770
 MeshFilter:
@@ -436,7 +409,6 @@ Transform:
   - {fileID: 8611565673943315438}
   - {fileID: 8611565674475950277}
   - {fileID: 8611565674571001527}
-  - {fileID: 5034970401424759040}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -555,7 +527,6 @@ GameObject:
   - component: {fileID: 8611565673112314574}
   - component: {fileID: 8611565673112314561}
   - component: {fileID: 8611565673112314560}
-  - component: {fileID: 8611565673112314575}
   m_Layer: 0
   m_Name: BarrelHinge
   m_TagString: TurretBarrel
@@ -627,19 +598,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8611565673112314575
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8611565673112314573}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8611565673140547165
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,7 +640,6 @@ GameObject:
   - component: {fileID: 8611565673943315438}
   - component: {fileID: 8611565673943315425}
   - component: {fileID: 8611565673943315424}
-  - component: {fileID: 8611565673943315439}
   - component: {fileID: 3933001930605163425}
   m_Layer: 0
   m_Name: BodyCentre
@@ -756,19 +713,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8611565673943315439
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8611565673943315437}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3933001930605163425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -879,7 +823,7 @@ MonoBehaviour:
   CameraDistance: 2
   CameraCollisionFilter:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 0
   IgnoreTag: 
   CameraRadius: 0.2
 --- !u!1 &8611565674475950276
