@@ -10,7 +10,7 @@ public class TurretTarget : MonoBehaviour
     public float downTraverse = 30;
 
     // Update is called once per frame
-    void FixedUpdate()
+    public void UpdateAngle()
     {
         transform.eulerAngles = new Vector3(pitch, yaw, 0f);
         float localPitch = transform.localEulerAngles.x;
