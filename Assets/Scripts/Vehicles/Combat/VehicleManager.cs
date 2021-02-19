@@ -41,13 +41,18 @@ public class VehicleManager : MonoBehaviour
     }
 
     [PunRPC]
+    public void SetTeamId_RPC(int newId) {
+        teamId = newId;
+    }
+
+    [PunRPC]
     void TakeDamage_RPC(string weaponDetailsJson)
     {
         Weapon.WeaponDamageDetails weaponDamageDetails =
             JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
         lastHitDetails = weaponDamageDetails;
         float amount = weaponDamageDetails.damage;
-    //    Debug.Log("Damage taken by: " + weaponDamageDetails.sourcePlayerNickName);
+        Debug.Log("Damage taken by: " + weaponDamageDetails.sourcePlayerNickName);
         if (health > 0) {
             health -= amount;
             if (health <= 0&&!isDead && driverPhotonView.IsMine)
