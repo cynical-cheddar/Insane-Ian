@@ -67,11 +67,13 @@ public class VehicleManager : MonoBehaviour
     [PunRPC]
     void TakeAnonymousDamage_RPC(float amount)
     {
-      //  Debug.Log("Taken anonymous damage");
+        Debug.Log("Taken anonymous damage");
         if (health > 0) {
             health -= amount;
+            Debug.Log("passed health check");
             if (health <= 0&&!isDead && driverPhotonView.IsMine)
             {
+                Debug.Log("passed death check");
                 // die is only called once, by the driver
                 isDead = true;
                 Die(true, false);
