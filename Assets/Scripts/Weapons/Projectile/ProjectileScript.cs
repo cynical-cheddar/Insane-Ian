@@ -57,6 +57,7 @@ public class ProjectileScript : MonoBehaviour
         
         if (hitVm != null)
         {
+            // call take damage rpc
             hitVm.TakeDamage(weaponDamageDetails);
         }
 
