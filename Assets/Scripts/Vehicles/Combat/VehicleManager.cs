@@ -19,6 +19,7 @@ public class VehicleManager : MonoBehaviour
     public GameObject temporaryDeathExplosion;
     PhotonView gamestateTrackerPhotonView;
     bool isDead = false;
+    HealthBehaviour healthBehaviour;
     
     Weapon.WeaponDamageDetails lastHitDetails;
 
@@ -33,11 +34,13 @@ public class VehicleManager : MonoBehaviour
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
         driverPhotonView = GetComponent<PhotonView>();
+        healthBehaviour = FindObjectOfType<HealthBehaviour>();
+        healthBehaviour.SetHealth(maxHealth);
     }
 
     // Update is called once per frame
-    void Update() { 
-        
+    void Update() {
+        healthBehaviour.SetHealth(health);
     }
 
     [PunRPC]
@@ -115,6 +118,8 @@ public class VehicleManager : MonoBehaviour
     
     // Die is a LOCAL function that is only called by the driver when they get dead.
     void Die(bool updateDeath, bool updateKill) {
+        healthBehaviour.SetHealth(0f);
+        
         // Update gamestate
         
         // update my deaths
