@@ -112,6 +112,7 @@ public class ProjectileWeapon : Weapon
             projectile.transform.position = newPos;
             projectile.GetComponent<Rigidbody>().AddForce(projectileSpeed *(projectile.transform.forward) , ForceMode.VelocityChange);  
         }
+        Destroy(projectile, 6f);
         
     }
 }

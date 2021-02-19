@@ -34,6 +34,11 @@ public class CameraController : MonoBehaviour
         driveCamFix = driveCamFixGO.GetComponent<CinemachineFreeLook>();
         driveCamFixRev = driveCamFixRevGO.GetComponent<CinemachineFreeLook>();
 
+        driveCam.enabled = true;
+        driveCamRev.enabled = true;
+        driveCamFix.enabled = true;
+        driveCamFixRev.enabled = true;
+
         driveCam.Priority = 0;
         driveCamRev.Priority = 0;
         driveCamFix.Priority = 1;
@@ -46,6 +51,10 @@ public class CameraController : MonoBehaviour
         driveCamFix.Follow = focus.transform;
         driveCamFixRev.LookAt = focus.transform;
         driveCamFixRev.Follow = focus.transform;
+        driveCamGO.SetActive(false);
+        driveCamRevGO.SetActive(false);
+        driveCamFixGO.SetActive(true);
+        driveCamFixRevGO.SetActive(false);
 
     }
 
@@ -79,6 +88,10 @@ public class CameraController : MonoBehaviour
                     driveCamRev.Priority = 0;
                     driveCamFix.Priority = 0;
                     driveCamFixRev.Priority = 1;
+                    driveCamGO.SetActive(false);
+                    driveCamRevGO.SetActive(false);
+                    driveCamFixGO.SetActive(false);
+                    driveCamFixRevGO.SetActive(true);
                     driveCamFixRev.m_YAxis.Value = driveCamRev.m_YAxis.Value;
                 }
                 else
@@ -87,6 +100,10 @@ public class CameraController : MonoBehaviour
                     driveCamRev.Priority = 0;
                     driveCamFix.Priority = 1;
                     driveCamFixRev.Priority = 0;
+                    driveCamGO.SetActive(false);
+                    driveCamRevGO.SetActive(false);
+                    driveCamFixGO.SetActive(true);
+                    driveCamFixRevGO.SetActive(false);
                     driveCamFix.m_YAxis.Value = driveCam.m_YAxis.Value;
                 }
             }
@@ -98,6 +115,10 @@ public class CameraController : MonoBehaviour
                     driveCamRev.Priority = 1;
                     driveCamFix.Priority = 0;
                     driveCamFixRev.Priority = 0;
+                    driveCamGO.SetActive(false);
+                    driveCamRevGO.SetActive(true);
+                    driveCamFixGO.SetActive(false);
+                    driveCamFixRevGO.SetActive(false);
                     driveCamRev.m_XAxis.Value = 180;
                     driveCamRev.m_YAxis.Value = driveCamFixRev.m_YAxis.Value;
                 }
@@ -107,6 +128,10 @@ public class CameraController : MonoBehaviour
                     driveCamRev.Priority = 0;
                     driveCamFix.Priority = 0;
                     driveCamFixRev.Priority = 0;
+                    driveCamGO.SetActive(true);
+                    driveCamRevGO.SetActive(false);
+                    driveCamFixGO.SetActive(false);
+                    driveCamFixRevGO.SetActive(false);
                     driveCam.m_XAxis.Value = 0;
                     driveCam.m_YAxis.Value = driveCamFix.m_YAxis.Value;
                 }

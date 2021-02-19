@@ -987,7 +987,6 @@ GameObject:
   - component: {fileID: 4606742867621491589}
   - component: {fileID: 4522927849486151433}
   - component: {fileID: 4522927851728215797}
-  - component: {fileID: 4562613177804665767}
   - component: {fileID: 4562613177804665766}
   - component: {fileID: 4562613177804665761}
   - component: {fileID: 3354274778234326111}
@@ -1075,42 +1074,6 @@ MonoBehaviour:
   stepsBelow: 5
   stepsAbove: 1
   driveType: 0
---- !u!114 &4562613177804665767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4562750068558335707}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2c49c9f0aaa84e46a1444a4bd63a07e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vehicleTransform: {fileID: 4566541717405194563}
-  checkForPhotonView: 1
-  freelookCamGameObject: {fileID: 2091515335780806060, guid: 58d038b282a35164485e49f894230ff0,
-    type: 3}
-  freeLookCam: {fileID: 0}
-  speedX: 300
-  speedY: 1
-  directControl: 1
-  scrollSensitivity: 1
-  zoomLevel: 0.5
-  m_OrbitsFar:
-  - m_Height: 20
-    m_Radius: 16
-  - m_Height: 0
-    m_Radius: 16
-  - m_Height: -20
-    m_Radius: 16
-  m_OrbitsNear:
-  - m_Height: 20
-    m_Radius: 6
-  - m_Height: 0
-    m_Radius: 6
-  - m_Height: -20
-    m_Radius: 6
 --- !u!114 &4562613177804665766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2381,10 +2344,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: CameraGO
       objectReference: {fileID: 0}
+    - target: {fileID: 7413485982633627335, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485982903402808, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7413485983326517461, guid: 1bd39d35559cd7847a797f87b4c3577e,
         type: 3}
       propertyPath: m_Heading.m_Definition
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485983386512299, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413485983466793410, guid: 1bd39d35559cd7847a797f87b4c3577e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7413485983517451986, guid: 1bd39d35559cd7847a797f87b4c3577e,
         type: 3}
