@@ -83,16 +83,9 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.Accellerate() {
-        //assume accellerating
-        if (is4WD) {
-            frontLeftW.motorTorque = motorTorque;
-            frontRightW.motorTorque = motorTorque;
-        }
-        rearLeftW.motorTorque = motorTorque;
-        rearRightW.motorTorque = motorTorque;
-
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
+            ((IDrivable)this).StopBrake();
             rearLeftW.motorTorque = motorTorque;
             rearRightW.motorTorque = motorTorque;
             if (is4WD) {
@@ -105,9 +98,9 @@ public class InterfaceCarDrive : MonoBehaviour, IDrivable {
 
     }
     void IDrivable.Reverse() {
-
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
+            ((IDrivable)this).StopBrake();
             rearLeftW.motorTorque = -motorTorque;
             rearRightW.motorTorque = -motorTorque;
             if (is4WD) {
