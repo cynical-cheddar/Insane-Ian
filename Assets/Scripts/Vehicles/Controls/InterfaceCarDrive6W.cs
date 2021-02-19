@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class InterfaceController6 : MonoBehaviour, IDrivable {
+public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
     // Start is called before the first frame update
+
 
     [Header("Wheel Colliders:")]
     public WheelCollider frontLeftW;
@@ -30,7 +31,7 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
     [Range(12, 35)]
     public float maxSteerAngle = 20;
     [Range(1000, 10000)]
-    public float motorTorque = 6000;
+    public float motorTorque = 3000;
     [Range(2000, 20000)]
     public float brakeTorque = 8000;
     [Range(0, 30000)]
@@ -81,6 +82,7 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
         steerAngle += delta;
         frontLeftW.steerAngle = steerAngle;
         frontRightW.steerAngle = steerAngle;
+
 
     }
 
