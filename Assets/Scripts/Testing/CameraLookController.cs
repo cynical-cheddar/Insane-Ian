@@ -6,6 +6,7 @@ using System;
 using Photon.Pun;
 using UnityEngine.Experimental.GlobalIllumination;
 
+[VehicleScript(ScriptType.playerDriverScript)]
 public class CameraLookController : MonoBehaviourPunCallbacks
 {
     //public List<CinemachineVirtualCameraBase> CameraBases;
@@ -79,7 +80,7 @@ public class CameraLookController : MonoBehaviourPunCallbacks
     private void Start()
     {
         if (vehicleTransform == null) vehicleTransform = transform;
-        Debug.Log("spawning camera rig");
+        //Debug.Log("spawning camera rig");
             freelookcamInstance = Instantiate(freelookCamGameObject, transform.position, transform.rotation);
             freeLookCam = freelookcamInstance.GetComponent<CinemachineFreeLook>();
             freeLookCam.m_Follow = vehicleTransform;
@@ -97,7 +98,7 @@ public class CameraLookController : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
         if (vehicleTransform == null) vehicleTransform = transform;
-        Debug.Log("spawning camera rig");
+        //Debug.Log("spawning camera rig");
         freelookcamInstance = Instantiate(freelookCamGameObject, transform.position, transform.rotation);
         freeLookCam = freelookcamInstance.GetComponent<CinemachineFreeLook>();
         freeLookCam.m_Follow = vehicleTransform;
