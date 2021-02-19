@@ -85,14 +85,10 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.Accellerate() {
-        //assume accellerating
-        frontLeftW.motorTorque = motorTorque;
-        frontRightW.motorTorque = motorTorque;
-        rearLeft1W.motorTorque = motorTorque;
-        rearLeft2W.motorTorque = motorTorque;
-        rearRight1W.motorTorque = motorTorque;
+        //check if needing to brake or accellerate
         rearRight2W.motorTorque = motorTorque;
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
+            ((IDrivable)this).StopBrake();
             frontLeftW.motorTorque = motorTorque;
             frontRightW.motorTorque = motorTorque;
             rearLeft1W.motorTorque = motorTorque;
@@ -106,11 +102,9 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
 
     }
     void IDrivable.Reverse() {
-
-
-
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
+            ((IDrivable)this).StopBrake();
             frontLeftW.motorTorque = -motorTorque;
             frontRightW.motorTorque = -motorTorque;
             rearLeft1W.motorTorque = -motorTorque;
@@ -125,7 +119,6 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.Brake() {
-
         //brake all wheels
         frontLeftW.brakeTorque = brakeTorque;
         frontRightW.brakeTorque = brakeTorque;
@@ -196,7 +189,7 @@ public class InterfaceController6 : MonoBehaviour, IDrivable {
     }
 
     void IDrivable.StopSteer() {
-        //steer towards zero
+        //steer towards 0
         ((IDrivable)this).Steer(0);
     }
 }
