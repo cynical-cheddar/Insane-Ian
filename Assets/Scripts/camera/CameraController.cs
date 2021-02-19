@@ -34,6 +34,11 @@ public class CameraController : MonoBehaviour
         driveCamFix = driveCamFixGO.GetComponent<CinemachineFreeLook>();
         driveCamFixRev = driveCamFixRevGO.GetComponent<CinemachineFreeLook>();
 
+        driveCam.enabled = true;
+        driveCamRev.enabled = true;
+        driveCamFix.enabled = true;
+        driveCamFixRev.enabled = true;
+
         driveCam.Priority = 0;
         driveCamRev.Priority = 0;
         driveCamFix.Priority = 1;
