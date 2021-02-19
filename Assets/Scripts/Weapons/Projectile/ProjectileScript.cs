@@ -7,6 +7,7 @@ public class ProjectileScript : MonoBehaviour
     public GameObject impactParticle;
     public GameObject missImpactParticle;
     public GameObject projectileParticle;
+    GameObject projectileParticleInstance;
     public GameObject[] trailParticles;
     [HideInInspector]
     public Vector3 impactNormal; //Used to rotate impactparticle.
@@ -33,8 +34,8 @@ public class ProjectileScript : MonoBehaviour
     
     void Start()
     {
-        projectileParticle = Instantiate(projectileParticle, transform.position, transform.rotation) as GameObject;
-        projectileParticle.transform.parent = transform;
+        projectileParticleInstance = Instantiate(projectileParticle, transform.position, transform.rotation) as GameObject;
+        projectileParticleInstance.transform.parent = transform;
     }
 
     void OnCollisionEnter(Collision hit)
@@ -48,7 +49,6 @@ public class ProjectileScript : MonoBehaviour
             VisualCollisionHandler();
         }
     }
-
     // applies damage to the enemy (if we hit an enemy)
     
     // TODO - get health and apply damage
@@ -99,11 +99,11 @@ public class ProjectileScript : MonoBehaviour
 
         foreach (GameObject trail in trailParticles)
         {
-            GameObject curTrail = transform.Find(projectileParticle.name + "/" + trail.name).gameObject;
+            GameObject curTrail = transform.Find(projectileParticleInstance.name + "/" + trail.name).gameObject;
             curTrail.transform.parent = null;
             Destroy(curTrail, 3f);
         }
-        Destroy(projectileParticle, 3f);
+        Destroy(projectileParticleInstance, 3f);
 
         
         Destroy(gameObject);
