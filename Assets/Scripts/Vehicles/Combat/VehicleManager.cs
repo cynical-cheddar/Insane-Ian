@@ -41,13 +41,18 @@ public class VehicleManager : MonoBehaviour
     }
 
     [PunRPC]
+    public void SetTeamId_RPC(int newId) {
+        teamId = newId;
+    }
+
+    [PunRPC]
     void TakeDamage_RPC(string weaponDetailsJson)
     {
         Weapon.WeaponDamageDetails weaponDamageDetails =
             JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
         lastHitDetails = weaponDamageDetails;
         float amount = weaponDamageDetails.damage;
-    //    Debug.Log("Damage taken by: " + weaponDamageDetails.sourcePlayerNickName);
+        Debug.Log("Damage taken by: " + weaponDamageDetails.sourcePlayerNickName);
         if (health > 0) {
             health -= amount;
             if (health <= 0&&!isDead && driverPhotonView.IsMine)
@@ -67,11 +72,13 @@ public class VehicleManager : MonoBehaviour
     [PunRPC]
     void TakeAnonymousDamage_RPC(float amount)
     {
-      //  Debug.Log("Taken anonymous damage");
+        Debug.Log("Taken anonymous damage");
         if (health > 0) {
             health -= amount;
+            Debug.Log("passed health check");
             if (health <= 0&&!isDead && driverPhotonView.IsMine)
             {
+                Debug.Log("passed death check");
                 // die is only called once, by the driver
                 isDead = true;
                 Die(true, false);
