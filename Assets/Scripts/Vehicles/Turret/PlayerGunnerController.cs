@@ -5,13 +5,13 @@ using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
 
+[VehicleScript(ScriptType.playerGunnerScript)]
 public class PlayerGunnerController : MonoBehaviour
 {
     new public CinemachineVirtualCamera camera;
     public float cameraSensitivity = 1;
     private TurretController turretController;
     public GunnerWeaponManager gunnerWeaponManager;
-    public TurretFollowTarget turretFollowTarget;
     public Transform barrelTransform;
     public PhotonView gunnerPhotonView;
     Transform cam;
@@ -53,7 +53,7 @@ public class PlayerGunnerController : MonoBehaviour
             if (gunnerPhotonView.IsMine)
             {
                 Vector3 targetHitpoint;
-                if (turretFollowTarget.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
+                if (turretController.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
                 else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
                 
                 gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
@@ -63,6 +63,7 @@ public class PlayerGunnerController : MonoBehaviour
         
         turretController.ChangeTargetYaw(cameraSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime);
         turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime));
+        turretController.UpdateTargeterRotation();
     }
 
     Vector3 CalculateTargetingHitpoint(Transform sourceTransform)

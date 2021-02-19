@@ -6,6 +6,7 @@ using System;
 using Photon.Pun;
 using UnityEngine.Experimental.GlobalIllumination;
 
+[VehicleScript(ScriptType.playerDriverScript)]
 public class CameraLookController : MonoBehaviourPunCallbacks
 {
     //public List<CinemachineVirtualCameraBase> CameraBases;
