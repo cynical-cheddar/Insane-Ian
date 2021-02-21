@@ -74,6 +74,24 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             delta *= -1;
         }
 
+        float stiffness;
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
+        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
+
+        stiffness = 0.3f + Mathf.Abs(steerAngle / maxSteerAngle);
+        Debug.Log("Stiffness" + stiffness);
+        flC.extremumSlip = stiffness;
+        frC.extremumSlip = stiffness;
+        rlC.extremumSlip = stiffness;
+        rrC.extremumSlip = stiffness;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeftW.sidewaysFriction = rlC;
+        rearRightW.sidewaysFriction = rrC;
+
 
         //set the steer angle
         steerAngle += delta;
