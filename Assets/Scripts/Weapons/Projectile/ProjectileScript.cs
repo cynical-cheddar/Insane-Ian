@@ -32,11 +32,13 @@ public class ProjectileScript : MonoBehaviour
         trueProjectile = set;
     }
     
-    void Start()
+    public void ActivateProjectile()
     {
         projectileParticleInstance = Instantiate(projectileParticle, transform.position, transform.rotation) as GameObject;
         projectileParticleInstance.transform.parent = transform;
     }
+
+
 
     void OnCollisionEnter(Collision hit)
     {

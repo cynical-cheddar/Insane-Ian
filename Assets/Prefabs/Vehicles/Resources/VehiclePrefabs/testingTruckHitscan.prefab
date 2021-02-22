@@ -405,8 +405,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.637
-    damper: 11077.12
+    spring: 58300.65
+    damper: 11077.123
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.7363883
@@ -784,8 +784,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.65
-    damper: 11077.123
+    spring: 58300.637
+    damper: 11077.12
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.7363883
@@ -939,7 +939,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 3157024804456373198}
-  viewIdField: 0
+  viewIdField: 4
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &4183121624047658039
@@ -991,24 +991,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 391f8e425e2c6aa48ac7f05217628bea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frontLeftW: {fileID: 3014794261391876225}
-  frontRightW: {fileID: 3014794268019263121}
-  rearLeftW: {fileID: 3014794268401621371}
-  rearRightW: {fileID: 3014794266758154077}
-  is4WD: 1
-  frontLeftT: {fileID: 862318942315225195}
-  frontRightT: {fileID: 379615117867071143}
-  rearLeftT: {fileID: 4277825434634936576}
-  rearRightT: {fileID: 3755774706672526481}
-  carRB: {fileID: 3129959876534246381}
-  carTransform: {fileID: 3161021888845082923}
-  maxSteerAngle: 20
-  motorTorque: 4000
-  brakeTorque: 7000
-  brakeForce: 20000
-  steerRate: 1
-  steerRateCoefficent: 0.05
-  addedDownforce: {x: 0, y: 0, z: 0}
 --- !u!114 &7644993226515248581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248,7 +1230,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 1
   ObservedComponents: []
-  viewIdField: 0
+  viewIdField: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &7720356263250957505
@@ -1308,20 +1290,19 @@ MonoBehaviour:
   primaryFireAnimatorTriggerName: Fire
   weaponPhotonView: {fileID: 3775347181636900369}
   gunnerPhotonView: {fileID: 6174768312829461663}
-  sourceCam: {fileID: 0}
   weaponFireSound: {fileID: 8300000, guid: b61d95b82840d5941acf99b26909f2e5, type: 3}
+  muzzleflashVolume: 0.3
   impactParticleSound: {fileID: 8300000, guid: d3c93452fd29dae49a849a1fe977c52d, type: 3}
+  imapactParticleVolume: 0.8
   impactParticleSoundMiss: {fileID: 8300000, guid: a7a98f71358637345b38ad21620ce6b5,
     type: 3}
+  missImpactParticleVolume: 0.7
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
   muzzleflash: {fileID: 1256538573138234745, guid: 1c7dc0b55fe10d149bf2e550ee9762b9,
     type: 3}
-  muzzleflashVolume: 0.3
   imapactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
-  imapactParticleVolume: 0.8
-  missImpactParticleVolume: 0.7
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
   fireDummyProjectile: 1
@@ -1443,7 +1424,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 1
   ObservedComponents: []
-  viewIdField: 0
+  viewIdField: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &842747609532205620
@@ -1503,24 +1484,26 @@ MonoBehaviour:
   primaryFireAnimatorTriggerName: Fire
   weaponPhotonView: {fileID: 2369614070514636388}
   gunnerPhotonView: {fileID: 6174768312829461663}
-  sourceCam: {fileID: 0}
   weaponFireSound: {fileID: 8300000, guid: fba8be6c5fcdda041bc57a661595a34d, type: 3}
+  muzzleflashVolume: 1
   impactParticleSound: {fileID: 8300000, guid: 518cbf2ea3689914ea8e3b6b30f5502f, type: 3}
+  imapactParticleVolume: 1
   impactParticleSoundMiss: {fileID: 8300000, guid: a7a98f71358637345b38ad21620ce6b5,
     type: 3}
+  missImpactParticleVolume: 1
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
   muzzleflash: {fileID: 1256538573138234745, guid: 1c7dc0b55fe10d149bf2e550ee9762b9,
     type: 3}
-  muzzleflashVolume: 1
   imapactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
-  imapactParticleVolume: 1
-  missImpactParticleVolume: 1
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
   projectilePrefab: {fileID: 1540927066135063348, guid: 2c93f0aed6cd60541bb19e1a6c3ee024,
     type: 3}
+  projectileParticleEffectPrefab: {fileID: 7024580045867898594, guid: 6879eed96b783c74fa887779f72a7a52,
+    type: 3}
+  projectileMass: 10
   projectileSpeed: 100
   inheritVelocityFromVehicle: 1
 --- !u!1 &6593085409334274025
@@ -1792,7 +1775,7 @@ PrefabInstance:
     - target: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: viewIdField
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}

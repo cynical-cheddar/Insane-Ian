@@ -8,7 +8,8 @@ public class ProjectileWeapon : Weapon
 
     [Header("Projectile Settings")]
     public GameObject projectilePrefab;
-    
+    public GameObject projectileParticleEffectPrefab;
+    public float projectileMass = 10f;
     public float projectileSpeed = 100f;
     public bool inheritVelocityFromVehicle = false;
     private Rigidbody parentRigidbody;
@@ -78,6 +79,7 @@ public class ProjectileWeapon : Weapon
         // if we are the owner of the photonview, then fire the real projectile
         GameObject projectile = Instantiate(projectilePrefab, barrelTransform.position, barrelTransform.rotation);
         ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();
+        projScript.projectileParticle = projectileParticleEffectPrefab;
         projScript.impactParticle = imapactParticle;
         projScript.missImpactParticle = missImpactParticle;
         StopProjectileCollisionsWithSelf(projectile);
@@ -91,6 +93,7 @@ public class ProjectileWeapon : Weapon
         projScript.hitSound = impactParticleSound;
         projScript.missSound = impactParticleSoundMiss;
         PlayAudioClipOneShot(weaponFireSound);
+        projectile.GetComponent<Rigidbody>().mass = projectileMass;
         // FIRE REAL PROJECTILE
         if (gunnerPhotonView.IsMine)
         {

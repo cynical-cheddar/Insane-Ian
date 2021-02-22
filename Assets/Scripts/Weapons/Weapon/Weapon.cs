@@ -92,7 +92,7 @@ public class Weapon : MonoBehaviour
     public PhotonView weaponPhotonView;
     public PhotonView gunnerPhotonView;
 
-    public Transform sourceCam;
+  //  public Transform sourceCam;
     
    // [Header("UI")]
    
@@ -102,19 +102,22 @@ public class Weapon : MonoBehaviour
 
      [Header("Audio")]
     public AudioClip weaponFireSound;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] protected float muzzleflashVolume=1f;
     public AudioClip impactParticleSound;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] protected float imapactParticleVolume=1f;
     public AudioClip impactParticleSoundMiss;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] protected float missImpactParticleVolume=0.75f;
     public GameObject audioSourcePrefab;
     
     [Header("Effects")]
     [SerializeField] protected GameObject muzzleflash;
-    [Range(0.0f, 1.0f)]
-    [SerializeField] protected float muzzleflashVolume=1f;
+    
     [SerializeField] protected GameObject imapactParticle;
-    [Range(0.0f, 1.0f)]
-    [SerializeField] protected float imapactParticleVolume=1f;
-    [Range(0.0f, 1.0f)]
-    [SerializeField] protected float missImpactParticleVolume=0.75f;
+    
+
     [SerializeField] protected GameObject missImpactParticle;
     
     // ---------------------- COPY THESE FUNCTIONS FOR EACH CHILD CLASS --------------------------------//
