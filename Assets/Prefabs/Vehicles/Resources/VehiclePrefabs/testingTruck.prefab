@@ -203,11 +203,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.65
-    damper: 11077.123
+    spring: 58300.74
+    damper: 11077.14
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363822
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -397,11 +397,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.75
-    damper: 17422.953
+    spring: 91699.8
+    damper: 17422.96
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363822
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -582,7 +582,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 2284656620238966636}
-  viewIdField: 0
+  viewIdField: 7
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &1038595067741417621
@@ -722,11 +722,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.26
-    damper: 11077.049
+    spring: 58300.215
+    damper: 11077.041
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363822
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -783,11 +783,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.36
-    damper: 17422.879
+    spring: 91699.26
+    damper: 17422.86
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363822
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1282,7 +1282,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 1
   ObservedComponents: []
-  viewIdField: 0
+  viewIdField: 5
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &4600057851733646998
@@ -1300,6 +1300,7 @@ MonoBehaviour:
   weaponName: Projectile Weapon
   barrelTransform: {fileID: 2916141348327223427}
   barrelEndMuzzleTransform: {fileID: 2916141348327223427}
+  projectileDeviationDegrees: 0
   damageRampupMultiplierCurve:
     serializedVersion: 2
     m_Curve:
@@ -1341,24 +1342,26 @@ MonoBehaviour:
   primaryFireAnimatorTriggerName: Fire
   weaponPhotonView: {fileID: 1478928021139505862}
   gunnerPhotonView: {fileID: 7049704973741281341}
-  cam: {fileID: 0}
   weaponFireSound: {fileID: 8300000, guid: fba8be6c5fcdda041bc57a661595a34d, type: 3}
+  muzzleflashVolume: 1
   impactParticleSound: {fileID: 8300000, guid: 518cbf2ea3689914ea8e3b6b30f5502f, type: 3}
+  imapactParticleVolume: 1
   impactParticleSoundMiss: {fileID: 8300000, guid: a7a98f71358637345b38ad21620ce6b5,
     type: 3}
+  missImpactParticleVolume: 1
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
   muzzleflash: {fileID: 1256538573138234745, guid: 1c7dc0b55fe10d149bf2e550ee9762b9,
     type: 3}
-  muzzleflashVolume: 1
   imapactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
-  imapactParticleVolume: 1
-  missImpactParticleVolume: 1
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
   projectilePrefab: {fileID: 1540927066135063348, guid: 2c93f0aed6cd60541bb19e1a6c3ee024,
     type: 3}
+  projectileParticleEffectPrefab: {fileID: 7024580045867898594, guid: 6879eed96b783c74fa887779f72a7a52,
+    type: 3}
+  projectileMass: 10
   projectileSpeed: 100
   inheritVelocityFromVehicle: 1
 --- !u!1 &8006241792007648075
@@ -1665,7 +1668,7 @@ PrefabInstance:
     - target: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: viewIdField
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
