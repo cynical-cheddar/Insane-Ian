@@ -97,6 +97,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
 
     }
+
     void IDrivable.Reverse() {
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
@@ -179,6 +180,14 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     void IDrivable.StopSteer() {
         //steer towards 0
         ((IDrivable)this).Steer(0);
+    }
+
+    void IDrivable.Drift() {
+        throw new System.NotImplementedException();
+    }
+
+    void IDrivable.StopDrift() {
+        throw new System.NotImplementedException();
     }
 }
 
