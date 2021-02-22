@@ -190,6 +190,7 @@ public class HitscanWeapon : Weapon
             }
             // do the fire effect on our end
             
+            
             // ------------ local firing procedure:
             // if we hit, then fire a ray effect playing hitsound on hit
             if(raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)FireHitscanRoundEffect(raycastTracerDetails.worldHitPoint);
@@ -232,6 +233,12 @@ public class HitscanWeapon : Weapon
             // this is useful for very rapid fire weapons where we don't really care where the bullets graphically go
             if (useRapidFireOptimisation)
             {
+                // instantiate relevant hit impact on vehicle
+                if (raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget && useTracerHitCorrection)
+                {
+                    int hitTeamId = raycastTracerDetails.hitTransform.GetComponentInParent<NetworkPlayerVehicle>().teamId;
+                    weaponPhotonView.RPC(nameof(FireHitscanCorrectedImpact), RpcTarget.Others, raycastTracerDetails.localHitPoint, hitTeamId);
+                }
                 // this bool is synchronised via rpc on cooldown
                 // the fire effects will fire the gun graphically in its current direction as long as it is active, causing no actual damage
                 SetIsRemotelyFiring(true);
@@ -254,6 +261,7 @@ public class HitscanWeapon : Weapon
             Destroy(dummyProj, 0.2f);
         }
     }
+    
     
     [PunRPC]
     protected void FireHitscanRoundEffectNoValidTarget(Vector3 targetPoint)
@@ -306,8 +314,22 @@ public class HitscanWeapon : Weapon
         InstantiateMuzzleFlash(muzzleflash, 2f, muzzleflashChildOfBarrel);
         // instantiate impact at worldPoint
         InstantiateImpactEffect(imapactParticle, worldPoint, impactParticleSound, imapactParticleVolume, 2f);
-        
+        FireDummyProjectile(worldPoint);
         Debug.Log("FireHitscanRoundEffectCorrected: localTargetPoint " + localTargetPoint + " teamId " + hitTeamId + " worldPoint " + worldPoint);
+    }
+    [PunRPC]
+    protected void FireHitscanCorrectedImpact(Vector3 localTargetPoint, int hitTeamId)
+    {
+        
+        // the vehicle transform tracker should keep a reference of all vehicle transforms in the game
+        // get transform from team id
+        Transform targetVehicle = _playerTransformTracker.GetVehicleTransformFromTeamId(hitTeamId);
+        // convert local targetpoint into world point
+        Vector3 worldPoint = targetVehicle.TransformPoint(localTargetPoint);
+
+
+        // instantiate impact at worldPoint
+        InstantiateImpactEffect(imapactParticle, worldPoint, impactParticleSound, imapactParticleVolume, 2f);
     }
 
 
