@@ -4,21 +4,21 @@ using System.Collections;
 
 public class ProjectileScript : MonoBehaviour
 {
-    public GameObject impactParticle;
-    public GameObject missImpactParticle;
-    public GameObject projectileParticle;
+    GameObject impactParticle;
+    GameObject missImpactParticle;
+    GameObject projectileParticle;
     GameObject projectileParticleInstance;
-    public GameObject[] trailParticles;
+
     [HideInInspector]
     public Vector3 impactNormal; //Used to rotate impactparticle.
 
     private bool trueProjectile = false;
     private bool hasCollided = false;
 
-    public float impactParticleVolume = 1f;
-    public float missImpactParticleVolume = 0.75f;
-    public AudioClip hitSound;
-    public AudioClip missSound;
+    float impactParticleVolume = 1f;
+    float missImpactParticleVolume = 0.75f;
+    AudioClip hitSound;
+    AudioClip missSound;
     private Weapon.WeaponDamageDetails weaponDamageDetails = new Weapon.WeaponDamageDetails();
 
     VehicleManager hitVm;
@@ -32,8 +32,16 @@ public class ProjectileScript : MonoBehaviour
         trueProjectile = set;
     }
     
-    public void ActivateProjectile()
+    public void ActivateProjectile(GameObject imp, GameObject misImp, GameObject projParticle, AudioClip hitS, AudioClip missS, float hitVol, float missVol)
     {
+        impactParticle = imp;
+        missImpactParticle = misImp;
+        projectileParticle = projParticle;
+        hitSound = hitS;
+        missSound = missS;
+        impactParticleVolume = hitVol;
+        missImpactParticleVolume = missVol;
+        
         projectileParticleInstance = Instantiate(projectileParticle, transform.position, transform.rotation) as GameObject;
         projectileParticleInstance.transform.parent = transform;
     }
@@ -53,7 +61,7 @@ public class ProjectileScript : MonoBehaviour
     }
     // applies damage to the enemy (if we hit an enemy)
     
-    // TODO - get health and apply damage
+
     void DamageCollisionHandler(Collision hit)
     {
         
@@ -99,12 +107,6 @@ public class ProjectileScript : MonoBehaviour
             Destroy(missImpactParticleInstance, 5f);
         }
 
-        foreach (GameObject trail in trailParticles)
-        {
-            GameObject curTrail = transform.Find(projectileParticleInstance.name + "/" + trail.name).gameObject;
-            curTrail.transform.parent = null;
-            Destroy(curTrail, 3f);
-        }
         Destroy(projectileParticleInstance, 3f);
 
         
