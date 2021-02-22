@@ -2,16 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[VehicleScript(ScriptType.playerGunnerScript)]
+[VehicleScript(ScriptType.aiGunnerScript)]
 public class TurretController : MonoBehaviour
 {
     private TurretTarget turretTarget;
     private TurretFollowTarget turretFollowTarget;
     private GameObject defaultTarget;
     private GameObject targeter;
+    public bool inDeadZone {
+        get {
+            return turretFollowTarget.inDeadZone;
+        }
+    }
 
     void Start() {
         turretTarget = GetComponentInChildren<TurretTarget>();
-        turretFollowTarget = GetComponent<TurretFollowTarget>();
+        turretFollowTarget = GetComponentInChildren<TurretFollowTarget>();
         defaultTarget = turretFollowTarget.target;
     }
 
@@ -39,5 +46,9 @@ public class TurretController : MonoBehaviour
 
     public void ResetTarget() {
         turretFollowTarget.target = defaultTarget;
+    }
+
+    public void UpdateTargeterRotation() {
+        turretTarget.UpdateAngle();
     }
 }

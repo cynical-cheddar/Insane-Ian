@@ -102,24 +102,12 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
     public Player GetPlayerFromDetails(PlayerDetails pd)
     {
         return PhotonNetwork.CurrentRoom.GetPlayer(pd.playerId);
-
-        /*Player[] players = PhotonNetwork.PlayerList;
-
-        foreach (Player p in players)
-        {
-            if (p.NickName == pd.nickName)
-            {
-                return p;
-            }
-        }
-
-        return null;*/
     }
 
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("OnSceneLoaded: " + scene.name + " time to destroy the gametracker");
+        //Debug.Log("OnSceneLoaded: " + scene.name + " time to destroy the gametracker");
         
         if (destoryOnTheseLevels.Contains(scene.name))
         {
@@ -253,8 +241,8 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
     public void AddFirstPlayerToSchema(string serializedPlayerDetails)
     {
         PlayerDetails pd = JsonUtility.FromJson<PlayerDetails>(serializedPlayerDetails);
-        Debug.Log(serializedPlayerDetails);
-        Debug.Log(pd);
+        //Debug.Log(serializedPlayerDetails);
+        //Debug.Log(pd);
         schema.playerList[0] = pd;
     }
 
@@ -278,7 +266,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
     [PunRPC]
     void UpdatePlayerListFromMasterClient(string playerSchemaJSON)
     {
-        Debug.Log("playerListJSON = " + playerSchemaJSON);
+        //Debug.Log("playerListJSON = " + playerSchemaJSON);
         PlayerSchema newPlayerSchema = JsonUtility.FromJson<PlayerSchema>(playerSchemaJSON);
         schema = newPlayerSchema;
     }
@@ -295,7 +283,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
     {
         
         PlayerDetails pd = JsonUtility.FromJson<PlayerDetails>(serialisedPlayerDetails);
-        Debug.Log("adding player to schema: " + pd.nickName + " " + pd.playerId + " " + pd.role + " " + pd.teamId.ToString() + " bot status: " + pd.isBot.ToString());
+        //Debug.Log("adding player to schema: " + pd.nickName + " " + pd.playerId + " " + pd.role + " " + pd.teamId.ToString() + " bot status: " + pd.isBot.ToString());
         schema.playerList.Add(pd);
         ForceSynchronisePlayerSchema();
     }
@@ -387,83 +375,6 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
         }
         ForceSynchronisePlayerSchema();
     }
-
-    // JORDAN WILL DEPRECATE EVENTUALLY, DO NOT USE
-    [PunRPC]
-    public void UpdatePlayerRole(int id, string role)
-    {
-        bool found = false;
-        PlayerDetails oldRecord= schema.playerList[0];
-        PlayerDetails newRecord = schema.playerList[0];
-        foreach (PlayerDetails record in schema.playerList)
-        {
-            if (record.playerId == id)
-            {
-                found = true;
-                oldRecord = record;
-                newRecord = record;
-                newRecord.role = role;
-                
-            }
-        }
-        if (found)
-        {
-            schema.playerList.Remove(oldRecord);
-            schema.playerList.Add(newRecord);
-        }
-        ForceSynchronisePlayerSchema();
-    }
-    // JORDAN WILL DEPRECATE EVENTUALLY, DO NOT USE
-    [PunRPC]
-    public void UpdatePlayerCharacter(int id, string character)
-    {
-        bool found = false;
-        PlayerDetails oldRecord= schema.playerList[0];
-        PlayerDetails newRecord = schema.playerList[0];
-        foreach (PlayerDetails record in schema.playerList)
-        {
-            if (record.playerId == id)
-            {
-                found = true;
-                oldRecord = record;
-                newRecord = record;
-                newRecord.character = character;
-                
-            }
-        }
-        if (found)
-        {
-            schema.playerList.Remove(oldRecord);
-            schema.playerList.Add(newRecord);
-        }
-        ForceSynchronisePlayerSchema();
-    }
-    // JORDAN WILL DEPRECATE EVENTUALLY, DO NOT USE
-    [PunRPC]
-    public void UpdatePlayerTeam(int id, int team)
-    {
-        bool found = false;
-        PlayerDetails oldRecord= schema.playerList[0];
-        PlayerDetails newRecord = schema.playerList[0];
-        foreach (PlayerDetails record in schema.playerList)
-        {
-            if (record.playerId == id)
-            {
-                found = true;
-                oldRecord = record;
-                newRecord = record;
-                newRecord.teamId = team;
-                
-            }
-        }
-        if (found)
-        {
-            schema.playerList.Remove(oldRecord);
-            schema.playerList.Add(newRecord);
-        }
-        ForceSynchronisePlayerSchema();
-    }
-
 
     // return a list of pairs in the playerlist
     public List<List<PlayerDetails>> GetPlayerPairs()

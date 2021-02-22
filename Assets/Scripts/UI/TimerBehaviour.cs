@@ -10,6 +10,7 @@ public class TimerBehaviour : MonoBehaviour
     public float initialTime = 300;
     public Text timerText;
     [SerializeField] public Timer timer = new Timer();
+    bool gameOverLoading = false;
 
     [Serializable]
     public struct Timer {
@@ -25,6 +26,10 @@ public class TimerBehaviour : MonoBehaviour
         timer.timeLeft = time;
     }
 
+    private void Awake() {
+        timer.timeLeft = initialTime;
+    }
+
     // Time in seconds
     public void HostStartTimer() {
         if (PhotonNetwork.IsMasterClient) {
@@ -38,6 +43,9 @@ public class TimerBehaviour : MonoBehaviour
     private void Update() {
         timer.timeLeft -= Time.deltaTime;
         timerText.text = Mathf.RoundToInt(timer.timeLeft).ToString();
+        if (timer.timeLeft <= 0) {
+            EndGame();
+        }
     }
 
     void UpdateTimersForClients() {
@@ -50,6 +58,13 @@ public class TimerBehaviour : MonoBehaviour
         while (true) {
             yield return new WaitForSecondsRealtime(5);
             UpdateTimersForClients();
+        }
+    }
+
+    public void EndGame() {
+        if (!gameOverLoading && PhotonNetwork.IsMasterClient) {
+            gameOverLoading = true;
+            PhotonNetwork.LoadLevel("GameOver");
         }
     }
 }

@@ -146,6 +146,7 @@ public class MyCarController : MonoBehaviour {
         Brake();
         UpdateWheelPoses();
         rb.AddForce(addedDownforce);
+        Debug.LogError("Quit Using MyCarController you dumb dumb");
     }
 }
 

@@ -32,11 +32,13 @@ public class Weapon : MonoBehaviour
     {
         public string sourcePlayerNickName;
         public int sourcePlayerId;
+        public int sourceTeamId;
         public DamageType damageType;
         public float damage;
-        public WeaponDamageDetails(string nickName, int id, DamageType dt, float d)
+        public WeaponDamageDetails(string nickName, int id, int teamId ,DamageType dt, float d)
         {
             sourcePlayerId = id;
+            sourceTeamId = teamId;
             sourcePlayerNickName = nickName;
             damageType = dt;
             damage = d;
@@ -48,6 +50,8 @@ public class Weapon : MonoBehaviour
     protected string myNickName = "null";
 
     protected int myPlayerId = 0;
+
+    protected int myTeamId = 0;
     // Start is called before the first frame update
     [Header("Primary Properties")]
     public string weaponName = "defaultWeapon"; 
@@ -170,6 +174,7 @@ public class Weapon : MonoBehaviour
         {
             myNickName = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerNickName();
             myPlayerId = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerID();
+            myTeamId = GetComponentInParent<NetworkPlayerVehicle>().teamId;
         }
         else
         {
@@ -188,7 +193,7 @@ public class Weapon : MonoBehaviour
 
     protected void UpdateHud()
     {
-        if (weaponUi != null && gunnerPhotonView.IsMine && myPlayerId == gunnerPhotonView.Owner.ActorNumber)
+        if (weaponUi != null && gunnerPhotonView.IsMine && myPlayerId == gunnerPhotonView.Controller.ActorNumber)
         {
             weaponUi.UpdateAmmo(currentSalvo, salvoSize, reserveAmmo);
             weaponUi.SetWeaponNameText(weaponName);

@@ -121,10 +121,11 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         kickBotGunner.enabled = true;
         gunnerPlayerId = botId;
         gunnerSlotEmpty = false;
-        
-        gamestateTracker.UpdatePlayerRole(botId, "Gunner");
-        gamestateTracker.UpdatePlayerTeam(botId, teamId);
 
+        GamestateTracker.PlayerDetails botDetails = gamestateTracker.getPlayerDetails(botId);
+        botDetails.role = "Gunner";
+        botDetails.teamId = teamId;
+        gamestateTracker.UpdatePlayerWithNewRecord(botId, JsonUtility.ToJson(botDetails));
 
         gunnerPlayerText.text = gamestateTracker.getPlayerDetails(botId).nickName;
         
@@ -136,8 +137,12 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         kickBotDriver.enabled = true;
         driverPlayerId = botId;
         driverSlotEmpty = false;
-        gamestateTracker.UpdatePlayerRole(botId, "Driver");
-        gamestateTracker.UpdatePlayerTeam(botId, teamId);
+
+        GamestateTracker.PlayerDetails botDetails = gamestateTracker.getPlayerDetails(botId);
+        botDetails.role = "Driver";
+        botDetails.teamId = teamId;
+        gamestateTracker.UpdatePlayerWithNewRecord(botId, JsonUtility.ToJson(botDetails));
+
         driverPlayerText.text = gamestateTracker.getPlayerDetails(botId).nickName;
         
     }
@@ -173,20 +178,28 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             driverPlayerId = selectPlayer.ActorNumber;
             driverSlotEmpty = false;
             driverPlayerText.text = selectPlayer.NickName;
-            gamestateTracker.UpdatePlayerRole(selectPlayer.ActorNumber, "Driver");
-            gamestateTracker.UpdatePlayerTeam(selectPlayer.ActorNumber, teamId);
+
+            GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(selectPlayer.ActorNumber);
+            playerDetails.role = "Driver";
+            playerDetails.teamId = teamId;
+            gamestateTracker.UpdatePlayerWithNewRecord(selectPlayer.ActorNumber, JsonUtility.ToJson(playerDetails));
+
             if(PhotonNetwork.IsMasterClient) lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, 1);
     }
     [PunRPC]
     public void deselectDriver(Player deselectPlayer)
     {
-    
+        
         driverPlayerId = 0;
         driverSlotEmpty = true;
         driverPlayerText.text = "empty";
-        gamestateTracker.UpdatePlayerRole(deselectPlayer.ActorNumber, "null");
-        gamestateTracker.UpdatePlayerTeam(deselectPlayer.ActorNumber, 0);
-        if(PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
+
+        GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(deselectPlayer.ActorNumber);
+        playerDetails.role = "null";
+        playerDetails.teamId = 0;
+        gamestateTracker.UpdatePlayerWithNewRecord(deselectPlayer.ActorNumber, JsonUtility.ToJson(playerDetails));
+
+        if (PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
         readyToggle.setReadyStatus(false);
     }
     
@@ -201,15 +214,18 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             gunnerPlayerId = selectPlayer.ActorNumber;
             gunnerSlotEmpty = false;
             gunnerPlayerText.text = selectPlayer.NickName;
-            // atomically update player state
-          //  GamestateTracker.PlayerDetails newPd = gamestateTracker.GetPlayerDetails(selectPlayer);
-          //  newPd.role = "Gunner";
-          //  newPd.teamId = teamId;
-          //  gamestateTracker.UpdatePlayerInSchema();
-            gamestateTracker.UpdatePlayerTeam(selectPlayer.ActorNumber, teamId);
-            gamestateTracker.UpdatePlayerRole(selectPlayer.ActorNumber, "Gunner");
-            
-            if(PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, 1);
+        // atomically update player state
+        //  GamestateTracker.PlayerDetails newPd = gamestateTracker.GetPlayerDetails(selectPlayer);
+        //  newPd.role = "Gunner";
+        //  newPd.teamId = teamId;
+        //  gamestateTracker.UpdatePlayerInSchema();
+
+        GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(selectPlayer.ActorNumber);
+        playerDetails.role = "Gunner";
+        playerDetails.teamId = teamId;
+        gamestateTracker.UpdatePlayerWithNewRecord(selectPlayer.ActorNumber, JsonUtility.ToJson(playerDetails));
+
+        if (PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, 1);
     }
     
     [PunRPC]
@@ -219,9 +235,13 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         gunnerPlayerId = 0;
         gunnerSlotEmpty = true;
         gunnerPlayerText.text = "empty";
-        gamestateTracker.UpdatePlayerRole(deselectPlayer.ActorNumber, "null");
-        gamestateTracker.UpdatePlayerTeam(deselectPlayer.ActorNumber, 0);
-        if(PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
+
+        GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(deselectPlayer.ActorNumber);
+        playerDetails.role = "null";
+        playerDetails.teamId = 0;
+        gamestateTracker.UpdatePlayerWithNewRecord(deselectPlayer.ActorNumber, JsonUtility.ToJson(playerDetails));
+
+        if (PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
         readyToggle.setReadyStatus(false);
     }
 

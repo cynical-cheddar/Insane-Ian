@@ -36,12 +36,12 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
     
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.Log("OnFailedToConnectToPhoton. StatusCode: " + cause.ToString() + " ServerAddress: " + PhotonNetwork.ServerAddress);
+        //Debug.Log("OnFailedToConnectToPhoton. StatusCode: " + cause.ToString() + " ServerAddress: " + PhotonNetwork.ServerAddress);
     }
 
     public override void OnConnectedToMaster()
     {
-        Debug.Log("OnConnectedToMaster");
+        //Debug.Log("OnConnectedToMaster");
         //After we connected to Master server, join the Lobby
         PhotonNetwork.JoinLobby(TypedLobby.Default);
     }
@@ -88,22 +88,22 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        Debug.Log("OnCreateRoomFailed got called. This can happen if the room exists (even if not visible). Try another room name.");
+        Debug.LogError("OnCreateRoomFailed got called. This can happen if the room exists (even if not visible). Try another room name.");
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        Debug.Log("OnJoinRoomFailed got called. This can happen if the room is not existing or full or closed.");
+        Debug.LogError("OnJoinRoomFailed got called. This can happen if the room is not existing or full or closed.");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log("OnJoinRandomFailed got called. This can happen if the room is not existing or full or closed.");
+        Debug.LogError("OnJoinRandomFailed got called. This can happen if the room is not existing or full or closed.");
     }
 
     public override void OnCreatedRoom()
     {
-        Debug.Log("OnCreatedRoom");
+        //Debug.Log("OnCreatedRoom");
         //Load the Scene called GameLevel (Make sure it's added to build settings)
         PhotonNetwork.LoadLevel(mainLobbySceneName);
     }
