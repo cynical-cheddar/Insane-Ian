@@ -49,11 +49,13 @@ public class ProjectileWeapon : Weapon
     {
         if (CanFire() && gunnerPhotonView.IsMine)
         {
+            targetPoint =
+                CalculateFireDeviation(targetPoint, projectileDeviationDegrees);
             currentCooldown = fireRate;
             UseAmmo(ammoPerShot);
-            float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
+       //     float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier);
+            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage);
             string weaponDamageDetailsJson = JsonUtility.ToJson(weaponDamageDetails);
             weaponPhotonView.RPC(nameof(FireRPC_ProjectileWeapon), RpcTarget.All, targetPoint, weaponDamageDetailsJson);
             // do the rest in subclass
@@ -113,6 +115,5 @@ public class ProjectileWeapon : Weapon
             projectile.GetComponent<Rigidbody>().AddForce(projectileSpeed *(projectile.transform.forward) , ForceMode.VelocityChange);  
         }
         Destroy(projectile, 6f);
-        
     }
 }

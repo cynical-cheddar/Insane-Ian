@@ -68,4 +68,12 @@ public class GunnerWeaponManager : MonoBehaviour
             w.Fire(targetPos);
         }
     }
+
+    public void ReloadCurrentWeaponGroup()
+    {
+        foreach (Weapon w in currentWeaponControlGroup.weapons)
+        {
+            w.ReloadSalvo();
+        }
+    }
 }

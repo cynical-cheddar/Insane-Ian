@@ -94,6 +94,7 @@ public class VehicleManager : MonoBehaviour
     {
         // call take damage on everyone else's instance of the game
         string hitDetailsJson = JsonUtility.ToJson(hitDetails);
+        
         driverPhotonView.RPC(nameof(TakeDamage_RPC), RpcTarget.All, hitDetailsJson);
     }
 
