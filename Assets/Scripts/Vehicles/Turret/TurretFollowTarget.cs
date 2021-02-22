@@ -48,12 +48,10 @@ public class TurretFollowTarget : MonoBehaviour
                 virtualRotation = Quaternion.Slerp(virtualRotation, targetRotation, deadZoneTrackingSpeed * rotationTime);
             }
             else virtualRotation = Quaternion.RotateTowards(virtualRotation, targetRotation, maxRotation);
-            if (inDeadZone == true) Debug.Log("Left dead zone.");
             inDeadZone = false;
         }
         else {
             virtualRotation = Quaternion.Slerp(virtualRotation, targetRotation, deadZoneTrackingSpeed * Time.deltaTime);
-            if (inDeadZone == false) Debug.Log("Entered dead zone.");
             inDeadZone = true;
         }
 
