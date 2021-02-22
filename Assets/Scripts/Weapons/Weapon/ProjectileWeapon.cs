@@ -77,21 +77,21 @@ public class ProjectileWeapon : Weapon
         Debug.Log("ProjectileWeapon class object has fired");
 
         // if we are the owner of the photonview, then fire the real projectile
+        GameObject obj = projectilePrefab;
+        StopProjectileCollisionsWithSelf(obj);
         GameObject projectile = Instantiate(projectilePrefab, barrelTransform.position, barrelTransform.rotation);
-        ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();
-        projScript.projectileParticle = projectileParticleEffectPrefab;
-        projScript.impactParticle = imapactParticle;
-        projScript.missImpactParticle = missImpactParticle;
         StopProjectileCollisionsWithSelf(projectile);
+        ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();
+
+        // set projscript stuff
+        projScript.SetWeaponDamageDetails(weaponDamageDetails);
+        projScript.ActivateProjectile( imapactParticle, missImpactParticle, projectileParticleEffectPrefab, impactParticleSound, impactParticleSoundMiss, imapactParticleVolume, missImpactParticleVolume);
+        
+        
         DoMuzzleFlashEffect();
         projectile.transform.LookAt(targetPoint);
         projectile.transform.position -= projectile.transform.forward;
-        // set projscript stuff
-        projScript.SetWeaponDamageDetails(weaponDamageDetails);
-        projScript.impactParticleVolume = imapactParticleVolume;
-        projScript.missImpactParticleVolume = missImpactParticleVolume;
-        projScript.hitSound = impactParticleSound;
-        projScript.missSound = impactParticleSoundMiss;
+        
         PlayAudioClipOneShot(weaponFireSound);
         projectile.GetComponent<Rigidbody>().mass = projectileMass;
         // FIRE REAL PROJECTILE
