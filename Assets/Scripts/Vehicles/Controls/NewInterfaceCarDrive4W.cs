@@ -4,6 +4,7 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     // Start is called before the first frame update
 
 
+
     [Header("Wheel Colliders:")]
     public WheelCollider frontLeftW;
     public WheelCollider frontRightW;
@@ -11,6 +12,8 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public WheelCollider rearRightW;
     public bool is4WD = true;
     [Space(5)]
+
+
 
     [Header("Wheel Geometry Transforms")]
     public Transform frontLeftT;
@@ -81,7 +84,6 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
 
         stiffness = 0.3f + Mathf.Abs(steerAngle / maxSteerAngle);
-        Debug.Log("Stiffness" + stiffness);
         flC.extremumSlip = stiffness;
         frC.extremumSlip = stiffness;
         rlC.extremumSlip = stiffness;
