@@ -33,7 +33,7 @@ public class PlinthManager : MonoBehaviour
 
     void UpdateText() {
         sortedTeams = scoringHelper.SortTeams(gamestateTracker.schema.teamsList);
-        SpawnPlayerVehicles();
+        if (PhotonNetwork.IsMasterClient) SpawnPlayerVehicles();
         plinthTexts[0].text = $"Team {sortedTeams[0].teamId}";
         if (sortedTeams.Count > 1) plinthTexts[1].text = $"Team {sortedTeams[1].teamId}";
         if (sortedTeams.Count > 2) plinthTexts[2].text = $"Team {sortedTeams[2].teamId}";
