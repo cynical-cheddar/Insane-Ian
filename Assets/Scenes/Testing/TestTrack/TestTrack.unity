@@ -934,9 +934,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383202111}
   serializedVersion: 2
-  m_Mass: 1000
+  m_Mass: 3000
   m_Drag: 0.05
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.2
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -1004,11 +1004,11 @@ MonoBehaviour:
   carRB: {fileID: 383169956}
   carTransform: {fileID: 382775071}
   maxSteerAngle: 20
-  motorTorque: 2000
+  motorTorque: 4000
   brakeTorque: 8000
   brakeForce: 16000
-  steerRate: 1
-  steerRateCoefficent: 0.05
+  steerRate: 1.4
+  steerRateCoefficent: 0.01
   addedDownforce: {x: 0, y: 0, z: 0}
 --- !u!114 &383202113
 MonoBehaviour:
