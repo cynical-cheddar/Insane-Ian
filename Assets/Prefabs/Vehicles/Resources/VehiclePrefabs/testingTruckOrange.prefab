@@ -211,17 +211,17 @@ WheelCollider:
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
-    m_ExtremumSlip: 2
+    m_ExtremumSlip: 0.4
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 20
-    m_AsymptoteValue: 5000
-    m_Stiffness: 1.35
+    m_AsymptoteSlip: 0.8
+    m_AsymptoteValue: 0.5
+    m_Stiffness: 2.2
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.3
+    m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 2
-    m_AsymptoteValue: 7500
-    m_Stiffness: 1.3
+    m_AsymptoteSlip: 0.5
+    m_AsymptoteValue: 0.75
+    m_Stiffness: 3
   m_Enabled: 1
 --- !u!1 &2285355355181061919
 GameObject:
@@ -425,17 +425,17 @@ WheelCollider:
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
-    m_ExtremumSlip: 2
+    m_ExtremumSlip: 0.4
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 20
-    m_AsymptoteValue: 5000
-    m_Stiffness: 1.35
+    m_AsymptoteSlip: 0.8
+    m_AsymptoteValue: 0.5
+    m_Stiffness: 2.2
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.3
+    m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 2
-    m_AsymptoteValue: 7500
-    m_Stiffness: 1.3
+    m_AsymptoteSlip: 0.5
+    m_AsymptoteValue: 0.75
+    m_Stiffness: 2.4
   m_Enabled: 1
 --- !u!1 &2285355357081752929
 GameObject:
@@ -484,9 +484,9 @@ GameObject:
   - component: {fileID: 3905643496873552232}
   - component: {fileID: 6808530692672840039}
   - component: {fileID: 2816914891932429244}
-  - component: {fileID: 595301619034415726}
+  - component: {fileID: 7092912017866335041}
   m_Layer: 0
-  m_Name: driftyTruckOrange
+  m_Name: testingTruckOrange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -523,7 +523,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 3000
   m_Drag: 0.05
-  m_AngularDrag: 0.2
+  m_AngularDrag: 0.1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
@@ -633,7 +633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4012ccd10a538ce4793e88bcc2f514ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ICD: {fileID: 595301619034415726}
+  ICD: {fileID: 7092912017866335041}
 --- !u!114 &2816914891932429244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650,7 +650,7 @@ MonoBehaviour:
   health: 100
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
---- !u!114 &595301619034415726
+--- !u!114 &7092912017866335041
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -659,7 +659,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2285355357256135185}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8860a4852f0617a47977c775ac1b6990, type: 3}
+  m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   frontLeftW: {fileID: 2139782850936353827}
@@ -674,10 +674,10 @@ MonoBehaviour:
   carRB: {fileID: 2236991241069924175}
   carTransform: {fileID: 2286296900014892425}
   maxSteerAngle: 20
-  motorTorque: 7500
-  brakeTorque: 16000
+  motorTorque: 4500
+  brakeTorque: 8000
   brakeForce: 16000
-  steerRateLerp: 0.2
+  steerRateLerp: 0.1
   baseExtremiumSlip: 0.3
   addedDownforce: {x: 0, y: 0, z: 0}
 --- !u!1 &2285355357818630399
@@ -729,17 +729,17 @@ WheelCollider:
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
-    m_ExtremumSlip: 2
+    m_ExtremumSlip: 0.4
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 20
-    m_AsymptoteValue: 5000
-    m_Stiffness: 1.35
+    m_AsymptoteSlip: 0.8
+    m_AsymptoteValue: 0.5
+    m_Stiffness: 2.2
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.3
+    m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 2
-    m_AsymptoteValue: 7500
-    m_Stiffness: 1.3
+    m_AsymptoteSlip: 0.5
+    m_AsymptoteValue: 0.75
+    m_Stiffness: 3
   m_Enabled: 1
 --- !u!1 &2285355357972054387
 GameObject:
@@ -790,17 +790,17 @@ WheelCollider:
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
-    m_ExtremumSlip: 2
+    m_ExtremumSlip: 0.4
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 20
-    m_AsymptoteValue: 5000
-    m_Stiffness: 1.35
+    m_AsymptoteSlip: 0.8
+    m_AsymptoteValue: 0.5
+    m_Stiffness: 2.2
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.3
+    m_ExtremumSlip: 0.2
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 2
-    m_AsymptoteValue: 7500
-    m_Stiffness: 1.3
+    m_AsymptoteSlip: 0.5
+    m_AsymptoteValue: 0.75
+    m_Stiffness: 2.4
   m_Enabled: 1
 --- !u!1 &2430869482942730692
 GameObject:

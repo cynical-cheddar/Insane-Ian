@@ -30,25 +30,22 @@ public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
     [Header("Force Parameters")]
     [Range(12, 35)]
     public float maxSteerAngle = 20;
-    [Range(1000, 10000)]
+    [Range(1000, 20000)]
     public float motorTorque = 3000;
     [Range(2000, 20000)]
     public float brakeTorque = 8000;
     [Range(0, 30000)]
     public float brakeForce = 16000;
-    [Range(0, 5)]
-    public float steerRate = 1.0f;
-    [Range(0.01f, 0.5f)]
-    public float steerRateCoefficent = 0.05f;
+    [Range(0.001f, 0.5f)]
+    public float steerRateLerp = 0.1f;
+    [Range(0, 1)]
+    public float baseExtremiumSlip = 0.3f;
     public Vector3 addedDownforce;
 
     //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(int targetDirection) {
         float targetAngle;
-        float delta;
         float steerAngle;
-        float horizontalVelocity;
-        float newSteerRate;
 
         //Get the current steer angle
         steerAngle = frontLeftW.steerAngle;
@@ -56,34 +53,85 @@ public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
         //targetAngle is the angle we want to tend towards
         targetAngle = targetDirection * maxSteerAngle;
 
-        //Get the velocity in x and z dimensions
-        horizontalVelocity = Mathf.Sqrt(Mathf.Pow(carRB.velocity.x, 2) + Mathf.Pow(carRB.velocity.z, 2));
-
-        //set the steer rate to the minimum of normal steer rate and adjusted steer rate
-        newSteerRate = steerRate / (steerRateCoefficent * horizontalVelocity);
-        newSteerRate = Mathf.Min(newSteerRate, steerRate);
-
-        //if the steer rate is less than the distance between target angle and current steering angle, set that to delta else only move the given distance.
-        if (newSteerRate < Mathf.Abs(targetAngle - steerAngle)) {
-            delta = newSteerRate;
-        } else {
-            delta = Mathf.Abs(targetAngle - steerAngle);
-        }
-
-        //if the target is zero return to centre
-        if (!(targetAngle == 0)) {
-            delta *= targetDirection;
-        } else if (steerAngle > 0) {
-            delta *= -1;
-        }
+        steerAngle = Mathf.Lerp(steerAngle, targetAngle, steerRateLerp);
 
 
         //set the steer angle
-        steerAngle += delta;
         frontLeftW.steerAngle = steerAngle;
         frontRightW.steerAngle = steerAngle;
 
+        float extremiumSlip;
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rl1C = rearLeft1W.sidewaysFriction;
+        WheelFrictionCurve rr1C = rearRight1W.sidewaysFriction; 
+        WheelFrictionCurve rl2C = rearLeft2W.sidewaysFriction;
+        WheelFrictionCurve rr2C = rearRight2W.sidewaysFriction;
 
+        extremiumSlip = baseExtremiumSlip + Mathf.Abs(steerAngle / maxSteerAngle);
+        flC.extremumSlip = extremiumSlip;
+        frC.extremumSlip = extremiumSlip;
+        rl1C.extremumSlip = extremiumSlip;
+        rr1C.extremumSlip = extremiumSlip;
+        rl2C.extremumSlip = extremiumSlip;
+        rr2C.extremumSlip = extremiumSlip;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeft1W.sidewaysFriction = rl1C;
+        rearRight1W.sidewaysFriction = rr1C;
+        rearLeft2W.sidewaysFriction = rl2C;
+        rearRight2W.sidewaysFriction = rr2C;
+
+
+    }
+
+    void IDrivable.Drift() {
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rl1C = rearLeft1W.sidewaysFriction;
+        WheelFrictionCurve rr1C = rearRight1W.sidewaysFriction;
+        WheelFrictionCurve rl2C = rearLeft2W.sidewaysFriction;
+        WheelFrictionCurve rr2C = rearRight2W.sidewaysFriction;
+
+        float stiffness = 1f;
+        flC.stiffness = stiffness;
+        frC.stiffness = stiffness;
+        rl1C.stiffness = stiffness;
+        rr1C.stiffness = stiffness;
+        rl2C.stiffness = stiffness;
+        rr2C.stiffness = stiffness;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeft1W.sidewaysFriction = rl1C;
+        rearRight1W.sidewaysFriction = rr1C;
+        rearLeft2W.sidewaysFriction = rl2C;
+        rearRight2W.sidewaysFriction = rr2C;
+    }
+
+    void IDrivable.StopDrift() {
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rl1C = rearLeft1W.sidewaysFriction;
+        WheelFrictionCurve rr1C = rearRight1W.sidewaysFriction;
+        WheelFrictionCurve rl2C = rearLeft2W.sidewaysFriction;
+        WheelFrictionCurve rr2C = rearRight2W.sidewaysFriction;
+
+        float stiffness = 5f;
+        flC.stiffness = stiffness;
+        frC.stiffness = stiffness;
+        rl1C.stiffness = stiffness;
+        rr1C.stiffness = stiffness;
+        rl2C.stiffness = stiffness;
+        rr2C.stiffness = stiffness;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeft1W.sidewaysFriction = rl1C;
+        rearRight1W.sidewaysFriction = rr1C;
+        rearLeft2W.sidewaysFriction = rl2C;
+        rearRight2W.sidewaysFriction = rr2C;
     }
 
     void IDrivable.Accellerate() {
@@ -193,13 +241,5 @@ public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
     void IDrivable.StopSteer() {
         //steer towards 0
         ((IDrivable)this).Steer(0);
-    }
-
-    void IDrivable.Drift() {
-        throw new System.NotImplementedException();
-    }
-
-    void IDrivable.StopDrift() {
-        throw new System.NotImplementedException();
     }
 }
