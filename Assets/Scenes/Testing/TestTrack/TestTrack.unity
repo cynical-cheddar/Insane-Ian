@@ -1007,8 +1007,7 @@ MonoBehaviour:
   motorTorque: 4000
   brakeTorque: 8000
   brakeForce: 16000
-  steerRate: 1.4
-  steerRateCoefficent: 0.01
+  steerRateLerp: 0.1
   addedDownforce: {x: 0, y: 0, z: 0}
 --- !u!114 &383202113
 MonoBehaviour:
@@ -1017,7 +1016,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383202111}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e287627b0b4c44acfb2a1a33cc55d209, type: 3}
   m_Name: 
