@@ -20,9 +20,9 @@ public class InputDriver : MonoBehaviour
     private void Handbrake() {
         var CarDriver = ICD.GetComponent<IDrivable>();
         if (Input.GetKey(KeyCode.Space)) {
-            CarDriver.Handbrake();
+            CarDriver.Drift();
         } else {
-            CarDriver.StopHandbrake();
+            CarDriver.StopDrift();
         }
     }
 

@@ -10,7 +10,7 @@ public interface IDrivable {
     void Steer(int targetDirection);
     void StopSteer();
     void Reverse();
-    void Handbrake();
-    void StopHandbrake();
+    void Drift();
+    void StopDrift();
     void UpdateWheelPoses();
 }

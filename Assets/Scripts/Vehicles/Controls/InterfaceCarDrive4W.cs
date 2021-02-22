@@ -182,11 +182,11 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         ((IDrivable)this).Steer(0);
     }
 
-    void IDrivable.Handbrake() {
+    void IDrivable.Drift() {
         throw new System.NotImplementedException();
     }
 
-    void IDrivable.StopHandbrake() {
+    void IDrivable.StopDrift() {
         throw new System.NotImplementedException();
     }
 }

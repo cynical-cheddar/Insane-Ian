@@ -128,7 +128,7 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
 
-    void IDrivable.Handbrake() {
+    void IDrivable.Drift() {
         WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
         WheelFrictionCurve frC = frontRightW.sidewaysFriction;
         WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
@@ -146,7 +146,7 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearRightW.sidewaysFriction = rrC;
     }
 
-    void IDrivable.StopHandbrake() {
+    void IDrivable.StopDrift() {
         WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
         WheelFrictionCurve frC = frontRightW.sidewaysFriction;
         WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
