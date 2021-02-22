@@ -32,14 +32,14 @@ public class TurretFollowTarget : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         Vector3 dir = target.transform.position - transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(dir, transform.parent.up);
 
         float missAngle = Quaternion.Angle(virtualRotation, targetRotation);
         if (missAngle > deadZone) {
-            float rotationTime = Time.fixedDeltaTime;
+            float rotationTime = Time.deltaTime;
             float maxRotation = trackingSpeed * rotationTime;
             if (maxRotation > (missAngle - deadZone)) {
                 maxRotation = (missAngle - deadZone);
@@ -52,7 +52,7 @@ public class TurretFollowTarget : MonoBehaviour
             inDeadZone = false;
         }
         else {
-            virtualRotation = Quaternion.Slerp(virtualRotation, targetRotation, deadZoneTrackingSpeed * Time.fixedDeltaTime);
+            virtualRotation = Quaternion.Slerp(virtualRotation, targetRotation, deadZoneTrackingSpeed * Time.deltaTime);
             if (inDeadZone == false) Debug.Log("Entered dead zone.");
             inDeadZone = true;
         }

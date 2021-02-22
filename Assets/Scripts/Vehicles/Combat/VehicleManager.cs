@@ -35,11 +35,6 @@ public class VehicleManager : MonoBehaviour
         driverPhotonView = GetComponent<PhotonView>();
     }
 
-    // Update is called once per frame
-    void Update() { 
-        
-    }
-
     [PunRPC]
     public void SetTeamId_RPC(int newId) {
         teamId = newId;
@@ -52,7 +47,7 @@ public class VehicleManager : MonoBehaviour
             JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
         lastHitDetails = weaponDamageDetails;
         float amount = weaponDamageDetails.damage;
-        Debug.Log("Damage taken by: " + weaponDamageDetails.sourcePlayerNickName);
+       // Debug.Log("Damage taken by: " + weaponDamageDetails.sourcePlayerNickName);
         if (health > 0) {
             health -= amount;
             if (health <= 0&&!isDead && driverPhotonView.IsMine)
@@ -72,13 +67,10 @@ public class VehicleManager : MonoBehaviour
     [PunRPC]
     void TakeAnonymousDamage_RPC(float amount)
     {
-        Debug.Log("Taken anonymous damage");
         if (health > 0) {
             health -= amount;
-            Debug.Log("passed health check");
             if (health <= 0&&!isDead && driverPhotonView.IsMine)
             {
-                Debug.Log("passed death check");
                 // die is only called once, by the driver
                 isDead = true;
                 Die(true, false);
@@ -116,6 +108,7 @@ public class VehicleManager : MonoBehaviour
     
     // Die is a LOCAL function that is only called by the driver when they get dead.
     void Die(bool updateDeath, bool updateKill) {
+        health = 0;
         // Update gamestate
         
         // update my deaths
@@ -132,7 +125,7 @@ public class VehicleManager : MonoBehaviour
         if (updateKill)
         {
             // update their kills
-            Debug.Log("Kill earned by: " + lastHitDetails.sourceTeamId + " team");
+           // Debug.Log("Kill earned by: " + lastHitDetails.sourceTeamId + " team");
             GamestateTracker.TeamDetails theirRecord = gamestateTracker.getTeamDetails(lastHitDetails.sourceTeamId);
             theirRecord.kills += 1;
             gamestateTrackerPhotonView.RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.All,
