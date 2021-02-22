@@ -75,8 +75,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 83198.44
-    damper: 15807.703
+    spring: 83198.445
+    damper: 15807.705
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.146249
@@ -441,8 +441,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 66801.55
-    damper: 12692.293
+    spring: 66801.56
+    damper: 12692.297
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.146249
@@ -1593,10 +1593,10 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageMultiplierPlateuDistance: 100
   damageMultiplierClosestRampupThreshold: 10
-  salvoSize: 5
-  reloadType: 1
-  reloadTime: 2
-  fireRate: 0.2
+  salvoSize: 10
+  reloadType: 0
+  reloadTime: 1
+  fireRate: 0.25
   ammoPerShot: 1
   unlimitedAmmo: 0
   reserveAmmo: 100
@@ -1984,8 +1984,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7125790997404546552, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.086
+      objectReference: {fileID: 0}
+    - target: {fileID: 7125790997404546552, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.025
+      value: 0.012
       objectReference: {fileID: 0}
     - target: {fileID: 7125790997404546552, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}

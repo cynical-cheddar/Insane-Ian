@@ -194,4 +194,12 @@ public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
         //steer towards 0
         ((IDrivable)this).Steer(0);
     }
+
+    void IDrivable.Drift() {
+        throw new System.NotImplementedException();
+    }
+
+    void IDrivable.StopDrift() {
+        throw new System.NotImplementedException();
+    }
 }
