@@ -203,25 +203,25 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.65
-    damper: 11077.123
+    spring: 58300.73
+    damper: 11077.139
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363822
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
-    m_ExtremumSlip: 0.4
+    m_ExtremumSlip: 2
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
-    m_Stiffness: 2.2
+    m_AsymptoteSlip: 20
+    m_AsymptoteValue: 5000
+    m_Stiffness: 1
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.2
+    m_ExtremumSlip: 0.3
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 3
+    m_AsymptoteSlip: 2
+    m_AsymptoteValue: 7500
+    m_Stiffness: 1.3
   m_Enabled: 1
 --- !u!1 &2285355355181061919
 GameObject:
@@ -397,25 +397,25 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.75
-    damper: 17422.953
+    spring: 91699.8
+    damper: 17422.96
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363822
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
-    m_ExtremumSlip: 0.4
+    m_ExtremumSlip: 2
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
-    m_Stiffness: 2.2
+    m_AsymptoteSlip: 20
+    m_AsymptoteValue: 5000
+    m_Stiffness: 1
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.2
+    m_ExtremumSlip: 0.3
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 2.4
+    m_AsymptoteSlip: 2
+    m_AsymptoteValue: 7500
+    m_Stiffness: 1.3
   m_Enabled: 1
 --- !u!1 &2285355357081752929
 GameObject:
@@ -465,6 +465,7 @@ GameObject:
   - component: {fileID: 6808530692672840039}
   - component: {fileID: 2816914891932429244}
   - component: {fileID: 8780767914134426485}
+  - component: {fileID: 595301619034415726}
   m_Layer: 0
   m_Name: testingTruckOrange
   m_TagString: Untagged
@@ -561,7 +562,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 2284656620238966636}
-  viewIdField: 0
+  viewIdField: 13
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &1038595067741417621
@@ -613,7 +614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4012ccd10a538ce4793e88bcc2f514ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ICD: {fileID: 8780767914134426485}
+  ICD: {fileID: 595301619034415726}
 --- !u!114 &2816914891932429244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,6 +641,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frontLeftW: {fileID: 2139782850936353827}
+  frontRightW: {fileID: 2139782856522764851}
+  rearLeftW: {fileID: 2139782856822017497}
+  rearRightW: {fileID: 2139782856307610623}
+  is4WD: 1
+  frontLeftT: {fileID: 4581050053017515209}
+  frontRightT: {fileID: 3539850962614821381}
+  rearLeftT: {fileID: 1097006748241589666}
+  rearRightT: {fileID: 34774737237471283}
+  carRB: {fileID: 2236991241069924175}
+  carTransform: {fileID: 2286296900014892425}
+  maxSteerAngle: 20
+  motorTorque: 4500
+  brakeTorque: 8000
+  brakeForce: 16000
+  steerRate: 1
+  steerRateCoefficent: 0.05
+  addedDownforce: {x: 0, y: 0, z: 0}
+--- !u!114 &595301619034415726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2285355357256135185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8860a4852f0617a47977c775ac1b6990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   frontLeftW: {fileID: 2139782850936353827}
@@ -701,25 +732,25 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.26
-    damper: 11077.049
+    spring: 58300.223
+    damper: 11077.043
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363822
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
-    m_ExtremumSlip: 0.4
+    m_ExtremumSlip: 2
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
-    m_Stiffness: 2.2
+    m_AsymptoteSlip: 20
+    m_AsymptoteValue: 5000
+    m_Stiffness: 1
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.2
+    m_ExtremumSlip: 0.3
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 3
+    m_AsymptoteSlip: 2
+    m_AsymptoteValue: 7500
+    m_Stiffness: 1.3
   m_Enabled: 1
 --- !u!1 &2285355357972054387
 GameObject:
@@ -762,25 +793,25 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.36
-    damper: 17422.879
+    spring: 91699.266
+    damper: 17422.861
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363822
+  m_ForceAppPointDistance: 1.7363821
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
-    m_ExtremumSlip: 0.4
+    m_ExtremumSlip: 2
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
-    m_Stiffness: 2.2
+    m_AsymptoteSlip: 20
+    m_AsymptoteValue: 5000
+    m_Stiffness: 1
   m_SidewaysFriction:
-    m_ExtremumSlip: 0.2
+    m_ExtremumSlip: 0.3
     m_ExtremumValue: 1
-    m_AsymptoteSlip: 0.5
-    m_AsymptoteValue: 0.75
-    m_Stiffness: 2.4
+    m_AsymptoteSlip: 2
+    m_AsymptoteValue: 7500
+    m_Stiffness: 1.3
   m_Enabled: 1
 --- !u!1 &2430869482942730692
 GameObject:
@@ -1261,7 +1292,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 1
   ObservedComponents: []
-  viewIdField: 0
+  viewIdField: 11
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &4600057851733646998
@@ -1279,6 +1310,7 @@ MonoBehaviour:
   weaponName: Projectile Weapon
   barrelTransform: {fileID: 2916141348327223427}
   barrelEndMuzzleTransform: {fileID: 2916141348327223427}
+  projectileDeviationDegrees: 0
   damageRampupMultiplierCurve:
     serializedVersion: 2
     m_Curve:
@@ -1320,24 +1352,26 @@ MonoBehaviour:
   primaryFireAnimatorTriggerName: Fire
   weaponPhotonView: {fileID: 1478928021139505862}
   gunnerPhotonView: {fileID: 7049704973741281341}
-  cam: {fileID: 0}
   weaponFireSound: {fileID: 8300000, guid: fba8be6c5fcdda041bc57a661595a34d, type: 3}
+  muzzleflashVolume: 1
   impactParticleSound: {fileID: 8300000, guid: 518cbf2ea3689914ea8e3b6b30f5502f, type: 3}
+  imapactParticleVolume: 1
   impactParticleSoundMiss: {fileID: 8300000, guid: a7a98f71358637345b38ad21620ce6b5,
     type: 3}
+  missImpactParticleVolume: 1
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
   muzzleflash: {fileID: 1256538573138234745, guid: 1c7dc0b55fe10d149bf2e550ee9762b9,
     type: 3}
-  muzzleflashVolume: 1
   imapactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
-  imapactParticleVolume: 1
-  missImpactParticleVolume: 1
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
   projectilePrefab: {fileID: 1540927066135063348, guid: 2c93f0aed6cd60541bb19e1a6c3ee024,
     type: 3}
+  projectileParticleEffectPrefab: {fileID: 7024580045867898594, guid: 6879eed96b783c74fa887779f72a7a52,
+    type: 3}
+  projectileMass: 10
   projectileSpeed: 100
   inheritVelocityFromVehicle: 1
 --- !u!1 &8006241792007648075
@@ -1644,7 +1678,7 @@ PrefabInstance:
     - target: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: viewIdField
-      value: 0
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
@@ -1738,6 +1772,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f84a8310268c4376bb6a418458e0579, type: 3}
+--- !u!95 &6441793548522858699 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
+    type: 3}
+  m_PrefabInstance: {fileID: 6915939415484387917}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2916141348327223427 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8611565673112314574, guid: 8f84a8310268c4376bb6a418458e0579,
@@ -1762,9 +1802,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!95 &6441793548522858699 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
-    type: 3}
-  m_PrefabInstance: {fileID: 6915939415484387917}
-  m_PrefabAsset: {fileID: 0}
