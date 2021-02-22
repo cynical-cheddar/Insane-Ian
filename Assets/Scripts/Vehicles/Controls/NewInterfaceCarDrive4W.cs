@@ -38,6 +38,8 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float brakeForce = 16000;
     [Range(0.001f, 0.5f)]
     public float steerRateLerp = 0.1f;
+    [Range(0, 1)]
+    public float baseExtremiumSlip = 0.3f;
     public Vector3 addedDownforce;
 
     //direction is -1 for left and +1 for right, 0 for center
@@ -58,17 +60,17 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         frontLeftW.steerAngle = steerAngle;
         frontRightW.steerAngle = steerAngle;
 
-        float stiffness;
+        float extremiumSlip;
         WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
         WheelFrictionCurve frC = frontRightW.sidewaysFriction;
         WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
         WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
 
-        stiffness = 0.3f + Mathf.Abs(steerAngle / maxSteerAngle);
-        flC.extremumSlip = stiffness;
-        frC.extremumSlip = stiffness;
-        rlC.extremumSlip = stiffness;
-        rrC.extremumSlip = stiffness;
+        extremiumSlip = baseExtremiumSlip + Mathf.Abs(steerAngle / maxSteerAngle);
+        flC.extremumSlip = extremiumSlip;
+        frC.extremumSlip = extremiumSlip;
+        rlC.extremumSlip = extremiumSlip;
+        rrC.extremumSlip = extremiumSlip;
 
         frontLeftW.sidewaysFriction = flC;
         frontRightW.sidewaysFriction = frC;
@@ -124,6 +126,42 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             }
         }
 
+    }
+
+    void IDrivable.Handbrake() {
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
+        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
+
+        float stiffness = 1f;
+        flC.stiffness = stiffness;
+        frC.stiffness = stiffness;
+        rlC.stiffness = stiffness;
+        rrC.stiffness = stiffness;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeftW.sidewaysFriction = rlC;
+        rearRightW.sidewaysFriction = rrC;
+    }
+
+    void IDrivable.StopHandbrake() {
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
+        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
+
+        float stiffness = 5f;
+        flC.stiffness = stiffness;
+        frC.stiffness = stiffness;
+        rlC.stiffness = stiffness;
+        rrC.stiffness = stiffness;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeftW.sidewaysFriction = rlC;
+        rearRightW.sidewaysFriction = rrC;
     }
 
     private bool AllWheelsGrounded() {
