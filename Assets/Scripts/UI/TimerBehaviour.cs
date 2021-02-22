@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class TimerBehaviour : MonoBehaviour
 {
-    public float initialTime = 300;
+    public float defaultTimeLimit = 300f;
     public Text timerText;
     [SerializeField] public Timer timer = new Timer();
     bool gameOverLoading = false;
@@ -27,13 +27,17 @@ public class TimerBehaviour : MonoBehaviour
     }
 
     private void Awake() {
-        timer.timeLeft = initialTime;
+        timer.timeLeft = defaultTimeLimit;
     }
 
     // Time in seconds
-    public void HostStartTimer() {
+    public void HostStartTimer(float timeLimit) {
         if (PhotonNetwork.IsMasterClient) {
-            GetComponent<PhotonView>().RPC(nameof(SetTimer), RpcTarget.AllBufferedViaServer, initialTime);
+            if (timeLimit == 0) {
+                GetComponent<PhotonView>().RPC(nameof(SetTimer), RpcTarget.AllBufferedViaServer, defaultTimeLimit);
+            } else {
+                GetComponent<PhotonView>().RPC(nameof(SetTimer), RpcTarget.AllBufferedViaServer, timeLimit);
+            }
             StartCoroutine(SyncTime());
         }
     }
