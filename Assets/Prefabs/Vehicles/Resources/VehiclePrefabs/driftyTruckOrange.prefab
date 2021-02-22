@@ -203,11 +203,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.73
-    damper: 11077.139
+    spring: 58300.65
+    damper: 11077.123
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363821
+  m_ForceAppPointDistance: 1.7363822
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -397,11 +397,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.8
-    damper: 17422.96
+    spring: 91699.75
+    damper: 17422.953
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363821
+  m_ForceAppPointDistance: 1.7363822
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -464,10 +464,9 @@ GameObject:
   - component: {fileID: 3905643496873552232}
   - component: {fileID: 6808530692672840039}
   - component: {fileID: 2816914891932429244}
-  - component: {fileID: 8780767914134426485}
   - component: {fileID: 595301619034415726}
   m_Layer: 0
-  m_Name: testingTruckOrange
+  m_Name: driftyTruckOrange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -504,7 +503,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 3000
   m_Drag: 0.05
-  m_AngularDrag: 0.1
+  m_AngularDrag: 0.2
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
@@ -562,7 +561,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 2284656620238966636}
-  viewIdField: 13
+  viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &1038595067741417621
@@ -601,7 +600,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 2236991241069924175}
-  Shift: {x: 0, y: -2, z: 0}
+  Shift: {x: 0, y: -0.1, z: 0}
 --- !u!114 &6808530692672840039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,36 +630,6 @@ MonoBehaviour:
   health: 100
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
---- !u!114 &8780767914134426485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2285355357256135185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frontLeftW: {fileID: 2139782850936353827}
-  frontRightW: {fileID: 2139782856522764851}
-  rearLeftW: {fileID: 2139782856822017497}
-  rearRightW: {fileID: 2139782856307610623}
-  is4WD: 1
-  frontLeftT: {fileID: 4581050053017515209}
-  frontRightT: {fileID: 3539850962614821381}
-  rearLeftT: {fileID: 1097006748241589666}
-  rearRightT: {fileID: 34774737237471283}
-  carRB: {fileID: 2236991241069924175}
-  carTransform: {fileID: 2286296900014892425}
-  maxSteerAngle: 20
-  motorTorque: 4500
-  brakeTorque: 8000
-  brakeForce: 16000
-  steerRate: 1
-  steerRateCoefficent: 0.05
-  addedDownforce: {x: 0, y: 0, z: 0}
 --- !u!114 &595301619034415726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -688,8 +657,7 @@ MonoBehaviour:
   motorTorque: 4500
   brakeTorque: 8000
   brakeForce: 16000
-  steerRate: 1
-  steerRateCoefficent: 0.05
+  steerRateLerp: 0.2
   addedDownforce: {x: 0, y: 0, z: 0}
 --- !u!1 &2285355357818630399
 GameObject:
@@ -732,11 +700,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 58300.223
-    damper: 11077.043
+    spring: 58300.26
+    damper: 11077.049
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363821
+  m_ForceAppPointDistance: 1.7363822
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -793,11 +761,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 91699.266
-    damper: 17422.861
+    spring: 91699.36
+    damper: 17422.879
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.7363821
+  m_ForceAppPointDistance: 1.7363822
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1292,7 +1260,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 1
   ObservedComponents: []
-  viewIdField: 11
+  viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &4600057851733646998
@@ -1678,7 +1646,7 @@ PrefabInstance:
     - target: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: viewIdField
-      value: 12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
@@ -1772,12 +1740,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f84a8310268c4376bb6a418458e0579, type: 3}
---- !u!95 &6441793548522858699 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
-    type: 3}
-  m_PrefabInstance: {fileID: 6915939415484387917}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2916141348327223427 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8611565673112314574, guid: 8f84a8310268c4376bb6a418458e0579,
@@ -1802,3 +1764,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &6441793548522858699 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
+    type: 3}
+  m_PrefabInstance: {fileID: 6915939415484387917}
+  m_PrefabAsset: {fileID: 0}
