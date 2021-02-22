@@ -7,6 +7,7 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Weapon : MonoBehaviour
 {
@@ -45,6 +46,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    protected PlayerTransformTracker _playerTransformTracker;
 
 
     protected string myNickName = "null";
@@ -58,7 +60,8 @@ public class Weapon : MonoBehaviour
     [Header("Self Transform")]
     public Transform barrelTransform;
     public Transform barrelEndMuzzleTransform;
-    [Header("Damage Falloff")]
+    [Header("Damage Falloff and aiming")]
+    public float projectileDeviationDegrees = 0f;
     public AnimationCurve damageRampupMultiplierCurve = AnimationCurve.Linear(0f, 1f, 1f, 1f);
     public float damageMultiplierPlateuDistance = 100f;
     public float damageMultiplierClosestRampupThreshold = 10f;
@@ -89,7 +92,7 @@ public class Weapon : MonoBehaviour
     public PhotonView weaponPhotonView;
     public PhotonView gunnerPhotonView;
 
-    [Header("Camera temporary")] public Transform cam;
+  //  public Transform sourceCam;
     
    // [Header("UI")]
    
@@ -99,19 +102,22 @@ public class Weapon : MonoBehaviour
 
      [Header("Audio")]
     public AudioClip weaponFireSound;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] protected float muzzleflashVolume=1f;
     public AudioClip impactParticleSound;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] protected float imapactParticleVolume=1f;
     public AudioClip impactParticleSoundMiss;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] protected float missImpactParticleVolume=0.75f;
     public GameObject audioSourcePrefab;
     
     [Header("Effects")]
     [SerializeField] protected GameObject muzzleflash;
-    [Range(0.0f, 1.0f)]
-    [SerializeField] protected float muzzleflashVolume=1f;
+    
     [SerializeField] protected GameObject imapactParticle;
-    [Range(0.0f, 1.0f)]
-    [SerializeField] protected float imapactParticleVolume=1f;
-    [Range(0.0f, 1.0f)]
-    [SerializeField] protected float missImpactParticleVolume=0.75f;
+    
+
     [SerializeField] protected GameObject missImpactParticle;
     
     // ---------------------- COPY THESE FUNCTIONS FOR EACH CHILD CLASS --------------------------------//
@@ -125,13 +131,35 @@ public class Weapon : MonoBehaviour
         if (audioSourcePrefab != null)
         {
             GameObject audioInstance = Instantiate(audioSourcePrefab, barrelTransform.position, barrelTransform.rotation);
-            audioInstance.GetComponent<AudioSource>().PlayOneShot(weaponFireSound);
+            audioInstance.GetComponent<AudioSource>().PlayOneShot(weaponFireSound, muzzleflashVolume);
             Destroy(audioInstance, weaponFireSound.length);
         }
     }
-    public virtual void Fire( Vector3 targetPoint){
+    public virtual void Fire(Vector3 targetPoint){
 
     }
+
+    protected Vector3 CalculateFireDeviation(Vector3 oldTargetPoint, float maxDegrees)
+    {
+        if (maxDegrees == 0) return oldTargetPoint;
+        float deviationDegreesTraverse = Random.Range(0, maxDegrees);
+        float deviationDegreesElevation = Random.Range(0, maxDegrees);
+        // get vector distance from barrel to hitpoint
+        float range = Vector3.Distance(oldTargetPoint, barrelTransform.position);
+
+        float max = Mathf.Tan(Mathf.Deg2Rad * maxDegrees) * range;
+
+
+        Vector3 deviation3D = Random.insideUnitSphere * max;
+
+
+
+        Vector3 newTargetPoint = oldTargetPoint + deviation3D;
+        
+        
+        return newTargetPoint;
+    }
+
     // only called on success
     // deals with firing the actual projectiles, and lag compensated dummy ones
     [PunRPC]
@@ -162,6 +190,8 @@ public class Weapon : MonoBehaviour
     protected void Start()
     {
         weaponUi = FindObjectOfType<WeaponUi>();
+        _playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
+        ReloadSalvo();
     }
 
     // called to activate UI elements and transfer photonview
@@ -184,8 +214,7 @@ public class Weapon : MonoBehaviour
 
         UpdateHud();
 
-        // remove later
-        cam = Camera.main.transform;
+
     }
 
     // temporary fire solutionUpdateHud
@@ -218,7 +247,7 @@ public class Weapon : MonoBehaviour
 
     protected void ReduceReserveAmmo(int amt)
     {
-        reserveAmmo -= amt;
+        if(!unlimitedAmmo)reserveAmmo -= amt;
         if (reserveAmmo < 0) reserveAmmo = 0;
         UpdateHud();
     }
@@ -242,7 +271,7 @@ public class Weapon : MonoBehaviour
             amount = amount - currentSalvo;
         }
         currentSalvo += amount;
-        reserveAmmo -= amount;
+        if(!unlimitedAmmo) reserveAmmo -= amount;
         
         if(currentSalvo > salvoSize) currentSalvo = salvoSize;
         UpdateHud();

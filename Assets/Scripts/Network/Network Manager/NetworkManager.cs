@@ -19,6 +19,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public string defaultPlayerVehiclePrefabName;
 
+
+    
+
     // Start is called before the first frame update
     void Start()
     {

@@ -8,7 +8,8 @@ public class ProjectileWeapon : Weapon
 
     [Header("Projectile Settings")]
     public GameObject projectilePrefab;
-    
+    public GameObject projectileParticleEffectPrefab;
+    public float projectileMass = 10f;
     public float projectileSpeed = 100f;
     public bool inheritVelocityFromVehicle = false;
     private Rigidbody parentRigidbody;
@@ -49,11 +50,13 @@ public class ProjectileWeapon : Weapon
     {
         if (CanFire() && gunnerPhotonView.IsMine)
         {
+            targetPoint =
+                CalculateFireDeviation(targetPoint, projectileDeviationDegrees);
             currentCooldown = fireRate;
             UseAmmo(ammoPerShot);
-            float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
+       //     float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier);
+            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage);
             string weaponDamageDetailsJson = JsonUtility.ToJson(weaponDamageDetails);
             weaponPhotonView.RPC(nameof(FireRPC_ProjectileWeapon), RpcTarget.All, targetPoint, weaponDamageDetailsJson);
             // do the rest in subclass
@@ -76,6 +79,7 @@ public class ProjectileWeapon : Weapon
         // if we are the owner of the photonview, then fire the real projectile
         GameObject projectile = Instantiate(projectilePrefab, barrelTransform.position, barrelTransform.rotation);
         ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();
+        projScript.projectileParticle = projectileParticleEffectPrefab;
         projScript.impactParticle = imapactParticle;
         projScript.missImpactParticle = missImpactParticle;
         StopProjectileCollisionsWithSelf(projectile);
@@ -89,6 +93,7 @@ public class ProjectileWeapon : Weapon
         projScript.hitSound = impactParticleSound;
         projScript.missSound = impactParticleSoundMiss;
         PlayAudioClipOneShot(weaponFireSound);
+        projectile.GetComponent<Rigidbody>().mass = projectileMass;
         // FIRE REAL PROJECTILE
         if (gunnerPhotonView.IsMine)
         {
@@ -113,6 +118,5 @@ public class ProjectileWeapon : Weapon
             projectile.GetComponent<Rigidbody>().AddForce(projectileSpeed *(projectile.transform.forward) , ForceMode.VelocityChange);  
         }
         Destroy(projectile, 6f);
-        
     }
 }
