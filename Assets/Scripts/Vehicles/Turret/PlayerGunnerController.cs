@@ -48,7 +48,8 @@ public class PlayerGunnerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        // fire 1
+        if (Input.GetButton("Fire1"))
         {
             if (gunnerPhotonView.IsMine)
             {
@@ -58,7 +59,15 @@ public class PlayerGunnerController : MonoBehaviour
                 
                 gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
             }
-            
+        }
+        
+        // relaod
+        if (Input.GetButtonDown("Reload"))
+        {
+            if (gunnerPhotonView.IsMine)
+            {
+                gunnerWeaponManager.ReloadCurrentWeaponGroup();
+            }
         }
         
         turretController.ChangeTargetYaw(cameraSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime);
@@ -68,7 +77,7 @@ public class PlayerGunnerController : MonoBehaviour
 
     Vector3 CalculateTargetingHitpoint(Transform sourceTransform)
     {
-        Ray ray = new Ray(cam.position, cam.forward); 
+        Ray ray = new Ray(sourceTransform.position, sourceTransform.forward); 
         RaycastHit hit; //From camera to hitpoint, not as curent
         Transform hitTransform;
         Vector3 hitVector;
@@ -79,12 +88,12 @@ public class PlayerGunnerController : MonoBehaviour
         if (hitTransform == null)
         {
             hp = cam.position + (cam.forward * 1500f);
-            Debug.Log("Null hit on targeting");
+
         }
         else
         {
             hp = hitVector;
-            Debug.Log("HitTransform:" + hitTransform + " hitVector: " + hitVector);
+
         }
 
         return hp;
