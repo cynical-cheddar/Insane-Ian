@@ -36,19 +36,14 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float brakeTorque = 8000;
     [Range(0, 30000)]
     public float brakeForce = 16000;
-    [Range(0, 5)]
-    public float steerRate = 1.0f;
-    [Range(0.01f, 0.5f)]
-    public float steerRateCoefficent = 0.05f;
+    [Range(0.001f, 0.5f)]
+    public float steerRateLerp = 0.1f;
     public Vector3 addedDownforce;
 
     //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(int targetDirection) {
         float targetAngle;
-        float delta;
         float steerAngle;
-        float horizontalVelocity;
-        float newSteerRate;
 
         //Get the current steer angle
         steerAngle = frontLeftW.steerAngle;
@@ -56,26 +51,12 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         //targetAngle is the angle we want to tend towards
         targetAngle = targetDirection * maxSteerAngle;
 
-        //Get the velocity in x and z dimensions
-        horizontalVelocity = Mathf.Sqrt(Mathf.Pow(carRB.velocity.x, 2) + Mathf.Pow(carRB.velocity.z, 2));
+        steerAngle = Mathf.Lerp(steerAngle, targetAngle, steerRateLerp);
 
-        //set the steer rate to the minimum of normal steer rate and adjusted steer rate
-        newSteerRate = steerRate / (steerRateCoefficent * horizontalVelocity);
-        newSteerRate = Mathf.Min(newSteerRate, steerRate);
 
-        //if the steer rate is less than the distance between target angle and current steering angle, set that to delta else only move the given distance.
-        if (newSteerRate < Mathf.Abs(targetAngle - steerAngle)) {
-            delta = newSteerRate;
-        } else {
-            delta = Mathf.Abs(targetAngle - steerAngle);
-        }
-
-        //if the target is zero return to centre
-        if (!(targetAngle == 0)) {
-            delta *= targetDirection;
-        } else if (steerAngle > 0) {
-            delta *= -1;
-        }
+        //set the steer angle
+        frontLeftW.steerAngle = steerAngle;
+        frontRightW.steerAngle = steerAngle;
 
         float stiffness;
         WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
@@ -93,13 +74,6 @@ public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         frontRightW.sidewaysFriction = frC;
         rearLeftW.sidewaysFriction = rlC;
         rearRightW.sidewaysFriction = rrC;
-
-
-        //set the steer angle
-        steerAngle += delta;
-        frontLeftW.steerAngle = steerAngle;
-        frontRightW.steerAngle = steerAngle;
-
     }
 
     void IDrivable.Accellerate() {
