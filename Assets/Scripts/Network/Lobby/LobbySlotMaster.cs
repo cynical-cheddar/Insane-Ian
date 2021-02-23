@@ -238,7 +238,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 gamestateTracker.ForceSynchronisePlayerSchema();
                 //Debug.Log("load new scene");
                 // delayed load just to make sure sync and for Jordan to check the network update. Remove in build
-                Invoke(nameof(delayedLoad), 2f);
+                Invoke(nameof(delayedLoad), 0.1f);
             }
             else
             {
