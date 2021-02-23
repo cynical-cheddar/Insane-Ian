@@ -46,7 +46,14 @@ public class TimerBehaviour : MonoBehaviour
 
     private void Update() {
         timer.timeLeft -= Time.deltaTime;
-        timerText.text = Mathf.RoundToInt(timer.timeLeft).ToString();
+        int minutes = Mathf.FloorToInt(timer.timeLeft / 60);
+        int seconds = Mathf.FloorToInt(timer.timeLeft - minutes * 60f);
+        if (seconds < 10) {
+            timerText.text = $"{minutes}:0{seconds}";
+        } else {
+            timerText.text = $"{minutes}:{seconds}";
+        }
+        
         if (timer.timeLeft <= 0) {
             EndGame();
         }
