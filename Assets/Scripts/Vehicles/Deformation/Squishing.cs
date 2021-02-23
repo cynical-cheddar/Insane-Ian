@@ -54,7 +54,6 @@ public class Squishing : MonoBehaviour
 
         // Move each vertex, making sure that it doesn't stretch too far from its neighbours
         while (vertexQueue.Count > 0) {
-            Debug.Log("BBB");
             VertexGroup current = vertexQueue.Dequeue();
 
             List<float> oldEdgeSqrLengths = new List<float>();
@@ -80,7 +79,6 @@ public class Squishing : MonoBehaviour
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
                     if (edge.sqrMagnitude > stretchiness * stretchiness * oldEdgeSqrLengths[j]) {
-                        Debug.Log("easdcfvg");
                         //  make edge right length
                         edge.Normalize();
                         float randomNoise = 1; 
@@ -146,12 +144,10 @@ public class Squishing : MonoBehaviour
         Queue<VertexGroup> vertexQueue = new Queue<VertexGroup>();
 
         for (int i = 0; i < meshGraph.groups.Count; i++) {
-            Debug.Log("nanananananana");
             VertexGroup current = meshGraph.groups[i];
             Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
 
             if (collider.ClosestPoint(vertex) == vertex) {
-                Debug.Log("heehoo");
                 Vector3 deformation = collisionForce;
                 deformation /= vertexWeight;
 
@@ -171,7 +167,6 @@ public class Squishing : MonoBehaviour
 
         // Move each vertex, making sure that it doesn't stretch too far from its neighbours
         while (vertexQueue.Count > 0) {
-            Debug.Log("BBB");
             VertexGroup current = vertexQueue.Dequeue();
             current.enqueued = false;
 
@@ -190,7 +185,6 @@ public class Squishing : MonoBehaviour
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
                     if (edge.sqrMagnitude > stretchiness * stretchiness * oldEdgeSqrLengths[j]) {
-                        Debug.Log("easdcfvg");
                         //  make edge right length
                         edge.Normalize();
                         float randomNoise = 1; 
@@ -229,7 +223,6 @@ public class Squishing : MonoBehaviour
             }
         }
 
-        Debug.Log("AAAAA");
         //  Update the mesh
         deformableMeshes[0].GetMeshFilter().mesh.vertices = vertices.ToArray();
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
