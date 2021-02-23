@@ -19,6 +19,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public string defaultPlayerVehiclePrefabName;
 
+
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,8 +53,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     
     public void StartGame() {
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         SynchroniseSchemaBeforeSpawn();
-        if (timer != null) timer.HostStartTimer();
+        if (timer != null) timer.HostStartTimer(gamestateTracker.timeLimit);
     }
 
     // spawn each player pair at a respective spawnpoint

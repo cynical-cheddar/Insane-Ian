@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 2288257706336206273}
   - component: {fileID: 2298257979069634401}
   - component: {fileID: 2258525237082517909}
+  - component: {fileID: 8121721777201512040}
   m_Layer: 0
   m_Name: TruckChassis
   m_TagString: Untagged
@@ -356,6 +357,25 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: b43c09d6dce10504fa8a843c78b133ae, type: 3}
+--- !u!114 &8121721777201512040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2285355355224956237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e287627b0b4c44acfb2a1a33cc55d209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testMarker: {fileID: 0}
+  collisionResolver: {fileID: 5371136353021480069, guid: 96f0f3bcd3a964af2a2bb99056c778e5,
+    type: 3}
+  vertexWeight: 10
+  groupRadius: 0.05
+  stretchiness: 1.1
+  collisionResistance: 200000
 --- !u!1 &2285355355992425553
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,7 +484,7 @@ GameObject:
   - component: {fileID: 3905643496873552232}
   - component: {fileID: 6808530692672840039}
   - component: {fileID: 2816914891932429244}
-  - component: {fileID: 8780767914134426485}
+  - component: {fileID: 7092912017866335041}
   m_Layer: 0
   m_Name: testingTruckOrange
   m_TagString: Untagged
@@ -613,7 +633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4012ccd10a538ce4793e88bcc2f514ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ICD: {fileID: 8780767914134426485}
+  ICD: {fileID: 7092912017866335041}
 --- !u!114 &2816914891932429244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -630,7 +650,7 @@ MonoBehaviour:
   health: 100
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
---- !u!114 &8780767914134426485
+--- !u!114 &7092912017866335041
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -657,8 +677,8 @@ MonoBehaviour:
   motorTorque: 4500
   brakeTorque: 8000
   brakeForce: 16000
-  steerRate: 1
-  steerRateCoefficent: 0.05
+  steerRateLerp: 0.1
+  baseExtremiumSlip: 0.3
   addedDownforce: {x: 0, y: 0, z: 0}
 --- !u!1 &2285355357818630399
 GameObject:
@@ -1279,6 +1299,7 @@ MonoBehaviour:
   weaponName: Projectile Weapon
   barrelTransform: {fileID: 2916141348327223427}
   barrelEndMuzzleTransform: {fileID: 2916141348327223427}
+  projectileDeviationDegrees: 0
   damageRampupMultiplierCurve:
     serializedVersion: 2
     m_Curve:
@@ -1320,24 +1341,26 @@ MonoBehaviour:
   primaryFireAnimatorTriggerName: Fire
   weaponPhotonView: {fileID: 1478928021139505862}
   gunnerPhotonView: {fileID: 7049704973741281341}
-  cam: {fileID: 0}
   weaponFireSound: {fileID: 8300000, guid: fba8be6c5fcdda041bc57a661595a34d, type: 3}
+  muzzleflashVolume: 1
   impactParticleSound: {fileID: 8300000, guid: 518cbf2ea3689914ea8e3b6b30f5502f, type: 3}
+  imapactParticleVolume: 1
   impactParticleSoundMiss: {fileID: 8300000, guid: a7a98f71358637345b38ad21620ce6b5,
     type: 3}
+  missImpactParticleVolume: 1
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
   muzzleflash: {fileID: 1256538573138234745, guid: 1c7dc0b55fe10d149bf2e550ee9762b9,
     type: 3}
-  muzzleflashVolume: 1
   imapactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
-  imapactParticleVolume: 1
-  missImpactParticleVolume: 1
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
   projectilePrefab: {fileID: 1540927066135063348, guid: 2c93f0aed6cd60541bb19e1a6c3ee024,
     type: 3}
+  projectileParticleEffectPrefab: {fileID: 7024580045867898594, guid: 6879eed96b783c74fa887779f72a7a52,
+    type: 3}
+  projectileMass: 10
   projectileSpeed: 100
   inheritVelocityFromVehicle: 1
 --- !u!1 &8006241792007648075
@@ -1738,6 +1761,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f84a8310268c4376bb6a418458e0579, type: 3}
+--- !u!95 &6441793548522858699 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
+    type: 3}
+  m_PrefabInstance: {fileID: 6915939415484387917}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2916141348327223427 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8611565673112314574, guid: 8f84a8310268c4376bb6a418458e0579,
@@ -1762,9 +1791,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!95 &6441793548522858699 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
-    type: 3}
-  m_PrefabInstance: {fileID: 6915939415484387917}
-  m_PrefabAsset: {fileID: 0}

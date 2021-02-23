@@ -8,6 +8,10 @@ public class HealthBehaviour : MonoBehaviour {
 
     public Text healthLabel;
     GamestateTracker gamestateTracker;
+    int previousRoundedHealth;
+    public GameObject damageIndicator;
+    public Transform damageIndicatorInstantiateTransform;
+    public int damageTaken;
 
     // Start is called before the first frame update
     void Start() {
@@ -23,7 +27,13 @@ public class HealthBehaviour : MonoBehaviour {
         int teamId = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId;
         foreach (VehicleManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
-                healthLabel.text = Mathf.RoundToInt(vehicle.health).ToString();
+                if (Mathf.RoundToInt(vehicle.health) != previousRoundedHealth) {
+                    damageTaken = Mathf.RoundToInt(vehicle.health) - previousRoundedHealth;
+                    Instantiate(damageIndicator, damageIndicatorInstantiateTransform);
+                    healthLabel.text = Mathf.RoundToInt(vehicle.health).ToString();
+                    previousRoundedHealth = Mathf.RoundToInt(vehicle.health);
+                }
+                break;
             }
         }
     }
