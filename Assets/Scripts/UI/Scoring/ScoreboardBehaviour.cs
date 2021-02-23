@@ -11,7 +11,7 @@ public class ScoreboardBehaviour : MonoBehaviour
     public List<Sprite> positionImages;
     GamestateTracker gamestateTracker;
     bool scoreboardIsExpanded = false;
-    ScoringHelper scoringHelper = new ScoringHelper();
+    readonly ScoringHelper scoringHelper = new ScoringHelper();
 
     // Start is called before the first frame update
     void Start() {

@@ -9,7 +9,7 @@ public class TimerBehaviour : MonoBehaviour
 {
     public float defaultTimeLimit = 300f;
     public Text timerText;
-    [SerializeField] public Timer timer = new Timer();
+    public Timer timer = new Timer();
     bool gameOverLoading = false;
 
     [Serializable]
