@@ -15,6 +15,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
     public List<string> destoryOnTheseLevels = new List<string>();
     public int maxPlayers = 24;
     ScoreboardBehaviour scoreboard;
+    public float timeLimit;
 
     [SerializeField] public PlayerSchema schema = new PlayerSchema();
     [SerializeField] public MapDetails mapDetails = new MapDetails();

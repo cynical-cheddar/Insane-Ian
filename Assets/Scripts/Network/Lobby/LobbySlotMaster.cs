@@ -20,6 +20,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     public Text playersInLobbyText;
     public Text readyPlayersText;
+    public Text timeLimitText;
 
     public string selectedMap = "null";
     public string selectedMapDisplayName = "null";
@@ -232,10 +233,12 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             {
                 // get all info from lobby buttons and fill in the gametracker object
                 FillIncompleteTeamsWithBots();
+                if (timeLimitText.text != "") gamestateTracker.timeLimit = float.Parse(timeLimitText.text);
+                PhotonNetwork.CurrentRoom.IsVisible = false;
                 gamestateTracker.ForceSynchronisePlayerSchema();
                 //Debug.Log("load new scene");
                 // delayed load just to make sure sync and for Jordan to check the network update. Remove in build
-                Invoke(nameof(delayedLoad), 2f);
+                Invoke(nameof(delayedLoad), 0.1f);
             }
             else
             {

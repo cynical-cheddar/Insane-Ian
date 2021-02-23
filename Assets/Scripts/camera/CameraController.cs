@@ -34,6 +34,11 @@ public class CameraController : MonoBehaviour
         driveCamFix = driveCamFixGO.GetComponent<CinemachineFreeLook>();
         driveCamFixRev = driveCamFixRevGO.GetComponent<CinemachineFreeLook>();
 
+        driveCam.enabled = true;
+        driveCamRev.enabled = true;
+        driveCamFix.enabled = true;
+        driveCamFixRev.enabled = true;
+
         driveCam.Priority = 0;
         driveCamRev.Priority = 0;
         driveCamFix.Priority = 1;
@@ -63,12 +68,12 @@ public class CameraController : MonoBehaviour
         }
         Vector3 velocity = rb.velocity;
         Vector3 localVel = rb.transform.InverseTransformDirection(velocity);
-        if (Input.GetKeyDown("s") && localVel.z < 0 && !isReverseCam)
+        if (Input.GetKey("s") && localVel.z < 0 && !isReverseCam)
         {
             isReverseCam = true;
             isChanged = true;
         }
-        if (Input.GetKeyDown("w") && localVel.z >= 0 && isReverseCam)
+        if (Input.GetKey("w") && localVel.z >= 0 && isReverseCam)
         {
             isReverseCam = false;
             isChanged = true;

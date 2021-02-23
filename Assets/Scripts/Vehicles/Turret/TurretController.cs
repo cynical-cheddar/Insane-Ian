@@ -47,4 +47,8 @@ public class TurretController : MonoBehaviour
     public void ResetTarget() {
         turretFollowTarget.target = defaultTarget;
     }
+
+    public void UpdateTargeterRotation() {
+        turretTarget.UpdateAngle();
+    }
 }
