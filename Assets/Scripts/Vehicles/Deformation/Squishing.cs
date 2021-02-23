@@ -5,28 +5,25 @@ using GraphBending;
 
 public class Squishing : MonoBehaviour
 {
-    Mesh mesh;
-    List<Vector3> vertices;
-    MeshGraph meshGraph;
-    MeshCollider meshCollider;
+    private List<Vector3> vertices;
+    private MeshGraph meshGraph;
     public GameObject testMarker;
+    public GameObject collisionResolver;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
-    public float stretchiness = 1.2f;
-    public float collisionResistance = 2000;
+    public float stretchiness = 1000000.1f;
+    public float collisionResistance = 200;
+    private List<DeformableMesh> deformableMeshes;
 
     // Start is called before the first frame update.
     void Start() {
-        mesh = GetComponent<MeshFilter>().mesh;
-        vertices = new List<Vector3>(mesh.vertices);
-        meshCollider = GetComponent<MeshCollider>();
+        deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
+        vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
 
         //  Group similar vertices.
-        meshGraph = new MeshGraph(mesh, groupRadius);
-    }
+        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, groupRadius);
 
-    // Update is called once per frame
-    void Update() {
+        collisionResolver = Instantiate(collisionResolver);
     }
 
     // Return the closest vertex group to the given postion
@@ -111,24 +108,37 @@ public class Squishing : MonoBehaviour
         }
 
         //  Update the mesh
-        mesh.vertices = vertices.ToArray();
-        mesh.RecalculateNormals();
-
-        meshCollider.sharedMesh = mesh;
+        deformableMeshes[0].GetMeshFilter().mesh.vertices = vertices.ToArray();
+        deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
     }
 
     //  This breaks if this is on a kinematic object (big sad)
-    private void OnCollisionEnter(Collision collision) {
+    void OnCollisionEnter(Collision collision) {
+        Vector3 collisionNormal = collision.GetContact(0).normal;
         Vector3 collisionForce = collision.impulse;
+        if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
         collisionForce /= Time.fixedDeltaTime;
         collisionForce /= collisionResistance;
         collisionForce = transform.InverseTransformDirection(collisionForce);
 
-        if (collisionForce.sqrMagnitude >= 0.01f) CollideMesh(collision.collider, collisionForce, true);
+        if (collisionForce.sqrMagnitude >= 0.01f) {
+            if (collision.collider is TerrainCollider || (collision.collider is MeshCollider && !((MeshCollider)collision.collider).convex)) {
+                collisionResolver.transform.position = collision.GetContact(0).point;
+                collisionResolver.transform.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
+                Collider collider = collisionResolver.GetComponent<BoxCollider>();
+                CollideMesh(collider, collisionForce, true);
+                collisionResolver.transform.position = new Vector3(0, 10000, 0);
+            }
+            else {
+                CollideMesh(collision.collider, collisionForce, true);
+            }
+        }
     }
 
     public void CollideMesh(Collider collider, Vector3 collisionForce, bool addNoise) {
-        List<VertexGroup> moved = new List<VertexGroup>();
+        
+
+        //List<VertexGroup> moved = new List<VertexGroup>();
 
         //  Make a queue (it breadth first traversal time)
         Queue<VertexGroup> vertexQueue = new Queue<VertexGroup>();
@@ -148,14 +158,17 @@ public class Squishing : MonoBehaviour
                 if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
 
                 current.MoveBy(vertices, deformation, false);
-                moved.Add(current);
+                current.wasMoved = true;
+                //moved.Add(current);
                 vertexQueue.Enqueue(current);
+                current.enqueued = true;
             }
         }
 
         // Move each vertex, making sure that it doesn't stretch too far from its neighbours
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
+            current.enqueued = false;
 
             List<float> oldEdgeSqrLengths = new List<float>();
             for (int j = 0; j < current.connectingEdges.Count; j++) {
@@ -166,7 +179,8 @@ public class Squishing : MonoBehaviour
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Check if adjacent vertex has been moved.
-                if (moved.Contains(adjacent)) {
+                //if (moved.Contains(adjacent)) {
+                if (adjacent.wasMoved) {
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
@@ -185,7 +199,8 @@ public class Squishing : MonoBehaviour
                 }
             }
 
-            moved.Add(current);
+            //moved.Add(current);
+            current.wasMoved = true;
 
             //  Add adjacent, unmoved vertices into the queue for traversal
             for (int j = 0; j < current.connectingEdges.Count; j++) {
@@ -193,16 +208,26 @@ public class Squishing : MonoBehaviour
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Add it to the queue if it hasn't already been moved
-                if (!vertexQueue.Contains(adjacent) && !moved.Contains(adjacent)) {
+                if (!adjacent.enqueued && !adjacent.wasMoved) {
                     vertexQueue.Enqueue(adjacent);
+                    adjacent.enqueued = true;
                 }
             }
         }
 
-        //  Update the mesh
-        mesh.vertices = vertices.ToArray();
-        mesh.RecalculateNormals();
+        for (int i = 0; i < meshGraph.groups.Count; i++) {
+            meshGraph.groups[i].wasMoved = false;
+            if (meshGraph.groups[i].enqueued) {
+                Debug.LogWarning("Vertex marked as still in queue.");
+                meshGraph.groups[i].enqueued = false;
+            }
+        }
 
-        meshCollider.sharedMesh = mesh;
+        //  Update the mesh
+        deformableMeshes[0].GetMeshFilter().mesh.vertices = vertices.ToArray();
+        deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
+
+        //meshCollider.sharedMesh = mesh;
+
     }
 }
