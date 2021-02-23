@@ -11,7 +11,7 @@ public class PlinthManager : MonoBehaviour
     public TextMesh scoreboardText;
     public string defaultVehiclePrefabName;
     GamestateTracker gamestateTracker;
-    ScoringHelper scoringHelper = new ScoringHelper();
+    readonly ScoringHelper scoringHelper = new ScoringHelper();
     List<GamestateTracker.TeamDetails> sortedTeams;
 
     // Start is called before the first frame update
