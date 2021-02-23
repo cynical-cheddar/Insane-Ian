@@ -643,7 +643,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 2284656620238966636}
-  viewIdField: 16
+  viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &1038595067741417621
@@ -742,8 +742,8 @@ MonoBehaviour:
   motorTorque: 3000
   brakeTorque: 8000
   brakeForce: 16000
-  steerRate: 1
-  steerRateCoefficent: 0.05
+  steerRateLerp: 0.1
+  baseExtremiumSlip: 0.3
   addedDownforce: {x: 0, y: 0, z: 0}
 --- !u!1 &2285355357818630399
 GameObject:
@@ -1472,7 +1472,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 1
   ObservedComponents: []
-  viewIdField: 14
+  viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &4600057851733646998
@@ -1940,7 +1940,7 @@ PrefabInstance:
     - target: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: viewIdField
-      value: 15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}

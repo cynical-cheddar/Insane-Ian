@@ -68,12 +68,12 @@ public class CameraController : MonoBehaviour
         }
         Vector3 velocity = rb.velocity;
         Vector3 localVel = rb.transform.InverseTransformDirection(velocity);
-        if (Input.GetKeyDown("s") && localVel.z < 0 && !isReverseCam)
+        if (Input.GetKey("s") && localVel.z < 0 && !isReverseCam)
         {
             isReverseCam = true;
             isChanged = true;
         }
-        if (Input.GetKeyDown("w") && localVel.z >= 0 && isReverseCam)
+        if (Input.GetKey("w") && localVel.z >= 0 && isReverseCam)
         {
             isReverseCam = false;
             isChanged = true;
