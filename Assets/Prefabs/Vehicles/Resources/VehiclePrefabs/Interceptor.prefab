@@ -416,9 +416,10 @@ MonoBehaviour:
   collisionResolver: {fileID: 5371136353021480069, guid: 96f0f3bcd3a964af2a2bb99056c778e5,
     type: 3}
   vertexWeight: 10
-  groupRadius: 0.005
+  groupRadius: 0.05
   stretchiness: 1.1
   collisionResistance: 200000
+  maxEdgeLength: 0.6
 --- !u!1 &482493436807253620
 GameObject:
   m_ObjectHideFlags: 0
@@ -1516,6 +1517,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 13a7e1bd628179d4494bef4b23c9753e, type: 2}
+  - {fileID: 2100000, guid: 6d6bef8f86011474fbda0de70ac1ab99, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

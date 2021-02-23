@@ -13,11 +13,13 @@ public class Squishing : MonoBehaviour
     public float groupRadius = 0.05f;
     public float stretchiness = 1000000.1f;
     public float collisionResistance = 200;
+    public float maxEdgeLength = 0.6f;
     private List<DeformableMesh> deformableMeshes;
 
     // Start is called before the first frame update.
     void Start() {
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
+        deformableMeshes[0].Subdivide(maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
 
         //  Group similar vertices.
