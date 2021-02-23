@@ -29,7 +29,6 @@ public class HealthBehaviour : MonoBehaviour {
             if (vehicle.teamId == teamId) {
                 if (Mathf.RoundToInt(vehicle.health) != previousRoundedHealth) {
                     damageTaken = Mathf.RoundToInt(vehicle.health) - previousRoundedHealth;
-                    Debug.Log($"Spawning {damageIndicator} at {damageIndicatorInstantiateTransform}");
                     Instantiate(damageIndicator, damageIndicatorInstantiateTransform);
                     healthLabel.text = Mathf.RoundToInt(vehicle.health).ToString();
                     previousRoundedHealth = Mathf.RoundToInt(vehicle.health);
