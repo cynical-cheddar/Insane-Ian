@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
+public class NewInterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     // Start is called before the first frame update
+
 
 
     [Header("Wheel Colliders:")]

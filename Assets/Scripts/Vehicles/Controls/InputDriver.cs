@@ -13,7 +13,17 @@ public class InputDriver : MonoBehaviour
         Accellerate();
         Reverse();
         Brake();
+        Handbrake();
         UpdateWheelPoses();
+    }
+
+    private void Handbrake() {
+        var CarDriver = ICD.GetComponent<IDrivable>();
+        if (Input.GetKey(KeyCode.Space)) {
+            CarDriver.Drift();
+        } else {
+            CarDriver.StopDrift();
+        }
     }
 
     private void UpdateWheelPoses() {
