@@ -9,131 +9,75 @@ public class CameraController : MonoBehaviour
     public GameObject focus;
     private Rigidbody rb;
 
-    private bool isFixed = true;
+    private bool isFixed = false;
     private bool isReverseCam = false;
 
     private bool isChanged = false;
 
-    public GameObject driveCamGO;
-    public GameObject driveCamRevGO;
-    public GameObject driveCamFixGO;
-    public GameObject driveCamFixRevGO;
+    enum CamType {
+        Reg = 0,
+        Rev = 1,
+        FixReg = 2,
+        FixRev = 3
+    }
 
-    private CinemachineFreeLook driveCam;
-    private CinemachineFreeLook driveCamRev;
-    private CinemachineFreeLook driveCamFix;
-    private CinemachineFreeLook driveCamFixRev;
+    public List<CinemachineFreeLook> cameras;
 
+    void ActivateCamera(CamType camType) {
+        foreach (CinemachineFreeLook camera in cameras) {
+            camera.Priority = 0;
+            camera.enabled = false;
+        }
+        cameras[(int)camType].Priority = 1;
+        cameras[(int)camType].enabled = true;
+    }
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         rb = focus.GetComponent <Rigidbody> ();
-        driveCam = driveCamGO.GetComponent<CinemachineFreeLook>();
-        driveCamRev = driveCamRevGO.GetComponent<CinemachineFreeLook>();
-        driveCamFix = driveCamFixGO.GetComponent<CinemachineFreeLook>();
-        driveCamFixRev = driveCamFixRevGO.GetComponent<CinemachineFreeLook>();
 
-        driveCam.enabled = true;
-        driveCamRev.enabled = true;
-        driveCamFix.enabled = true;
-        driveCamFixRev.enabled = true;
+        ActivateCamera(CamType.Reg);
 
-        driveCam.Priority = 0;
-        driveCamRev.Priority = 0;
-        driveCamFix.Priority = 1;
-        driveCamFixRev.Priority = 0;
-        driveCam.LookAt = focus.transform;
-        driveCam.Follow = focus.transform;
-        driveCamRev.LookAt = focus.transform;
-        driveCamRev.Follow = focus.transform;
-        driveCamFix.LookAt = focus.transform;
-        driveCamFix.Follow = focus.transform;
-        driveCamFixRev.LookAt = focus.transform;
-        driveCamFixRev.Follow = focus.transform;
-        driveCamGO.SetActive(false);
-        driveCamRevGO.SetActive(false);
-        driveCamFixGO.SetActive(true);
-        driveCamFixRevGO.SetActive(false);
-
+        foreach (CinemachineFreeLook camera in cameras) {
+            camera.LookAt = focus.transform;
+            camera.Follow = focus.transform;
+        }
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown("f"))
-        {
+    void Update() {
+        if (Input.GetKeyDown("f")) {
             isFixed = !isFixed;
             isChanged = true;
         }
         Vector3 velocity = rb.velocity;
         Vector3 localVel = rb.transform.InverseTransformDirection(velocity);
-        if (Input.GetKey("s") && localVel.z < 0 && !isReverseCam)
-        {
+        if (Input.GetKey("s") && localVel.z < 0 && !isReverseCam) {
             isReverseCam = true;
             isChanged = true;
         }
-        if (Input.GetKey("w") && localVel.z >= 0 && isReverseCam)
-        {
+        if (Input.GetKey("w") && localVel.z >= 0 && isReverseCam) {
             isReverseCam = false;
             isChanged = true;
         }
-        if (isChanged)
-        {
-            if (isFixed)
-            {
-                if (isReverseCam)
-                {
-                    driveCam.Priority = 0;
-                    driveCamRev.Priority = 0;
-                    driveCamFix.Priority = 0;
-                    driveCamFixRev.Priority = 1;
-                    driveCamGO.SetActive(false);
-                    driveCamRevGO.SetActive(false);
-                    driveCamFixGO.SetActive(false);
-                    driveCamFixRevGO.SetActive(true);
-                    driveCamFixRev.m_YAxis.Value = driveCamRev.m_YAxis.Value;
+        if (isChanged) {
+            if (isFixed) {
+                if (isReverseCam) {
+                    ActivateCamera(CamType.FixRev);
+                    cameras[(int)CamType.FixRev].m_YAxis.Value = cameras[(int)CamType.Rev].m_YAxis.Value;
+                } else {
+                    ActivateCamera(CamType.FixReg);
+                    cameras[(int)CamType.FixReg].m_YAxis.Value = cameras[(int)CamType.Reg].m_YAxis.Value;
                 }
-                else
-                {
-                    driveCam.Priority = 0;
-                    driveCamRev.Priority = 0;
-                    driveCamFix.Priority = 1;
-                    driveCamFixRev.Priority = 0;
-                    driveCamGO.SetActive(false);
-                    driveCamRevGO.SetActive(false);
-                    driveCamFixGO.SetActive(true);
-                    driveCamFixRevGO.SetActive(false);
-                    driveCamFix.m_YAxis.Value = driveCam.m_YAxis.Value;
-                }
-            }
-            else
-            {
-                if (isReverseCam)
-                {
-                    driveCam.Priority = 0;
-                    driveCamRev.Priority = 1;
-                    driveCamFix.Priority = 0;
-                    driveCamFixRev.Priority = 0;
-                    driveCamGO.SetActive(false);
-                    driveCamRevGO.SetActive(true);
-                    driveCamFixGO.SetActive(false);
-                    driveCamFixRevGO.SetActive(false);
-                    driveCamRev.m_XAxis.Value = 180;
-                    driveCamRev.m_YAxis.Value = driveCamFixRev.m_YAxis.Value;
-                }
-                else
-                {
-                    driveCam.Priority = 1;
-                    driveCamRev.Priority = 0;
-                    driveCamFix.Priority = 0;
-                    driveCamFixRev.Priority = 0;
-                    driveCamGO.SetActive(true);
-                    driveCamRevGO.SetActive(false);
-                    driveCamFixGO.SetActive(false);
-                    driveCamFixRevGO.SetActive(false);
-                    driveCam.m_XAxis.Value = 0;
-                    driveCam.m_YAxis.Value = driveCamFix.m_YAxis.Value;
+            } else {
+                if (isReverseCam) {
+                    ActivateCamera(CamType.Rev);
+                    cameras[(int)CamType.Rev].m_XAxis.Value = 180;
+                    cameras[(int)CamType.Rev].m_YAxis.Value = cameras[(int)CamType.FixRev].m_YAxis.Value;
+                } else {
+                    ActivateCamera(CamType.Reg);
+                    cameras[(int)CamType.Reg].m_XAxis.Value = 0;
+                    cameras[(int)CamType.Reg].m_YAxis.Value = cameras[(int)CamType.FixReg].m_YAxis.Value;
                 }
             }
         }
