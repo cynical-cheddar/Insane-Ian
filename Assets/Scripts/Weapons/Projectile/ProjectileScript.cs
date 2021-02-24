@@ -8,7 +8,6 @@ public class ProjectileScript : MonoBehaviour
     GameObject missImpactParticle;
     GameObject projectileParticle;
     GameObject projectileParticleInstance;
-    public GameObject testMarker;
 
     private bool isTrueProjectile = false;
 
@@ -55,7 +54,6 @@ public class ProjectileScript : MonoBehaviour
             Squishing hitMeshSquisher = collision.gameObject.GetComponentInParent<Squishing>();
             if (hitMeshSquisher != null) {
                 Vector3 explosionPoint = collision.GetContact(0).point + impactNormal * explosionOffset;
-                Instantiate(testMarker, explosionPoint, Quaternion.identity);
                 hitMeshSquisher.ExplodeMeshAt(explosionPoint, explosionForce);
             }
         }
