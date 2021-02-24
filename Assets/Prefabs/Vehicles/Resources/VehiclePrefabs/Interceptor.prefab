@@ -322,7 +322,7 @@ MonoBehaviour:
   carRB: {fileID: 436422559543559530}
   carTransform: {fileID: 486267010860937132}
   maxSteerAngle: 20
-  motorTorque: 5000
+  motorTorque: 4000
   brakeTorque: 8000
   brakeForce: 16000
   steerRateLerp: 0.1
@@ -1079,6 +1079,16 @@ PrefabInstance:
       propertyPath: m_ZDamping
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5218091353629000493, guid: fabe4246c84a15543a808515ae6c3628,
+        type: 3}
+      propertyPath: m_Follow
+      value: 
+      objectReference: {fileID: 486267010860937132}
+    - target: {fileID: 5218091353629000493, guid: fabe4246c84a15543a808515ae6c3628,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5253411635085117547, guid: fabe4246c84a15543a808515ae6c3628,
         type: 3}
       propertyPath: m_XDamping
@@ -1189,6 +1199,21 @@ PrefabInstance:
       propertyPath: m_LocalRotation.x
       value: 0.12212425
       objectReference: {fileID: 0}
+    - target: {fileID: 8380461497955910245, guid: fabe4246c84a15543a808515ae6c3628,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8380461497955910245, guid: fabe4246c84a15543a808515ae6c3628,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8380461497955910245, guid: fabe4246c84a15543a808515ae6c3628,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 12.25
+      objectReference: {fileID: 0}
     - target: {fileID: 9055106551065886726, guid: fabe4246c84a15543a808515ae6c3628,
         type: 3}
       propertyPath: m_RootOrder
@@ -1244,7 +1269,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1201775237170891260, guid: fabe4246c84a15543a808515ae6c3628, type: 3}
+    - {fileID: 7251559084476170628, guid: fabe4246c84a15543a808515ae6c3628, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fabe4246c84a15543a808515ae6c3628, type: 3}
 --- !u!4 &7828504538610486421 stripped
 Transform:
