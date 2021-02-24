@@ -76,4 +76,12 @@ public class GunnerWeaponManager : MonoBehaviour
             w.ReloadSalvo();
         }
     }
+
+    public void CeaseFireCurrentWeaponGroup()
+    {
+        foreach (Weapon w in currentWeaponControlGroup.weapons)
+        {
+            w.CeaseFire();
+        }
+    }
 }

@@ -36,12 +36,23 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     bool hasPicked = false;
     
+    [PunRPC]
+    void ChangeLobbyButtonActiveState_RPC(int index, bool state) {
+        lobbyButtons[index].gameObject.SetActive(state);
+        if (state) {
+            gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButtons[index].teamId));
+        } else {
+            // Scream
+        }
+    }
+
     public void AddTeam() {
         if (PhotonNetwork.IsMasterClient) {
-            foreach (LobbyButtonScript lobbyButton in lobbyButtons) {
-                if (!lobbyButton.gameObject.activeInHierarchy) {
-                    lobbyButton.gameObject.SetActive(true);
-                    gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButton.teamId));
+            for (int i = 0; i < lobbyButtons.Count; i++) {
+                if (!lobbyButtons[i].gameObject.activeInHierarchy) {
+                    lobbyButtons[i].gameObject.SetActive(true);
+                    GetComponent<PhotonView>().RPC(nameof(ChangeLobbyButtonActiveState_RPC), RpcTarget.OthersBuffered, i, true);
+                    gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButtons[i].teamId));
                     break;
                 }
             }
@@ -53,6 +64,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             for (int i = lobbyButtons.Count - 1; i >= 0; i--) {
                 if (lobbyButtons[i].gameObject.activeInHierarchy) {
                     lobbyButtons[i].gameObject.SetActive(false);
+                    GetComponent<PhotonView>().RPC(nameof(ChangeLobbyButtonActiveState_RPC), RpcTarget.OthersBuffered, i, false);
                     gamestateTracker.schema.teamsList.Remove(gamestateTracker.getTeamDetails(lobbyButtons[i].teamId));
                     break;
                 }

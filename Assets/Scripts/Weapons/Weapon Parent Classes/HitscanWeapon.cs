@@ -44,7 +44,7 @@ public class HitscanWeapon : Weapon
     [Header(("Hitscan Rapid Fire Optimisation Settings"))]
     public bool useRapidFireOptimisation = false;
     public float stopFireFxLoopThreshold = 0.2f;
-    protected float timeSinceLastFire = 0f;
+    
     protected bool isRemotelyFiring = false;
     protected bool lastIsRemotelyFiring = false;
 
@@ -128,7 +128,7 @@ public class HitscanWeapon : Weapon
         
         // update loop for 
         base.Update();
-        timeSinceLastFire += Time.deltaTime;
+        
         // if we have been firing more than the threshold
         if (timeSinceLastFire > stopFireFxLoopThreshold && isRemotelyFiring == true && weaponPhotonView.IsMine)
         {
@@ -141,8 +141,7 @@ public class HitscanWeapon : Weapon
             weaponPhotonView.RPC(nameof(SetIsRemotelyFiring_RPC), RpcTarget.Others, isRemotelyFiring);
             lastIsRemotelyFiring = isRemotelyFiring;
         }*/
-        
-        
+       
         
     }
 
