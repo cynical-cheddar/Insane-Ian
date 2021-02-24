@@ -19,6 +19,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public string defaultPlayerVehiclePrefabName;
 
+
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,8 +53,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
     
     public void StartGame() {
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         SynchroniseSchemaBeforeSpawn();
-        if (timer != null) timer.HostStartTimer();
+        if (timer != null) timer.HostStartTimer(gamestateTracker.timeLimit);
     }
 
     // spawn each player pair at a respective spawnpoint
@@ -100,7 +104,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 else vehicle = PhotonNetwork.Instantiate(defaultPlayerVehiclePrefabName, sp.position, sp.rotation);
                 if (vehicle.GetComponent<VehicleManager>() != null)
                 {
-                    vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+                    vehicle.GetComponent<PhotonView>().RPC(nameof(VehicleManager.SetTeamId_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
                     vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.SetNetworkTeam_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
                 }
                 else
@@ -159,7 +163,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         else vehicle = PhotonNetwork.Instantiate(defaultPlayerVehiclePrefabName, sp.position, sp.rotation);
         if (vehicle.GetComponent<VehicleManager>() != null)
         {
-            vehicle.GetComponent<VehicleManager>().teamId = team.teamId;
+            vehicle.GetComponent<PhotonView>().RPC(nameof(VehicleManager.SetTeamId_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
             vehicle.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.SetNetworkTeam_RPC), RpcTarget.AllBufferedViaServer, team.teamId);
         }
         foreach (List<GamestateTracker.PlayerDetails> playerPair in playerPairs) {

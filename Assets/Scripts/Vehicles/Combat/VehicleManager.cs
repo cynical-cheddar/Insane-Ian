@@ -8,6 +8,7 @@ public class VehicleManager : MonoBehaviour
 {
     GamestateTracker gamestateTracker;
     NetworkManager networkManager;
+    PhotonView driverPhotonView;
     Rigidbody rb;
     InterfaceCarDrive icd;
     InputDriver inputDriver;
@@ -23,7 +24,6 @@ public class VehicleManager : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
-        if(GetComponent<PhotonView>().IsMine){
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
         networkManager = FindObjectOfType<NetworkManager>();
@@ -32,42 +32,68 @@ public class VehicleManager : MonoBehaviour
         icd = GetComponent<InterfaceCarDrive>();
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
+        driverPhotonView = GetComponent<PhotonView>();
+    }
+
+    [PunRPC]
+    public void SetTeamId_RPC(int newId) {
+        teamId = newId;
+    }
+
+    [PunRPC]
+    void TakeDamage_RPC(string weaponDetailsJson)
+    {
+        Weapon.WeaponDamageDetails weaponDamageDetails =
+            JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
+        lastHitDetails = weaponDamageDetails;
+        float amount = weaponDamageDetails.damage;
+       // Debug.Log("Damage taken by: " + weaponDamageDetails.sourcePlayerNickName);
+        if (health > 0) {
+            health -= amount;
+            if (health <= 0&&!isDead && driverPhotonView.IsMine)
+            {
+                // die is only called once, by the driver
+                isDead = true;
+                Die(true, true);
+                // do death effects for all other players
+                
+                // TODO- update to take damage type parameter
+                driverPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+                
+            }
         }
     }
 
-    // Update is called once per frame
-    void Update() { 
-        
+    [PunRPC]
+    void TakeAnonymousDamage_RPC(float amount)
+    {
+        if (health > 0) {
+            health -= amount;
+            if (health <= 0&&!isDead && driverPhotonView.IsMine)
+            {
+                // die is only called once, by the driver
+                isDead = true;
+                Die(true, false);
+                // do death effects for all other players
+
+                // TODO- update to take damage type parameter
+                driverPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+            }
+        }
     }
 
     public void TakeDamage(Weapon.WeaponDamageDetails hitDetails)
     {
-        lastHitDetails = hitDetails;
-        float amount = hitDetails.damage;
-        Debug.Log("Damage taken by: " + hitDetails.sourcePlayerNickName);
-        if (health > 0) {
-            health -= amount;
-            if (health <= 0&&!isDead)
-            {
-                isDead = true;
-                Die(true, true);
-            }
-        }
+        // call take damage on everyone else's instance of the game
+        string hitDetailsJson = JsonUtility.ToJson(hitDetails);
+        
+        driverPhotonView.RPC(nameof(TakeDamage_RPC), RpcTarget.All, hitDetailsJson);
     }
 
     // overloaded method that doesn't care about assigning a kill
     public void TakeDamage(float amount)
     {
-        if (health > 0) {
-            health -= amount;
-            if (health <= 0 && !isDead)
-            {
-                isDead=true;
-                // don't take kill
-                Die(true, false);
-                
-            }
-        }
+        driverPhotonView.RPC(nameof(TakeAnonymousDamage_RPC), RpcTarget.All, amount);
     }
 
     void PlayDeathTrailEffects(bool childExplosion)
@@ -79,7 +105,10 @@ public class VehicleManager : MonoBehaviour
         }
     }
 
+    
+    // Die is a LOCAL function that is only called by the driver when they get dead.
     void Die(bool updateDeath, bool updateKill) {
+        health = 0;
         // Update gamestate
         
         // update my deaths
@@ -96,16 +125,24 @@ public class VehicleManager : MonoBehaviour
         if (updateKill)
         {
             // update their kills
-            Debug.Log("Kill earned by: " + lastHitDetails.sourceTeamId + " team");
+           // Debug.Log("Kill earned by: " + lastHitDetails.sourceTeamId + " team");
             GamestateTracker.TeamDetails theirRecord = gamestateTracker.getTeamDetails(lastHitDetails.sourceTeamId);
             theirRecord.kills += 1;
             gamestateTrackerPhotonView.RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.All,
                 lastHitDetails.sourceTeamId, JsonUtility.ToJson(theirRecord));
         }
 
-        PlayDeathTrailEffects(true);
+
 
         networkManager.CallRespawnVehicle(5f, teamId);
+        
+
+    }
+
+    [PunRPC]
+    void PlayDeathEffects_RPC()
+    {
+        PlayDeathTrailEffects(true);
         inputDriver.enabled = false;
         rb.drag = 0.75f;
         rb.angularDrag = 0.75f;
@@ -126,7 +163,10 @@ public class VehicleManager : MonoBehaviour
             childBehaviour.enabled = false;
         }
         PlayDeathTrailEffects(false);
-        PhotonNetwork.Destroy(gameObject);
+        
+        
+        // call network delete on driver instance
+        if(driverPhotonView.IsMine)PhotonNetwork.Destroy(gameObject);
 
         
     }
