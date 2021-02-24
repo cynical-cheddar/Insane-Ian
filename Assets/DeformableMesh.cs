@@ -2,9 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class DeformableMesh : MonoBehaviour
 {
     private MeshFilter meshFilter = null;
+    public float maxEdgeLength = 0.6f;
+
+    void Update() {
+        if (!Application.IsPlaying(gameObject)) {
+            Subdivide(maxEdgeLength);
+        }
+    }
 
     public void Subdivide(float maxEdgeLength) {
         GetMeshFilter();
@@ -13,12 +21,14 @@ public class DeformableMesh : MonoBehaviour
         List<Vector3> vertices = new List<Vector3>(mesh.vertices);
         Dictionary<int, Dictionary<int, int>> splits = new Dictionary<int, Dictionary<int, int>>();
 
-        bool sliced = true;
-
         for (int submesh = 0; submesh < mesh.subMeshCount; submesh++) {
             List<int> tris = new List<int>(mesh.GetTriangles(submesh));
+
+            bool sliced = true;
+
             while (sliced) {
                 sliced = false;
+                
                 for (int i = 0; i < tris.Count; i += 3) {
                     float lengthA = (vertices[tris[i]] - vertices[tris[i + 1]]).sqrMagnitude;
                     float lengthB = (vertices[tris[i + 1]] - vertices[tris[i + 2]]).sqrMagnitude;
