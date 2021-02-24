@@ -60,6 +60,14 @@ public class PlayerGunnerController : MonoBehaviour
                 gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
             }
         }
+
+        if (Input.GetButtonUp("Fire1"))
+        {
+            if (gunnerPhotonView.IsMine)
+            {
+                gunnerWeaponManager.CeaseFireCurrentWeaponGroup();
+            }
+        }
         
         // relaod
         if (Input.GetButtonDown("Reload"))

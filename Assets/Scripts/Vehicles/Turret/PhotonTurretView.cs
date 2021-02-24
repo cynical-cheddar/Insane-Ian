@@ -49,10 +49,10 @@ namespace Photon.Pun
             if (!this.photonView.IsMine)
             {
                 var tr = bodyTransform;
-                tr.localRotation = Quaternion.RotateTowards(tr.localRotation, this.m_NetworkBodyRotation, this.m_BodyAngle * (10.0f / PhotonNetwork.SerializationRate));
+                tr.localRotation = Quaternion.RotateTowards(tr.localRotation, this.m_NetworkBodyRotation, this.m_BodyAngle * (4.0f / PhotonNetwork.SerializationRate));
 
                 tr = barrelTransform;
-                tr.localRotation = Quaternion.RotateTowards(tr.localRotation, this.m_NetworkBarrelRotation, this.m_BarrelAngle * (10.0f / PhotonNetwork.SerializationRate));
+                tr.localRotation = Quaternion.RotateTowards(tr.localRotation, this.m_NetworkBarrelRotation, this.m_BarrelAngle * (4.0f / PhotonNetwork.SerializationRate));
             }
         }
 

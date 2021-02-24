@@ -48,6 +48,7 @@ public class Weapon : MonoBehaviour
 
     protected PlayerTransformTracker _playerTransformTracker;
 
+    protected float timeSinceLastFire = 0f;
 
     protected string myNickName = "null";
 
@@ -137,6 +138,15 @@ public class Weapon : MonoBehaviour
     }
     public virtual void Fire(Vector3 targetPoint){
 
+    }
+
+    public virtual void CeaseFire()
+    {
+    }
+
+    public virtual void DeselectWeapon()
+    {
+        
     }
 
     protected Vector3 CalculateFireDeviation(Vector3 oldTargetPoint, float maxDegrees)
@@ -284,13 +294,15 @@ public class Weapon : MonoBehaviour
 
     protected void Update()
     {
+        timeSinceLastFire += Time.deltaTime;
+        
         if (currentCooldown >= 0)
         {
             currentCooldown -= Time.deltaTime;
         }
         
         
-        if (reloadType == ReloadType.recharge)
+        if (reloadType == ReloadType.recharge && timeSinceLastFire > reloadTime)
         {
             // recharge a single round in the salvo
             if (currentSalvo < salvoSize)
@@ -341,6 +353,19 @@ public class Weapon : MonoBehaviour
         }
 
         return false;
+    }
+
+    protected bool HasAmmoToShoot()
+    {
+        if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
+        else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;
+        else return false;
+    }
+    protected bool PenultimateShot()
+    {
+        if((reloadType != ReloadType.noReload) && currentSalvo >= ammoPerShot)return false;
+        else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return false;
+        else return true;
     }
 
     protected float CalculateDamageMultiplierCurve(float distance)
