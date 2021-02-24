@@ -6,6 +6,13 @@ using Cinemachine;
 [VehicleScript(ScriptType.playerDriverScript)]
 public class CameraController : MonoBehaviour
 {
+    enum CamType {
+        Reg = 0,
+        Rev = 1,
+        FixReg = 2,
+        FixRev = 3
+    }
+
     public GameObject focus;
     private Rigidbody rb;
 
@@ -13,13 +20,6 @@ public class CameraController : MonoBehaviour
     private bool isReverseCam = false;
 
     private bool isChanged = false;
-
-    enum CamType {
-        Reg = 0,
-        Rev = 1,
-        FixReg = 2,
-        FixRev = 3
-    }
 
     public List<CinemachineFreeLook> cameras;
 
@@ -34,7 +34,7 @@ public class CameraController : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
-        rb = focus.GetComponent <Rigidbody> ();
+        rb = focus.GetComponent<Rigidbody>();
 
         ActivateCamera(CamType.Reg);
 
@@ -46,17 +46,17 @@ public class CameraController : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown("f")) {
+        if (Input.GetKeyDown(KeyCode.F)) {
             isFixed = !isFixed;
             isChanged = true;
         }
         Vector3 velocity = rb.velocity;
         Vector3 localVel = rb.transform.InverseTransformDirection(velocity);
-        if (Input.GetKey("s") && localVel.z < 0 && !isReverseCam) {
+        if (Input.GetKey(KeyCode.S) && localVel.z < 0 && !isReverseCam) {
             isReverseCam = true;
             isChanged = true;
         }
-        if (Input.GetKey("w") && localVel.z >= 0 && isReverseCam) {
+        if (Input.GetKey(KeyCode.W) && localVel.z >= 0 && isReverseCam) {
             isReverseCam = false;
             isChanged = true;
         }
