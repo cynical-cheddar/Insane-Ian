@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
-
+using Cinemachine;
 [VehicleScript(ScriptType.playerGunnerScript)]
 public class PlayerGunnerController : MonoBehaviour
 {
@@ -16,7 +16,6 @@ public class PlayerGunnerController : MonoBehaviour
     public PhotonView gunnerPhotonView;
     Transform cam;
     Collider[] colliders;
-    public Transform targetPoint;
     
     // Start is called before the first frame update
     void Start()
@@ -81,9 +80,6 @@ public class PlayerGunnerController : MonoBehaviour
         turretController.ChangeTargetYaw(cameraSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime);
         turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime));
         turretController.UpdateTargeterRotation();
-
-        Vector3 vectorToAimPoint = camera.transform.position - targetPoint.position;
-        camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset += vectorToAimPoint.normalized * Input.mouseScrollDelta.y * 0.25f;
     }
 
     Vector3 CalculateTargetingHitpoint(Transform sourceTransform)
