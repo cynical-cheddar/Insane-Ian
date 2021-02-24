@@ -10,12 +10,12 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
 
     public PhotonView gunnerPhotonView;
     public PhotonView driverPhotonView;
-    public MonoBehaviour[] playerDriverScripts;
+    private MonoBehaviour[] playerDriverScripts;
 
-    public MonoBehaviour[] playerGunnerScripts;
-    
-    public MonoBehaviour[] aiDriverScripts;
-    public MonoBehaviour[] aiGunnerScripts;
+    private MonoBehaviour[] playerGunnerScripts;
+
+    private MonoBehaviour[] aiDriverScripts;
+    private MonoBehaviour[] aiGunnerScripts;
 
     public bool botDriver = false;
     public bool botGunner = false;
@@ -51,7 +51,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks
         if (FindObjectOfType<GamestateTracker>() != null)
         {
             gamestateTracker = FindObjectOfType<GamestateTracker>();
-            gamestateTracker.ForceSynchronisePlayerSchema();
+         //   gamestateTracker.ForceSynchronisePlayerSchema();
         }
     }
 
