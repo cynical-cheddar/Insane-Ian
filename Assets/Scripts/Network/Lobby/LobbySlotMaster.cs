@@ -272,8 +272,8 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         
         if (PhotonNetwork.IsMasterClient)
         {
-            GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
-            gamestateTracker.GetComponent<PhotonView>().RPC("RemovePlayerFromSchema", RpcTarget.AllBufferedViaServer, otherPlayer.ActorNumber);
+            GetComponent<PhotonView>().RPC(nameof(UpdateCountAndReady), RpcTarget.AllBufferedViaServer);
+            gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.RemovePlayerFromSchema), RpcTarget.AllBufferedViaServer, otherPlayer.ActorNumber);
         }
     }
 
