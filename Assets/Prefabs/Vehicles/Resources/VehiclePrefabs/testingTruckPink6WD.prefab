@@ -468,12 +468,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunnerPhotonView: {fileID: 7049704973741281341}
   driverPhotonView: {fileID: 2284656620238966635}
-  playerDriverScripts:
-  - {fileID: 1262023757406737058}
-  - {fileID: 6808530692672840039}
-  playerGunnerScripts: []
-  aiDriverScripts: []
-  aiGunnerScripts: []
   botDriver: 0
   botGunner: 0
   teamId: 0
@@ -547,7 +541,7 @@ MonoBehaviour:
   carRB: {fileID: 2236991241069924175}
   carTransform: {fileID: 2286296900014892425}
   maxSteerAngle: 20
-  motorTorque: 3000
+  motorTorque: 2500
   brakeTorque: 8000
   brakeForce: 16000
   steerRateLerp: 0.1
@@ -1790,18 +1784,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fabe4246c84a15543a808515ae6c3628, type: 3}
---- !u!114 &1262023757406737058 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8672425318850525729, guid: fabe4246c84a15543a808515ae6c3628,
-    type: 3}
-  m_PrefabInstance: {fileID: 7627196759221299331}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 173b3c2acc0385247ae9b4d0ef63cd16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1473535127169345669 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9055106551065886726, guid: fabe4246c84a15543a808515ae6c3628,
