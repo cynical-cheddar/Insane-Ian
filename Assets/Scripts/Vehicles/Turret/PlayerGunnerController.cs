@@ -16,7 +16,7 @@ public class PlayerGunnerController : MonoBehaviour
     public PhotonView gunnerPhotonView;
     Transform cam;
     Collider[] colliders;
-    
+    public Transform targetPoint;
     
     // Start is called before the first frame update
     void Start()
@@ -74,8 +74,8 @@ public class PlayerGunnerController : MonoBehaviour
         turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime));
         turretController.UpdateTargeterRotation();
 
-        camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.y -= Input.mouseScrollDelta.y * 0.1f;
-        camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z += Input.mouseScrollDelta.y * 0.25f;
+        Vector3 vectorToAimPoint = camera.transform.position - targetPoint.position;
+        camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset += vectorToAimPoint.normalized * Input.mouseScrollDelta.y * 0.25f;
     }
 
     Vector3 CalculateTargetingHitpoint(Transform sourceTransform)
