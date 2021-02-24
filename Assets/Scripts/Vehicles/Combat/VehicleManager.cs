@@ -6,6 +6,17 @@ using UnityEngine;
 
 public class VehicleManager : MonoBehaviour
 {
+    [Serializable]
+    public struct CollisionArea {
+        public Vector3 rotationEuler;
+
+        [HideInInspector]
+        public Quaternion rotation;
+        public float width;
+        public float height;
+        public float collisionResistance;
+    }
+
     GamestateTracker gamestateTracker;
     NetworkManager networkManager;
     PhotonView driverPhotonView;
@@ -19,8 +30,27 @@ public class VehicleManager : MonoBehaviour
     public GameObject temporaryDeathExplosion;
     PhotonView gamestateTrackerPhotonView;
     bool isDead = false;
+    public List<CollisionArea> collisionAreas;
+    private float deathForce = Mathf.Pow(10, 6.65f);
+    private float baseCollisionResistance = 1;
+    private Weapon.WeaponDamageDetails _rammingDetails;
+    public Weapon.WeaponDamageDetails rammingDetails {
+        get {
+            if (_rammingDetails.sourcePlayerNickName == null) {
+                NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
+                _rammingDetails.sourcePlayerNickName = npv.GetDriverNickName();
+                _rammingDetails.sourcePlayerId = npv.GetDriverID();
+                _rammingDetails.sourceTeamId = npv.teamId;
+            }
+            return _rammingDetails;
+        }
+    }
+    public float defaultCollisionResistance = 1;
+    public float environmentCollisionResistance = 1;
     
     Weapon.WeaponDamageDetails lastHitDetails;
+
+    private string nam = null;
 
     // Start is called before the first frame update
     void Start() {
@@ -33,6 +63,76 @@ public class VehicleManager : MonoBehaviour
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
         driverPhotonView = GetComponent<PhotonView>();
+
+        baseCollisionResistance = deathForce / maxHealth;
+
+        _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0);
+    }
+
+    void OnDrawGizmos() {
+        Quaternion originalRotation = transform.rotation;
+
+        for (int i = 0; i < collisionAreas.Count; i++) {
+            CollisionArea collisionArea = collisionAreas[i];
+            collisionArea.rotation.eulerAngles = collisionArea.rotationEuler;
+            transform.rotation = collisionArea.rotation;
+            Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.DrawFrustum(Vector3.zero, collisionArea.height, 3, 0, collisionArea.width / collisionArea.height);
+        }
+
+        transform.rotation = originalRotation;
+    }
+
+    void OnCollisionEnter(Collision collision) {
+        Vector3 collisionNormal = collision.GetContact(0).normal;
+        Vector3 collisionForce = collision.impulse;
+        if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
+        collisionForce /= Time.fixedDeltaTime;
+        collisionForce = transform.InverseTransformDirection(collisionForce);
+
+        VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
+
+        Vector3 contactPoint = transform.InverseTransformPoint(collision.GetContact(0).point);
+        float damage = CalculateCollisionDamage(collisionForce, contactPoint, otherVehicleManager != null);
+
+        if (nam == null) {
+            NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
+            nam = npv.GetDriverNickName();
+        }
+        Debug.Log(nam + " " + damage);
+
+        if (otherVehicleManager != null) {
+            Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
+            rammingDetails.damage = damage;
+            TakeDamage(rammingDetails);
+        }
+        else {
+            TakeDamage(damage);
+        }
+    }
+
+    private float CalculateCollisionDamage(Vector3 collisionForce, Vector3 collisionDirection, bool hitVehicle) {
+        float collisionResistance = 1;
+
+        foreach (CollisionArea collisionArea in collisionAreas) {
+            Vector3 verticalComponent = Vector3.ProjectOnPlane(-collisionDirection, collisionArea.rotation * Vector3.right).normalized;
+            Vector3 horizontalComponent = Vector3.ProjectOnPlane(-collisionDirection, collisionArea.rotation * Vector3.up).normalized;
+            Vector3 areaCentre = collisionArea.rotation * Vector3.forward;
+            if (Vector3.Dot(areaCentre, verticalComponent) < Mathf.Cos(collisionArea.height / 2) &&
+                Vector3.Dot(areaCentre, horizontalComponent) < Mathf.Cos(collisionArea.width / 2)) {
+
+                collisionResistance = collisionArea.collisionResistance;
+                break;
+            }
+        }
+
+        Debug.Log(nam + " " + collisionResistance);
+
+        float reducedForce = collisionForce.magnitude / baseCollisionResistance;
+        if (!hitVehicle) reducedForce /= environmentCollisionResistance;
+        reducedForce /= collisionResistance;
+
+        return reducedForce;
     }
 
     [PunRPC]
@@ -166,7 +266,7 @@ public class VehicleManager : MonoBehaviour
         
         
         // call network delete on driver instance
-        if(driverPhotonView.IsMine)PhotonNetwork.Destroy(gameObject);
+        if (driverPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);
 
         
     }
