@@ -17,7 +17,7 @@ public class DeformableMesh : MonoBehaviour
     public void Subdivide(float maxEdgeLength) {
         GetMeshFilter();
 
-        Mesh mesh = meshFilter.mesh;
+        Mesh mesh = meshFilter.sharedMesh;
         List<Vector3> vertices = new List<Vector3>(mesh.vertices);
         Dictionary<int, Dictionary<int, int>> splits = new Dictionary<int, Dictionary<int, int>>();
 
