@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
-
+[VehicleScript(ScriptType.playerDriverScript)]
 public class DriverCameraBehaviour : MonoBehaviour
 {
     CinemachineFreeLook cam;
