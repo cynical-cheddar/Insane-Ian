@@ -50,8 +50,6 @@ public class VehicleManager : MonoBehaviour
     
     Weapon.WeaponDamageDetails lastHitDetails;
 
-    private string nam = null;
-
     // Start is called before the first frame update
     void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -95,12 +93,6 @@ public class VehicleManager : MonoBehaviour
         Vector3 contactPoint = transform.InverseTransformPoint(collision.GetContact(0).point);
         float damage = CalculateCollisionDamage(collisionForce, contactPoint, otherVehicleManager != null);
 
-        if (nam == null) {
-            NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
-            nam = npv.GetDriverNickName();
-        }
-        Debug.Log(nam + " " + damage);
-
         if (otherVehicleManager != null) {
             Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
             rammingDetails.damage = damage;
@@ -126,8 +118,6 @@ public class VehicleManager : MonoBehaviour
             }
         }
 
-        Debug.Log(nam + " " + collisionResistance);
-
         float reducedForce = collisionForce.magnitude / baseCollisionResistance;
         if (!hitVehicle) reducedForce /= environmentCollisionResistance;
         reducedForce /= collisionResistance;
@@ -147,7 +137,6 @@ public class VehicleManager : MonoBehaviour
             JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
         lastHitDetails = weaponDamageDetails;
         float amount = weaponDamageDetails.damage;
-       // Debug.Log("Damage taken by: " + weaponDamageDetails.sourcePlayerNickName);
         if (health > 0) {
             health -= amount;
             if (health <= 0&&!isDead && driverPhotonView.IsMine)
@@ -225,7 +214,6 @@ public class VehicleManager : MonoBehaviour
         if (updateKill)
         {
             // update their kills
-           // Debug.Log("Kill earned by: " + lastHitDetails.sourceTeamId + " team");
             GamestateTracker.TeamDetails theirRecord = gamestateTracker.getTeamDetails(lastHitDetails.sourceTeamId);
             theirRecord.kills += 1;
             gamestateTrackerPhotonView.RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.All,
