@@ -73,6 +73,9 @@ public class PlayerGunnerController : MonoBehaviour
         turretController.ChangeTargetYaw(cameraSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime);
         turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime));
         turretController.UpdateTargeterRotation();
+
+        camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.y -= Input.mouseScrollDelta.y * 0.1f;
+        camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z += Input.mouseScrollDelta.y * 0.25f;
     }
 
     Vector3 CalculateTargetingHitpoint(Transform sourceTransform)
