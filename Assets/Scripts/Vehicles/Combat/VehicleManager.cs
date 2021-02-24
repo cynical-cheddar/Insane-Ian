@@ -107,11 +107,11 @@ public class VehicleManager : MonoBehaviour
         float collisionResistance = 1;
 
         foreach (CollisionArea collisionArea in collisionAreas) {
-            Vector3 verticalComponent = Vector3.ProjectOnPlane(-collisionDirection, collisionArea.rotation * Vector3.right).normalized;
-            Vector3 horizontalComponent = Vector3.ProjectOnPlane(-collisionDirection, collisionArea.rotation * Vector3.up).normalized;
+            Vector3 verticalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.right).normalized;
+            Vector3 horizontalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.up).normalized;
             Vector3 areaCentre = collisionArea.rotation * Vector3.forward;
-            if (Vector3.Dot(areaCentre, verticalComponent) < Mathf.Cos(collisionArea.height / 2) &&
-                Vector3.Dot(areaCentre, horizontalComponent) < Mathf.Cos(collisionArea.width / 2)) {
+            if (Vector3.Dot(areaCentre, verticalComponent) > Mathf.Cos(collisionArea.height / 2) &&
+                Vector3.Dot(areaCentre, horizontalComponent) > Mathf.Cos(collisionArea.width / 2)) {
 
                 collisionResistance = collisionArea.collisionResistance;
                 break;
