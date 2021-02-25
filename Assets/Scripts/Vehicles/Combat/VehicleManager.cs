@@ -8,6 +8,7 @@ public class VehicleManager : MonoBehaviour
 {
     [Serializable]
     public struct CollisionArea {
+        public bool show;
         public Vector3 rotationEuler;
 
         [HideInInspector]
@@ -47,6 +48,12 @@ public class VehicleManager : MonoBehaviour
     }
     public float defaultCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
+
+    private Vector3 collisionDirection = Vector3.zero;
+    private Vector3 verticalComponent = Vector3.zero;
+    private Vector3 horizontalComponent = Vector3.zero;
+    private Vector3 areaCentre = Vector3.zero;
+    private Vector3 collisionPoint = Vector3.zero;
     
     Weapon.WeaponDamageDetails lastHitDetails;
 
@@ -65,6 +72,12 @@ public class VehicleManager : MonoBehaviour
         baseCollisionResistance = deathForce / maxHealth;
 
         _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0);
+
+        for (int i = 0; i < collisionAreas.Count; i++) {
+            CollisionArea collisionArea = collisionAreas[i];
+            collisionArea.rotation.eulerAngles = collisionArea.rotationEuler;
+            collisionAreas[i] = collisionArea;
+        }
     }
 
     void OnDrawGizmos() {
@@ -72,12 +85,13 @@ public class VehicleManager : MonoBehaviour
 
         for (int i = 0; i < collisionAreas.Count; i++) {
             CollisionArea collisionArea = collisionAreas[i];
-            collisionArea.rotation.eulerAngles = collisionArea.rotationEuler;
-            transform.rotation = collisionArea.rotation;
-            Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawFrustum(Vector3.zero, collisionArea.height, 3, 0, collisionArea.width / collisionArea.height);
+            if (collisionArea.show) {
+                collisionArea.rotation.eulerAngles = collisionArea.rotationEuler;
+                transform.rotation *= collisionArea.rotation;
+                Gizmos.matrix = transform.localToWorldMatrix;
+                Gizmos.DrawFrustum(Vector3.zero, collisionArea.height, 3, 0, collisionArea.width / collisionArea.height);
+            }
         }
-
         transform.rotation = originalRotation;
     }
 
@@ -90,8 +104,16 @@ public class VehicleManager : MonoBehaviour
 
         VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
 
-        Vector3 contactPoint = transform.InverseTransformPoint(collision.GetContact(0).point);
-        float damage = CalculateCollisionDamage(collisionForce, contactPoint, otherVehicleManager != null);
+        Vector3 collisionPoint = Vector3.zero;
+        for (int i = 0; i < collision.contactCount; i++) {
+            collisionPoint += collision.GetContact(i).point;
+        }
+        collisionPoint /= collision.contactCount;
+
+        this.collisionPoint = collisionPoint;
+
+        Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
+        float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
 
         if (otherVehicleManager != null) {
             Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
@@ -104,12 +126,22 @@ public class VehicleManager : MonoBehaviour
     }
 
     private float CalculateCollisionDamage(Vector3 collisionForce, Vector3 collisionDirection, bool hitVehicle) {
+        this.collisionDirection = collisionDirection;
+
         float collisionResistance = 1;
 
         foreach (CollisionArea collisionArea in collisionAreas) {
             Vector3 verticalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.right).normalized;
             Vector3 horizontalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.up).normalized;
             Vector3 areaCentre = collisionArea.rotation * Vector3.forward;
+
+            this.verticalComponent = verticalComponent;
+            this.horizontalComponent = horizontalComponent;
+            this.areaCentre = areaCentre;
+
+            Debug.Log(Vector3.Dot(areaCentre, verticalComponent));
+            Debug.Log(Mathf.Cos(collisionArea.height / 2));
+
             if (Vector3.Dot(areaCentre, verticalComponent) > Mathf.Cos(collisionArea.height / 2) &&
                 Vector3.Dot(areaCentre, horizontalComponent) > Mathf.Cos(collisionArea.width / 2)) {
 
