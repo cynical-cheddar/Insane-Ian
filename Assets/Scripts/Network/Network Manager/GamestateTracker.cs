@@ -59,7 +59,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
     
     [Serializable]
     public struct TeamDetails {
-        public int teamId, kills, deaths, assists;
+        public int teamId, kills, deaths, assists, checkpoint;
         public bool isDead;
         public string vehiclePrefabName;
 
@@ -68,6 +68,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
             kills = 0;
             deaths = 0;
             assists = 0;
+            checkpoint = 0;
             isDead = false;
             vehiclePrefabName = null;
         }

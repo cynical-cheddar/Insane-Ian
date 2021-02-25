@@ -2164,6 +2164,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2022532550}
+  - component: {fileID: 2022532552}
+  - component: {fileID: 2022532551}
   m_Layer: 0
   m_Name: checkpointGO
   m_TagString: Untagged
@@ -2186,3 +2188,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2022532551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022532549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0faf08882aa4d294dae7c1ab2113dfe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!136 &2022532552
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022532549}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 5
+  m_Height: 50
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
