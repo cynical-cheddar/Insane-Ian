@@ -5,7 +5,7 @@ using Cinemachine;
 using Photon.Pun;
 
 [VehicleScript(ScriptType.playerDriverScript)]
-public class DriverCameraBehaviour : MonoBehaviour
+public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
 {
     CinemachineFreeLook cam;
     CinemachineVirtualCamera firstPersonCam;
@@ -17,6 +17,7 @@ public class DriverCameraBehaviour : MonoBehaviour
     public bool lockCursorToWindow = true;
 
     bool isFirstPerson = false;
+    int teamId;
     
 
     // Start is called before the first frame update
@@ -29,13 +30,14 @@ public class DriverCameraBehaviour : MonoBehaviour
         vehicleManager = GetComponentInParent<VehicleManager>();
         thirdPersonFocus = cam.LookAt;
         // Give the vehicle manager time to assign teamIds
-        Invoke(nameof(AssignPriority), 0.5f);
+        Invoke(nameof(AssignPriority), 3f);
     }
 
     void AssignPriority() {
         if (gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId == vehicleManager.teamId) {
+            Debug.Log("bleh");
             cam.enabled = true;
-            cam.Priority = 1;
+            cam.Priority = 100;
         }
 
     }
@@ -62,25 +64,29 @@ public class DriverCameraBehaviour : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F)) {
             isFirstPerson = !isFirstPerson;
             if (isFirstPerson) {
-                cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTarget;
+                /*cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTarget;
                 cam.m_XAxis.m_InputAxisName = "";
                 cam.m_XAxis.m_MinValue = 180;
                 cam.m_XAxis.m_MaxValue = 180;
                 cam.m_YAxis.Value = 0;
-                cam.LookAt = null;
+                cam.LookAt = null;*/
                 firstPersonCam.enabled = true;
                 cam.enabled = false;
 
             } else {
-                cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTargetWithWorldUp;
+                /*cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTargetWithWorldUp;
                 cam.m_XAxis.m_InputAxisName = "Mouse X";
                 cam.m_XAxis.m_MinValue = -90;
                 cam.m_XAxis.m_MaxValue = 90;
                 cam.m_XAxis.Value = 0;
-                cam.LookAt = thirdPersonFocus;
+                cam.LookAt = thirdPersonFocus;*/
                 firstPersonCam.enabled = false;
                 cam.enabled = true;
             }
         }
+    }
+
+    void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
+        
     }
 }
