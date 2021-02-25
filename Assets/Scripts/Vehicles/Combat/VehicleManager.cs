@@ -48,8 +48,6 @@ public class VehicleManager : MonoBehaviour
     }
     public float defaultCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
-
-    Vector3 collisionPoint;
     
     Weapon.WeaponDamageDetails lastHitDetails;
 
@@ -101,9 +99,11 @@ public class VehicleManager : MonoBehaviour
 
         VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
 
-        Vector3 collisionPoint = collision.GetContact(0).point;
-
-        this.collisionPoint = collisionPoint;
+        Vector3 collisionPoint = Vector3.zero;
+        for (int i = 0; i < collision.contactCount; i++) {
+            collisionPoint += collision.GetContact(i).point;
+        }
+        collisionPoint /= collision.contactCount;
 
         Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
         float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
