@@ -7,6 +7,7 @@ using Photon.Pun;
 public class DriverCameraBehaviour : MonoBehaviour
 {
     CinemachineFreeLook cam;
+    CinemachineVirtualCamera firstPersonCam;
     GamestateTracker gamestateTracker;
     VehicleManager vehicleManager;
     Transform thirdPersonFocus;
@@ -15,12 +16,15 @@ public class DriverCameraBehaviour : MonoBehaviour
     public bool lockCursorToWindow = true;
 
     bool isFirstPerson = false;
+    
 
     // Start is called before the first frame update
     void Start() {
         if (lockCursorToWindow) Cursor.lockState = CursorLockMode.Locked;
         gamestateTracker = FindObjectOfType<GamestateTracker>();
-        cam = GetComponent<CinemachineFreeLook>();
+        cam = GetComponentInChildren<CinemachineFreeLook>();
+        firstPersonCam = GetComponentInChildren<CinemachineVirtualCamera>();
+        firstPersonCam.enabled = false;
         vehicleManager = GetComponentInParent<VehicleManager>();
         thirdPersonFocus = cam.LookAt;
         // Give the vehicle manager time to assign teamIds
@@ -31,6 +35,7 @@ public class DriverCameraBehaviour : MonoBehaviour
         if (gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId == vehicleManager.teamId) {
             cam.Priority = 1;
         }
+
     }
 
     // Update is called once per frame
@@ -61,6 +66,9 @@ public class DriverCameraBehaviour : MonoBehaviour
                 cam.m_XAxis.m_MaxValue = 180;
                 cam.m_YAxis.Value = 0;
                 cam.LookAt = null;
+                firstPersonCam.enabled = true;
+                cam.enabled = false;
+
             } else {
                 cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTargetWithWorldUp;
                 cam.m_XAxis.m_InputAxisName = "Mouse X";
@@ -68,6 +76,8 @@ public class DriverCameraBehaviour : MonoBehaviour
                 cam.m_XAxis.m_MaxValue = 90;
                 cam.m_XAxis.Value = 0;
                 cam.LookAt = thirdPersonFocus;
+                firstPersonCam.enabled = false;
+                cam.enabled = true;
             }
         }
     }
