@@ -71,7 +71,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!114 &1540927066129508212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,16 +84,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b44085c409024ec4293afa0c9d973694, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  impactParticle: {fileID: 0}
-  missImpactParticle: {fileID: 0}
-  projectileParticle: {fileID: 7024580045867898594, guid: 6879eed96b783c74fa887779f72a7a52,
+  testMarker: {fileID: 2261013147703951740, guid: 0794adf1204984304a5c0bf513611257,
     type: 3}
-  trailParticles: []
-  impactNormal: {x: 0, y: 0, z: 0}
-  impactParticleVolume: 1
-  missImpactParticleVolume: 0.75
-  hitSound: {fileID: 0}
-  missSound: {fileID: 0}
+  explosionForce: 1.5
+  explosionOffset: 0.25
 --- !u!114 &3301273641928075652
 MonoBehaviour:
   m_ObjectHideFlags: 0
