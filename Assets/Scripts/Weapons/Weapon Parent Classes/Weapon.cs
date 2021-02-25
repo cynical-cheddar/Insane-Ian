@@ -93,6 +93,7 @@ public class Weapon : MonoBehaviour
     public PhotonView weaponPhotonView;
     public PhotonView gunnerPhotonView;
 
+    private NetworkPlayerVehicle _networkPlayerVehicle;
   //  public Transform sourceCam;
     
    // [Header("UI")]
@@ -199,9 +200,11 @@ public class Weapon : MonoBehaviour
     
     protected void Start()
     {
+        _networkPlayerVehicle = GetComponentInParent<NetworkPlayerVehicle>();
         weaponUi = FindObjectOfType<WeaponUi>();
         _playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
         ReloadSalvo();
+        
     }
 
     // called to activate UI elements and transfer photonview
@@ -220,6 +223,8 @@ public class Weapon : MonoBehaviour
         {
             Debug.LogError("Weapon does not belong to a valid vehicle!! Assigning owner to null");
         }
+        
+        if(gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
         
 
         UpdateHud();
