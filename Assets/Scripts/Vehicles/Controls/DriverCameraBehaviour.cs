@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
+
 [VehicleScript(ScriptType.playerDriverScript)]
 public class DriverCameraBehaviour : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class DriverCameraBehaviour : MonoBehaviour
 
     void AssignPriority() {
         if (gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId == vehicleManager.teamId) {
+            cam.enabled = true;
             cam.Priority = 1;
         }
 

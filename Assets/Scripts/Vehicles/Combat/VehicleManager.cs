@@ -91,30 +91,32 @@ public class VehicleManager : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision collision) {
-        Vector3 collisionNormal = collision.GetContact(0).normal;
-        Vector3 collisionForce = collision.impulse;
-        if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
-        collisionForce /= Time.fixedDeltaTime;
-        collisionForce = transform.InverseTransformDirection(collisionForce);
+        if (driverPhotonView.IsMine) {
+            Vector3 collisionNormal = collision.GetContact(0).normal;
+            Vector3 collisionForce = collision.impulse;
+            if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
+            collisionForce /= Time.fixedDeltaTime;
+            collisionForce = transform.InverseTransformDirection(collisionForce);
 
-        VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
+            VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
 
-        Vector3 collisionPoint = Vector3.zero;
-        for (int i = 0; i < collision.contactCount; i++) {
-            collisionPoint += collision.GetContact(i).point;
-        }
-        collisionPoint /= collision.contactCount;
+            Vector3 collisionPoint = Vector3.zero;
+            for (int i = 0; i < collision.contactCount; i++) {
+                collisionPoint += collision.GetContact(i).point;
+            }
+            collisionPoint /= collision.contactCount;
 
-        Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
-        float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
+            Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
+            float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
 
-        if (otherVehicleManager != null) {
-            Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
-            rammingDetails.damage = damage;
-            TakeDamage(rammingDetails);
-        }
-        else {
-            TakeDamage(damage);
+            if (otherVehicleManager != null) {
+                Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
+                rammingDetails.damage = damage;
+                TakeDamage(rammingDetails);
+            }
+            else {
+                TakeDamage(damage);
+            }
         }
     }
 

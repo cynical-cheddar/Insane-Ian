@@ -579,11 +579,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 63501.945
-    damper: 12065.37
+    spring: 64747.547
+    damper: 12302.034
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3755251
+  m_ForceAppPointDistance: 1.3534929
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -640,11 +640,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 86493.9
-    damper: 16433.842
+    spring: 85248.3
+    damper: 16197.177
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3755251
+  m_ForceAppPointDistance: 1.3534929
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -836,6 +836,21 @@ MonoBehaviour:
   health: 100
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
+  collisionAreas:
+  - show: 1
+    rotationEuler: {x: 30, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+    width: 90
+    height: 60
+    collisionResistance: 3
+  - show: 1
+    rotationEuler: {x: -90, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+    width: 45
+    height: 120
+    collisionResistance: 0.25
+  defaultCollisionResistance: 1
+  environmentCollisionResistance: 2
 --- !u!114 &8173052085500956509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -926,11 +941,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 63506.117
-    damper: 12066.162
+    spring: 64751.69
+    damper: 12302.821
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3755251
+  m_ForceAppPointDistance: 1.3534929
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -987,11 +1002,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 86498.06
-    damper: 16434.63
+    spring: 85252.47
+    damper: 16197.968
     targetPosition: 0.75
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3755251
+  m_ForceAppPointDistance: 1.3534929
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1112,17 +1127,17 @@ PrefabInstance:
     - target: {fileID: 3313102010342927011, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -74.91
       objectReference: {fileID: 0}
     - target: {fileID: 3313102010342927011, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.8459494
       objectReference: {fileID: 0}
     - target: {fileID: 3313102010342927011, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -28.280651
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8469389753389546029, guid: 885e7a0ac4d7d4d40869a340867a7948, type: 3}
