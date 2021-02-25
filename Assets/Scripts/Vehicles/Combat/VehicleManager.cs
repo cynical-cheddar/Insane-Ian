@@ -49,11 +49,7 @@ public class VehicleManager : MonoBehaviour
     public float defaultCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
 
-    private Vector3 collisionDirection = Vector3.zero;
-    private Vector3 verticalComponent = Vector3.zero;
-    private Vector3 horizontalComponent = Vector3.zero;
-    private Vector3 areaCentre = Vector3.zero;
-    private Vector3 collisionPoint = Vector3.zero;
+    Vector3 collisionPoint;
     
     Weapon.WeaponDamageDetails lastHitDetails;
 
@@ -90,9 +86,10 @@ public class VehicleManager : MonoBehaviour
                 transform.rotation *= collisionArea.rotation;
                 Gizmos.matrix = transform.localToWorldMatrix;
                 Gizmos.DrawFrustum(Vector3.zero, collisionArea.height, 3, 0, collisionArea.width / collisionArea.height);
+
+                transform.rotation = originalRotation;
             }
         }
-        transform.rotation = originalRotation;
     }
 
     void OnCollisionEnter(Collision collision) {
@@ -104,11 +101,7 @@ public class VehicleManager : MonoBehaviour
 
         VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
 
-        Vector3 collisionPoint = Vector3.zero;
-        for (int i = 0; i < collision.contactCount; i++) {
-            collisionPoint += collision.GetContact(i).point;
-        }
-        collisionPoint /= collision.contactCount;
+        Vector3 collisionPoint = collision.GetContact(0).point;
 
         this.collisionPoint = collisionPoint;
 
@@ -126,21 +119,12 @@ public class VehicleManager : MonoBehaviour
     }
 
     private float CalculateCollisionDamage(Vector3 collisionForce, Vector3 collisionDirection, bool hitVehicle) {
-        this.collisionDirection = collisionDirection;
-
         float collisionResistance = 1;
 
         foreach (CollisionArea collisionArea in collisionAreas) {
             Vector3 verticalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.right).normalized;
             Vector3 horizontalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.up).normalized;
             Vector3 areaCentre = collisionArea.rotation * Vector3.forward;
-
-            this.verticalComponent = verticalComponent;
-            this.horizontalComponent = horizontalComponent;
-            this.areaCentre = areaCentre;
-
-            Debug.Log(Vector3.Dot(areaCentre, verticalComponent));
-            Debug.Log(Mathf.Cos(collisionArea.height / 2));
 
             if (Vector3.Dot(areaCentre, verticalComponent) > Mathf.Cos(collisionArea.height / 2) &&
                 Vector3.Dot(areaCentre, horizontalComponent) > Mathf.Cos(collisionArea.width / 2)) {

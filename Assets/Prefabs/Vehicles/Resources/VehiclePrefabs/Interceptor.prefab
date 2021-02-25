@@ -299,13 +299,20 @@ MonoBehaviour:
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
   collisionAreas:
-  - rotationEuler: {x: 30, y: 0, z: 0}
+  - show: 1
+    rotationEuler: {x: 30, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 60
     height: 90
-    collisionResistance: 2
+    collisionResistance: 3
+  - show: 1
+    rotationEuler: {x: -90, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+    width: 45
+    height: 120
+    collisionResistance: 0.25
   defaultCollisionResistance: 1
-  environmentCollisionResistance: 1
+  environmentCollisionResistance: 2
 --- !u!114 &551059824757152105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1225,12 +1232,12 @@ PrefabInstance:
     - target: {fileID: 6564252863068223730, guid: fabe4246c84a15543a808515ae6c3628,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0000000042804342
+      value: -0.0000000042804333
       objectReference: {fileID: 0}
     - target: {fileID: 6564252863068223730, guid: fabe4246c84a15543a808515ae6c3628,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -4.2615622e-10
+      value: 4.2615614e-10
       objectReference: {fileID: 0}
     - target: {fileID: 6623062919345564901, guid: fabe4246c84a15543a808515ae6c3628,
         type: 3}
@@ -1290,12 +1297,12 @@ PrefabInstance:
     - target: {fileID: 6645055191728725881, guid: fabe4246c84a15543a808515ae6c3628,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -8.619646e-15
+      value: -1.6271901e-15
       objectReference: {fileID: 0}
     - target: {fileID: 6645055191728725881, guid: fabe4246c84a15543a808515ae6c3628,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 9.284736e-16
+      value: 2.6894993e-16
       objectReference: {fileID: 0}
     - target: {fileID: 6963432892252717688, guid: fabe4246c84a15543a808515ae6c3628,
         type: 3}
