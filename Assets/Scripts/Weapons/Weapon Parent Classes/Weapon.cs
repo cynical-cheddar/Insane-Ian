@@ -203,7 +203,7 @@ public class Weapon : MonoBehaviour
     }
 
     // called to activate UI elements and transfer photonview
-    public void ActivateWeapon()
+    public virtual void ActivateWeapon()
     {
         if (!isSetup) SetupWeapon();
 
@@ -225,8 +225,12 @@ public class Weapon : MonoBehaviour
         
 
         UpdateHud();
+        
 
+    }
 
+    public virtual void ActivateWeaponInternal()
+    {
     }
 
     // temporary fire solutionUpdateHud

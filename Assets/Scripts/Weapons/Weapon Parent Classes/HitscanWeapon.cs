@@ -151,6 +151,12 @@ public class HitscanWeapon : Weapon
         colliders = transform.root.GetComponentsInChildren<Collider>();
     }
 
+    public override void ActivateWeapon()
+    {
+        base.ActivateWeapon();
+        SetupWeapon();
+    }
+
 
     
     
