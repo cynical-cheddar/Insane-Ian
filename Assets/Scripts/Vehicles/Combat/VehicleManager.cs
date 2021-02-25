@@ -25,7 +25,15 @@ public class VehicleManager : MonoBehaviour
     InterfaceCarDrive icd;
     InputDriver inputDriver;
     IDrivable carDriver;
-    public int teamId;
+    NetworkPlayerVehicle npv;
+    public int teamId {
+        get {
+            return npv.teamId;
+        }
+        set {
+            npv.teamId = value;
+        }
+    }
     public float health = 100f;
     float maxHealth;
     public GameObject temporaryDeathExplosion;
@@ -38,7 +46,7 @@ public class VehicleManager : MonoBehaviour
     public Weapon.WeaponDamageDetails rammingDetails {
         get {
             if (_rammingDetails.sourcePlayerNickName == null) {
-                NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
+                
                 _rammingDetails.sourcePlayerNickName = npv.GetDriverNickName();
                 _rammingDetails.sourcePlayerId = npv.GetDriverID();
                 _rammingDetails.sourceTeamId = npv.teamId;
@@ -62,6 +70,7 @@ public class VehicleManager : MonoBehaviour
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
         driverPhotonView = GetComponent<PhotonView>();
+        npv = GetComponent<NetworkPlayerVehicle>();
 
         baseCollisionResistance = deathForce / maxHealth;
 
@@ -141,11 +150,6 @@ public class VehicleManager : MonoBehaviour
         reducedForce /= collisionResistance;
 
         return reducedForce;
-    }
-
-    [PunRPC]
-    public void SetTeamId_RPC(int newId) {
-        teamId = newId;
     }
 
     [PunRPC]
