@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
-using Cinemachine;
+
 [VehicleScript(ScriptType.playerGunnerScript)]
 public class PlayerGunnerController : MonoBehaviour
 {
