@@ -115,9 +115,9 @@ public class BeamWeapon : Weapon
         CeaseFire();
     }
 
-    protected new void Start()
+    protected new void SetupWeapon()
     {
-        base.Start();
+        base.SetupWeapon();
         colliders = transform.root.GetComponentsInChildren<Collider>();
         newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);

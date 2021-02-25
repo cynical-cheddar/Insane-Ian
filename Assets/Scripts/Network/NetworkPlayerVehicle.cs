@@ -29,7 +29,6 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
 
     private GamestateTracker gamestateTracker;
 
-
     public string GetGunnerNickName()
     {
         return gunnerNickName;
@@ -48,11 +47,6 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
     }
 
     void Start() {
-        if (FindObjectOfType<GamestateTracker>() != null)
-        {
-            gamestateTracker = FindObjectOfType<GamestateTracker>();
-         //   gamestateTracker.ForceSynchronisePlayerSchema();
-        }
     }
 
     void EnableMonobehaviours(MonoBehaviour[] scripts)
@@ -100,6 +94,10 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
     }
 
     void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
+        GetComponent<VehicleManager>().SetupVehicleManager();
+
+        gamestateTracker = FindObjectOfType<GamestateTracker>();
+
         teamId = (int)info.photonView.InstantiationData[0];
 
         MonoBehaviour[] scripts = GetComponentsInChildren<MonoBehaviour>(true);

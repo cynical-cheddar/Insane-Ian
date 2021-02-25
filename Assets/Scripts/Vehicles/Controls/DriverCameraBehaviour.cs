@@ -30,12 +30,12 @@ public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
         vehicleManager = GetComponentInParent<VehicleManager>();
         thirdPersonFocus = cam.LookAt;
         // Give the vehicle manager time to assign teamIds
-        Invoke(nameof(AssignPriority), 3f);
+        //Invoke(nameof(AssignPriority), 3f);
+        AssignPriority();
     }
 
     void AssignPriority() {
         if (gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId == vehicleManager.teamId) {
-            Debug.Log("bleh");
             cam.enabled = true;
             cam.Priority = 100;
         }

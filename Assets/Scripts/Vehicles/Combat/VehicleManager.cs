@@ -60,7 +60,7 @@ public class VehicleManager : MonoBehaviour
     Weapon.WeaponDamageDetails lastHitDetails;
 
     // Start is called before the first frame update
-    void Start() {
+    public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
         networkManager = FindObjectOfType<NetworkManager>();

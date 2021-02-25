@@ -25,7 +25,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings();
+        //PhotonNetwork.ConnectUsingSettings();
         StartGame();
     }
 
@@ -54,7 +54,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
-        SynchroniseSchemaBeforeSpawn();
+        //SynchroniseSchemaBeforeSpawn();
+        SpawnPlayers();
         if (timer != null) timer.HostStartTimer(gamestateTracker.timeLimit);
     }
 
@@ -75,7 +76,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     void SpawnPlayers()
     { 
-        
         if (PhotonNetwork.IsMasterClient)
         {
             GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -91,7 +91,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList)
             {
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
-                RespawnVehicle(0, team.teamId);
+                CallRespawnVehicle(0, team.teamId);
             }
         }
     }

@@ -18,7 +18,8 @@ public class PlinthManager : MonoBehaviour
     void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Wait for the host to finish loading first
-        Invoke(nameof(UpdateText), 0.1f);
+        //Invoke(nameof(UpdateText), 0.1f);
+        UpdateText();
     }
 
     void SpawnPlayerVehicles() {
