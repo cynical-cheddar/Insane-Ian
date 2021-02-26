@@ -115,13 +115,20 @@ public class BeamWeapon : Weapon
         CeaseFire();
     }
 
-    protected new void Start()
+    protected new void SetupWeapon()
     {
-        base.Start();
+        base.SetupWeapon();
+        Debug.Log("SetupWeapon beam called");
         colliders = transform.root.GetComponentsInChildren<Collider>();
         newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+    }
+
+    public override void ActivateWeapon()
+    {
+        base.ActivateWeapon();
+        SetupWeapon();
     }
 
     public override void CeaseFire()
@@ -447,7 +454,7 @@ public class BeamWeapon : Weapon
         Vector3 startPos = barrelTransform.position;
         
         Ray ray = new Ray(startPos, targetPoint - startPos); 
-        RaycastHit hit;
+        //RaycastHit hit;
         RaycastHitDetails raycastHitDetails = FindClosestRaycastHitDetails(ray, targetPoint);
         // we now have our hit details, return themmuzzleFlashChildOfBarrel
         return raycastHitDetails;

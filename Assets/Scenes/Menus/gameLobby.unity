@@ -3261,7 +3261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uninteractableIfNotMaster: 1
   sceneName: Crater
-  sceneDisplayName: Amber Map 1
+  sceneDisplayName: Crater
   mapIconUI: {fileID: 1118455800}
   mapIcon: {fileID: 21300000, guid: 9d12073d6604d24408279fc9fcf0b299, type: 3}
   mapName: {fileID: 1994852196}
@@ -4337,6 +4337,7 @@ GameObject:
   - component: {fileID: 1070896576}
   - component: {fileID: 1070896575}
   - component: {fileID: 1070896574}
+  - component: {fileID: 1070896577}
   m_Layer: 0
   m_Name: Gamestate Tracker
   m_TagString: Untagged
@@ -4401,6 +4402,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1070896577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070896573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2586acc71b7f0ba49b3e6625490d4e9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1109411920
 GameObject:
   m_ObjectHideFlags: 0
@@ -4503,7 +4516,7 @@ RectTransform:
   m_GameObject: {fileID: 1118455798}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.7963, y: 1.7963, z: 1.7963}
   m_Children: []
   m_Father: {fileID: 1749543209}
   m_RootOrder: 14
@@ -4533,7 +4546,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 07c280aa11368b54a94fde1aeb2b8288, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 848c19afd6236f445a0e5e60a854ee75, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6362,7 +6375,7 @@ RectTransform:
   m_GameObject: {fileID: 1994852194}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0483, y: 1.0483, z: 1.0483}
   m_Children: []
   m_Father: {fileID: 1749543209}
   m_RootOrder: 15

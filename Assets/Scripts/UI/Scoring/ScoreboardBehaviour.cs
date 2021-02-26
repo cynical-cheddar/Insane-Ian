@@ -18,7 +18,8 @@ public class ScoreboardBehaviour : MonoBehaviour
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         
         // Wait for the host to finish loading first
-        Invoke(nameof(UpdateScores), 0.1f);
+        //Invoke(nameof(UpdateScores), 0.1f);
+        UpdateScores();
     }
 
     private void Update() {

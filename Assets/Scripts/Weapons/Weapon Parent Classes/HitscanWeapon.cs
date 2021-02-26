@@ -145,10 +145,16 @@ public class HitscanWeapon : Weapon
         
     }
 
-    protected new void Start()
+    protected new void SetupWeapon()
     {
-        base.Start();
+        base.SetupWeapon();
         colliders = transform.root.GetComponentsInChildren<Collider>();
+    }
+
+    public override void ActivateWeapon()
+    {
+        base.ActivateWeapon();
+        SetupWeapon();
     }
 
 
@@ -342,7 +348,7 @@ public class HitscanWeapon : Weapon
         Vector3 startPos = barrelTransform.position;
         
         Ray ray = new Ray(startPos, targetPoint - startPos); 
-        RaycastHit hit;
+        //RaycastHit hit;
         RaycastHitDetails raycastHitDetails = FindClosestRaycastHitDetails(ray, targetPoint);
         // we now have our hit details, return them
         return raycastHitDetails;

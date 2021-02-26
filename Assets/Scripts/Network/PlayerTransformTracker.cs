@@ -62,7 +62,7 @@ public class PlayerTransformTracker : MonoBehaviour
             }
 
         }
-        yield return new WaitForEndOfFrame();
+        //yield return new WaitForEndOfFrame();
     }
 
     // Update is called once per frame

@@ -8,7 +8,7 @@ public class ReadyToggle : MonoBehaviour
 {
 
     public LobbySlotMaster lobbySlotMaster;
-
+    GamestateTracker gamestateTracker;
     public Toggle toggle;
     // Start is called before the first frame update
     void Start()
@@ -17,6 +17,8 @@ public class ReadyToggle : MonoBehaviour
         {
             lobbySlotMaster = FindObjectOfType<LobbySlotMaster>();
         }
+
+        gamestateTracker = FindObjectOfType<GamestateTracker>();
     }
 
     public void changeReadyStatus()
@@ -30,24 +32,22 @@ public class ReadyToggle : MonoBehaviour
             toggle.isOn = false;
         }
         
+        // update gamestate tracker with ready id
+        GamestateTracker.PlayerDetails pd = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber);
+        pd.ready = toggle.isOn;
+        gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.UpdatePlayerWithNewRecord), RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer.ActorNumber, JsonUtility.ToJson(pd)); 
         
-        if(state)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeReadyPlayers", RpcTarget.AllBufferedViaServer, 1);
-        else lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeReadyPlayers", RpcTarget.AllBufferedViaServer, -1);
-        
+    //    if(state)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.changeReadyPlayers), RpcTarget.AllBufferedViaServer, 1);
+     //   else lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.changeReadyPlayers), RpcTarget.AllBufferedViaServer, -1);
+        lobbySlotMaster.changeReadyPlayers(0);
     }
 
     public void setReadyStatus(bool set)
     {
-        if (set == false && toggle.isOn)
-        {
-            lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeReadyPlayers", RpcTarget.AllBufferedViaServer, 0);
-        }
-        else if (set == true && !toggle.isOn)
-        {
-            lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeReadyPlayers", RpcTarget.AllBufferedViaServer, 1);
-        }
+
         
         toggle.isOn = set;
-        
+        changeReadyStatus();
+
     }
 }
