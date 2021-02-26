@@ -40,6 +40,15 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Range(0, 1)]
     public float baseExtremiumSlip = 0.3f;
     public Vector3 addedDownforce;
+    [Space(5)]
+
+    [Header("Engine Noises")]
+    public AudioSource EngineIdle;
+    public AudioSource EngineLow;
+    public AudioSource EngineHigh;
+    private float pitch = 0;
+
+
 
     //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(int targetDirection) {
@@ -76,7 +85,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearLeftW.sidewaysFriction = rlC;
         rearRightW.sidewaysFriction = rrC;
     }
-
     void IDrivable.Accellerate() {
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
@@ -108,7 +116,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
 
     }
-
     void IDrivable.Brake() {
         //brake all wheels
         frontLeftW.brakeTorque = brakeTorque;
@@ -126,7 +133,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
 
     }
-
     void IDrivable.Drift() {
         WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
         WheelFrictionCurve frC = frontRightW.sidewaysFriction;
@@ -144,7 +150,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearLeftW.sidewaysFriction = rlC;
         rearRightW.sidewaysFriction = rrC;
     }
-
     void IDrivable.StopDrift() {
         WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
         WheelFrictionCurve frC = frontRightW.sidewaysFriction;
@@ -162,13 +167,11 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearLeftW.sidewaysFriction = rlC;
         rearRightW.sidewaysFriction = rrC;
     }
-
     private bool AllWheelsGrounded() {
         if (frontLeftW.isGrounded & frontRightW.isGrounded & rearLeftW.isGrounded & rearRightW.isGrounded) {
             return true;
         } else return false;
     }
-
     void IDrivable.UpdateWheelPoses() {
         //make geometry match collider position
         UpdateWheelPose(frontLeftW, frontLeftT, true);
@@ -176,7 +179,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         UpdateWheelPose(rearLeftW, rearLeftT, true);
         UpdateWheelPose(rearRightW, rearRightT, false);
     }
-
     private void UpdateWheelPose(WheelCollider collider, Transform transform, bool flip) {
         Vector3 pos = transform.position;
         Quaternion quat = transform.rotation;
@@ -190,7 +192,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             transform.rotation *= new Quaternion(0, 0, -1, 0);
         }
     }
-
     void IDrivable.StopAccellerate() {
         frontLeftW.motorTorque = 0;
         frontRightW.motorTorque = 0;
@@ -198,7 +199,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearRightW.motorTorque = 0;
 
     }
-
     void IDrivable.StopBrake() {
         frontLeftW.brakeTorque = 0;
         frontRightW.brakeTorque = 0;
@@ -206,10 +206,30 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearRightW.brakeTorque = 0;
 
     }
-
     void IDrivable.StopSteer() {
         //steer towards 0
         ((IDrivable)this).Steer(0);
+    }
+    
+    private void EngineNoise() {
+
+        pitch = Mathf.Clamp(frontLeftW.rpm * 0.1f, 0f, 10f);
+        if (pitch < 1) {
+            EngineIdle.volume = Mathf.Lerp(EngineIdle.volume, 1.0f, 0.1f);
+            EngineLow.volume = Mathf.Lerp(EngineLow.volume, 0.5f, 0.1f);
+            EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, 0.0f, 0.1f);
+        } else {
+
+        }
+
+    }
+    void FixedUpdate() {
+        EngineNoise();
+    }
+    private void Start() {
+        EngineIdle.volume = 0;
+        EngineLow.volume = 0;
+        EngineHigh.volume = 0;
     }
 }
 
