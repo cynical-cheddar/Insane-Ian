@@ -46,7 +46,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public AudioSource EngineIdle;
     public AudioSource EngineLow;
     public AudioSource EngineHigh;
-    private float pitch = 0;
+    private float volume = 0;
 
 
 
@@ -212,15 +212,25 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
     
     private void EngineNoise() {
+        float newpitch;
+        newpitch = Mathf.Clamp((Mathf.Abs(frontLeftW.rpm + frontRightW.rpm + rearLeftW.rpm + rearRightW.rpm)) * 0.01f * 0.25f, 0, 14f);
+        volume = Mathf.Lerp(volume, newpitch, 0.1f);
+        Debug.Log("Volume " + volume);
 
-        pitch = Mathf.Clamp(frontLeftW.rpm * 0.1f, 0f, 10f);
-        if (pitch < 1) {
+        if (volume < 1) {
             EngineIdle.volume = Mathf.Lerp(EngineIdle.volume, 1.0f, 0.1f);
-            EngineLow.volume = Mathf.Lerp(EngineLow.volume, 0.5f, 0.1f);
+            EngineLow.volume = Mathf.Lerp(EngineLow.volume, 0.3f, 0.1f);
             EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, 0.0f, 0.1f);
         } else {
-
+            EngineIdle.volume = Mathf.Lerp(EngineIdle.volume, 0f, 0.1f);
+            EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, volume/10, 0.1f);
+            EngineLow.volume = 1 - EngineHigh.volume;
         }
+        Debug.Log("Idle " + EngineIdle.volume);
+        Debug.Log("Low " + EngineLow.volume);
+        Debug.Log("High " + EngineHigh.volume);
+        EngineLow.pitch = 1.4f + volume / 10;
+        EngineHigh.pitch = 1.4f + volume / 10;
 
     }
     void FixedUpdate() {
