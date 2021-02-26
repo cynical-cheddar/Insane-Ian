@@ -8,7 +8,7 @@ public class InputDriver : MonoBehaviour
 {
 
     public InterfaceCarDrive ICD;
-    void FixedUpdate() {
+    void Update() {
         Steer();
         Accellerate();
         Reverse();
