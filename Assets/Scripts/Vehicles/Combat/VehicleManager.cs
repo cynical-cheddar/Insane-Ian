@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 
 public class VehicleManager : MonoBehaviour
 {
@@ -18,6 +20,13 @@ public class VehicleManager : MonoBehaviour
         public float collisionResistance;
     }
 
+    public GameObject audioSourcePrefab;
+    public float crashSoundsSmallDamageThreshold = 5f;
+    public float crashSoundsLargeDamageThreshold = 40f;
+    public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
+    public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
+    public float crashMasterVolume = 1f;
+    
     GamestateTracker gamestateTracker;
     NetworkManager networkManager;
     PhotonView driverPhotonView;
@@ -99,6 +108,34 @@ public class VehicleManager : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    void PlayDamageSoundNetwork(float damage)
+    {
+        GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
+        AudioSource a = crashSound.GetComponent<AudioSource>();
+        if (damage > crashSoundsLargeDamageThreshold && crashSoundsLarge.Count > 0)
+        {
+            int randInt = Random.Range(0, crashSoundsLarge.Count - 1);
+            a.clip = crashSoundsLarge[randInt];
+        }
+        else if(crashSoundsSmall.Count > 0)
+        {
+            int randInt = Random.Range(0, crashSoundsSmall.Count - 1);
+            a.clip = crashSoundsLarge[randInt];
+        }
+
+        if (a.clip != null)
+        {
+            a.Play();
+            Destroy(crashSound, a.clip.length);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
+    }
+
     void OnCollisionEnter(Collision collision) {
         if (driverPhotonView.IsMine) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
@@ -117,7 +154,10 @@ public class VehicleManager : MonoBehaviour
 
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-
+            
+            // instantiate damage sound over network
+            if(damage > crashSoundsSmallDamageThreshold) driverPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            
             if (otherVehicleManager != null) {
                 Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
                 rammingDetails.damage = damage;
