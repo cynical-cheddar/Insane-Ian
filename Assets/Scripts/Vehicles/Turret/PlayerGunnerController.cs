@@ -52,11 +52,13 @@ public class PlayerGunnerController : MonoBehaviour
         {
             if (gunnerPhotonView.IsMine)
             {
-                Vector3 targetHitpoint;
-                if (turretController.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
-                else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
-                
-                gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
+                if (gunnerWeaponManager.CurrentWeaponGroupCanFire()) {
+                    Vector3 targetHitpoint;
+                    if (turretController.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
+                    else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
+                    
+                    gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
+                }
             }
         }
 
