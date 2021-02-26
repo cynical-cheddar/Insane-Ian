@@ -41,8 +41,8 @@ public class GunnerWeaponManager : MonoBehaviour
 
     void Start()
     {
-        //Invoke(nameof(SelectFirst), 0.4f);
-        //SelectFirst();
+        Invoke(nameof(SelectFirst), 0.4f);
+        SelectFirst();
     }
 
     public void SelectFirst()

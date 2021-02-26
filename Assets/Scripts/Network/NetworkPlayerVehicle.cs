@@ -161,6 +161,6 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if(PhotonNetwork.LocalPlayer.ActorNumber == gunnerDetails.playerId) EnableMonobehaviours(playerGunnerScripts);
         //Debug.Log("GOT HERE2");
 
-        GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
+        //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
     }
 }
