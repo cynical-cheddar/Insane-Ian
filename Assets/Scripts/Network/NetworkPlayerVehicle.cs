@@ -75,8 +75,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
             //Debug.Log("gunner nickname in transfer: " + p.NickName);
             gunnerPhotonView.TransferOwnership(p);
 
-            GameObject gunnerObject = gunnerPhotonView.gameObject;
-            Weapon[] weapons = gunnerObject.GetComponentsInChildren<Weapon>();
+            Weapon[] weapons = GetComponentsInChildren<Weapon>();
             foreach (Weapon weapon in weapons) {
                 weapon.gameObject.GetComponent<PhotonView>().TransferOwnership(p);
             }
