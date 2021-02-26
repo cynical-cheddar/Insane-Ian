@@ -12,7 +12,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public List<Transform> spawnPoints;
 
-    public TimerBehaviour timer;
+    TimerBehaviour timer;
 
     public string version = "1.0";
     public string roomName = "room";
@@ -56,6 +56,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         //SynchroniseSchemaBeforeSpawn();
         SpawnPlayers();
+        timer = FindObjectOfType<TimerBehaviour>();
         if (timer != null) timer.HostStartTimer(gamestateTracker.timeLimit);
     }
 
