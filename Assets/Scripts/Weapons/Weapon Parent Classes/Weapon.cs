@@ -196,7 +196,7 @@ public class Weapon : MonoBehaviour
     protected void SetupWeapon()
     {   
         // assign photon view to the gunner
-        Player gunnerPlayer = gunnerPhotonView.Owner;
+        //Player gunnerPlayer = gunnerPhotonView.Owner;
         
         _networkPlayerVehicle = GetComponentInParent<NetworkPlayerVehicle>();
         
@@ -211,7 +211,7 @@ public class Weapon : MonoBehaviour
             Debug.LogError("Weapon does not belong to a valid vehicle!! Assigning owner to null");
         }
 
-        weaponPhotonView.TransferOwnership(gunnerPlayer);
+        //weaponPhotonView.TransferOwnership(gunnerPlayer);
 
         weaponUi = FindObjectOfType<WeaponUi>();
         _playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
