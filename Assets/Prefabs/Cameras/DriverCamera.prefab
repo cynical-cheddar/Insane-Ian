@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9055106551065886726}
-  - component: {fileID: 8672425318850525729}
   - component: {fileID: 6623062919345564901}
   m_Layer: 0
   m_Name: DriverCamera
@@ -32,20 +31,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8672425318850525729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6963432892252717688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 173b3c2acc0385247ae9b4d0ef63cd16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firstPersonCam: {fileID: 0}
-  lockCursorToWindow: 1
 --- !u!114 &6623062919345564901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53,7 +38,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6963432892252717688}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 319d2fe34a804e245819465c9505ea59, type: 3}
   m_Name: 
@@ -108,7 +93,7 @@ MonoBehaviour:
   m_XAxis:
     Value: 0
     m_SpeedMode: 1
-    m_MaxSpeed: 4
+    m_MaxSpeed: 3
     m_AccelTime: 0
     m_DecelTime: 0
     m_InputAxisName: Mouse X

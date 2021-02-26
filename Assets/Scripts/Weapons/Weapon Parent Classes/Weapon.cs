@@ -102,6 +102,8 @@ public class Weapon : MonoBehaviour
    // it is a prefab
     protected WeaponUi weaponUi;
 
+    private bool isSetup = false;
+
      [Header("Audio")]
     public AudioClip weaponFireSound;
     [Range(0.0f, 1.0f)]
@@ -191,25 +193,20 @@ public class Weapon : MonoBehaviour
     //-----------------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------------------
     
-    
-    
-    
-    
-    
-    
-    
-    protected void Start()
-    {
+    protected void SetupWeapon()
+    {   
         _networkPlayerVehicle = GetComponentInParent<NetworkPlayerVehicle>();
         weaponUi = FindObjectOfType<WeaponUi>();
         _playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
         ReloadSalvo();
-        
+        isSetup = true;
     }
 
     // called to activate UI elements and transfer photonview
-    public void ActivateWeapon()
+    public virtual void ActivateWeapon()
     {
+        if (!isSetup) SetupWeapon();
+
         // assign photon view to the gunner
         Player gunnerPlayer = gunnerPhotonView.Owner;
         
@@ -224,12 +221,16 @@ public class Weapon : MonoBehaviour
             Debug.LogError("Weapon does not belong to a valid vehicle!! Assigning owner to null");
         }
         
-        if(gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
+        if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
         
 
         UpdateHud();
+        
 
+    }
 
+    public virtual void ActivateWeaponInternal()
+    {
     }
 
     // temporary fire solutionUpdateHud
