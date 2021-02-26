@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 
 public class VehicleManager : MonoBehaviour
 {
@@ -18,6 +20,13 @@ public class VehicleManager : MonoBehaviour
         public float collisionResistance;
     }
 
+    public GameObject audioSourcePrefab;
+    public float crashSoundsSmallDamageThreshold = 5f;
+    public float crashSoundsLargeDamageThreshold = 40f;
+    public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
+    public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
+    public float crashMasterVolume = 1f;
+    
     GamestateTracker gamestateTracker;
     NetworkManager networkManager;
     PhotonView driverPhotonView;
@@ -25,7 +34,15 @@ public class VehicleManager : MonoBehaviour
     InterfaceCarDrive icd;
     InputDriver inputDriver;
     IDrivable carDriver;
-    public int teamId;
+    NetworkPlayerVehicle npv;
+    public int teamId {
+        get {
+            return npv.teamId;
+        }
+        set {
+            npv.teamId = value;
+        }
+    }
     public float health = 100f;
     float maxHealth;
     public GameObject temporaryDeathExplosion;
@@ -38,7 +55,7 @@ public class VehicleManager : MonoBehaviour
     public Weapon.WeaponDamageDetails rammingDetails {
         get {
             if (_rammingDetails.sourcePlayerNickName == null) {
-                NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
+                
                 _rammingDetails.sourcePlayerNickName = npv.GetDriverNickName();
                 _rammingDetails.sourcePlayerId = npv.GetDriverID();
                 _rammingDetails.sourceTeamId = npv.teamId;
@@ -52,7 +69,7 @@ public class VehicleManager : MonoBehaviour
     Weapon.WeaponDamageDetails lastHitDetails;
 
     // Start is called before the first frame update
-    void Start() {
+    public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
         networkManager = FindObjectOfType<NetworkManager>();
@@ -62,6 +79,7 @@ public class VehicleManager : MonoBehaviour
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
         driverPhotonView = GetComponent<PhotonView>();
+        npv = GetComponent<NetworkPlayerVehicle>();
 
         baseCollisionResistance = deathForce / maxHealth;
 
@@ -90,31 +108,64 @@ public class VehicleManager : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    void PlayDamageSoundNetwork(float damage)
+    {
+        GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
+        AudioSource a = crashSound.GetComponent<AudioSource>();
+        if (damage > crashSoundsLargeDamageThreshold && crashSoundsLarge.Count > 0)
+        {
+            int randInt = Random.Range(0, crashSoundsLarge.Count - 1);
+            a.clip = crashSoundsLarge[randInt];
+        }
+        else if(crashSoundsSmall.Count > 0)
+        {
+            int randInt = Random.Range(0, crashSoundsSmall.Count - 1);
+            a.clip = crashSoundsLarge[randInt];
+        }
+
+        if (a.clip != null)
+        {
+            a.Play();
+            Destroy(crashSound, a.clip.length);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
+    }
+
     void OnCollisionEnter(Collision collision) {
-        Vector3 collisionNormal = collision.GetContact(0).normal;
-        Vector3 collisionForce = collision.impulse;
-        if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
-        collisionForce /= Time.fixedDeltaTime;
-        collisionForce = transform.InverseTransformDirection(collisionForce);
+        if (driverPhotonView.IsMine) {
+            Vector3 collisionNormal = collision.GetContact(0).normal;
+            Vector3 collisionForce = collision.impulse;
+            if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
+            collisionForce /= Time.fixedDeltaTime;
+            collisionForce = transform.InverseTransformDirection(collisionForce);
 
-        VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
+            VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
 
-        Vector3 collisionPoint = Vector3.zero;
-        for (int i = 0; i < collision.contactCount; i++) {
-            collisionPoint += collision.GetContact(i).point;
-        }
-        collisionPoint /= collision.contactCount;
+            Vector3 collisionPoint = Vector3.zero;
+            for (int i = 0; i < collision.contactCount; i++) {
+                collisionPoint += collision.GetContact(i).point;
+            }
+            collisionPoint /= collision.contactCount;
 
-        Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
-        float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-
-        if (otherVehicleManager != null) {
-            Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
-            rammingDetails.damage = damage;
-            TakeDamage(rammingDetails);
-        }
-        else {
-            TakeDamage(damage);
+            Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
+            float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
+            
+            // instantiate damage sound over network
+            if(damage > crashSoundsSmallDamageThreshold) driverPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            
+            if (otherVehicleManager != null) {
+                Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
+                rammingDetails.damage = damage;
+                TakeDamage(rammingDetails);
+            }
+            else {
+                TakeDamage(damage);
+            }
         }
     }
 
@@ -139,11 +190,6 @@ public class VehicleManager : MonoBehaviour
         reducedForce /= collisionResistance;
 
         return reducedForce;
-    }
-
-    [PunRPC]
-    public void SetTeamId_RPC(int newId) {
-        teamId = newId;
     }
 
     [PunRPC]

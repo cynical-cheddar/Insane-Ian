@@ -18,15 +18,17 @@ public class PlinthManager : MonoBehaviour
     void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Wait for the host to finish loading first
-        Invoke(nameof(UpdateText), 0.1f);
+        //Invoke(nameof(UpdateText), 0.1f);
+        UpdateText();
     }
 
     void SpawnPlayerVehicles() {
         for (int i = 0; i < Mathf.Min(sortedTeams.Count, spawnpoints.Count); i++) {
+            object[] instantiationData = new object[] { sortedTeams[i].teamId };
             if (sortedTeams[i].vehiclePrefabName != "" && sortedTeams[i].vehiclePrefabName != null && sortedTeams[i].vehiclePrefabName != "null") {
-                PhotonNetwork.Instantiate(sortedTeams[i].vehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation);
+                PhotonNetwork.Instantiate(sortedTeams[i].vehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation, 0, instantiationData);
             } else {
-                PhotonNetwork.Instantiate(defaultVehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation);
+                PhotonNetwork.Instantiate(defaultVehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation, 0, instantiationData);
             }
         }
     }

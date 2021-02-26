@@ -145,10 +145,16 @@ public class HitscanWeapon : Weapon
         
     }
 
-    protected new void Start()
+    protected new void SetupWeapon()
     {
-        base.Start();
+        base.SetupWeapon();
         colliders = transform.root.GetComponentsInChildren<Collider>();
+    }
+
+    public override void ActivateWeapon()
+    {
+        base.ActivateWeapon();
+        SetupWeapon();
     }
 
 
