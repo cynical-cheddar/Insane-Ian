@@ -42,10 +42,10 @@ public class GunnerWeaponManager : MonoBehaviour
     void Start()
     {
         //Invoke(nameof(SelectFirst), 0.4f);
-        SelectFirst();
+        //SelectFirst();
     }
 
-    void SelectFirst()
+    public void SelectFirst()
     {
         // select the first control group
         SelectWeaponGroup(weaponControlGroups.weaponControlGroupList[0]);

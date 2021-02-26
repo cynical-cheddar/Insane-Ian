@@ -75,6 +75,11 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
             //Debug.Log("gunner nickname in transfer: " + p.NickName);
             gunnerPhotonView.TransferOwnership(p);
 
+            GameObject gunnerObject = gunnerPhotonView.gameObject;
+            Weapon[] weapons = gunnerObject.GetComponentsInChildren<Weapon>();
+            foreach (Weapon weapon in weapons) {
+                weapon.gameObject.GetComponent<PhotonView>().TransferOwnership(p);
+            }
         }
 
     }
@@ -135,8 +140,8 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         
         // firstly, if the gunner is a human, transfer the photonview ownership to the player's client
         
-        if(!driverDetails.isBot) TransferDriverPhotonViewOwnership(driverDetails);
-        if(!gunnerDetails.isBot) TransferGunnerPhotonViewOwnership(gunnerDetails);
+        if (!driverDetails.isBot) TransferDriverPhotonViewOwnership(driverDetails);
+        if (!gunnerDetails.isBot) TransferGunnerPhotonViewOwnership(gunnerDetails);
         
         // transfer control to master client if bot
         if (driverDetails.isBot) driverPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
@@ -156,5 +161,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if (botGunner && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiGunnerScripts);
         if(PhotonNetwork.LocalPlayer.ActorNumber == gunnerDetails.playerId) EnableMonobehaviours(playerGunnerScripts);
         //Debug.Log("GOT HERE2");
+
+        GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
     }
 }
