@@ -7,7 +7,7 @@ public class COMDropper : MonoBehaviour {
     public Rigidbody rb;
     public Vector3 Shift;
 
-    void Update() {
+    void Start() {
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = Shift;
     }

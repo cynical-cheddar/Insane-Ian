@@ -41,7 +41,8 @@ public class GunnerWeaponManager : MonoBehaviour
 
     void Start()
     {
-        Invoke(nameof(SelectFirst), 0.4f);
+        //Invoke(nameof(SelectFirst), 0.4f);
+        SelectFirst();
     }
 
     void SelectFirst()
@@ -66,6 +67,22 @@ public class GunnerWeaponManager : MonoBehaviour
         foreach (Weapon w in currentWeaponControlGroup.weapons)
         {
             w.Fire(targetPos);
+        }
+    }
+
+    public void ReloadCurrentWeaponGroup()
+    {
+        foreach (Weapon w in currentWeaponControlGroup.weapons)
+        {
+            w.ReloadSalvo();
+        }
+    }
+
+    public void CeaseFireCurrentWeaponGroup()
+    {
+        foreach (Weapon w in currentWeaponControlGroup.weapons)
+        {
+            w.CeaseFire();
         }
     }
 }

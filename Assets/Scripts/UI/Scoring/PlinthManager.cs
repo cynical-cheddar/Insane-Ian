@@ -11,29 +11,31 @@ public class PlinthManager : MonoBehaviour
     public TextMesh scoreboardText;
     public string defaultVehiclePrefabName;
     GamestateTracker gamestateTracker;
-    ScoringHelper scoringHelper = new ScoringHelper();
+    readonly ScoringHelper scoringHelper = new ScoringHelper();
     List<GamestateTracker.TeamDetails> sortedTeams;
 
     // Start is called before the first frame update
     void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Wait for the host to finish loading first
-        Invoke(nameof(UpdateText), 0.1f);
+        //Invoke(nameof(UpdateText), 0.1f);
+        UpdateText();
     }
 
     void SpawnPlayerVehicles() {
         for (int i = 0; i < Mathf.Min(sortedTeams.Count, spawnpoints.Count); i++) {
+            object[] instantiationData = new object[] { sortedTeams[i].teamId };
             if (sortedTeams[i].vehiclePrefabName != "" && sortedTeams[i].vehiclePrefabName != null && sortedTeams[i].vehiclePrefabName != "null") {
-                PhotonNetwork.Instantiate(sortedTeams[i].vehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation);
+                PhotonNetwork.Instantiate(sortedTeams[i].vehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation, 0, instantiationData);
             } else {
-                PhotonNetwork.Instantiate(defaultVehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation);
+                PhotonNetwork.Instantiate(defaultVehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation, 0, instantiationData);
             }
         }
     }
 
     void UpdateText() {
         sortedTeams = scoringHelper.SortTeams(gamestateTracker.schema.teamsList);
-        SpawnPlayerVehicles();
+        if (PhotonNetwork.IsMasterClient) SpawnPlayerVehicles();
         plinthTexts[0].text = $"Team {sortedTeams[0].teamId}";
         if (sortedTeams.Count > 1) plinthTexts[1].text = $"Team {sortedTeams[1].teamId}";
         if (sortedTeams.Count > 2) plinthTexts[2].text = $"Team {sortedTeams[2].teamId}";

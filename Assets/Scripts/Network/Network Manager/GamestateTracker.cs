@@ -15,6 +15,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
     public List<string> destoryOnTheseLevels = new List<string>();
     public int maxPlayers = 24;
     ScoreboardBehaviour scoreboard;
+    public float timeLimit;
 
     [SerializeField] public PlayerSchema schema = new PlayerSchema();
     [SerializeField] public MapDetails mapDetails = new MapDetails();
@@ -42,9 +43,9 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
         public string character;
         public int teamId;
         public bool isBot;
+        public bool ready;
         
-        
-        public PlayerDetails(string n, int p, string r, string c, int t, bool b, string v)
+        public PlayerDetails(string n, int p, string r, string c, int t, bool b, string v, bool isReady)
         {
             nickName = n;
             playerId = p;
@@ -52,7 +53,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
             character = c;
             teamId = t;
             isBot = b;
-            
+            ready = isReady;
         }
     }
     

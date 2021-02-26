@@ -7,9 +7,10 @@ using UnityEngine.UI;
 
 public class TimerBehaviour : MonoBehaviour
 {
-    public float initialTime = 300;
+    public float defaultTimeLimit = 300f;
     public Text timerText;
-    [SerializeField] public Timer timer = new Timer();
+    public Timer timer = new Timer();
+    bool gameOverLoading = false;
 
     [Serializable]
     public struct Timer {
@@ -25,10 +26,18 @@ public class TimerBehaviour : MonoBehaviour
         timer.timeLeft = time;
     }
 
+    private void Awake() {
+        timer.timeLeft = defaultTimeLimit;
+    }
+
     // Time in seconds
-    public void HostStartTimer() {
+    public void HostStartTimer(float timeLimit) {
         if (PhotonNetwork.IsMasterClient) {
-            GetComponent<PhotonView>().RPC(nameof(SetTimer), RpcTarget.AllBufferedViaServer, initialTime);
+            if (timeLimit == 0) {
+                GetComponent<PhotonView>().RPC(nameof(SetTimer), RpcTarget.AllBufferedViaServer, defaultTimeLimit);
+            } else {
+                GetComponent<PhotonView>().RPC(nameof(SetTimer), RpcTarget.AllBufferedViaServer, timeLimit);
+            }
             StartCoroutine(SyncTime());
         }
     }
@@ -37,7 +46,17 @@ public class TimerBehaviour : MonoBehaviour
 
     private void Update() {
         timer.timeLeft -= Time.deltaTime;
-        timerText.text = Mathf.RoundToInt(timer.timeLeft).ToString();
+        int minutes = Mathf.FloorToInt(timer.timeLeft / 60);
+        int seconds = Mathf.FloorToInt(timer.timeLeft - minutes * 60f);
+        if (seconds < 10) {
+            timerText.text = $"{minutes}:0{seconds}";
+        } else {
+            timerText.text = $"{minutes}:{seconds}";
+        }
+        
+        if (timer.timeLeft <= 0) {
+            EndGame();
+        }
     }
 
     void UpdateTimersForClients() {
@@ -50,6 +69,13 @@ public class TimerBehaviour : MonoBehaviour
         while (true) {
             yield return new WaitForSecondsRealtime(5);
             UpdateTimersForClients();
+        }
+    }
+
+    public void EndGame() {
+        if (!gameOverLoading && PhotonNetwork.IsMasterClient) {
+            gameOverLoading = true;
+            PhotonNetwork.LoadLevel("GameOver");
         }
     }
 }

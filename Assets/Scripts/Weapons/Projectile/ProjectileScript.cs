@@ -4,23 +4,22 @@ using System.Collections;
 
 public class ProjectileScript : MonoBehaviour
 {
-    public GameObject impactParticle;
-    public GameObject missImpactParticle;
-    public GameObject projectileParticle;
-    public GameObject[] trailParticles;
-    [HideInInspector]
-    public Vector3 impactNormal; //Used to rotate impactparticle.
+    GameObject impactParticle;
+    GameObject missImpactParticle;
+    GameObject projectileParticle;
+    GameObject projectileParticleInstance;
 
-    private bool trueProjectile = false;
-    private bool hasCollided = false;
+    private bool isTrueProjectile = false;
 
-    public float impactParticleVolume = 1f;
-    public float missImpactParticleVolume = 0.75f;
-    public AudioClip hitSound;
-    public AudioClip missSound;
+    float impactParticleVolume = 1f;
+    float missImpactParticleVolume = 0.75f;
+    AudioClip hitSound;
+    AudioClip missSound;
     private Weapon.WeaponDamageDetails weaponDamageDetails = new Weapon.WeaponDamageDetails();
 
-    VehicleManager hitVm;
+    public float explosionForce = 0.3f;
+    public float explosionOffset = 1f;
+
     public void SetWeaponDamageDetails(Weapon.WeaponDamageDetails wdd)
     {
         weaponDamageDetails = wdd;
@@ -28,31 +27,46 @@ public class ProjectileScript : MonoBehaviour
 
     public void SetTrueProjectile(bool set)
     {
-        trueProjectile = set;
+        isTrueProjectile = set;
     }
     
-    void Start()
+    public void ActivateProjectile(GameObject imp, GameObject misImp, GameObject projParticle, AudioClip hitS, AudioClip missS, float hitVol, float missVol)
     {
-        projectileParticle = Instantiate(projectileParticle, transform.position, transform.rotation) as GameObject;
-        projectileParticle.transform.parent = transform;
+        impactParticle = imp;
+        missImpactParticle = misImp;
+        projectileParticle = projParticle;
+        hitSound = hitS;
+        missSound = missS;
+        impactParticleVolume = hitVol;
+        missImpactParticleVolume = missVol;
+        
+        projectileParticleInstance = Instantiate(projectileParticle, transform.position, transform.rotation, transform) as GameObject;
     }
 
-    void OnCollisionEnter(Collision hit)
+
+
+    void OnCollisionEnter(Collision collision)
     {
-        if (!hasCollided)
-        {
-            // if we are the true projectile, then deal with game altering stuff like damage n that
-            impactNormal = hit.contacts[0].normal;
-            hitVm = hit.gameObject.GetComponentInParent<VehicleManager>();
-            if(trueProjectile)DamageCollisionHandler(hit);
-            VisualCollisionHandler();
+        Vector3 impactNormal = collision.GetContact(0).normal;
+
+        // if we are the true projectile, then deal with game altering stuff like damage n that
+        if (explosionForce > 0) {
+            Squishing hitMeshSquisher = collision.gameObject.GetComponentInParent<Squishing>();
+            if (hitMeshSquisher != null) {
+                Vector3 explosionPoint = collision.GetContact(0).point + impactNormal * explosionOffset;
+                hitMeshSquisher.ExplodeMeshAt(explosionPoint, explosionForce);
+            }
         }
-    }
 
-    // applies damage to the enemy (if we hit an enemy)
+        VehicleManager hitVm = collision.gameObject.GetComponentInParent<VehicleManager>();
+        if (isTrueProjectile) DamageCollisionHandler(hitVm);
+        VisualCollisionHandler(impactNormal, hitVm != null);
+
+        Destroy(gameObject);
+    }
     
-    // TODO - get health and apply damage
-    void DamageCollisionHandler(Collision hit)
+    // applies damage to the enemy (if we hit an enemy)
+    private void DamageCollisionHandler(VehicleManager hitVm)
     {
         
         if (hitVm != null)
@@ -64,50 +78,20 @@ public class ProjectileScript : MonoBehaviour
     }
     
     // destroys gameobject and does impact effects and such
-    void VisualCollisionHandler()
+    private void VisualCollisionHandler(Vector3 impactNormal, bool hitPlayer)
     {
-        // calculate
-        hasCollided = true;
         
-        
-        // WE HAVE HIT A PLAYER, PLAY THE HIT PLAYER IMPACT STUFF
-        if (hitVm != null)
+        if (hitPlayer)
         {
-            GameObject impactParticleInstance = Instantiate(impactParticle, transform.position,
-                Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
-            if (impactParticleInstance.GetComponent<AudioSource>() != null && hitSound != null)
-            {
-                impactParticleInstance.GetComponent<AudioSource>().clip = hitSound;
-                impactParticleInstance.GetComponent<AudioSource>().volume = impactParticleVolume;
-                impactParticleInstance.GetComponent<AudioSource>().PlayOneShot(hitSound, impactParticleVolume);
-            }
-            Destroy(impactParticleInstance, 5f);
+            PlayParticleEffect(impactParticle, impactNormal);
         }
-        // WE HAVE NOT HIT A PLAYER
         else
         {
-            GameObject missImpactParticleInstance = Instantiate(missImpactParticle, transform.position,
-                Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
-            if (missImpactParticleInstance.GetComponent<AudioSource>() != null && missSound != null)
-            {
-                missImpactParticleInstance.GetComponent<AudioSource>().clip = missSound;
-                missImpactParticleInstance.GetComponent<AudioSource>().volume = missImpactParticleVolume;
-                missImpactParticleInstance.GetComponent<AudioSource>().PlayOneShot(missSound, missImpactParticleVolume);
-            }
-            Destroy(missImpactParticleInstance, 5f);
+            PlayParticleEffect(missImpactParticle, impactNormal);
         }
 
-        foreach (GameObject trail in trailParticles)
-        {
-            GameObject curTrail = transform.Find(projectileParticle.name + "/" + trail.name).gameObject;
-            curTrail.transform.parent = null;
-            Destroy(curTrail, 3f);
-        }
-        Destroy(projectileParticle, 3f);
-
-        
-        Destroy(gameObject);
-			
+        Destroy(projectileParticleInstance, 3f);
+		
         ParticleSystem[] trails = GetComponentsInChildren<ParticleSystem>();
         //Component at [0] is that of the parent i.e. this object (if there is any)
         for (int i = 1; i < trails.Length; i++)
@@ -121,5 +105,17 @@ public class ProjectileScript : MonoBehaviour
                 Destroy(trail.gameObject, 2f);
             }
         }
+    }
+
+    private void PlayParticleEffect(GameObject particle, Vector3 impactNormal) {
+        GameObject particleInstance = Instantiate(particle, transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
+        AudioSource particleAudio = particleInstance.GetComponent<AudioSource>();
+        if (particleAudio != null && hitSound != null)
+        {
+            particleAudio.clip = hitSound;
+            particleAudio.volume = impactParticleVolume;
+            particleAudio.PlayOneShot(hitSound, impactParticleVolume);
+        }
+        Destroy(particleInstance, 5f);
     }
 }

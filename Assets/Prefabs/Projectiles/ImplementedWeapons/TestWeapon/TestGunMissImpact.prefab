@@ -9662,6 +9662,7 @@ GameObject:
   - component: {fileID: 5650223041349339957}
   - component: {fileID: 5650223041347870265}
   - component: {fileID: 5650223041339477853}
+  - component: {fileID: 8063993576139035253}
   m_Layer: 0
   m_Name: TestGunMissImpact
   m_TagString: Untagged
@@ -9695,7 +9696,8 @@ AudioSource:
   m_GameObject: {fileID: 5650223041333689875}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: bb43a165de70bda419e370488b6f5643,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.108
@@ -14493,3 +14495,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   randomPercent: 10
+--- !u!114 &8063993576139035253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5650223041333689875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af20d703d2e68f4f93c7418386f608f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 2

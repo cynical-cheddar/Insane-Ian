@@ -10,9 +10,9 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     [SerializeField] public int teamId = 0 ;
 
-    [SerializeField] private int driverPlayerId;
+    [SerializeField] public int driverPlayerId;
 
-    [SerializeField] private int gunnerPlayerId;
+    [SerializeField] public int gunnerPlayerId;
 
     public bool driverSlotEmpty = true;
     public bool gunnerSlotEmpty = true;
@@ -193,14 +193,92 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         driverPlayerId = 0;
         driverSlotEmpty = true;
         driverPlayerText.text = "empty";
+        
+        if (PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.changeSelectedPlayers), RpcTarget.AllBufferedViaServer, -1);
+        readyToggle.setReadyStatus(false);
 
         GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(deselectPlayer.ActorNumber);
         playerDetails.role = "null";
         playerDetails.teamId = 0;
         gamestateTracker.UpdatePlayerWithNewRecord(deselectPlayer.ActorNumber, JsonUtility.ToJson(playerDetails));
+    }
 
-        if (PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
-        readyToggle.setReadyStatus(false);
+    [PunRPC]
+    public void DeselectPlayerDriverById(int id)
+    {
+        driverPlayerId = 0;
+        driverSlotEmpty = true;
+        driverPlayerText.text = "empty";
+
+        if (PhotonNetwork.LocalPlayer.ActorNumber == id)
+        {
+            if(lobbySlotMaster.getHasPicked())lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.changeSelectedPlayers), RpcTarget.AllBufferedViaServer, -1);
+            readyToggle.setReadyStatus(false);
+            lobbySlotMaster.setHasPicked(false);
+        }
+        
+        GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(id);
+        playerDetails.role = "null";
+        playerDetails.teamId = 0;
+        gamestateTracker.UpdatePlayerWithNewRecord(id, JsonUtility.ToJson(playerDetails));
+
+    }
+    [PunRPC]
+    public void DeselectGunnerDriverById(int id)
+    {
+        gunnerPlayerId = 0;
+        gunnerSlotEmpty = true;
+        gunnerPlayerText.text = "empty";
+
+        if (PhotonNetwork.LocalPlayer.ActorNumber == id)
+        {
+            if(lobbySlotMaster.getHasPicked())lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.changeSelectedPlayers), RpcTarget.AllBufferedViaServer, -1);
+            readyToggle.setReadyStatus(false);
+            lobbySlotMaster.setHasPicked(false);
+        }
+        
+        GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(id);
+        playerDetails.role = "null";
+        playerDetails.teamId = 0;
+        gamestateTracker.UpdatePlayerWithNewRecord(id, JsonUtility.ToJson(playerDetails));
+        
+        
+    }
+
+    public void RemoveBothPlayersFromTeam()
+    {
+        if (driverPlayerId != 0)
+        {
+            GamestateTracker.PlayerDetails pd = gamestateTracker.getPlayerDetails(driverPlayerId);
+            if(pd.isBot) RemoveBotDriver();
+            else GetComponent<PhotonView>().RPC(nameof(DeselectPlayerDriverById), RpcTarget.AllBufferedViaServer, driverPlayerId);
+        }
+
+        if (gunnerPlayerId != 0)
+        {
+            GamestateTracker.PlayerDetails pd = gamestateTracker.getPlayerDetails(gunnerPlayerId);
+            if(pd.isBot) RemoveBotGunner();
+            else GetComponent<PhotonView>().RPC(nameof(DeselectGunnerDriverById), RpcTarget.AllBufferedViaServer, gunnerPlayerId);
+        }
+        
+        
+        
+
+    }
+    
+    [PunRPC]
+    public void ClearDriverButton()
+    {
+        driverPlayerId = 0;
+        driverSlotEmpty = true;
+        driverPlayerText.text = "empty";
+    }
+    [PunRPC]
+    public void ClearGunnerButton()
+    {
+        gunnerPlayerId = 0;
+        gunnerSlotEmpty = true;
+        gunnerPlayerText.text = "empty";
     }
     
     
@@ -235,14 +313,16 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         gunnerPlayerId = 0;
         gunnerSlotEmpty = true;
         gunnerPlayerText.text = "empty";
+        
+        if (PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
+        readyToggle.setReadyStatus(false);
 
         GamestateTracker.PlayerDetails playerDetails = gamestateTracker.getPlayerDetails(deselectPlayer.ActorNumber);
         playerDetails.role = "null";
         playerDetails.teamId = 0;
         gamestateTracker.UpdatePlayerWithNewRecord(deselectPlayer.ActorNumber, JsonUtility.ToJson(playerDetails));
 
-        if (PhotonNetwork.IsMasterClient)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeSelectedPlayers", RpcTarget.AllBufferedViaServer, -1);
-        readyToggle.setReadyStatus(false);
+        
     }
 
     public void setButtonInfo(PlayerSchema playersInTeam)

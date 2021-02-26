@@ -6,13 +6,24 @@ using UnityEngine;
 [VehicleScript(ScriptType.playerDriverScript)]
 public class InputDriver : MonoBehaviour
 {
+
     public InterfaceCarDrive ICD;
-    void FixedUpdate() {
+    void Update() {
         Steer();
         Accellerate();
         Reverse();
         Brake();
+        Handbrake();
         UpdateWheelPoses();
+    }
+
+    private void Handbrake() {
+        var CarDriver = ICD.GetComponent<IDrivable>();
+        if (Input.GetKey(KeyCode.Space)) {
+            CarDriver.Drift();
+        } else {
+            CarDriver.StopDrift();
+        }
     }
 
     private void UpdateWheelPoses() {
