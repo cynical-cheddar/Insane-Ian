@@ -350,7 +350,7 @@ public class Weapon : MonoBehaviour
     
 
 
-    protected bool CanFire()
+    public bool CanFire()
     {
         if (currentCooldown <= 0)
         {

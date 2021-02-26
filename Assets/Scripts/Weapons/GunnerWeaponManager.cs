@@ -61,6 +61,13 @@ public class GunnerWeaponManager : MonoBehaviour
         }
     }
 
+    public bool CurrentWeaponGroupCanFire() {
+        foreach (Weapon w in currentWeaponControlGroup.weapons) {
+            if (w.CanFire()) return true;
+        }
+        return false;
+    }
+
     public void FireCurrentWeaponGroup(Vector3 targetPos)
     {
         // get all weapons in the current weapon group and fire them at the targetPos
