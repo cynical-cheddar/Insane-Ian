@@ -55,7 +55,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         //SynchroniseSchemaBeforeSpawn();
-        SpawnPlayers();
+        //SpawnPlayers();
+        Invoke(nameof(SpawnPlayers), 2f);
         timer = FindObjectOfType<TimerBehaviour>();
         if (timer != null) timer.HostStartTimer(gamestateTracker.timeLimit);
     }
