@@ -149,6 +149,12 @@ public class BeamWeapon : Weapon
         isRecharging = false;
     }
 
+    public override bool CanFire() {
+        if((reloadType != ReloadType.noReload) && currentSalvo > 0) return true;
+        else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;
+        
+        return false;
+    }
 
     public override void Fire(Vector3 targetPoint)
     {
@@ -163,7 +169,7 @@ public class BeamWeapon : Weapon
         
         
         
-        if (CanFire() && gunnerPhotonView.IsMine && !isRecharging)
+        if (base.CanFire() && gunnerPhotonView.IsMine && !isRecharging)
         {
             timeSinceLastFire = 0;
             targetPoint =
