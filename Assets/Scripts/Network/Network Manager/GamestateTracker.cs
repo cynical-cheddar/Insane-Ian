@@ -11,9 +11,8 @@ using UnityEngine.UI;
 
 public class GamestateTracker : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
     public List<string> destoryOnTheseLevels = new List<string>();
-    public int maxPlayers = 24;
+    
     ScoreboardBehaviour scoreboard;
     public float timeLimit;
 
@@ -239,6 +238,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
 
         if(found)schema.playerList.Remove(recordToRemove);
     }
+
     [PunRPC]    
     public void AddFirstPlayerToSchema(string serializedPlayerDetails)
     {
@@ -431,18 +431,4 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
 
         return new PlayerDetails();
     }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-        
-        
-        
 }
