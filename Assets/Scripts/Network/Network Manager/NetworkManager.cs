@@ -72,7 +72,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>(); 
         gamestateTracker.ForceSynchronisePlayerSchema();
-        Invoke(nameof(SpawnPlayers), 2f);
+        //Invoke(nameof(SpawnPlayers), 2f);
+        SpawnPlayers();
     }
 
     void SpawnPlayers()
