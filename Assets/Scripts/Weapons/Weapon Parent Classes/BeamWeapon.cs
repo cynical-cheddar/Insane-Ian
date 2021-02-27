@@ -105,6 +105,7 @@ public class BeamWeapon : Weapon
     private BeamHit newHit;
     protected int lastHitId = 0;
     protected bool localFirstFire = false;
+    WeaponDamageDetails weaponDamageDetails;
 
 
 
@@ -123,6 +124,7 @@ public class BeamWeapon : Weapon
         newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+        weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId, damageType, 0);
     }
 
     public override void ActivateWeapon()
@@ -172,7 +174,7 @@ public class BeamWeapon : Weapon
             UseAmmo(ammoPerShot);
             float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier);
+            
             
             
             if(!isRemotelyFiring){
@@ -198,7 +200,7 @@ public class BeamWeapon : Weapon
 
             
             
-
+            weaponDamageDetails.damage = baseDamage * distanceMultiplier * damageMultiplier;
             
             
             // if the raycast tracer details health field is not null, then damage em
@@ -280,8 +282,22 @@ public class BeamWeapon : Weapon
         Destroy(beamStart);
         Destroy(beamEnd);
         Destroy(beam);
-        newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
-        oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+
+        newHit.validHit = false;
+        newHit.worldHitPoint = Vector3.zero;
+        newHit.hasHitPlayer = false;
+        newHit.localHitpoint = Vector3.zero;
+        newHit.active = false;
+        newHit.hitTeamId = 0;
+        newHit.hitTransform = transform;
+
+        oldHit.validHit = false;
+        oldHit.worldHitPoint = Vector3.zero;
+        oldHit.hasHitPlayer = false;
+        oldHit.localHitpoint = Vector3.zero;
+        oldHit.active = false;
+        oldHit.hitTeamId = 0;
+        oldHit.hitTransform = transform;
     }
 
 
@@ -321,8 +337,20 @@ public class BeamWeapon : Weapon
         
         if(hitPlayer) newTargetVehicle = _playerTransformTracker.GetVehicleTransformFromTeamId(newHit.hitTeamId);
         
-        newHit = new BeamHit(validHit, worldHit, hitPlayer, localHit, true, hitTeamId, newTargetVehicle);
-        if (oldHit.active == false) oldHit = newHit;
+        //newHit = new BeamHit(validHit, worldHit, hitPlayer, localHit, true, hitTeamId, newTargetVehicle);
+        if (oldHit.active == false) {
+            BeamHit swapHit = oldHit;
+            oldHit = newHit;
+            newHit = swapHit;
+
+            newHit.validHit = validHit;
+            newHit.worldHitPoint = worldHit;
+            newHit.hasHitPlayer = hitPlayer;
+            newHit.localHitpoint = localHit;
+            newHit.active = true;
+            newHit.hitTeamId = hitTeamId;
+            newHit.hitTransform = newTargetVehicle;
+        }
         
         AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         turretFollowTarget.target = lookpoint;
@@ -463,14 +491,14 @@ public class BeamWeapon : Weapon
     
 
     protected RaycastHitDetails FindClosestRaycastHitDetails(Ray ray, Vector3 targetPoint)
-    {
-        RaycastHitDetails raycastHitDetails = new RaycastHitDetails(targetPoint, Vector3.zero, null, false, false);;
-        
+    {        
         RaycastHit[] hits = Physics.RaycastAll(ray);
         
         Transform closestHit = null;
         float distance = 0;
-        Vector3 hitPoint = Vector3.zero;
+        Vector3 hitPoint = targetPoint;
+        bool healthExists = false;
+        bool valid = false;
 
         foreach (RaycastHit hit in hits)
         {
@@ -484,26 +512,19 @@ public class BeamWeapon : Weapon
                 closestHit = hit.transform;
                 distance = hit.distance;
                 hitPoint = hit.point;
-                
-                // get local hitpoint
-                Vector3 localHitPoint = closestHit.root.InverseTransformPoint(hitPoint);
-                // the health script exists
-                if (hit.transform.root.GetComponent<VehicleManager>() != null)
-                {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,true,true );
-                }
-                else
-                {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,false,true );
-                }
+                valid = true;
 
             }
         }
+
         
+        Vector3 localHitPoint = Vector3.zero;
+        if (closestHit != null && healthExists) localHitPoint = closestHit.root.InverseTransformPoint(hitPoint);
+        if (closestHit != null && closestHit.transform.root.GetComponent<VehicleManager>() != null) healthExists = true;
 
         // closestHit is now either still null (i.e. we hit nothing) OR it contains the closest thing that is a valid thing to hit
 
-        return raycastHitDetails;
+        return new RaycastHitDetails(hitPoint, localHitPoint, closestHit, healthExists, valid);;
 
     }
 

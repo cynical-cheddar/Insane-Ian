@@ -195,7 +195,24 @@ public class Weapon : MonoBehaviour
     
     protected void SetupWeapon()
     {   
+        // assign photon view to the gunner
+        //Player gunnerPlayer = gunnerPhotonView.Owner;
+        
         _networkPlayerVehicle = GetComponentInParent<NetworkPlayerVehicle>();
+        
+        if (_networkPlayerVehicle != null)
+        {
+            myNickName = _networkPlayerVehicle.GetGunnerNickName();
+            myPlayerId = _networkPlayerVehicle.GetGunnerID();
+            myTeamId = _networkPlayerVehicle.teamId;
+        }
+        else
+        {
+            Debug.LogError("Weapon does not belong to a valid vehicle!! Assigning owner to null");
+        }
+
+        //weaponPhotonView.TransferOwnership(gunnerPlayer);
+
         weaponUi = FindObjectOfType<WeaponUi>();
         _playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
         ReloadSalvo();
@@ -206,20 +223,6 @@ public class Weapon : MonoBehaviour
     public virtual void ActivateWeapon()
     {
         if (!isSetup) SetupWeapon();
-
-        // assign photon view to the gunner
-        Player gunnerPlayer = gunnerPhotonView.Owner;
-        
-        if (GetComponentInParent<NetworkPlayerVehicle>() != null)
-        {
-            myNickName = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerNickName();
-            myPlayerId = GetComponentInParent<NetworkPlayerVehicle>().GetGunnerID();
-            myTeamId = GetComponentInParent<NetworkPlayerVehicle>().teamId;
-        }
-        else
-        {
-            Debug.LogError("Weapon does not belong to a valid vehicle!! Assigning owner to null");
-        }
         
         if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
         
@@ -350,7 +353,7 @@ public class Weapon : MonoBehaviour
     
 
 
-    protected bool CanFire()
+    public bool CanFire()
     {
         if (currentCooldown <= 0)
         {
