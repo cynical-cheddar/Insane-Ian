@@ -353,7 +353,7 @@ public class Weapon : MonoBehaviour
     
 
 
-    public bool CanFire()
+    public virtual bool CanFire()
     {
         if (currentCooldown <= 0)
         {
