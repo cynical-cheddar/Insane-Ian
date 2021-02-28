@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using Photon.Realtime;
+using Gamestate;
 
 public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 {

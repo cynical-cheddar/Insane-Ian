@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
+using Gamestate;
 
 [VehicleScript(ScriptType.playerDriverScript)]
 public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback

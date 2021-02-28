@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using Gamestate;
 
 public class ReadyToggle : MonoBehaviour
 {

@@ -5,6 +5,12 @@ namespace Gamestate {
         public string name;
         public short boolValues;
         public List<short> shortValues;
+
+        public GamestateEntry() {}
+        public GamestateEntry(short id) {
+            shortValues = new List<short>();
+            shortValues.Add(id);
+        }
     }
 
     public class GlobalsEntry : GamestateEntry {
@@ -13,6 +19,8 @@ namespace Gamestate {
         public short playerId {
             get { return shortValues[ (int)ShortFields.TimeLimit ]; }
         }
+
+        public GlobalsEntry() : base() {}
     }
 
     public class PlayerEntry : GamestateEntry {
@@ -39,6 +47,8 @@ namespace Gamestate {
         public bool ready {
             get { return ((boolValues >> (int)BoolFields.Ready) & 1) == 1; }
         }
+
+        public PlayerEntry(short id) : base(id) {}
     }
 
     public class TeamEntry : GamestateEntry {
@@ -65,5 +75,7 @@ namespace Gamestate {
         public bool isDead {
             get { return ((boolValues >> (int)BoolFields.IsDead) & 1) == 1; }
         }
+
+        public TeamEntry(short id) : base(id) {}
     }
 }

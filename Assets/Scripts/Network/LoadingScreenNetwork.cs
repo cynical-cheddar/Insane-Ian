@@ -4,6 +4,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Gamestate;
 public class LoadingScreenNetwork : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
