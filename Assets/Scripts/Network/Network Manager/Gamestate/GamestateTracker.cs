@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Gamestate {
-    public class GamestateTracker : MonoBehaviourPunCallbacks
+    public class GamestateTracker : MonoBehaviourPunCallbacks, IGamestateCommitHandler
     {
         public List<string> destoryOnTheseLevels = new List<string>();
 
@@ -26,8 +26,6 @@ namespace Gamestate {
         public GamestateTable<TeamEntry> teams { get { return _teams; } }
 
 
-
-        ScoreboardBehaviour scoreboard;
         public float timeLimit;
 
         [SerializeField] public PlayerSchema schema = new PlayerSchema();
@@ -79,24 +77,17 @@ namespace Gamestate {
 
 
 
-        public GamestateTracker() {
-
-        }
-
-        public GamestateTracker(bool doUnityInitialisation) {
-            if (doUnityInitialisation) {
-                Awake();
-            }
-        }
 
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+        }
 
-            _globals = new GlobalsEntry();
-            _players = new GamestateTable<PlayerEntry>();
-            _teams = new GamestateTable<TeamEntry>();
+        private void Setup() {
+            _globals = new GlobalsEntry(this);
+            _players = new GamestateTable<PlayerEntry>(this);
+            _teams = new GamestateTable<TeamEntry>(this);
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -105,12 +96,10 @@ namespace Gamestate {
             {
                 PhotonNetwork.Destroy(gameObject);
             }
+        }
 
-            if (FindObjectOfType<ScoreboardBehaviour>() != null) {
-                scoreboard = FindObjectOfType<ScoreboardBehaviour>();
-            } else {
-                scoreboard = null;
-            }
+        void IGamestateCommitHandler.CommitPacket(GamestatePacket packet) {
+
         }
 
 
