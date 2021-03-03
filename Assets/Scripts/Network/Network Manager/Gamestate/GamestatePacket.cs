@@ -2,18 +2,22 @@ using System.Collections.Generic;
 using System;
 using System.Text;
 using ExitGames.Client.Photon;
+using UnityEngine;
 
 namespace Gamestate {
     public class GamestatePacket {
+        public enum PacketType { Create, Update, Increment, Delete }
+
         public const int maxShorts = 16;
-        public const int maxBools = 15;
+        public const int maxBools = 16;
 
 
         public uint revisionNumber;
         public byte revisionActor;
-        public byte prevRevisionActor;
 
         public short id;
+
+        public PacketType packetType;
 
         public string name;
         public bool hasName;
@@ -43,35 +47,31 @@ namespace Gamestate {
             }
             if (shortCount > packet.shortValues.Count) throw new Exception("More short values marked as present than have been provided.");
 
-            int arraySize = 4;  //  Revision number
-            arraySize += 1;     //  Revision actor
-            arraySize += 1;     //  Previous revision actor
-            arraySize += 2;     //  ID
-            arraySize += 2;     //  Short metadata
-            arraySize += 2;     //  Bool and name metadata
-            if (packet.hasName) {   //  Name
-                nameLength = stringEncoder.GetByteCount(packet.name);
-                if (nameLength > 0xFF) throw new Exception("GamestatePacket name is too long. (max 255 bytes)");
-                arraySize += 1 + nameLength;
+            int arraySize = 1;              //  Packet metadata
+            arraySize += 2;                 //  ID
+            if (packet.packetType != PacketType.Delete) {
+                if (packet.packetType != PacketType.Increment) {
+                    arraySize += 4;         //  Revision number
+                }
+                arraySize += 1;             //  Revision actor
+                arraySize += 2;             //  Short metadata
+                if (packet.packetType != PacketType.Increment) {
+                    arraySize += 2;         //  Bool values
+                    if (packet.hasName) {   //  Name
+                        nameLength = stringEncoder.GetByteCount(packet.name);
+                        if (nameLength > 0xFF) throw new Exception("GamestatePacket name is too long. (max 255 bytes)");
+                        arraySize += 1 + nameLength;
+                    }
+                }
+                arraySize += shortCount * 2;//  Short values
             }
-            arraySize += shortCount * 2;    //  Short values
 
             byte[] data = new byte[arraySize];
             int index = 0;
 
-            //  Serialize revision number
-            data[index]     = (byte)((packet.revisionNumber >> 24) & 0xFF);
-            data[index + 1] = (byte)((packet.revisionNumber >> 16) & 0xFF);
-            data[index + 2] = (byte)((packet.revisionNumber >> 8 ) & 0xFF);
-            data[index + 3] = (byte)( packet.revisionNumber        & 0xFF);
-            index += 4;
-
-            //  Serialize revision actor
-            data[index] = packet.revisionActor;
-            index++;
-
-            //  Serialize previous revision actor
-            data[index] = packet.prevRevisionActor;
+            //  Serialize metadata
+            data[index] = (byte)packet.packetType;
+            if (packet.hasName) data[index] = (byte)(data[index] | 0x80);
             index++;
 
             //  Serialize ID
@@ -79,40 +79,57 @@ namespace Gamestate {
             data[index + 1] = (byte)( packet.id        & 0xFF);
             index += 2;
 
-            //  Serialize short metadata
-            byte hasShortsA = 0x00;
-            byte hasShortsB = 0x00;
-            for (int i = 0; i < 8; i++) {
-                if (packet.hasShortValues[i + 8]) hasShortsA = (byte)(hasShortsA | (0x01 << i));
-                if (packet.hasShortValues[i])     hasShortsB = (byte)(hasShortsB | (0x01 << i));
-            }
-            data[index]     = hasShortsA;
-            data[index + 1] = hasShortsB;
-            index += 2;
+            if (packet.packetType != PacketType.Delete) {
+                if (packet.packetType != PacketType.Increment) {
+                    //  Serialize revision number
+                    data[index]     = (byte)((packet.revisionNumber >> 24) & 0xFF);
+                    data[index + 1] = (byte)((packet.revisionNumber >> 16) & 0xFF);
+                    data[index + 2] = (byte)((packet.revisionNumber >> 8 ) & 0xFF);
+                    data[index + 3] = (byte)( packet.revisionNumber        & 0xFF);
+                    index += 4;
+                }
 
-            //  Serialize name metadata and bool values
-            byte hasBoolsAAndName = 0x00;
-            byte hasBoolsB = 0x00;
-            for (int i = 0; i < 8; i++) {
-                if (i < 7 && packet.hasShortValues[i + 8]) hasBoolsAAndName = (byte)(hasBoolsAAndName | (0x01 << i));
-                if (packet.hasShortValues[i])              hasBoolsB        = (byte)(hasBoolsB        | (0x01 << i));
-            }
-            if (packet.hasName) hasBoolsAAndName = (byte)(hasBoolsAAndName | 0x80);
-            data[index]     = hasBoolsAAndName;
-            data[index + 1] = hasBoolsB;
-            index += 2;
+                //  Serialize revision actor
+                data[index] = packet.revisionActor;
+                index++;
 
-            //  Serialize name
-            if (packet.hasName) {
-                data[index] = (byte)packet.name.Length;
-                index += 1 + stringEncoder.GetBytes(packet.name, 0, packet.name.Length, data, index + 1);
-            }
-
-            //  Serialize short values
-            for (int i = 0; i < shortCount; i++) {
-                data[index]     = (byte)((packet.shortValues[i] >> 8 ) & 0xFF);
-                data[index + 1] = (byte)( packet.shortValues[i]        & 0xFF);
+                //  Serialize short metadata
+                byte hasShortsA = 0x00;
+                byte hasShortsB = 0x00;
+                for (int i = 0; i < 8; i++) {
+                    if (packet.hasShortValues[i + 8]) hasShortsA = (byte)(hasShortsA | (0x01 << i));
+                    if (packet.hasShortValues[i])     hasShortsB = (byte)(hasShortsB | (0x01 << i));
+                }
+                data[index]     = hasShortsA;
+                data[index + 1] = hasShortsB;
                 index += 2;
+
+                if (packet.packetType != PacketType.Increment) {
+                    //  Serialize bool values
+                    byte hasBoolsA = 0x00;
+                    byte hasBoolsB = 0x00;
+                    for (int i = 0; i < 8; i++) {
+                        if (packet.boolValues[i + 8]) hasBoolsA = (byte)(hasBoolsA | (0x01 << i));
+                        if (packet.boolValues[i])     hasBoolsB = (byte)(hasBoolsB | (0x01 << i));
+                    }
+                    data[index]     = hasBoolsA;
+                    data[index + 1] = hasBoolsB;
+                    index += 2;
+
+                    //  Serialize name
+                    if (packet.hasName) {
+                        int bytes = stringEncoder.GetBytes(packet.name, 0, packet.name.Length, data, index + 1);
+                        data[index] = (byte)bytes;
+                        index += 1 + bytes;
+                    }
+                }
+
+                //  Serialize short values
+                for (int i = 0; i < shortCount; i++) {
+                    data[index]     = (byte)((packet.shortValues[i] >> 8 ) & 0xFF);
+                    data[index + 1] = (byte)( packet.shortValues[i]        & 0xFF);
+                    index += 2;
+                }
             }
 
             return data;
@@ -123,20 +140,9 @@ namespace Gamestate {
 
             int index = 0;
 
-            //  Deserialize revision number
-            uint revisionNumberA = ((uint)data[index]     << 24) & 0xFF000000;
-            uint revisionNumberB = ((uint)data[index + 1] << 16) & 0x00FF0000;
-            uint revisionNumberC = ((uint)data[index + 2] << 8 ) & 0x0000FF00;
-            uint revisionNumberD =  (uint)data[index + 3]        & 0x000000FF;
-            packet.revisionNumber = revisionNumberA | revisionNumberB | revisionNumberC | revisionNumberD;
-            index += 4;
-
-            //  Deserialize revision actor
-            packet.revisionActor = data[index];
-            index++;
-
-            //  Deserialize previous revision actor
-            packet.prevRevisionActor = data[index];
+            //  Deserialize metadata
+            packet.packetType = (PacketType)(data[index] & 0x0F);
+            packet.hasName    = (data[index] & 0x80) == 0x80;
             index++;
 
             //  Deserialize id
@@ -145,49 +151,64 @@ namespace Gamestate {
             packet.id = (short)(idA | idB);
             index += 2;
 
-            //  Deserialize short metadata
-            int shortCount = 0;
-            for (int i = 0; i < 8; i++) {
-                if (((data[index] >> i) & 0x01) == 0x01) {
-                    packet.hasShortValues[i + 8] = true;
-                    shortCount++;
-                }
-                else packet.hasShortValues[i + 8] = false;
-                
-                if (((data[index + 1] >> i) & 0x01) == 0x01) {
-                    packet.hasShortValues[i] = true;
-                    shortCount++;
-                }
-                else packet.hasShortValues[i] = false;
-            }
-            index += 2;
-
-            //  Deserialize name metadata and bool values
-            for (int i = 0; i < 8; i++) {
-                if (i < 7) {
-                    if (((data[index] >> i) & 0x01) == 0x01) packet.boolValues[i + 8] = true;
-                    else packet.boolValues[i + 8] = false;
+            if (packet.packetType != PacketType.Delete) {
+                if (packet.packetType != PacketType.Increment) {
+                    //  Deserialize revision number
+                    uint revisionNumberA = ((uint)data[index]     << 24) & 0xFF000000;
+                    uint revisionNumberB = ((uint)data[index + 1] << 16) & 0x00FF0000;
+                    uint revisionNumberC = ((uint)data[index + 2] << 8 ) & 0x0000FF00;
+                    uint revisionNumberD =  (uint)data[index + 3]        & 0x000000FF;
+                    packet.revisionNumber = revisionNumberA | revisionNumberB | revisionNumberC | revisionNumberD;
+                    index += 4;
                 }
 
-                if (((data[index + 1] >> i) & 0x01) == 0x01) packet.boolValues[i] = true;
-                else packet.boolValues[i] = false;
-            }
-            packet.hasName = (data[index] & 0x80) == 0x80;
-            index += 2;
+                //  Deserialize revision actor
+                packet.revisionActor = data[index];
+                index++;
 
-            //  Deserialise name
-            if (packet.hasName) {
-                int nameLength = data[index];
-                packet.name = stringEncoder.GetString(data, index + 1, nameLength);
-                index += nameLength + 1;
-            }
-
-            //  Deserialize short values
-            for (int i = 0; i < shortCount; i++) {
-                short valueA = (short)(((uint)data[index] << 8) & 0x0000FF00);
-                short valueB = (short)( (uint)data[index + 1]   & 0x000000FF);
-                packet.shortValues.Add((short)(valueA | valueB));
+                //  Deserialize short metadata
+                int shortCount = 0;
+                for (int i = 0; i < 8; i++) {
+                    if (((data[index] >> i) & 0x01) == 0x01) {
+                        packet.hasShortValues[i + 8] = true;
+                        shortCount++;
+                    }
+                    else packet.hasShortValues[i + 8] = false;
+                    
+                    if (((data[index + 1] >> i) & 0x01) == 0x01) {
+                        packet.hasShortValues[i] = true;
+                        shortCount++;
+                    }
+                    else packet.hasShortValues[i] = false;
+                }
                 index += 2;
+
+                if (packet.packetType != PacketType.Increment) {
+                    //  Deserialize bool values
+                    for (int i = 0; i < 8; i++) {
+                        if (((data[index] >> i) & 0x01) == 0x01) packet.boolValues[i + 8] = true;
+                        else packet.boolValues[i + 8] = false;
+
+                        if (((data[index + 1] >> i) & 0x01) == 0x01) packet.boolValues[i] = true;
+                        else packet.boolValues[i] = false;
+                    }
+                    index += 2;
+
+                    //  Deserialise name
+                    if (packet.hasName) {
+                        int nameLength = data[index];
+                        packet.name = stringEncoder.GetString(data, index + 1, nameLength);
+                        index += nameLength + 1;
+                    }
+                }
+
+                //  Deserialize short values
+                for (int i = 0; i < shortCount; i++) {
+                    short valueA = (short)(((uint)data[index] << 8) & 0x0000FF00);
+                    short valueB = (short)( (uint)data[index + 1]   & 0x000000FF);
+                    packet.shortValues.Add((short)(valueA | valueB));
+                    index += 2;
+                }
             }
 
             return packet;

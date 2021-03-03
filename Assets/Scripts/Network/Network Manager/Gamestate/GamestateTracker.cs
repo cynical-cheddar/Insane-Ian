@@ -16,6 +16,10 @@ namespace Gamestate {
 
         public enum Table { Players, Teams, Number }
 
+        public int actorNumber {
+            get { return PhotonNetwork.LocalPlayer.ActorNumber; }
+        }
+
         private GlobalsEntry _globals;
         public GlobalsEntry globals { get { return _globals; } }
 

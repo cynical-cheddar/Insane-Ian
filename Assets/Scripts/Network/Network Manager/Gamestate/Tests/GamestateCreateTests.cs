@@ -19,40 +19,37 @@ public class GamestateCreateTests
 
     [Test]
     public void GamestateCreatePlayerTest() {
-        GamestateCommitTestHelper testHelper = new GamestateCommitTestHelper();
-        GamestateTable<PlayerEntry> players = GamestateTable<PlayerEntry>.CreateTestTable(testHelper);
+        short id = 7;
+        GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(1);
+        GamestateTable<PlayerEntry> players = testHelper.TestTable();
 
-        PlayerEntry playerEntry = players.Create(0);
+        PlayerEntry playerEntry = players.Create(id);
 
-        Assert.That(playerEntry,    Is.Not.Null  );
-        Assert.That(playerEntry.id, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void GamestateCommitCreatedPlayerTest() {
-        GamestateCommitTestHelper testHelper = new GamestateCommitTestHelper();
-        GamestateTable<PlayerEntry> players = GamestateTable<PlayerEntry>.CreateTestTable(testHelper);
-
-        PlayerEntry playerEntry = players.Create(0);
-
-        playerEntry.character = 2;
-        playerEntry.isBot     = false;
-        playerEntry.name      = "AAA";
-        playerEntry.ready     = true;
-        playerEntry.role      = 5;
-        playerEntry.teamId    = 9;
+        Assert.That(playerEntry,    Is.Not.Null   );
+        Assert.That(playerEntry.id, Is.EqualTo(id));
 
         playerEntry.Commit();
+
+        testHelper.Apply(testHelper.commitedPackets[0]);
+
+        Assert.That(players.Get(id), Is.Not.Null);
     }
 
     [Test]
     public void GamestateCreateTeamTest() {
-        GamestateCommitTestHelper testHelper = new GamestateCommitTestHelper();
-        GamestateTable<TeamEntry> teams = GamestateTable<TeamEntry>.CreateTestTable(testHelper);
+        short id = -100;
+        GamestateCommitTestHelper<TeamEntry> testHelper = new GamestateCommitTestHelper<TeamEntry>(1);
+        GamestateTable<TeamEntry> teams = testHelper.TestTable();
 
-        TeamEntry teamEntry = teams.Create(-100);
+        TeamEntry teamEntry = teams.Create(id);
 
         Assert.That(teamEntry,    Is.Not.Null     );
-        Assert.That(teamEntry.id, Is.EqualTo(-100));
+        Assert.That(teamEntry.id, Is.EqualTo(id));
+
+        teamEntry.Commit();
+
+        testHelper.Apply(testHelper.commitedPackets[0]);
+
+        Assert.That(teams.Get(id), Is.Not.Null);
     }
 }
