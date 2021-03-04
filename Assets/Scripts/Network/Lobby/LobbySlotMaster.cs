@@ -142,9 +142,9 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            GamestateTracker.PlayerDetails pd = gamestateTracker.GenerateDefaultPlayerDetails(PhotonNetwork.LocalPlayer.NickName, PhotonNetwork.LocalPlayer.ActorNumber);
-            
-            gamestateTracker.GetComponent<PhotonView>().RPC("AddFirstPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));
+            PlayerEntry playerEntry = gamestateTracker.players.Create((short)PhotonNetwork.LocalPlayer.ActorNumber);
+            playerEntry.name = PhotonNetwork.LocalPlayer.NickName;
+            playerEntry.Commit();
         }
         
         // update the lobby stats on screen
@@ -152,7 +152,8 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
         foreach (LobbyButtonScript lobbyButton in lobbyButtons) {
             if (lobbyButton.gameObject.activeInHierarchy) {
-                gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButton.teamId));
+                //gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButton.teamId));
+                gamestateTracker.teams.Create((short)lobbyButton.teamId);
             }
         }
     }
@@ -165,9 +166,15 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
+
+            /*
             // define the new player record
             GamestateTracker.PlayerDetails pd = gamestateTracker.GenerateDefaultPlayerDetails(newPlayer.NickName, newPlayer.ActorNumber);
-            gamestateTracker.GetComponent<PhotonView>().RPC("AddPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));
+            gamestateTracker.GetComponent<PhotonView>().RPC("AddPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));*/
+
+            PlayerEntry playerEntry = gamestateTracker.players.Create((short)newPlayer.ActorNumber);
+            playerEntry.name = newPlayer.NickName;
+            playerEntry.Commit();
         }
     }
 
@@ -188,59 +195,72 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     }
     
     // method just updates graphical user interface
-    void ForceUpdateLobbyButtonAddBot(GamestateTracker.PlayerDetails pd)
+    void ForceUpdateLobbyButtonAddBot(PlayerEntry entry)
     {
         // search for buttons with corresponding team
         LobbyButtonScript[] lobbyButtonScripts = FindObjectsOfType<LobbyButtonScript>();
         foreach (LobbyButtonScript lbs in lobbyButtonScripts)
         {
-            if (lbs.teamId == pd.teamId)
+            if (lbs.teamId == entry.id)
             {
                 // if we are dealing with a gunner, do the graphics for adding a gunner bot
-                if (pd.role == "Gunner")
+                if (entry.role == (short)PlayerEntry.Role.Gunner)
                 {
                     // call this botSelectGunner()
-                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectGunner", RpcTarget.All, pd.playerId);
+                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectGunner", RpcTarget.All, entry.id);
                 }
-                if (pd.role == "Driver")
+                if (entry.role == (short)PlayerEntry.Role.Driver)
                 {
                     // call this botSelectDriver()
-                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectDriver", RpcTarget.All, pd.playerId);
+                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectDriver", RpcTarget.All, entry.id);
                 }
             }
         }
     }
 
-    void FillRoleSlotWithBot(int teamId, string roleName) {
-        GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
+    void FillRoleSlotWithBot(int teamId, PlayerEntry.Role role) {
+        /*GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
         botDetails.role = roleName;
         botDetails.teamId = teamId;
         fillSlotWithBot(botDetails);
-        ForceUpdateLobbyButtonAddBot(botDetails);
+        ForceUpdateLobbyButtonAddBot(botDetails);*/
+
+        PlayerEntry botEntry = gamestateTracker.players.Create(true, true);
+        botEntry.name = "Bot " + -botEntry.id;
+        botEntry.role = (short)role;
+        botEntry.teamId = (short)teamId;
+        botEntry.isBot = true;
+        botEntry.Commit((PlayerEntry entry, bool succeeded) => {
+            if (succeeded) {
+                ForceUpdateLobbyButtonAddBot(entry);
+            }
+            entry.Release();
+        });
     }
 
     // gets incomplete teams in the gamestate tracker and puts in a bot
     // only to be called by master client
     public void FillIncompleteTeamsWithBots() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
-        int currentBotNumber = gamestateTracker.GetNumberOfBotsInGame() + 1;
-        foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList) {
+        //foreach (TeamEntry team in gamestateTracker.schema.teamsList) {
+        for (short i = 0; i < gamestateTracker.teams.count; i++) {
+            TeamEntry team = gamestateTracker.teams.GetAtIndex(i);
             bool driverFilled = false;
             bool gunnerFilled = false;
-            foreach (GamestateTracker.PlayerDetails player in gamestateTracker.schema.playerList) {
-                if (player.teamId == team.teamId) {
-                    if (player.role == "Driver") driverFilled = true;
-                    if (player.role == "Gunner") gunnerFilled = true;
+            //foreach (PlayerEntry player in gamestateTracker.schema.playerList) {
+            for (short j = 0; j < gamestateTracker.players.count; j++) {
+                PlayerEntry player = gamestateTracker.players.GetAtIndex(i);
+                if (player.teamId == team.id) {
+                    if (player.role == (short)PlayerEntry.Role.Driver) driverFilled = true;
+                    if (player.role == (short)PlayerEntry.Role.Gunner) gunnerFilled = true;
                 }
                 if (driverFilled && gunnerFilled) break;
             }
             if (!driverFilled) {
-                FillRoleSlotWithBot(team.teamId, "Driver");
-                currentBotNumber++;
+                FillRoleSlotWithBot(team.id, PlayerEntry.Role.Driver);
             }
             if (!gunnerFilled) {
-                FillRoleSlotWithBot(team.teamId, "Gunner");
-                currentBotNumber++;
+                FillRoleSlotWithBot(team.id, PlayerEntry.Role.Gunner);
             }
         }
         gamestateTracker.ForceSynchronisePlayerSchema();

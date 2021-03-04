@@ -58,7 +58,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         //SynchroniseSchemaBeforeSpawn();
         SpawnPlayers();
         timer = FindObjectOfType<TimerBehaviour>();
-        if (timer != null) timer.HostStartTimer(gamestateTracker.timeLimit);
+        GlobalsEntry globals = gamestateTracker.globals;
+        float time = globals.timeLimit;
+        globals.Release();
+        if (timer != null) timer.HostStartTimer(time);
     }
 
     // spawn each player pair at a respective spawnpoint
@@ -81,8 +84,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
-            List<GamestateTracker.PlayerDetails> playerDetailsList = gamestateTracker.schema.playerList;
-            List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
+            //List<GamestateTracker.PlayerDetails> playerDetailsList = gamestateTracker.schema.playerList;
+            //List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
             
             
             // players should have already had their teams validated through the lobby screen
@@ -90,10 +93,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 
             // we now have a list of the players in each team
-            foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList)
+            //foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList)
+            for (short i = 0; i < gamestateTracker.teams.count; i++)
             {
+                TeamEntry entry = gamestateTracker.teams.GetAtIndex(i);
+                int teamId = entry.id;
+                entry.Release();
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
-                CallRespawnVehicle(0, team.teamId);
+                CallRespawnVehicle(0, teamId);
             }
         }
     }
@@ -103,18 +110,33 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StartCoroutine(RespawnVehicle(time, teamId));
     }
 
+    public void RespawnErrorHandler(TeamEntry teamEntry, bool succeeded) {
+        if (teamEntry != null) {
+            if (!succeeded && teamEntry.isDead) {
+                teamEntry.isDead = false;
+                teamEntry.Commit(RespawnErrorHandler);
+            }
+            else teamEntry.Release();
+        }
+    }
+
     IEnumerator RespawnVehicle(float time, int teamId) {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
         
         //List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
-        GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(teamId);
+        /*GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(teamId);
         
         // set dead = false for team 
         team.isDead = false;
         string serializedTeamJson = JsonUtility.ToJson(team);
-        gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.AllBufferedViaServer, teamId, serializedTeamJson);
+        gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.AllBufferedViaServer, teamId, serializedTeamJson);*/
        // gamestateTracker.UpdateTeamWithNewRecord(teamId, serializedTeamJson);
+
+        TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        teamEntry.isDead = false;
+        short vehicle = teamEntry.vehicle;
+        teamEntry.Commit(RespawnErrorHandler);
         
         Transform sp;
         if (teamId > spawnPoints.Count) {
@@ -123,10 +145,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             sp = spawnPoints[teamId - 1];
         }
 
+        GameObject[] vehicles = Resources.LoadAll<GameObject>("VehiclePrefabs");
+
         string vehiclePrefabName = defaultPlayerVehiclePrefabName;
-        if (!(team.vehiclePrefabName == "null" || team.vehiclePrefabName == null ||
+        /*if (!(team.vehiclePrefabName == "null" || team.vehiclePrefabName == null ||
               team.vehiclePrefabName == ""))
-                vehiclePrefabName = team.vehiclePrefabName;
+                vehiclePrefabName = team.vehiclePrefabName;*/
+        
+        if (vehicle > 0) {
+            vehiclePrefabName = "VehiclePrefabs/" + vehicles[vehicle - 1].name;
+        }
 
         object[] instantiationData = new object[]{teamId};
 

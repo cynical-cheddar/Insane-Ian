@@ -19,9 +19,9 @@ public class GamestateAssertionUnit {
                 if (a.hasName) {
                     Assert.That(b.name, Is.EqualTo(a.name));
                 }
-
-                Assert.That(b.boolValues, Is.EquivalentTo(a.boolValues));
             }
+            
+            Assert.That(b.boolValues, Is.EquivalentTo(a.boolValues));
 
             Assert.That(b.hasShortValues, Is.EquivalentTo(a.hasShortValues));
             Assert.That(b.shortValues,    Is.EquivalentTo(a.shortValues   ));

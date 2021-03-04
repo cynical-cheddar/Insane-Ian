@@ -56,8 +56,8 @@ namespace Gamestate {
                 }
                 arraySize += 1;             //  Revision actor
                 arraySize += 2;             //  Short metadata
+                arraySize += 2;             //  Bool values
                 if (packet.packetType != PacketType.Increment) {
-                    arraySize += 2;         //  Bool values
                     if (packet.hasName) {   //  Name
                         nameLength = stringEncoder.GetByteCount(packet.name);
                         if (nameLength > 0xFF) throw new Exception("GamestatePacket name is too long. (max 255 bytes)");
@@ -105,18 +105,18 @@ namespace Gamestate {
                 data[index + 1] = hasShortsB;
                 index += 2;
 
-                if (packet.packetType != PacketType.Increment) {
-                    //  Serialize bool values
-                    byte hasBoolsA = 0x00;
-                    byte hasBoolsB = 0x00;
-                    for (int i = 0; i < 8; i++) {
-                        if (packet.boolValues[i + 8]) hasBoolsA = (byte)(hasBoolsA | (0x01 << i));
-                        if (packet.boolValues[i])     hasBoolsB = (byte)(hasBoolsB | (0x01 << i));
-                    }
-                    data[index]     = hasBoolsA;
-                    data[index + 1] = hasBoolsB;
-                    index += 2;
+                //  Serialize bool values
+                byte hasBoolsA = 0x00;
+                byte hasBoolsB = 0x00;
+                for (int i = 0; i < 8; i++) {
+                    if (packet.boolValues[i + 8]) hasBoolsA = (byte)(hasBoolsA | (0x01 << i));
+                    if (packet.boolValues[i])     hasBoolsB = (byte)(hasBoolsB | (0x01 << i));
+                }
+                data[index]     = hasBoolsA;
+                data[index + 1] = hasBoolsB;
+                index += 2;
 
+                if (packet.packetType != PacketType.Increment) {
                     //  Serialize name
                     if (packet.hasName) {
                         int bytes = stringEncoder.GetBytes(packet.name, 0, packet.name.Length, data, index + 1);
@@ -184,17 +184,17 @@ namespace Gamestate {
                 }
                 index += 2;
 
+                //  Deserialize bool values
+                for (int i = 0; i < 8; i++) {
+                    if (((data[index] >> i) & 0x01) == 0x01) packet.boolValues[i + 8] = true;
+                    else packet.boolValues[i + 8] = false;
+
+                    if (((data[index + 1] >> i) & 0x01) == 0x01) packet.boolValues[i] = true;
+                    else packet.boolValues[i] = false;
+                }
+                index += 2;
+
                 if (packet.packetType != PacketType.Increment) {
-                    //  Deserialize bool values
-                    for (int i = 0; i < 8; i++) {
-                        if (((data[index] >> i) & 0x01) == 0x01) packet.boolValues[i + 8] = true;
-                        else packet.boolValues[i + 8] = false;
-
-                        if (((data[index + 1] >> i) & 0x01) == 0x01) packet.boolValues[i] = true;
-                        else packet.boolValues[i] = false;
-                    }
-                    index += 2;
-
                     //  Deserialise name
                     if (packet.hasName) {
                         int nameLength = data[index];

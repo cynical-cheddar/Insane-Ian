@@ -14,9 +14,20 @@ namespace Gamestate {
             get { return _tableType; }
         }
 
+        public int count {
+            get {
+                int count;
+                lock (entries) {
+                    count = entries.Count;
+                }
+                return count;
+            }
+        }
+
         private GamestateTracker.Table _tableType;
 
         //public delegate void TableCallback(GamestateTable<T> table);
+        public delegate bool TableSearcher(T entry);
         private List<T> entries;
         //private List<TableCallback> tableCallbacks;
         //private List<List<EntryCallback>> entryCallbacks;
@@ -29,10 +40,39 @@ namespace Gamestate {
         }
 
         public T Create(short id) {
+
             T created = null;
 
             lock (entries) {
                 if (Contains(id)) throw new Exception("An entry with ID " + id + " already exists.");
+
+                object[] args = new object[] {id, this}; 
+
+                BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+                created = (T)Activator.CreateInstance(typeof(T), flags, null, args, null);
+
+                created.Lock();
+                entries.Add(created);
+            }
+
+            return created;
+        }
+
+        public T Create(bool nonZero, bool decrement) {
+            short id = 0;
+
+            if (nonZero) {
+                if (decrement) id--;
+                else id++;
+            }
+
+            T created = null;
+
+            lock (entries) {
+                while (Contains(id)) {
+                    if (decrement) id--;
+                    else id++;
+                }
 
                 object[] args = new object[] {id, this}; 
 
@@ -52,17 +92,47 @@ namespace Gamestate {
             lock (entries) {
                 foreach (T entry in entries) {
                     if (entry.id == id) {
-                        entry.Lock();
                         foundEntry = entry;
                         break;
                     }
                 }
             }
+            foundEntry.Lock();
+
+            return foundEntry;
+        }
+
+        public T GetAtIndex(int index) {
+            T foundEntry = null;
+
+            lock (entries) {
+                if (index < entries.Count) {
+                    foundEntry = entries[index];
+                }
+            }
+            foundEntry.Lock();
+
+            return foundEntry;
+        }
+
+        public T Find(TableSearcher searcher) {
+            T foundEntry = null;
+
+            lock (entries) {
+                foreach (T entry in entries) {
+                    if (searcher(entry)) {
+                        foundEntry = entry;
+                        break;
+                    }
+                }
+            }
+            foundEntry.Lock();
 
             return foundEntry;
         }
 
         public bool Contains(short id) {
+
             bool found = false;
 
             lock (entries) {

@@ -38,7 +38,10 @@ public class SelfDestructBehaviour : MonoBehaviour
             timeLeft -= Time.deltaTime;
             timeLeftText.text = Mathf.RoundToInt(timeLeft).ToString();
             if (timeLeft < 0) {
-                int teamId = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId;
+                PlayerEntry entry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+                int teamId = entry.teamId;
+                entry.Release();
+
                 foreach (VehicleManager vehicle in FindObjectsOfType<VehicleManager>()) {
                     if (vehicle.teamId == teamId) {
                         vehicle.TakeDamage(99999);

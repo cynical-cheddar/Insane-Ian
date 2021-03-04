@@ -45,7 +45,6 @@ namespace Gamestate {
         public float timeLimit;
 
         [SerializeField] public PlayerSchema schema = new PlayerSchema();
-        [SerializeField] public MapDetails mapDetails = new MapDetails();
         
 
         [Serializable]
@@ -82,13 +81,6 @@ namespace Gamestate {
                 vehiclePrefabName = null;
             }
 
-        }
-
-        [Serializable]
-        public struct MapDetails
-        {
-            public string sceneName;
-            public string sceneDisplayName;
         }
         //  END DEPRECATED
 
@@ -164,27 +156,6 @@ namespace Gamestate {
         {
             return PhotonNetwork.LocalPlayer;
         }
-
-
-        public PlayerDetails GenerateDefaultPlayerDetails(string nickName, int playerId)
-        {
-            return new PlayerDetails();
-        }
-
-        public PlayerDetails generateBotDetails()
-        {
-            return new PlayerDetails();
-        }
-
-        public int GetNumberOfBotsInGame()
-        {
-            return 0;
-        }
-        public PlayerDetails generateBotDetails(string nickName)
-        {
-            return new PlayerDetails();
-        }
-        
         
         public PlayerDetails getPlayerDetails(int id) {
             return new PlayerDetails();
@@ -200,10 +171,6 @@ namespace Gamestate {
             
         }
 
-        // gets the player list of the master client and forces synchronisation
-        // this is network costly so we do not buffer it.
-        // may deprecate older ways of doing things, such as RPC calls to gamestate tracker
-        // Called to double check that everyone is synchronised correctly
         public void ForceSynchronisePlayerSchema()
         {
             
@@ -235,12 +202,6 @@ namespace Gamestate {
 
         public void UpdateTeamWithNewRecord(int teamId, TeamDetails newDetails) {
             
-        }
-
-        // return a list of pairs in the playerlist
-        public List<List<PlayerDetails>> GetPlayerPairs()
-        {
-            return new List<List<PlayerDetails>>();
         }
 
         public PlayerDetails GetPlayerWithDetails(string nickname = null, int playerId = 0, string role = null, string character = null, int teamId = 0)

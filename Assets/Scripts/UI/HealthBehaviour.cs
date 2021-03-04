@@ -25,7 +25,11 @@ public class HealthBehaviour : MonoBehaviour {
 
     public void SetHealth() {
         List<VehicleManager> vehicles = new List<VehicleManager>(FindObjectsOfType<VehicleManager>());
-        int teamId = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId;
+
+        PlayerEntry entry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+        int teamId = entry.teamId;
+        entry.Release();
+
         foreach (VehicleManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
                 if (Mathf.RoundToInt(vehicle.health) != previousRoundedHealth) {

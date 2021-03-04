@@ -150,6 +150,13 @@ namespace Gamestate {
                     j++;
                 }
             }
+
+            for (int i = 0; i < GamestatePacket.maxBools; i++) {
+                if (!setBools[i]) {
+                    if (i < boolValues.Count) packet.boolValues[i] = boolValues[i];
+                    else                      packet.boolValues[i] = false;
+                }
+            }
         }
 
         public void Increment() {
@@ -232,10 +239,10 @@ namespace Gamestate {
                         j++;
                     }
                 }
+            }
 
-                for (int i = 0; i < boolValues.Count; i++) {
-                    boolValues[i] = packet.boolValues[i];
-                }
+            for (int i = 0; i < boolValues.Count; i++) {
+                boolValues[i] = packet.boolValues[i];
             }
 
             if (errorCallbacks.Count > 0) {
@@ -325,6 +332,7 @@ namespace Gamestate {
     public class PlayerEntry : GamestateEntry {
         //  Max 16 short fields
         public enum ShortFields { ActorNumber, Role, Character, TeamId }
+        public enum Role { None, Driver, Gunner }
 
         public short actorNumber {
             get { return shortValues[ (int)ShortFields.ActorNumber ]; }
@@ -384,7 +392,7 @@ namespace Gamestate {
 
     public class TeamEntry : GamestateEntry {
         //  Max 16 short fields
-        public enum ShortFields { Kills, Deaths, Assists, Checkpoint }
+        public enum ShortFields { Kills, Deaths, Assists, Checkpoint, Vehicle }
 
         public short kills {
             get { return shortValues[ (int)ShortFields.Kills ]; }
@@ -401,6 +409,10 @@ namespace Gamestate {
         public short checkpoint {
             get { return shortValues[ (int)ShortFields.Checkpoint ]; }
             set { ChangeShortValue( (int)ShortFields.Checkpoint, value ); }
+        }
+        public short vehicle {
+            get { return shortValues[ (int)ShortFields.Vehicle ]; }
+            set { ChangeShortValue( (int)ShortFields.Vehicle, value ); }
         }
 
         //  Max 15 bool fields

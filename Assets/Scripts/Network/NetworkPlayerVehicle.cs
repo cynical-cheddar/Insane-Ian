@@ -65,14 +65,14 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
     }
 
 
-    void TransferGunnerPhotonViewOwnership(GamestateTracker.PlayerDetails gunnerDetails)
+    void TransferGunnerPhotonViewOwnership()
     {
         // lookup the player from the gamestate tracker
         if (PhotonNetwork.IsMasterClient)
         {
             gamestateTracker = FindObjectOfType<GamestateTracker>();
             // gamestateTracker.ForceSynchronisePlayerList();
-            Player p = gamestateTracker.GetPlayerFromDetails(gunnerDetails);
+            Player p = PhotonNetwork.CurrentRoom.GetPlayer(gunnerId);
             //Debug.Log("gunner nickname in transfer: " + p.NickName);
             gunnerPhotonView.TransferOwnership(p);
 
@@ -84,14 +84,14 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
 
     }
 
-    void TransferDriverPhotonViewOwnership(GamestateTracker.PlayerDetails driverDetails)
+    void TransferDriverPhotonViewOwnership()
     {
         // lookup the player from the gamestate tracker
         if (PhotonNetwork.IsMasterClient)
         {
             gamestateTracker = FindObjectOfType<GamestateTracker>();
             // gamestateTracker.ForceSynchronisePlayerList();
-            Player p = gamestateTracker.GetPlayerFromDetails(driverDetails);
+            Player p = PhotonNetwork.CurrentRoom.GetPlayer(driverId);
             //Debug.Log("Player p in driver transfer: " + p.ToString() + " name: " + p.NickName);
             //Debug.Log("driver in transfer: " + p.NickName);
             driverPhotonView.TransferOwnership(p);
@@ -130,36 +130,45 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         aiDriverScripts = aiDriverScriptsList.ToArray();
         aiGunnerScripts = aiGunnerScriptsList.ToArray();
 
-        GamestateTracker.PlayerDetails driverDetails = gamestateTracker.GetPlayerWithDetails(role: "Driver", teamId: teamId);
-        GamestateTracker.PlayerDetails gunnerDetails = gamestateTracker.GetPlayerWithDetails(role: "Gunner", teamId: teamId);
+        //GamestateTracker.PlayerDetails driverDetails = gamestateTracker.GetPlayerWithDetails(role: "Driver", teamId: teamId);
+        //GamestateTracker.PlayerDetails gunnerDetails = gamestateTracker.GetPlayerWithDetails(role: "Gunner", teamId: teamId);
+        PlayerEntry driverEntry = gamestateTracker.players.Find((PlayerEntry entry) => {
+            return entry.role   == (short)PlayerEntry.Role.Driver &&
+                   entry.teamId == teamId;
+        });
+        driverNickName = driverEntry.name;
+        driverId = driverEntry.id;
+        botDriver = driverEntry.isBot;
+        
+        PlayerEntry gunnerEntry = gamestateTracker.players.Find((PlayerEntry entry) => {
+            return entry.role   == (short)PlayerEntry.Role.Gunner &&
+                   entry.teamId == teamId;
+        });
+        gunnerNickName = gunnerEntry.name;
+        gunnerId = gunnerEntry.id;
+        botGunner = gunnerEntry.isBot;
 
-        driverNickName = driverDetails.nickName;
-        driverId = driverDetails.playerId;
-        gunnerNickName = gunnerDetails.nickName;
-        gunnerId = gunnerDetails.playerId;
         
         // firstly, if the gunner is a human, transfer the photonview ownership to the player's client
         
-        if (!driverDetails.isBot) TransferDriverPhotonViewOwnership(driverDetails);
-        if (!gunnerDetails.isBot) TransferGunnerPhotonViewOwnership(gunnerDetails);
+        if (!botDriver) TransferDriverPhotonViewOwnership();
+        if (!botGunner) TransferGunnerPhotonViewOwnership();
         
         // transfer control to master client if bot
-        if (driverDetails.isBot) driverPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
-        if (gunnerDetails.isBot) gunnerPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
+        if (botDriver) driverPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
+        if (botGunner) gunnerPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
 
-            // check if the driver is a human or a bot
-        if (driverDetails.isBot) botDriver = true;
+        // check if the driver is a human or a bot
         //Debug.Log("GOT HERE 0");
         // if they are a bot, then get the MASTER CLIENT to turn on ai controls
         if (botDriver && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiDriverScripts);
         // otherwise, find the driver player by their nickname. Tell their client to turn on player driver controls
         //Debug.Log("My local name is " + PhotonNetwork.LocalPlayer.NickName);
-        if(PhotonNetwork.LocalPlayer.ActorNumber == driverDetails.playerId) EnableMonobehaviours(playerDriverScripts);
+        if (PhotonNetwork.LocalPlayer.ActorNumber == driverId) EnableMonobehaviours(playerDriverScripts);
         //Debug.Log("GOT HERE");
         // Do the same again for the gunner
-        if (gunnerDetails.isBot) botGunner = true;
         if (botGunner && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiGunnerScripts);
-        if(PhotonNetwork.LocalPlayer.ActorNumber == gunnerDetails.playerId) EnableMonobehaviours(playerGunnerScripts);
+        if (PhotonNetwork.LocalPlayer.ActorNumber == gunnerId) EnableMonobehaviours(playerGunnerScripts);
         //Debug.Log("GOT HERE2");
 
         //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
