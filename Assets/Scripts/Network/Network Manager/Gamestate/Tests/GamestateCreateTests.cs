@@ -21,7 +21,7 @@ public class GamestateCreateTests
     public void GamestateCreatePlayerTest() {
         short id = 7;
         GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(1);
-        GamestateTable<PlayerEntry> players = testHelper.TestTable();
+        GamestateTable<PlayerEntry> players = testHelper.TestTable(GamestateTracker.Table.Players);
 
         PlayerEntry playerEntry = players.Create(id);
 
@@ -39,7 +39,7 @@ public class GamestateCreateTests
     public void GamestateCreateTeamTest() {
         short id = -100;
         GamestateCommitTestHelper<TeamEntry> testHelper = new GamestateCommitTestHelper<TeamEntry>(1);
-        GamestateTable<TeamEntry> teams = testHelper.TestTable();
+        GamestateTable<TeamEntry> teams = testHelper.TestTable(GamestateTracker.Table.Teams);
 
         TeamEntry teamEntry = teams.Create(id);
 

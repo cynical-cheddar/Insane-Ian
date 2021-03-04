@@ -18,6 +18,7 @@ namespace Gamestate {
         public short id;
 
         public PacketType packetType;
+        public GamestateTracker.Table table;
 
         public string name;
         public bool hasName;
@@ -70,7 +71,7 @@ namespace Gamestate {
             int index = 0;
 
             //  Serialize metadata
-            data[index] = (byte)packet.packetType;
+            data[index] = (byte)(((int)packet.packetType & 0x03) | (((int)packet.table << 2) & 0x7C));
             if (packet.hasName) data[index] = (byte)(data[index] | 0x80);
             index++;
 
@@ -141,7 +142,7 @@ namespace Gamestate {
             int index = 0;
 
             //  Deserialize metadata
-            packet.packetType = (PacketType)(data[index] & 0x0F);
+            packet.packetType = (PacketType)(data[index] & 0x03);
             packet.hasName    = (data[index] & 0x80) == 0x80;
             index++;
 

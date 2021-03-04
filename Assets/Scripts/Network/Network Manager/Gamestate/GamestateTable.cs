@@ -10,14 +10,20 @@ namespace Gamestate {
             get { return gamestateTracker.actorNumber; }
         }
 
+        public GamestateTracker.Table tableType {
+            get { return _tableType; }
+        }
+
+        private GamestateTracker.Table _tableType;
+
         //public delegate void TableCallback(GamestateTable<T> table);
-        //public delegate void EntryCallback(T entry);
         private List<T> entries;
         //private List<TableCallback> tableCallbacks;
         //private List<List<EntryCallback>> entryCallbacks;
         private IGamestateCommitHandler gamestateTracker;
 
-        internal GamestateTable(IGamestateCommitHandler gamestateTracker) {
+        internal GamestateTable(IGamestateCommitHandler gamestateTracker, GamestateTracker.Table tableType) {
+            _tableType = tableType;
             this.gamestateTracker = gamestateTracker;
             entries = new List<T>();
         }
@@ -76,16 +82,26 @@ namespace Gamestate {
             bool created = false;
 
             lock (entries) {
-                foreach (T entry in entries) {
-                    if (entry.id == packet.id) {
-                        foundEntry = entry;
-                        break;
+                if (packet.packetType == GamestatePacket.PacketType.Delete) {
+                    for (int i = 0; i < entries.Count; i++) {
+                        if (entries[i].id == packet.id) {
+                            entries.RemoveAt(i);
+                            break;
+                        }
                     }
                 }
+                else {
+                    foreach (T entry in entries) {
+                        if (entry.id == packet.id) {
+                            foundEntry = entry;
+                            break;
+                        }
+                    }
 
-                if (foundEntry == null && packet.packetType == GamestatePacket.PacketType.Create) {
-                    foundEntry = Create(packet.id);
-                    created = true;
+                    if (foundEntry == null && packet.packetType == GamestatePacket.PacketType.Create) {
+                        foundEntry = Create(packet.id);
+                        created = true;
+                    }
                 }
             }
 
@@ -99,16 +115,27 @@ namespace Gamestate {
             bool succeeded = false;
 
             lock (entries) {
-                foreach (T entry in entries) {
-                    if (entry.id == packet.id) {
-                        foundEntry = entry;
-                        break;
+                if (packet.packetType == GamestatePacket.PacketType.Delete) {
+                    for (int i = 0; i < entries.Count; i++) {
+                        if (entries[i].id == packet.id) {
+                            entries.RemoveAt(i);
+                            succeeded = true;
+                            break;
+                        }
                     }
                 }
+                else {
+                    foreach (T entry in entries) {
+                        if (entry.id == packet.id) {
+                            foundEntry = entry;
+                            break;
+                        }
+                    }
 
-                if (foundEntry == null && packet.packetType == GamestatePacket.PacketType.Create) {
-                    foundEntry = Create(packet.id);
-                    created = true;
+                    if (foundEntry == null && packet.packetType == GamestatePacket.PacketType.Create) {
+                        foundEntry = Create(packet.id);
+                        created = true;
+                    }
                 }
             }
 

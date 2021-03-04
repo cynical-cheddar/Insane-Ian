@@ -112,8 +112,8 @@ namespace Gamestate {
             PreparePacketForCommit();
 
             if (errorCallbacks.Count == 0) {
-                commitHandler.CommitPacket(packet);
                 errorCallbacks.Add(null);
+                commitHandler.CommitPacket(packet);
             }
 
             GamestatePacketManager.ReleasePacket(packet);
@@ -125,10 +125,10 @@ namespace Gamestate {
         internal void Commit(EntryErrorCallback callback) {
             PreparePacketForCommit();
 
-            if (errorCallbacks.Count == 0) {
+            errorCallbacks.Add(callback);
+            if (errorCallbacks.Count == 1) {
                 commitHandler.CommitPacket(packet);
             }
-            errorCallbacks.Add(callback);
 
             GamestatePacketManager.ReleasePacket(packet);
             packet = null;
@@ -156,9 +156,9 @@ namespace Gamestate {
             PreparePacketForIncrement();
 
             if (errorCallbacks.Count == 0) {
-                commitHandler.CommitPacket(packet);
                 errorCallbacks.Add(null);
             }
+            commitHandler.CommitPacket(packet);
 
             GamestatePacketManager.ReleasePacket(packet);
             packet = null;
@@ -169,10 +169,22 @@ namespace Gamestate {
         internal void Increment(EntryErrorCallback callback) {
             PreparePacketForIncrement();
 
-            if (errorCallbacks.Count == 0) {
-                commitHandler.CommitPacket(packet);
-            }
             errorCallbacks.Add(callback);
+            commitHandler.CommitPacket(packet);
+
+            GamestatePacketManager.ReleasePacket(packet);
+            packet = null;
+
+            Release();
+        }
+
+        public void Delete() {
+            if (packet == null) GetPacket();
+
+            packet.id = id;
+            packet.packetType = GamestatePacket.PacketType.Delete;
+
+            commitHandler.CommitPacket(packet);
 
             GamestatePacketManager.ReleasePacket(packet);
             packet = null;
@@ -185,7 +197,7 @@ namespace Gamestate {
 
             Lock();
 
-            if (_revisionNumber + 1 == packet.revisionNumber) {
+            if (_revisionNumber + 1 == packet.revisionNumber || packet.packetType == GamestatePacket.PacketType.Increment) {
                 succeeded = true;
                 Apply(packet);
             }

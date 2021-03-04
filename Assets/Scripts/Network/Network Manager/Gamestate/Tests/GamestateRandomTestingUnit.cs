@@ -87,6 +87,9 @@ public class GamestateRandomTestingUnit {
 
         GamestatePacket packet = GamestatePacketManager.GetPacket();
 
+        packet.packetType = (GamestatePacket.PacketType)Random.Range(0, 4);
+        packet.table = (GamestateTracker.Table)Random.Range(0, 3);
+
         packet.revisionNumber    = (uint)Random.Range(int.MinValue,  int.MaxValue     );
         packet.revisionActor     = (byte)Random.Range(byte.MinValue, byte.MaxValue + 1);
 

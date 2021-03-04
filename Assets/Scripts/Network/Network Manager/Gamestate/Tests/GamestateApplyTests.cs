@@ -21,7 +21,7 @@ public class GamestateApplyTests
     public void GamestateApplyPlayerPacketTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(actorNumber);
-        GamestateTable<PlayerEntry> players = testHelper.TestTable();
+        GamestateTable<PlayerEntry> players = testHelper.TestTable(GamestateTracker.Table.Players);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(8);
 
         for (short i = 0; i < 100; i++) {
@@ -44,7 +44,7 @@ public class GamestateApplyTests
     public void GamestateApplyMultiplePlayerPacketsTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(actorNumber);
-        GamestateTable<PlayerEntry> players = testHelper.TestTable();
+        GamestateTable<PlayerEntry> players = testHelper.TestTable(GamestateTracker.Table.Players);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(8);
 
         for (short i = 0; i < 100; i++) {
@@ -76,7 +76,7 @@ public class GamestateApplyTests
     public void GamestateApplyPlayerPacketListenerTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(actorNumber);
-        GamestateTable<PlayerEntry> players = testHelper.TestTable();
+        GamestateTable<PlayerEntry> players = testHelper.TestTable(GamestateTracker.Table.Players);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(12);
 
         for (short i = 0; i < 100; i++) {
@@ -124,7 +124,7 @@ public class GamestateApplyTests
     public void GamestateApplyPlayerPacketListenerDeletionTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(actorNumber);
-        GamestateTable<PlayerEntry> players = testHelper.TestTable();
+        GamestateTable<PlayerEntry> players = testHelper.TestTable(GamestateTracker.Table.Players);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(12);
 
         for (short i = 0; i < 100; i++) {
@@ -181,7 +181,7 @@ public class GamestateApplyTests
     public void GamestateApplyPlayerPacketErrorCallbackTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(actorNumber);
-        GamestateTable<PlayerEntry> players = testHelper.TestTable();
+        GamestateTable<PlayerEntry> players = testHelper.TestTable(GamestateTracker.Table.Players);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(9);
 
         for (short i = 0; i < 100; i++) {
@@ -212,7 +212,7 @@ public class GamestateApplyTests
     public void GamestateApplyPlayerPacketMultipleErrorCallbacksTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(actorNumber);
-        GamestateTable<PlayerEntry> players = testHelper.TestTable();
+        GamestateTable<PlayerEntry> players = testHelper.TestTable(GamestateTracker.Table.Players);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(23);
 
         for (short i = 0; i < 100; i++) {
@@ -254,7 +254,7 @@ public class GamestateApplyTests
     public void GamestateAttemptApplyPlayerPacketTest() {
         byte actorNumber = 1;
         GamestateCommitTestHelper<PlayerEntry> testHelper = new GamestateCommitTestHelper<PlayerEntry>(actorNumber);
-        GamestateTable<PlayerEntry> players = testHelper.TestTable();
+        GamestateTable<PlayerEntry> players = testHelper.TestTable(GamestateTracker.Table.Players);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(902);
 
         for (short i = 0; i < 100; i++) {
@@ -267,11 +267,13 @@ public class GamestateApplyTests
 
             GamestatePacket packetB = generator.GetRandomPacket();
             packetB.id = i;
+            packetB.packetType = GamestatePacket.PacketType.Update;
             packetB.revisionNumber = packetA.revisionNumber;
             bool attemptB = testHelper.AttemptApply(packetB);
 
             GamestatePacket packetC = generator.GetRandomPacket();
             packetC.id = i;
+            packetC.packetType = GamestatePacket.PacketType.Update;
             packetC.revisionNumber = packetA.revisionNumber;
             bool attemptC = testHelper.AttemptApply(packetC);
 
@@ -291,7 +293,7 @@ public class GamestateApplyTests
     public void GamestateApplyTeamPacketTest() {
         short actorNumber = 17;
         GamestateCommitTestHelper<TeamEntry> testHelper = new GamestateCommitTestHelper<TeamEntry>(actorNumber);
-        GamestateTable<TeamEntry> teams = testHelper.TestTable();
+        GamestateTable<TeamEntry> teams = testHelper.TestTable(GamestateTracker.Table.Teams);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(82);
 
         for (short i = 0; i < 100; i++) {
@@ -314,7 +316,7 @@ public class GamestateApplyTests
     public void GamestateApplyTeamPacketListenerTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<TeamEntry> testHelper = new GamestateCommitTestHelper<TeamEntry>(actorNumber);
-        GamestateTable<TeamEntry> teams = testHelper.TestTable();
+        GamestateTable<TeamEntry> teams = testHelper.TestTable(GamestateTracker.Table.Teams);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(145);
 
         for (short i = 0; i < 100; i++) {
@@ -362,7 +364,7 @@ public class GamestateApplyTests
     public void GamestateApplyTeamPacketErrorCallbackTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<TeamEntry> testHelper = new GamestateCommitTestHelper<TeamEntry>(actorNumber);
-        GamestateTable<TeamEntry> teams = testHelper.TestTable();
+        GamestateTable<TeamEntry> teams = testHelper.TestTable(GamestateTracker.Table.Teams);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(777);
 
         for (short i = 0; i < 100; i++) {
@@ -393,7 +395,7 @@ public class GamestateApplyTests
     public void GamestateApplyTeamPacketMultipleErrorCallbacksTest() {
         short actorNumber = 1;
         GamestateCommitTestHelper<TeamEntry> testHelper = new GamestateCommitTestHelper<TeamEntry>(actorNumber);
-        GamestateTable<TeamEntry> teams = testHelper.TestTable();
+        GamestateTable<TeamEntry> teams = testHelper.TestTable(GamestateTracker.Table.Teams);
         GamestateRandomTestingUnit generator = new GamestateRandomTestingUnit(62);
 
         for (short i = 0; i < 100; i++) {

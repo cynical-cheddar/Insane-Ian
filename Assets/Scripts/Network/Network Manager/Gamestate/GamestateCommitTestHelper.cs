@@ -16,12 +16,16 @@ namespace Gamestate {
             commitedPackets = new List<GamestatePacket>();
         }
 
+        public GamestateTracker.Table tableType {
+            get { return GamestateTracker.Table.Globals; }
+        }
+
         private GamestateTable<T> table = null;
         private T globals = null;
 
-        public GamestateTable<T> TestTable() {
+        public GamestateTable<T> TestTable(GamestateTracker.Table tableType) {
             if (table == null && globals == null) {
-                table = new GamestateTable<T>(this);
+                table = new GamestateTable<T>(this, tableType);
                 return table;
             }
             return null;

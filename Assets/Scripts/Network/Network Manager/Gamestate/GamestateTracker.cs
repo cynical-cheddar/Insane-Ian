@@ -14,14 +14,21 @@ namespace Gamestate {
     {
         public List<string> destoryOnTheseLevels = new List<string>();
 
-        public enum Table { Players, Teams, Number }
+        public enum Table { Globals, Players, Teams }
 
         public int actorNumber {
             get { return PhotonNetwork.LocalPlayer.ActorNumber; }
         }
 
+        public Table tableType { get { return Table.Globals; } }
+
         private GlobalsEntry _globals;
-        public GlobalsEntry globals { get { return _globals; } }
+        public GlobalsEntry globals {
+            get {
+                _globals.Lock();
+                return _globals;
+            }
+        }
 
         private GamestateTable<PlayerEntry> _players;
         public GamestateTable<PlayerEntry> players { get { return _players; } }
@@ -29,7 +36,12 @@ namespace Gamestate {
         private GamestateTable<TeamEntry> _teams;
         public GamestateTable<TeamEntry> teams { get { return _teams; } }
 
+        private PhotonView view;
 
+
+
+
+        //  START DEPRECATED
         public float timeLimit;
 
         [SerializeField] public PlayerSchema schema = new PlayerSchema();
@@ -78,7 +90,7 @@ namespace Gamestate {
             public string sceneName;
             public string sceneDisplayName;
         }
-
+        //  END DEPRECATED
 
 
 
@@ -86,12 +98,11 @@ namespace Gamestate {
         {
             DontDestroyOnLoad(gameObject);
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
-        }
+            view = GetComponent<PhotonView>();
 
-        private void Setup() {
             _globals = new GlobalsEntry(this);
-            _players = new GamestateTable<PlayerEntry>(this);
-            _teams = new GamestateTable<TeamEntry>(this);
+            _players = new GamestateTable<PlayerEntry>(this, Table.Players);
+            _teams = new GamestateTable<TeamEntry>(this, Table.Teams);
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -103,11 +114,52 @@ namespace Gamestate {
         }
 
         void IGamestateCommitHandler.CommitPacket(GamestatePacket packet) {
+            if (PhotonNetwork.LocalPlayer.IsMasterClient) {
+                ApplyPacket(packet);
+            }
+            else {
+                view.RPC(nameof(ApplyPacket), RpcTarget.MasterClient, packet);
+            }
+        }
 
+        [PunRPC]
+        public void ApplyPacket(GamestatePacket packet) {
+            if (PhotonNetwork.LocalPlayer.IsMasterClient) {
+                bool succeeded = false;
+
+                if (packet.table == Table.Globals) {
+                    if (packet.packetType != GamestatePacket.PacketType.Delete) {
+                        succeeded = _globals.AttemptApply(packet);
+                    }
+                }
+                else if (packet.table == Table.Players) {
+                    succeeded = players.AttemptApply(packet);
+                }
+                else if (packet.table == Table.Teams) {
+                    succeeded = teams.AttemptApply(packet);
+                }
+
+                if (succeeded) view.RPC(nameof(ApplyPacket), RpcTarget.Others, packet);
+            }
+            else {
+                if (packet.table == Table.Globals) {
+                    if (packet.packetType != GamestatePacket.PacketType.Delete) {
+                        _globals.Apply(packet);
+                    }
+                }
+                else if (packet.table == Table.Players) {
+                    players.Apply(packet);
+                }
+                else if (packet.table == Table.Teams) {
+                    teams.Apply(packet);
+                }
+            }
         }
 
 
-        // returns a photonPlayer by looking up allplayers in room
+
+
+        //  START DEPRECATED
         public Player GetPlayerFromDetails(PlayerDetails pd)
         {
             return PhotonNetwork.LocalPlayer;
