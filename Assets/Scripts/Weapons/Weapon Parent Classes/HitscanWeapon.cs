@@ -76,7 +76,8 @@ public class HitscanWeapon : Weapon
     protected void SetIsRemotelyFiring_RPC(bool set)
     {
         isRemotelyFiring = set;
-        if(set)timeSinceLastFire = 0;
+        Debug.Log(isRemotelyFiring && !weaponPhotonView.IsMine);
+        if (set) timeSinceLastFire = 0;
         if (isRemotelyFiring && !weaponPhotonView.IsMine) StartCoroutine(RemoteFiringEffects());
     }
 
