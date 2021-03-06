@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
@@ -40,6 +41,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Range(0, 1)]
     public float baseExtremiumSlip = 0.3f;
     public Vector3 addedDownforce;
+    [Range(0,20000)]
+    public float antiRollStiffness = 5000;
     [Space(5)]
 
     [Header("Engine Noises")]
@@ -229,9 +232,45 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         EngineHigh.pitch = 1.4f + volume / 10;
 
     }
+    
+    private void AntiRoll(WheelCollider left, WheelCollider right) {
+        WheelHit lHit, rHit;
+        float lDistance = 1f;
+        float rDistance = 1f;
+
+        bool lGrounded = left.GetGroundHit(out lHit);
+        bool rGrounded = right.GetGroundHit(out rHit);
+
+        if (lGrounded) {
+            lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
+        }
+
+        if (rGrounded) {
+            rDistance = (-right.transform.InverseTransformPoint(rHit.point).y - right.radius) / right.suspensionDistance;
+        }
+
+        float addedForce = (lDistance - rDistance) * antiRollStiffness;
+
+        if (lGrounded) {
+            carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position);
+        }
+
+        if (rGrounded) {
+            carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
+
+        }
+
+
+
+
+
+    }
     void FixedUpdate() {
         EngineNoise();
+        AntiRoll(frontLeftW, frontRightW);
+        AntiRoll(rearLeftW, rearRightW);
     }
+
     private void Start() {
         EngineIdle.volume = 0;
         EngineLow.volume = 0;
