@@ -50,6 +50,11 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public AudioSource EngineLow;
     public AudioSource EngineHigh;
     private float volume = 0;
+    [Space(5)]
+
+    [Header("Dust Trail")]
+    public ParticleSystem leftPS;
+    public ParticleSystem rightPS;
 
 
 
@@ -259,17 +264,20 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
 
         }
-
-
-
-
-
+    }
+    private void Particles() {
+        WheelHit lHit, rHit;
+        bool lGrounded = rearLeftW.GetGroundHit(out lHit);
+        bool rGrounded = rearRightW.GetGroundHit(out rHit);
     }
     void FixedUpdate() {
         EngineNoise();
         AntiRoll(frontLeftW, frontRightW);
         AntiRoll(rearLeftW, rearRightW);
+        Particles();
     }
+
+    
 
     private void Start() {
         EngineIdle.volume = 0;
