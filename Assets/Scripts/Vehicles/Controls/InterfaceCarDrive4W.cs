@@ -269,6 +269,28 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         WheelHit lHit, rHit;
         bool lGrounded = rearLeftW.GetGroundHit(out lHit);
         bool rGrounded = rearRightW.GetGroundHit(out rHit);
+        var lEmission = leftPS.emission;
+        var rEmission = rightPS.emission;
+
+        if (lGrounded){
+            if (lHit.collider.CompareTag("DustGround")){
+                lEmission.enabled = true;
+                Debug.Log("On dust");
+            } else {
+                lEmission.enabled = false;
+            }
+        } else {
+            lEmission.enabled = false;
+        }
+        if (rGrounded) {
+            if (rHit.collider.CompareTag("DustGround")) {
+                rEmission.enabled = true;
+            } else {
+                rEmission.enabled = false;
+            }
+        } else {
+            rEmission.enabled = false;
+        }
     }
     void FixedUpdate() {
         EngineNoise();
