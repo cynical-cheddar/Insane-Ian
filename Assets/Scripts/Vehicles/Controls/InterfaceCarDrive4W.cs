@@ -228,8 +228,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             EngineLow.volume = 1 - EngineHigh.volume;
         }
 
-        EngineLow.pitch = 1.4f + volume / 10;
-        EngineHigh.pitch = 1.4f + volume / 10;
+        EngineLow.pitch = 2.4f + volume / 10;
+        EngineHigh.pitch = 2.4f + volume / 10;
 
     }
     
