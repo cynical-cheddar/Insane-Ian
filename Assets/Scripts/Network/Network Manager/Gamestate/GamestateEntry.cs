@@ -3,6 +3,7 @@ using System.Threading;
 using System;
 using System.Timers;
 using Timer = System.Timers.Timer;
+using UnityEngine;
 
 namespace Gamestate {
     public abstract class GamestateEntry {
@@ -12,12 +13,15 @@ namespace Gamestate {
         private uint _revisionNumber;
         private short _id;
         private string _name;
+        [SerializeField]
         protected List<bool> boolValues;
+
         protected List<short> shortValues;
 
         private Mutex mutex;
         private IGamestateCommitHandler commitHandler;
         private GamestatePacket packet = null;
+        [SerializeField]
         private bool[] setBools;
         private bool firstCommit;
 
@@ -328,10 +332,12 @@ namespace Gamestate {
             for (int i = 0; i < Enum.GetValues(typeof(ShortFields)).Length; i++) shortValues.Add(0);
         }
     }
-
+    [Serializable]
     public class PlayerEntry : GamestateEntry {
         //  Max 16 short fields
+ 
         public enum ShortFields { ActorNumber, Role, Character, TeamId }
+
         public enum Role { None, Driver, Gunner }
 
         public short actorNumber {
@@ -352,6 +358,7 @@ namespace Gamestate {
         }
 
         //  Max 15 bool fields
+        
         public enum BoolFields { IsBot, Ready }
 
         public bool isBot {
@@ -389,7 +396,7 @@ namespace Gamestate {
             for (int i = 0; i < Enum.GetValues(typeof(BoolFields)).Length; i++) boolValues.Add(false);
         }
     }
-
+    [Serializable]
     public class TeamEntry : GamestateEntry {
         //  Max 16 short fields
         public enum ShortFields { Kills, Deaths, Assists, Checkpoint, Vehicle }

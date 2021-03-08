@@ -4,6 +4,7 @@ using System.Reflection;
 using UnityEngine;
 
 namespace Gamestate {
+    [Serializable]
     public class GamestateTable<T> : IGamestateCommitHandler where T : GamestateEntry
     {
         public int actorNumber {
@@ -28,7 +29,7 @@ namespace Gamestate {
 
         //public delegate void TableCallback(GamestateTable<T> table);
         public delegate bool TableSearcher(T entry);
-        private List<T> entries;
+        [SerializeField] private List<T> entries;
         //private List<TableCallback> tableCallbacks;
         //private List<List<EntryCallback>> entryCallbacks;
         private IGamestateCommitHandler gamestateTracker;

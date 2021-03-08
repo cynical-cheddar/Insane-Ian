@@ -30,10 +30,10 @@ namespace Gamestate {
             }
         }
 
-        private GamestateTable<PlayerEntry> _players;
+        [SerializeField] private GamestateTable<PlayerEntry> _players;
         public GamestateTable<PlayerEntry> players { get { return _players; } }
 
-        private GamestateTable<TeamEntry> _teams;
+        [SerializeField] private GamestateTable<TeamEntry> _teams;
         public GamestateTable<TeamEntry> teams { get { return _teams; } }
 
         private PhotonView view;
