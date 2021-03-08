@@ -399,7 +399,7 @@ namespace Gamestate {
     [Serializable]
     public class TeamEntry : GamestateEntry {
         //  Max 16 short fields
-        public enum ShortFields { Kills, Deaths, Assists, Checkpoint, Vehicle }
+        public enum ShortFields { Kills, Deaths, Assists, Checkpoint, Vehicle, DriverId, GunnerId }
 
         public short kills {
             get { return shortValues[ (int)ShortFields.Kills ]; }
@@ -420,6 +420,16 @@ namespace Gamestate {
         public short vehicle {
             get { return shortValues[ (int)ShortFields.Vehicle ]; }
             set { ChangeShortValue( (int)ShortFields.Vehicle, value ); }
+        }
+        public short driverId
+        {
+            get { return shortValues[(int)ShortFields.DriverId]; }
+            set { ChangeShortValue((int)ShortFields.DriverId, value); }
+        }
+        public short gunnerId
+        {
+            get { return shortValues[(int)ShortFields.GunnerId]; }
+            set { ChangeShortValue((int)ShortFields.GunnerId, value); }
         }
 
         //  Max 15 bool fields
