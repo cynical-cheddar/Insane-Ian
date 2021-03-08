@@ -275,7 +275,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         if (lGrounded){
             if (lHit.collider.CompareTag("DustGround")){
                 lEmission.enabled = true;
-                Debug.Log("On dust");
             } else {
                 lEmission.enabled = false;
             }
