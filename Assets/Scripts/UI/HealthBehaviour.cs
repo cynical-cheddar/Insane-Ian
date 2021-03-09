@@ -28,10 +28,10 @@ public class HealthBehaviour : MonoBehaviour {
         foreach (VehicleManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
                 if (Mathf.RoundToInt(vehicle.health) != previousRoundedHealth) {
-                    damageTaken = Mathf.RoundToInt(vehicle.health) - previousRoundedHealth;
+                    damageTaken = Mathf.CeilToInt(vehicle.health) - previousRoundedHealth;
                     Instantiate(damageIndicator, damageIndicatorInstantiateTransform);
-                    healthLabel.text = Mathf.RoundToInt(vehicle.health).ToString();
-                    previousRoundedHealth = Mathf.RoundToInt(vehicle.health);
+                    healthLabel.text = Mathf.CeilToInt(vehicle.health).ToString();
+                    previousRoundedHealth = Mathf.CeilToInt(vehicle.health);
                 }
                 break;
             }
