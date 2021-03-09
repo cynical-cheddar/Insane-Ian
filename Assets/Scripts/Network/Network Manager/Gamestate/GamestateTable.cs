@@ -210,7 +210,10 @@ namespace Gamestate {
                 }
             }
 
-            if (foundEntry != null) succeeded = foundEntry.AttemptApply(packet);
+            if (foundEntry != null) {
+                foundEntry.Apply(packet);
+                succeeded = true;
+            }
             if (created) foundEntry.Release();
             return succeeded;
         }
