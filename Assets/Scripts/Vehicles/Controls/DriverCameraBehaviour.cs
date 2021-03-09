@@ -22,7 +22,7 @@ public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
 
     // Start is called before the first frame update
     void Start() {
-        if (lockCursorToWindow) Cursor.lockState = CursorLockMode.Locked;
+        if (lockCursorToWindow && FindObjectOfType<PlinthManager>() == null) Cursor.lockState = CursorLockMode.Locked;
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         cam = GetComponentInChildren<CinemachineFreeLook>();
         firstPersonCam = GetComponentInChildren<CinemachineVirtualCamera>();
