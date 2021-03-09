@@ -115,21 +115,7 @@ public class BeamWeapon : Weapon
         CeaseFire();
     }
 
-    protected new void SetupWeapon()
-    {
-        base.SetupWeapon();
-        Debug.Log("SetupWeapon beam called");
-        colliders = transform.root.GetComponentsInChildren<Collider>();
-        newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
-        oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
-        lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
-    }
 
-    public override void ActivateWeapon()
-    {
-        base.ActivateWeapon();
-        SetupWeapon();
-    }
 
     public override void CeaseFire()
     {
@@ -148,6 +134,33 @@ public class BeamWeapon : Weapon
     }
 
 
+    protected new void SetupWeapon()
+    {
+               colliders = transform.root.GetComponentsInChildren<Collider>();
+        newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+        base.SetupWeapon();
+        colliders = transform.root.GetComponentsInChildren<Collider>();
+    }
+
+    public override void ActivateWeapon()
+    {
+               colliders = transform.root.GetComponentsInChildren<Collider>();
+        newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+        base.ActivateWeapon();
+        SetupWeapon();
+    }
+
+    public override bool CanFire()
+    {
+        if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
+        else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;
+        return false;
+    }
+
     public override void Fire(Vector3 targetPoint)
     {
         
@@ -161,7 +174,7 @@ public class BeamWeapon : Weapon
         
         
         
-        if (CanFire() && gunnerPhotonView.IsMine && !isRecharging)
+        if (base.CanFire() && gunnerPhotonView.IsMine && !isRecharging)
         {
             timeSinceLastFire = 0;
             targetPoint =
@@ -454,7 +467,7 @@ public class BeamWeapon : Weapon
         Vector3 startPos = barrelTransform.position;
         
         Ray ray = new Ray(startPos, targetPoint - startPos); 
-        //RaycastHit hit;
+        RaycastHit hit;
         RaycastHitDetails raycastHitDetails = FindClosestRaycastHitDetails(ray, targetPoint);
         // we now have our hit details, return themmuzzleFlashChildOfBarrel
         return raycastHitDetails;
