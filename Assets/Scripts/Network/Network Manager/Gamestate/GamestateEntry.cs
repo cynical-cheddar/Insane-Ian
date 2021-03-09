@@ -105,6 +105,7 @@ namespace Gamestate {
 
             packet.revisionNumber = revisionNumber + 1;
             packet.revisionActor  = (byte)commitHandler.actorNumber;
+            packet.table = commitHandler.tableType;
 
             for (int i = 0; i < GamestatePacket.maxBools; i++) {
                 if (!setBools[i]) {
@@ -150,6 +151,7 @@ namespace Gamestate {
             packet.id = id;
             packet.revisionActor = (byte)commitHandler.actorNumber;
             packet.packetType = GamestatePacket.PacketType.Increment;
+            packet.table = commitHandler.tableType;
 
             int j = 0;
             for (int i = 0; i < shortValues.Count; i++) {
