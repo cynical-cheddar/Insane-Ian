@@ -83,7 +83,33 @@ namespace Gamestate {
 
         }
         //  END DEPRECATED
+    
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            base.OnPlayerLeftRoom(otherPlayer);
+        
+            if (PhotonNetwork.IsMasterClient)
+            {
+                // remove the player from the gamestate tracker
+                PlayerEntry playerEntry = players.Get((short)otherPlayer.ActorNumber);
+                short team = playerEntry.teamId;
 
+
+                // remove player from their team
+                TeamEntry teamEntry = teams.Get(team);
+                if (playerEntry.role == (short) PlayerEntry.Role.Driver)
+                {
+                    teamEntry.driverId = 0;
+                }
+                else if (playerEntry.role == (short) PlayerEntry.Role.Gunner)
+                {
+                    teamEntry.gunnerId = 0;
+                }
+                teamEntry.Commit();
+                playerEntry.Delete();
+               
+            }
+        }
 
 
         void Awake()

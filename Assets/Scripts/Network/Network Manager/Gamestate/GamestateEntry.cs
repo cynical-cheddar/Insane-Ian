@@ -12,6 +12,7 @@ namespace Gamestate {
 
         private uint _revisionNumber;
         private short _id;
+        
         private string _name;
         [SerializeField]
         protected List<bool> boolValues;
@@ -91,6 +92,7 @@ namespace Gamestate {
 
             packet.hasName = true;
             packet.name = value;
+            
         }
 
         private void PreparePacketForCommit() {
@@ -125,6 +127,8 @@ namespace Gamestate {
 
             Release();
         }
+
+
 
         internal void Commit(EntryErrorCallback callback) {
             PreparePacketForCommit();
@@ -336,22 +340,26 @@ namespace Gamestate {
     public class PlayerEntry : GamestateEntry {
         //  Max 16 short fields
  
+        [SerializeField]
         public enum ShortFields { ActorNumber, Role, Character, TeamId }
-
+        [SerializeField]
         public enum Role { None, Driver, Gunner }
-
+        [SerializeField]
         public short actorNumber {
             get { return shortValues[ (int)ShortFields.ActorNumber ]; }
             set { ChangeShortValue( (int)ShortFields.ActorNumber, value ); }
         }
+        [SerializeField]
         public short role {
             get { return shortValues[ (int)ShortFields.Role ]; }
             set { ChangeShortValue( (int)ShortFields.Role, value ); }
         }
+        [SerializeField]
         public short character {
             get { return shortValues[ (int)ShortFields.Character ]; }
             set { ChangeShortValue( (int)ShortFields.Character, value ); }
         }
+        [SerializeField]
         public short teamId {
             get { return shortValues[ (int)ShortFields.TeamId ]; }
             set { ChangeShortValue( (int)ShortFields.TeamId, value ); }
@@ -454,6 +462,8 @@ namespace Gamestate {
                 callback(entry as TeamEntry, succeeded);
             });
         }
+        
+        
 
         public void Increment(TeamErrorCallback callback) {
             Increment((GamestateEntry entry, bool succeeded) => {

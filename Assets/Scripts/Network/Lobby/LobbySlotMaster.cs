@@ -37,6 +37,35 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     bool hasPicked = false;
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // DEPRECATED STUFF
+    
     [PunRPC]
     void ChangeLobbyButtonActiveState_RPC(int index, bool state) {
         lobbyButtons[index].gameObject.SetActive(state);
@@ -53,7 +82,12 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 if (!lobbyButtons[i].gameObject.activeInHierarchy) {
                     lobbyButtons[i].gameObject.SetActive(true);
                     GetComponent<PhotonView>().RPC(nameof(ChangeLobbyButtonActiveState_RPC), RpcTarget.OthersBuffered, i, true);
-                    gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButtons[i].teamId));
+
+                    
+                    // Add teams to new gamestate tracker
+                    
+                    lobbyButtons[i].GetComponent<LobbyButtonScript>().CreateTeamEntry();
+                    
                     break;
                 }
             }
@@ -65,13 +99,21 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             for (int i = lobbyButtons.Count - 1; i >= 0; i--) {
                 if (lobbyButtons[i].gameObject.activeInHierarchy)
                 {
-                    lobbyButtons[i].RemoveBothPlayersFromTeam();
+
                     
                     GetComponent<PhotonView>().RPC(nameof(ChangeLobbyButtonActiveState_RPC), RpcTarget.OthersBuffered, i, false);
-                    // deselect both players from team
+
                     
-                    gamestateTracker.schema.teamsList.Remove(gamestateTracker.getTeamDetails(lobbyButtons[i].teamId));
+                    
+                    
+                    // new gamestate tracker stuff
+                    // kick players
+                    lobbyButtons[i].GetComponent<LobbyButtonScript>().TeamRemoveEntry();
+                    
+                    //set active false 
+                    
                     lobbyButtons[i].gameObject.SetActive(false);
+                    
                     break;
                 }
             }
@@ -147,8 +189,6 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             playerEntry.Commit();
         }
         
-        // update the lobby stats on screen
-        if(PhotonNetwork.IsMasterClient)GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
 
         foreach (LobbyButtonScript lobbyButton in lobbyButtons) {
             if (lobbyButton.gameObject.activeInHierarchy) {
@@ -165,105 +205,68 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         // update the lobby stats on screen
         if (PhotonNetwork.IsMasterClient)
         {
-            GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
-
-            /*
-            // define the new player record
-            GamestateTracker.PlayerDetails pd = gamestateTracker.GenerateDefaultPlayerDetails(newPlayer.NickName, newPlayer.ActorNumber);
-            gamestateTracker.GetComponent<PhotonView>().RPC("AddPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));*/
-
+  
             PlayerEntry playerEntry = gamestateTracker.players.Create((short)newPlayer.ActorNumber);
             playerEntry.name = newPlayer.NickName;
             playerEntry.Commit();
         }
     }
 
-    // adds a bot to the player schema and also updates a button to make it taken
-    
-    public void fillSlotWithBot(GamestateTracker.PlayerDetails pd)
-    {
-        // checks to see if the entry may be added to the schema. 
-        // The method on the gamestate tracker returns true if we have managed to successfully add the bot to the schema
-        bool passedAddTests = gamestateTracker.mayAddBotToSchema(pd);
-
-        if (passedAddTests)
-        {
-            // public void AddBotToSchema(string p, string role, string character, int team)
-           // gamestateTracker.GetComponent<PhotonView>().RPC("AddPlayerToSchema", RpcTarget.AllBufferedViaServer, JsonUtility.ToJson(pd));
-            gamestateTracker.AddBotToSchema(JsonUtility.ToJson((pd)));
-        }
-    }
-    
-    // method just updates graphical user interface
-    void ForceUpdateLobbyButtonAddBot(PlayerEntry entry)
-    {
-        // search for buttons with corresponding team
-        LobbyButtonScript[] lobbyButtonScripts = FindObjectsOfType<LobbyButtonScript>();
-        foreach (LobbyButtonScript lbs in lobbyButtonScripts)
-        {
-            if (lbs.teamId == entry.id)
-            {
-                // if we are dealing with a gunner, do the graphics for adding a gunner bot
-                if (entry.role == (short)PlayerEntry.Role.Gunner)
-                {
-                    // call this botSelectGunner()
-                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectGunner", RpcTarget.All, entry.id);
-                }
-                if (entry.role == (short)PlayerEntry.Role.Driver)
-                {
-                    // call this botSelectDriver()
-                    if(PhotonNetwork.IsMasterClient)lbs.gameObject.GetComponent<PhotonView>().RPC("botSelectDriver", RpcTarget.All, entry.id);
-                }
-            }
-        }
-    }
-
-    void FillRoleSlotWithBot(int teamId, PlayerEntry.Role role) {
-        /*GamestateTracker.PlayerDetails botDetails = gamestateTracker.generateBotDetails();
-        botDetails.role = roleName;
-        botDetails.teamId = teamId;
-        fillSlotWithBot(botDetails);
-        ForceUpdateLobbyButtonAddBot(botDetails);*/
-
-        PlayerEntry botEntry = gamestateTracker.players.Create(true, true);
-        botEntry.name = "Bot " + -botEntry.id;
-        botEntry.role = (short)role;
-        botEntry.teamId = (short)teamId;
-        botEntry.isBot = true;
-        botEntry.Commit((PlayerEntry entry, bool succeeded) => {
-            if (succeeded) {
-                ForceUpdateLobbyButtonAddBot(entry);
-            }
-            entry.Release();
-        });
-    }
-
     // gets incomplete teams in the gamestate tracker and puts in a bot
     // only to be called by master client
     public void FillIncompleteTeamsWithBots() {
-        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
-        //foreach (TeamEntry team in gamestateTracker.schema.teamsList) {
-        for (short i = 0; i < gamestateTracker.teams.count; i++) {
-            TeamEntry team = gamestateTracker.teams.GetAtIndex(i);
-            bool driverFilled = false;
-            bool gunnerFilled = false;
-            //foreach (PlayerEntry player in gamestateTracker.schema.playerList) {
-            for (short j = 0; j < gamestateTracker.players.count; j++) {
-                PlayerEntry player = gamestateTracker.players.GetAtIndex(i);
-                if (player.teamId == team.id) {
-                    if (player.role == (short)PlayerEntry.Role.Driver) driverFilled = true;
-                    if (player.role == (short)PlayerEntry.Role.Gunner) gunnerFilled = true;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            
+            // foreach team in the gamestate tracker, check that valid ids exist for driver and gunner
+            // if ids are 0 (ie not valid) then create a bot
+            for (int i = 0; i < gamestateTracker.teams.count; i++)
+            {
+                TeamEntry teamEntry = gamestateTracker.teams.GetAtIndex(i);
+                
+                // add driver bot
+                if (teamEntry.driverId == 0)
+                {
+                    PlayerEntry bot = gamestateTracker.players.Create(true, true);
+                    bot.ready = true;
+                    bot.role = (short) PlayerEntry.Role.Driver;
+                    bot.isBot = true;
+                    bot.name = "Bot " + -bot.id;
+                    bot.teamId = (short) teamEntry.id;
+                    bot.Commit();
+
+                    // now add the entry to the team
+                    teamEntry.driverId = bot.id;
+                    teamEntry.Commit(); 
                 }
-                if (driverFilled && gunnerFilled) break;
-            }
-            if (!driverFilled) {
-                FillRoleSlotWithBot(team.id, PlayerEntry.Role.Driver);
-            }
-            if (!gunnerFilled) {
-                FillRoleSlotWithBot(team.id, PlayerEntry.Role.Gunner);
+                else
+                {
+                    teamEntry.Release();
+                }
+                
+                teamEntry = gamestateTracker.teams.GetAtIndex(i);
+                
+                // add gunner bot
+                if (teamEntry.gunnerId == 0)
+                {
+                    PlayerEntry bot = gamestateTracker.players.Create(true, true);
+                    bot.ready = true;
+                    bot.role = (short) PlayerEntry.Role.Gunner;
+                    bot.isBot = true;
+                    bot.name = "Bot " + -bot.id;
+                    bot.teamId = (short) teamEntry.id;
+                    bot.Commit();
+
+                    // now add the entry to the team
+                    teamEntry.gunnerId = bot.id;
+                    teamEntry.Commit(); 
+                }
+                else
+                {
+                    teamEntry.Release();
+                }
             }
         }
-        gamestateTracker.ForceSynchronisePlayerSchema();
     }
     
 
@@ -306,28 +309,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(loadingSceneName);
     }
 
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        base.OnPlayerLeftRoom(otherPlayer);
-        playersInLobby = PhotonNetwork.CurrentRoom.PlayerCount;
-        
-        if (PhotonNetwork.IsMasterClient)
-        {
-            // boot the player from their slot
-            // lookup the player from their tracker
-            GamestateTracker.PlayerDetails leftPlayerDetails = gamestateTracker.getPlayerDetails(otherPlayer.ActorNumber);
-            foreach (LobbyButtonScript lb in lobbyButtons)
-            {
-                // compare the driver and gunner ids
-                if(lb.driverPlayerId == leftPlayerDetails.playerId) lb.GetComponent<PhotonView>().RPC(nameof(LobbyButtonScript.ClearDriverButton), RpcTarget.AllBufferedViaServer);
-                if(lb.gunnerPlayerId == leftPlayerDetails.playerId) lb.GetComponent<PhotonView>().RPC(nameof(LobbyButtonScript.ClearGunnerButton), RpcTarget.AllBufferedViaServer);
-            }
-            
-            
-            GetComponent<PhotonView>().RPC(nameof(UpdateCountAndReady), RpcTarget.AllBufferedViaServer);
-            gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.RemovePlayerFromSchema), RpcTarget.AllBufferedViaServer, otherPlayer.ActorNumber);
-        }
-    }
+ 
 
     public override void OnJoinedRoom()
     {
