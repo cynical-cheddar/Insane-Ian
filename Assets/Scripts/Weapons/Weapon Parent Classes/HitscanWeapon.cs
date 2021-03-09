@@ -44,6 +44,10 @@ public class HitscanWeapon : Weapon
     [Header(("Hitscan Rapid Fire Optimisation Settings"))]
     public bool useRapidFireOptimisation = false;
     public float stopFireFxLoopThreshold = 0.2f;
+    public GameObject rapidFireMuzzleLoopFx;
+    public AudioClip rapidFireMuzzleAudioLoop;
+
+    protected GameObject rapidFireMuzzleLoopFxInstance;
     
     protected bool isRemotelyFiring = false;
     protected bool lastIsRemotelyFiring = false;
@@ -61,20 +65,44 @@ public class HitscanWeapon : Weapon
         Destroy(mFlash, 1f);
     }
 
+    public override void CeaseFire()
+    {
+        SetIsRemotelyFiring(false);
+    }
 
     protected void SetIsRemotelyFiring(bool set)
     {
-        if(set != isRemotelyFiring) weaponPhotonView.RPC(nameof(SetIsRemotelyFiring_RPC), RpcTarget.Others, set);
+        if(set != isRemotelyFiring) weaponPhotonView.RPC(nameof(SetIsRemotelyFiring_RPC), RpcTarget.All, set);
         if (set == true)
         {
             timeSinceLastFire = 0;
         }
         
-        isRemotelyFiring = set;
+       // isRemotelyFiring = set;
     }
     [PunRPC]
     protected void SetIsRemotelyFiring_RPC(bool set)
     {
+        // set muzzle loop
+        if (useRapidFireOptimisation)
+        {
+            // enable muzzle flash loop
+            if (set)
+            {
+                rapidFireMuzzleLoopFxInstance = Instantiate(rapidFireMuzzleLoopFx, barrelEndMuzzleTransform);
+                rapidFireMuzzleLoopFxInstance.transform.localPosition = Vector3.zero;
+                rapidFireMuzzleLoopFxInstance.transform.rotation = barrelEndMuzzleTransform.rotation;
+                rapidFireMuzzleLoopFxInstance.GetComponent<AudioSource>().clip = rapidFireMuzzleAudioLoop;
+                rapidFireMuzzleLoopFxInstance.GetComponent<AudioSource>().volume = muzzleflashVolume;
+                rapidFireMuzzleLoopFxInstance.GetComponent<AudioSource>().loop = true;
+                rapidFireMuzzleLoopFxInstance.GetComponent<AudioSource>().Play();
+            }
+            else
+            {
+                Destroy(rapidFireMuzzleLoopFxInstance);
+            }
+        }
+        
         isRemotelyFiring = set;
         Debug.Log(isRemotelyFiring && !weaponPhotonView.IsMine);
         if (set) timeSinceLastFire = 0;
@@ -117,10 +145,13 @@ public class HitscanWeapon : Weapon
     protected void InstantiateMuzzleFlash(GameObject effect, float lifetime, bool childOfMuzzle)
     {
         GameObject mFlash;
-        mFlash = Instantiate(effect, barrelTransform.position, barrelTransform.rotation);
-        if(childOfMuzzle)mFlash.transform.SetParent(barrelTransform);
-        PlayAudioClipOneShot(weaponFireSound);
-        Destroy(mFlash, lifetime);
+        if (!useRapidFireOptimisation)
+        {
+            mFlash = Instantiate(effect, barrelTransform.position, barrelTransform.rotation);
+            if (childOfMuzzle) mFlash.transform.SetParent(barrelTransform);
+            PlayAudioClipOneShot(weaponFireSound);
+            Destroy(mFlash, lifetime);
+        }
     }
 
 
