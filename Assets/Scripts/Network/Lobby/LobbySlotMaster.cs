@@ -193,7 +193,8 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         foreach (LobbyButtonScript lobbyButton in lobbyButtons) {
             if (lobbyButton.gameObject.activeInHierarchy) {
                 //gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButton.teamId));
-                gamestateTracker.teams.Create((short)lobbyButton.teamId);
+                TeamEntry team = gamestateTracker.teams.Create((short)lobbyButton.teamId);
+                team.Commit();
             }
         }
     }
