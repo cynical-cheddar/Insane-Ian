@@ -43,7 +43,7 @@ public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
     public Vector3 addedDownforce;
 
     //direction is -1 for left and +1 for right, 0 for center
-    void IDrivable.Steer(int targetDirection) {
+    void IDrivable.Steer(float targetDirection) {
         float targetAngle;
         float steerAngle;
 

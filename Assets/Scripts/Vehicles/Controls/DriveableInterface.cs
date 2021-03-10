@@ -7,7 +7,7 @@ public interface IDrivable {
     void StopAccellerate();
     void Brake();
     void StopBrake();
-    void Steer(int targetDirection);
+    void Steer(float targetDirection);
     void StopSteer();
     void Reverse();
     void Drift();

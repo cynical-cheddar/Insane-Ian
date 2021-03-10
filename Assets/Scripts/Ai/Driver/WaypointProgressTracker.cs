@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 
 
+[VehicleScript(ScriptType.aiDriverScript)]
     public class WaypointProgressTracker : MonoBehaviour
     {
         // This script can be used with any object that is supposed to follow a
@@ -64,6 +65,7 @@ using UnityEngine;
             {
                 target = new GameObject(name + " Waypoint Target").transform;
             }
+            circuit = FindObjectOfType<WaypointCircuit>();
 
             Reset();
         }
