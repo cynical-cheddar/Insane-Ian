@@ -50,7 +50,8 @@ using Random = UnityEngine.Random;
         private IDrivable CarDriver;
 
         public float maxSpeed = 30f;
-        
+
+        public string terraintag = "DustGround";
         
         [Header("Sensors")]
         public float sensorLength = 3f;
@@ -144,7 +145,7 @@ using Random = UnityEngine.Random;
             //front right sensor
             sensorStartPos += transform.right * frontSideSensorPosition;
             if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength)) {
-                if (!hit.collider.CompareTag("Terrain")) {
+                if (!hit.collider.CompareTag(terraintag)) {
                     Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier -= 1f;
@@ -153,7 +154,7 @@ using Random = UnityEngine.Random;
 
             //front right angle sensor
             else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength)) {
-                if (!hit.collider.CompareTag("Terrain")) {
+                if (!hit.collider.CompareTag("DustGround")) {
                     Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier -= 0.5f;
@@ -163,7 +164,7 @@ using Random = UnityEngine.Random;
             //front left sensor
             sensorStartPos -= transform.right * (frontSideSensorPosition * 2);
             if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength)) {
-                if (!hit.collider.CompareTag("Terrain")) {
+                if (!hit.collider.CompareTag(terraintag)) {
                     Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 1f;
@@ -172,7 +173,7 @@ using Random = UnityEngine.Random;
 
             //front left angle sensor
             else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength)) {
-                if (!hit.collider.CompareTag("Terrain")) {
+                if (!hit.collider.CompareTag(terraintag)) {
                     Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 0.5f;
@@ -182,7 +183,7 @@ using Random = UnityEngine.Random;
             //front center sensor
             if (avoidMultiplier == 0) {
                 if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength)) {
-                    if (!hit.collider.CompareTag("Terrain")) {
+                    if (!hit.collider.CompareTag(terraintag)) {
                         Debug.DrawLine(sensorStartPos, hit.point);
                         avoiding = true;
                         if (hit.normal.x < 0) {
