@@ -42,9 +42,10 @@ public class GunnerWeaponManager : MonoBehaviour
     void Start()
     {
         Invoke(nameof(SelectFirst), 0.4f);
+        //SelectFirst();
     }
 
-    void SelectFirst()
+    public void SelectFirst()
     {
         // select the first control group
         SelectWeaponGroup(weaponControlGroups.weaponControlGroupList[0]);
@@ -58,6 +59,13 @@ public class GunnerWeaponManager : MonoBehaviour
         {
             w.ActivateWeapon();
         }
+    }
+
+    public bool CurrentWeaponGroupCanFire() {
+        foreach (Weapon w in currentWeaponControlGroup.weapons) {
+            if (w.CanFire()) return true;
+        }
+        return false;
     }
 
     public void FireCurrentWeaponGroup(Vector3 targetPos)
@@ -74,6 +82,14 @@ public class GunnerWeaponManager : MonoBehaviour
         foreach (Weapon w in currentWeaponControlGroup.weapons)
         {
             w.ReloadSalvo();
+        }
+    }
+
+    public void CeaseFireCurrentWeaponGroup()
+    {
+        foreach (Weapon w in currentWeaponControlGroup.weapons)
+        {
+            w.CeaseFire();
         }
     }
 }

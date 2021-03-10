@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
@@ -40,6 +41,22 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Range(0, 1)]
     public float baseExtremiumSlip = 0.3f;
     public Vector3 addedDownforce;
+    [Range(0,20000)]
+    public float antiRollStiffness = 5000;
+    [Space(5)]
+
+    [Header("Engine Noises")]
+    public AudioSource EngineIdle;
+    public AudioSource EngineLow;
+    public AudioSource EngineHigh;
+    private float volume = 0;
+    [Space(5)]
+
+    [Header("Dust Trail")]
+    public ParticleSystem leftPS;
+    public ParticleSystem rightPS;
+
+
 
     //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(int targetDirection) {
@@ -76,7 +93,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearLeftW.sidewaysFriction = rlC;
         rearRightW.sidewaysFriction = rrC;
     }
-
     void IDrivable.Accellerate() {
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
@@ -108,7 +124,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
 
     }
-
     void IDrivable.Brake() {
         //brake all wheels
         frontLeftW.brakeTorque = brakeTorque;
@@ -126,7 +141,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
 
     }
-
     void IDrivable.Drift() {
         WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
         WheelFrictionCurve frC = frontRightW.sidewaysFriction;
@@ -144,7 +158,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearLeftW.sidewaysFriction = rlC;
         rearRightW.sidewaysFriction = rrC;
     }
-
     void IDrivable.StopDrift() {
         WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
         WheelFrictionCurve frC = frontRightW.sidewaysFriction;
@@ -162,13 +175,11 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearLeftW.sidewaysFriction = rlC;
         rearRightW.sidewaysFriction = rrC;
     }
-
     private bool AllWheelsGrounded() {
         if (frontLeftW.isGrounded & frontRightW.isGrounded & rearLeftW.isGrounded & rearRightW.isGrounded) {
             return true;
         } else return false;
     }
-
     void IDrivable.UpdateWheelPoses() {
         //make geometry match collider position
         UpdateWheelPose(frontLeftW, frontLeftT, true);
@@ -176,7 +187,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         UpdateWheelPose(rearLeftW, rearLeftT, true);
         UpdateWheelPose(rearRightW, rearRightT, false);
     }
-
     private void UpdateWheelPose(WheelCollider collider, Transform transform, bool flip) {
         Vector3 pos = transform.position;
         Quaternion quat = transform.rotation;
@@ -190,7 +200,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             transform.rotation *= new Quaternion(0, 0, -1, 0);
         }
     }
-
     void IDrivable.StopAccellerate() {
         frontLeftW.motorTorque = 0;
         frontRightW.motorTorque = 0;
@@ -198,7 +207,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearRightW.motorTorque = 0;
 
     }
-
     void IDrivable.StopBrake() {
         frontLeftW.brakeTorque = 0;
         frontRightW.brakeTorque = 0;
@@ -206,10 +214,96 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearRightW.brakeTorque = 0;
 
     }
-
     void IDrivable.StopSteer() {
         //steer towards 0
         ((IDrivable)this).Steer(0);
+    }
+    
+    private void EngineNoise() {
+        float newpitch;
+        newpitch = Mathf.Clamp((Mathf.Abs(frontLeftW.rpm + frontRightW.rpm + rearLeftW.rpm + rearRightW.rpm)) * 0.01f * 0.25f, 0, 14f);
+        volume = Mathf.Lerp(volume, newpitch, 0.1f);
+        if (volume < 1) {
+            EngineIdle.volume = Mathf.Lerp(EngineIdle.volume, 1.0f, 0.1f);
+            EngineLow.volume = Mathf.Lerp(EngineLow.volume, 0.3f, 0.1f);
+            EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, 0.0f, 0.1f);
+        } else {
+            EngineIdle.volume = Mathf.Lerp(EngineIdle.volume, 0f, 0.1f);
+            EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, volume/10, 0.1f);
+            EngineLow.volume = 1 - EngineHigh.volume;
+        }
+
+        EngineLow.pitch = 2.4f + volume / 10;
+        EngineHigh.pitch = 2.4f + volume / 10;
+
+    }
+    
+    private void AntiRoll(WheelCollider left, WheelCollider right) {
+        WheelHit lHit, rHit;
+        float lDistance = 1f;
+        float rDistance = 1f;
+
+        bool lGrounded = left.GetGroundHit(out lHit);
+        bool rGrounded = right.GetGroundHit(out rHit);
+
+        if (lGrounded) {
+            lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
+        }
+
+        if (rGrounded) {
+            rDistance = (-right.transform.InverseTransformPoint(rHit.point).y - right.radius) / right.suspensionDistance;
+        }
+
+        float addedForce = (lDistance - rDistance) * antiRollStiffness;
+
+        if (lGrounded) {
+            carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position);
+        }
+
+        if (rGrounded) {
+            carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
+
+        }
+    }
+    private void Particles() {
+        WheelHit lHit, rHit;
+        bool lGrounded = rearLeftW.GetGroundHit(out lHit);
+        bool rGrounded = rearRightW.GetGroundHit(out rHit);
+        var lEmission = leftPS.emission;
+        var rEmission = rightPS.emission;
+
+        if (lGrounded){
+            if (lHit.collider.CompareTag("DustGround")){
+                lEmission.enabled = true;
+            } else {
+                lEmission.enabled = false;
+            }
+        } else {
+            lEmission.enabled = false;
+        }
+        if (rGrounded) {
+            if (rHit.collider.CompareTag("DustGround")) {
+                rEmission.enabled = true;
+            } else {
+                rEmission.enabled = false;
+            }
+        } else {
+            rEmission.enabled = false;
+        }
+    }
+    void FixedUpdate() {
+        EngineNoise();
+        AntiRoll(frontLeftW, frontRightW);
+        AntiRoll(rearLeftW, rearRightW);
+        Particles();
+    }
+
+    
+
+    private void Start() {
+        EngineIdle.volume = 0;
+        EngineLow.volume = 0;
+        EngineHigh.volume = 0;
     }
 }
 

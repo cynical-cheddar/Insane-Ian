@@ -36,12 +36,23 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     bool hasPicked = false;
     
+    [PunRPC]
+    void ChangeLobbyButtonActiveState_RPC(int index, bool state) {
+        lobbyButtons[index].gameObject.SetActive(state);
+        if (state) {
+            gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButtons[index].teamId));
+        } else {
+            // Scream
+        }
+    }
+
     public void AddTeam() {
         if (PhotonNetwork.IsMasterClient) {
-            foreach (LobbyButtonScript lobbyButton in lobbyButtons) {
-                if (!lobbyButton.gameObject.activeInHierarchy) {
-                    lobbyButton.gameObject.SetActive(true);
-                    gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButton.teamId));
+            for (int i = 0; i < lobbyButtons.Count; i++) {
+                if (!lobbyButtons[i].gameObject.activeInHierarchy) {
+                    lobbyButtons[i].gameObject.SetActive(true);
+                    GetComponent<PhotonView>().RPC(nameof(ChangeLobbyButtonActiveState_RPC), RpcTarget.OthersBuffered, i, true);
+                    gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButtons[i].teamId));
                     break;
                 }
             }
@@ -51,9 +62,15 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     public void RemoveTeam() {
         if (PhotonNetwork.IsMasterClient) {
             for (int i = lobbyButtons.Count - 1; i >= 0; i--) {
-                if (lobbyButtons[i].gameObject.activeInHierarchy) {
-                    lobbyButtons[i].gameObject.SetActive(false);
+                if (lobbyButtons[i].gameObject.activeInHierarchy)
+                {
+                    lobbyButtons[i].RemoveBothPlayersFromTeam();
+                    
+                    GetComponent<PhotonView>().RPC(nameof(ChangeLobbyButtonActiveState_RPC), RpcTarget.OthersBuffered, i, false);
+                    // deselect both players from team
+                    
                     gamestateTracker.schema.teamsList.Remove(gamestateTracker.getTeamDetails(lobbyButtons[i].teamId));
+                    lobbyButtons[i].gameObject.SetActive(false);
                     break;
                 }
             }
@@ -77,14 +94,13 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     {
         selectedPlayers += amt;
         // update the lobby stats on screen
-        if(PhotonNetwork.IsMasterClient)GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
+        GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
     }
     [PunRPC]
     public void changeReadyPlayers(int amt)
     {
-        readyPlayers += amt;
-        // update the lobby stats on screen
-        if(PhotonNetwork.IsMasterClient)GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
+        gamestateTracker.ForceSynchronisePlayerSchema();
+        GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
     }
     public bool getHasPicked()
     {
@@ -94,8 +110,24 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     [PunRPC]
     public void UpdateCountAndReady()
     {
+        playersInLobby = PhotonNetwork.CurrentRoom.PlayerCount;
+        int count = 0;
+        // foreach player, sum the amount of readies
+        foreach(GamestateTracker.PlayerDetails pd in gamestateTracker.schema.playerList)
+        {
+            if (pd.ready && !pd.isBot) count++;
+        }
+        
+        
+        readyPlayers = count;
+        
         playersInLobbyText.text = "Players in lobby:"  + playersInLobby.ToString();
         readyPlayersText.text = "Ready players: " + readyPlayers.ToString();
+    }
+
+    void Update()
+    {
+        UpdateCountAndReady();
     }
 
     // Start is called before the first frame update
@@ -229,15 +261,16 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            if (readyPlayers == selectedPlayers && readyPlayers == playersInLobby && selectedMap != "null")
+            if (readyPlayers >= selectedPlayers && readyPlayers >= playersInLobby && selectedMap != "null")
             {
                 // get all info from lobby buttons and fill in the gametracker object
                 FillIncompleteTeamsWithBots();
                 if (timeLimitText.text != "") gamestateTracker.timeLimit = float.Parse(timeLimitText.text);
+                PhotonNetwork.CurrentRoom.IsVisible = false;
                 gamestateTracker.ForceSynchronisePlayerSchema();
                 //Debug.Log("load new scene");
                 // delayed load just to make sure sync and for Jordan to check the network update. Remove in build
-                Invoke(nameof(delayedLoad), 2f);
+                Invoke(nameof(delayedLoad), 0.1f);
             }
             else
             {
@@ -259,8 +292,19 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         
         if (PhotonNetwork.IsMasterClient)
         {
-            GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
-            gamestateTracker.GetComponent<PhotonView>().RPC("RemovePlayerFromSchema", RpcTarget.AllBufferedViaServer, otherPlayer.ActorNumber);
+            // boot the player from their slot
+            // lookup the player from their tracker
+            GamestateTracker.PlayerDetails leftPlayerDetails = gamestateTracker.getPlayerDetails(otherPlayer.ActorNumber);
+            foreach (LobbyButtonScript lb in lobbyButtons)
+            {
+                // compare the driver and gunner ids
+                if(lb.driverPlayerId == leftPlayerDetails.playerId) lb.GetComponent<PhotonView>().RPC(nameof(LobbyButtonScript.ClearDriverButton), RpcTarget.AllBufferedViaServer);
+                if(lb.gunnerPlayerId == leftPlayerDetails.playerId) lb.GetComponent<PhotonView>().RPC(nameof(LobbyButtonScript.ClearGunnerButton), RpcTarget.AllBufferedViaServer);
+            }
+            
+            
+            GetComponent<PhotonView>().RPC(nameof(UpdateCountAndReady), RpcTarget.AllBufferedViaServer);
+            gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.RemovePlayerFromSchema), RpcTarget.AllBufferedViaServer, otherPlayer.ActorNumber);
         }
     }
 

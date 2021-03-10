@@ -43,9 +43,9 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
         public string character;
         public int teamId;
         public bool isBot;
+        public bool ready;
         
-        
-        public PlayerDetails(string n, int p, string r, string c, int t, bool b, string v)
+        public PlayerDetails(string n, int p, string r, string c, int t, bool b, string v, bool isReady)
         {
             nickName = n;
             playerId = p;
@@ -53,13 +53,13 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
             character = c;
             teamId = t;
             isBot = b;
-            
+            ready = isReady;
         }
     }
     
     [Serializable]
     public struct TeamDetails {
-        public int teamId, kills, deaths, assists;
+        public int teamId, kills, deaths, assists, checkpoint;
         public bool isDead;
         public string vehiclePrefabName;
 
@@ -68,6 +68,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
             kills = 0;
             deaths = 0;
             assists = 0;
+            checkpoint = 0;
             isDead = false;
             vehiclePrefabName = null;
         }
