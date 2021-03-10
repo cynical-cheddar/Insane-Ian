@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlinthManager : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class PlinthManager : MonoBehaviour
         // Wait for the host to finish loading first
         //Invoke(nameof(UpdateText), 0.1f);
         UpdateText();
+        Cursor.lockState = CursorLockMode.None;
     }
 
     void SpawnPlayerVehicles() {
@@ -46,4 +48,9 @@ public class PlinthManager : MonoBehaviour
         }
         scoreboardText.text = newText;
     }
+
+    public void ReturnToMainMenu() {
+        SceneManager.LoadScene("menu");
+    }
+
 }
