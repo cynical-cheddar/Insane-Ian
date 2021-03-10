@@ -4,6 +4,7 @@ using Gamestate;
 public class GamestateAssertionUnit {
     public static void AssertPacketEquality(GamestatePacket a, GamestatePacket b) {
         Assert.That(b.packetType, Is.EqualTo(a.packetType));
+        Assert.That(b.table,      Is.EqualTo(a.table     ));
         Assert.That(b.id,         Is.EqualTo(a.id        ));
 
         if (a.packetType != GamestatePacket.PacketType.Delete) {

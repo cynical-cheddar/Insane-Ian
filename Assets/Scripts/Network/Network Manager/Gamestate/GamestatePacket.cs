@@ -143,6 +143,7 @@ namespace Gamestate {
 
             //  Deserialize metadata
             packet.packetType = (PacketType)(data[index] & 0x03);
+            packet.table      = (GamestateTracker.Table)((data[index] & 0x7C) >> 2);
             packet.hasName    = (data[index] & 0x80) == 0x80;
             index++;
 
@@ -224,7 +225,7 @@ namespace Gamestate {
             PhotonPeer.RegisterType(typeof(GamestatePacket), 0xFF, GamestatePacket.Serialize, GamestatePacket.Deserialize);
         }
 
-        public static GamestatePacket GetPacket() {x
+        public static GamestatePacket GetPacket() {
             GamestatePacket packet;
             lock (packetPool) {
                 if (packetPool.Count == 0) packet = new GamestatePacket();
