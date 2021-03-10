@@ -57,6 +57,7 @@ public class BeamWeapon : Weapon
 
     [Header("Beam Settings")] 
     public float extraRechargeTimeOnDepletion = 4f;
+    public float extraRechargeTimeOnCeaseFire = 1f;
     public bool muzzleFlashChildOfBarrel = true;
     public float hitscanRange = 10000f;
     protected Rigidbody parentRigidbody;
@@ -105,7 +106,6 @@ public class BeamWeapon : Weapon
     private BeamHit newHit;
     protected int lastHitId = 0;
     protected bool localFirstFire = false;
-    WeaponDamageDetails weaponDamageDetails;
 
 
 
@@ -116,39 +116,51 @@ public class BeamWeapon : Weapon
         CeaseFire();
     }
 
-    public override void SetupWeapon()
-    {
-        base.SetupWeapon();
-        Debug.Log("SetupWeapon beam called");
-        colliders = transform.root.GetComponentsInChildren<Collider>();
-        newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
-        oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
-        lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
-        weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId, damageType, 0);
-    }
 
-    public override void ActivateWeapon()
-    {
-        base.ActivateWeapon();
-        SetupWeapon();
-    }
 
     public override void CeaseFire()
     {
        // DestroyBeam();
         SetIsRemotelyFiring(false);
         weaponPhotonView.RPC(nameof(DestroyBeam), RpcTarget.All);
-        
+        StartCoroutine(DoBonusRecharge(extraRechargeTimeOnCeaseFire));
         
     }
 
-    protected IEnumerator DoBonusRecharge()
+    protected IEnumerator DoBonusRecharge(float amt)
     {
         isRecharging = true;
-        yield return new WaitForSeconds(extraRechargeTimeOnDepletion);
+        yield return new WaitForSeconds(amt);
         isRecharging = false;
     }
 
+
+    protected new void SetupWeapon()
+    {
+               colliders = transform.root.GetComponentsInChildren<Collider>();
+        newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+        base.SetupWeapon();
+        colliders = transform.root.GetComponentsInChildren<Collider>();
+    }
+
+    public override void ActivateWeapon()
+    {
+               colliders = transform.root.GetComponentsInChildren<Collider>();
+        newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+        base.ActivateWeapon();
+        SetupWeapon();
+    }
+
+    public override bool CanFire()
+    {
+        if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
+        else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;
+        return false;
+    }
 
     public override void Fire(Vector3 targetPoint)
     {
@@ -163,7 +175,7 @@ public class BeamWeapon : Weapon
         
         
         
-        if (CanFire() && gunnerPhotonView.IsMine && !isRecharging)
+        if (base.CanFire() && gunnerPhotonView.IsMine && !isRecharging)
         {
             timeSinceLastFire = 0;
             targetPoint =
@@ -174,7 +186,7 @@ public class BeamWeapon : Weapon
             UseAmmo(ammoPerShot);
             float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            
+            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier);
             
             
             if(!isRemotelyFiring){
@@ -191,7 +203,7 @@ public class BeamWeapon : Weapon
 
             if (!HasAmmoToShoot() && !isRecharging)
             {
-                StartCoroutine(DoBonusRecharge());
+                StartCoroutine(DoBonusRecharge(extraRechargeTimeOnDepletion));
                 Invoke(nameof(CeaseFire), fireRate/2);
                 
             }
@@ -200,7 +212,7 @@ public class BeamWeapon : Weapon
 
             
             
-            weaponDamageDetails.damage = baseDamage * distanceMultiplier * damageMultiplier;
+
             
             
             // if the raycast tracer details health field is not null, then damage em
@@ -282,22 +294,8 @@ public class BeamWeapon : Weapon
         Destroy(beamStart);
         Destroy(beamEnd);
         Destroy(beam);
-
-        newHit.validHit = false;
-        newHit.worldHitPoint = Vector3.zero;
-        newHit.hasHitPlayer = false;
-        newHit.localHitpoint = Vector3.zero;
-        newHit.active = false;
-        newHit.hitTeamId = 0;
-        newHit.hitTransform = transform;
-
-        oldHit.validHit = false;
-        oldHit.worldHitPoint = Vector3.zero;
-        oldHit.hasHitPlayer = false;
-        oldHit.localHitpoint = Vector3.zero;
-        oldHit.active = false;
-        oldHit.hitTeamId = 0;
-        oldHit.hitTransform = transform;
+        newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
+        oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
     }
 
 
@@ -311,14 +309,16 @@ public class BeamWeapon : Weapon
     {
         AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate impact particle with miss sound effect
-        InstantiateImpactEffect(missImpactParticle, targetPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
+        //InstantiateImpactEffect(missImpactParticle, targetPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
+        //PlayImpactSound();
     }
 
     protected void FireBeamRoundEffectHit(Vector3 targetPoint)
     {
         AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate impact particle with miss sound effect
-        InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
+       // InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
+        PlayImpactSound();
     }
     
     
@@ -337,20 +337,8 @@ public class BeamWeapon : Weapon
         
         if(hitPlayer) newTargetVehicle = _playerTransformTracker.GetVehicleTransformFromTeamId(newHit.hitTeamId);
         
-        //newHit = new BeamHit(validHit, worldHit, hitPlayer, localHit, true, hitTeamId, newTargetVehicle);
-        if (oldHit.active == false) {
-            BeamHit swapHit = oldHit;
-            oldHit = newHit;
-            newHit = swapHit;
-
-            newHit.validHit = validHit;
-            newHit.worldHitPoint = worldHit;
-            newHit.hasHitPlayer = hitPlayer;
-            newHit.localHitpoint = localHit;
-            newHit.active = true;
-            newHit.hitTeamId = hitTeamId;
-            newHit.hitTransform = newTargetVehicle;
-        }
+        newHit = new BeamHit(validHit, worldHit, hitPlayer, localHit, true, hitTeamId, newTargetVehicle);
+        if (oldHit.active == false) oldHit = newHit;
         
         AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         turretFollowTarget.target = lookpoint;
@@ -372,12 +360,13 @@ public class BeamWeapon : Weapon
             // convert local targetpoint into world point
             Vector3 worldPoint = targetVehicle.TransformPoint(oldHit.localHitpoint);
             // instantiate impact at worldPoint
-            InstantiateImpactEffect(imapactParticle, worldPoint, impactParticleSound, imapactParticleVolume, 2f);
+           // InstantiateImpactEffect(imapactParticle, worldPoint, impactParticleSound, imapactParticleVolume, 2f);
+            PlayImpactSound();
         }
         
         else if (oldHit.validHit)
         {
-            InstantiateImpactEffect(missImpactParticle, oldHit.worldHitPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
+           // InstantiateImpactEffect(missImpactParticle, oldHit.worldHitPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
         }
         
 
@@ -482,7 +471,7 @@ public class BeamWeapon : Weapon
         Vector3 startPos = barrelTransform.position;
         
         Ray ray = new Ray(startPos, targetPoint - startPos); 
-        //RaycastHit hit;
+        RaycastHit hit;
         RaycastHitDetails raycastHitDetails = FindClosestRaycastHitDetails(ray, targetPoint);
         // we now have our hit details, return themmuzzleFlashChildOfBarrel
         return raycastHitDetails;
@@ -491,14 +480,14 @@ public class BeamWeapon : Weapon
     
 
     protected RaycastHitDetails FindClosestRaycastHitDetails(Ray ray, Vector3 targetPoint)
-    {        
+    {
+        RaycastHitDetails raycastHitDetails = new RaycastHitDetails(targetPoint, Vector3.zero, null, false, false);;
+        
         RaycastHit[] hits = Physics.RaycastAll(ray);
         
         Transform closestHit = null;
         float distance = 0;
-        Vector3 hitPoint = targetPoint;
-        bool healthExists = false;
-        bool valid = false;
+        Vector3 hitPoint = Vector3.zero;
 
         foreach (RaycastHit hit in hits)
         {
@@ -512,19 +501,26 @@ public class BeamWeapon : Weapon
                 closestHit = hit.transform;
                 distance = hit.distance;
                 hitPoint = hit.point;
-                valid = true;
+                
+                // get local hitpoint
+                Vector3 localHitPoint = closestHit.root.InverseTransformPoint(hitPoint);
+                // the health script exists
+                if (hit.transform.root.GetComponent<VehicleManager>() != null)
+                {
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,true,true );
+                }
+                else
+                {
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,false,true );
+                }
 
             }
         }
-
         
-        Vector3 localHitPoint = Vector3.zero;
-        if (closestHit != null && healthExists) localHitPoint = closestHit.root.InverseTransformPoint(hitPoint);
-        if (closestHit != null && closestHit.transform.root.GetComponent<VehicleManager>() != null) healthExists = true;
 
         // closestHit is now either still null (i.e. we hit nothing) OR it contains the closest thing that is a valid thing to hit
 
-        return new RaycastHitDetails(hitPoint, localHitPoint, closestHit, healthExists, valid);;
+        return raycastHitDetails;
 
     }
 
@@ -657,6 +653,11 @@ public class BeamWeapon : Weapon
         a.volume = volume;
         a.Play();
         Destroy(a, lifeTime);
+    }
+
+    void PlayImpactSound()
+    {
+        beamEnd.GetComponent<AudioSource>().PlayOneShot(impactParticleSound, imapactParticleVolume);
     }
 
     protected void InstantiateMuzzleFlash(GameObject effect, float lifetime, bool childOfMuzzle)

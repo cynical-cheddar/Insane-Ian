@@ -56,7 +56,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         //SynchroniseSchemaBeforeSpawn();
-        SpawnPlayers();
+        //SpawnPlayers();
+        Invoke(nameof(SpawnPlayers), 2f);
         timer = FindObjectOfType<TimerBehaviour>();
         GlobalsEntry globals = gamestateTracker.globals;
         float time = globals.timeLimit;
@@ -91,7 +92,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             // players should have already had their teams validated through the lobby screen
             // If we end up with bugs, get Jordan to add extra checks to fill slots with bots at this point.
 
-
+            // a
             // we now have a list of the players in each team
             //foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList)
             for (short i = 0; i < gamestateTracker.teams.count; i++)
