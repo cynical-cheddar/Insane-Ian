@@ -24,7 +24,7 @@ public class PlayerGunnerController : MonoBehaviour {
     }
 
     void OnEnable() {
-        if (FindObjectOfType<PlinthManager>() == null) Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
         //  transform.parent = transform.parent.parent;
         camera.enabled = true;
     }

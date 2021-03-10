@@ -2128,6 +2128,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5067888789853567326, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: m_Lens.FieldOfView
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451279103785429609, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[0].weapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 3068282692341630956}
     - target: {fileID: 8454796729996456043, guid: ea49261a1af561c47b88c473909ef289,
         type: 3}
       propertyPath: m_Name
@@ -2135,8 +2145,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
         type: 3}
-      propertyPath: ammoPerShot
-      value: 1
+      propertyPath: baseDamage
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: beamEndLoopVolume
+      value: 0.808
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: muzzleflashVolume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: beamStartLoopVolume
+      value: 0.788
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: damageRampupMultiplierCurve.m_Curve.Array.data[1].time
+      value: 0.99487305
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: damageRampupMultiplierCurve.m_Curve.Array.data[1].value
+      value: 0.20281982
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea49261a1af561c47b88c473909ef289, type: 3}
@@ -2152,7 +2187,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9b6bc1ae0572bf458792bfee0c6f184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
 --- !u!114 &6744777223263837270 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1151057047430065128, guid: ea49261a1af561c47b88c473909ef289,
@@ -2171,5 +2205,3 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5936627693680211902}
   m_PrefabAsset: {fileID: 0}
-=======
->>>>>>> main
