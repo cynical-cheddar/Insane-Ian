@@ -27,11 +27,11 @@ public class HealthBehaviour : MonoBehaviour {
         int teamId = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId;
         foreach (VehicleManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
-                if (Mathf.CeilToInt(vehicle.health) != previousRoundedHealth) {
-                    damageTaken = Mathf.CeilToInt(vehicle.health) - previousRoundedHealth;
+                if (Mathf.RoundToInt(vehicle.health) != previousRoundedHealth) {
+                    damageTaken = Mathf.RoundToInt(vehicle.health) - previousRoundedHealth;
                     Instantiate(damageIndicator, damageIndicatorInstantiateTransform);
-                    healthLabel.text = Mathf.CeilToInt(vehicle.health).ToString();
-                    previousRoundedHealth = Mathf.CeilToInt(vehicle.health);
+                    healthLabel.text = Mathf.RoundToInt(vehicle.health).ToString();
+                    previousRoundedHealth = Mathf.RoundToInt(vehicle.health);
                 }
                 break;
             }
