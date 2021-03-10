@@ -12,7 +12,8 @@ using UnityEngine.UI;
 namespace Gamestate {
     public class GamestateTracker : MonoBehaviourPunCallbacks, IGamestateCommitHandler
     {
-
+        protected bool bufferPackets = false;
+        public List<string> bufferRpcScenes;
         public string nextMap;
         public string nextMapDisplay;
         public List<string> destoryOnTheseLevels = new List<string>();
@@ -173,7 +174,12 @@ namespace Gamestate {
                     succeeded = teams.AttemptApply(packet);
                 }
 
-                if (succeeded) view.RPC(nameof(ApplyPacket), RpcTarget.OthersBuffered, packet);
+                if (succeeded)
+                {
+                    if(bufferPackets)view.RPC(nameof(ApplyPacket), RpcTarget.OthersBuffered, packet);
+                    else view.RPC(nameof(ApplyPacket), RpcTarget.Others, packet);
+                    
+                }
             }
             else {
                 Debug.Log("Apply packet client");
@@ -191,6 +197,19 @@ namespace Gamestate {
                     teams.Apply(packet);
                     Debug.Log("Apply packet client - Teams");
                 }
+            }
+        }
+
+        void Start()
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            if (bufferRpcScenes.Contains(currentSceneName))
+            {
+                bufferPackets = true;
+            }
+            else
+            {
+                bufferPackets = false;
             }
         }
 
