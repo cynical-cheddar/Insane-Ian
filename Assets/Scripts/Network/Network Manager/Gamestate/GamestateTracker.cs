@@ -155,6 +155,7 @@ namespace Gamestate {
         [PunRPC]
         public void ApplyPacket(GamestatePacket packet) {
             if (PhotonNetwork.LocalPlayer.IsMasterClient) {
+                Debug.Log("Apply packet master");
                 bool succeeded = false;
 
                 if (packet.table == Table.Globals) {
@@ -172,16 +173,20 @@ namespace Gamestate {
                 if (succeeded) view.RPC(nameof(ApplyPacket), RpcTarget.OthersBuffered, packet);
             }
             else {
+                Debug.Log("Apply packet client");
                 if (packet.table == Table.Globals) {
                     if (packet.packetType != GamestatePacket.PacketType.Delete) {
                         _globals.Apply(packet);
                     }
+                    Debug.Log("Apply packet client - globals");
                 }
                 else if (packet.table == Table.Players) {
                     players.Apply(packet);
+                    Debug.Log("Apply packet client - Players");
                 }
                 else if (packet.table == Table.Teams) {
                     teams.Apply(packet);
+                    Debug.Log("Apply packet client - Teams");
                 }
             }
         }
