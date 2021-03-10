@@ -71,7 +71,6 @@ public class LoadingScreenNetwork : MonoBehaviour
         {
 
             float fltProgress = Mathf.Clamp01(operation.progress / 0.9f);
-            Debug.Log(fltProgress);
             progressBar.fillAmount = fltProgress;
             if(fltProgress < 0.99) percentText.text = Mathf.RoundToInt(fltProgress * 100) + "%";
             else percentText.text = "Waiting for players";
