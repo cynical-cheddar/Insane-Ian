@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Gamestate;
+using UnityEngine.SceneManagement;
 
 public class PlinthManager : MonoBehaviour
 {
@@ -21,6 +21,7 @@ public class PlinthManager : MonoBehaviour
         // Wait for the host to finish loading first
         //Invoke(nameof(UpdateText), 0.1f);
         UpdateText();
+        Cursor.lockState = CursorLockMode.None;
     }
 
     void SpawnPlayerVehicles() {
@@ -46,5 +47,9 @@ public class PlinthManager : MonoBehaviour
             newText += $"Team {team.teamId} -- Score: {scoringHelper.CalcScore(team)} -- K/D/A: {team.kills}/{team.deaths}/{team.assists}\n";
         }
         scoreboardText.text = newText;
+    }
+
+    public void ReturnToMainMenu() {
+        SceneManager.LoadScene(0);
     }
 }
