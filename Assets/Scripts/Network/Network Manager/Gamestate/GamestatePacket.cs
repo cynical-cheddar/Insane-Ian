@@ -220,13 +220,11 @@ namespace Gamestate {
         private static bool registered = false;
         private static Stack<GamestatePacket> packetPool = new Stack<GamestatePacket>();
 
-        private static void RegisterPacket() {
+        public static void RegisterPacket() {
             PhotonPeer.RegisterType(typeof(GamestatePacket), 0xFF, GamestatePacket.Serialize, GamestatePacket.Deserialize);
         }
 
-        public static GamestatePacket GetPacket() {
-            if (!registered) RegisterPacket();
-
+        public static GamestatePacket GetPacket() {x
             GamestatePacket packet;
             lock (packetPool) {
                 if (packetPool.Count == 0) packet = new GamestatePacket();

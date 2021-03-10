@@ -124,6 +124,8 @@ namespace Gamestate {
 
         void Awake()
         {
+            GamestatePacketManager.RegisterPacket();
+
             DontDestroyOnLoad(gameObject);
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
             view = GetComponent<PhotonView>();
