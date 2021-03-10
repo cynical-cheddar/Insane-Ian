@@ -53,24 +53,23 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         
         
         // new gamestate tracker register team
-        gamestateTracker.teams.Create(true, false);
+        TeamEntry teamEntry = gamestateTracker.teams.Create(true, false);
 
         // add a listener to team record
-        TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+      //  TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
 
         teamEntry.AddListener(TeamListenerCallback);
         teamEntry.Commit();
-        
-        
-        
-       
-        
+ 
     }
+ 
+    
     
     // called whenever the team stuff changes
     // update the graphics of the button
     void TeamListenerCallback(TeamEntry teamEntry)
     {
+
         // display the player details of the driver and gunner in the buttons
         
         // driver stuff
@@ -141,14 +140,15 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             // get my player id
             short myId = (short) PhotonNetwork.LocalPlayer.ActorNumber;
             PlayerEntry playerEntry = gamestateTracker.players.Get(myId);
-
-
+            
+ 
             // search for myself in the teams
             // if I already am in a team, remove me
             if (playerEntry.teamId != 0)
             {
                 TeamEntry oldTeamEntry = gamestateTracker.teams.Get(playerEntry.teamId);
-                oldTeamEntry.driverId = 0;
+                if (playerEntry.role == (short)PlayerEntry.Role.Driver) oldTeamEntry.driverId = 0;
+                if (playerEntry.role == (short)PlayerEntry.Role.Gunner) oldTeamEntry.gunnerId = 0;
                 oldTeamEntry.Commit();
             }
 
@@ -169,8 +169,11 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
 
     public void SelectGunner()
     {
+
         if (CanSelectGunner())
         {
+            
+            
             // get my player id
             short myId = (short) PhotonNetwork.LocalPlayer.ActorNumber;
             PlayerEntry playerEntry = gamestateTracker.players.Get(myId);
@@ -181,7 +184,8 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             if (playerEntry.teamId != 0)
             {
                 TeamEntry oldTeamEntry = gamestateTracker.teams.Get(playerEntry.teamId);
-                oldTeamEntry.gunnerId = 0;
+                if (playerEntry.role == (short)PlayerEntry.Role.Driver) oldTeamEntry.driverId = 0;
+                if (playerEntry.role == (short)PlayerEntry.Role.Gunner) oldTeamEntry.gunnerId = 0;
                 oldTeamEntry.Commit();
             }
 
@@ -195,7 +199,7 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
 
             // set the driver team
             TeamEntry teamEntry = gamestateTracker.teams.Get((short) teamId);
-            teamEntry.driverId = myId;
+            teamEntry.gunnerId = myId;
             teamEntry.Commit();
         }
     }
@@ -297,46 +301,58 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         
         lobbySlotMaster = FindObjectOfType<LobbySlotMaster>();
         gamestateTracker = FindObjectOfType<GamestateTracker>();
-        Debug.Log((short)teamId + " short team id");
+
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
         
         // look for the corresponding players in the team
         
         // get driver player (if they exist)
         short driverId = teamEntry.driverId;
-        
-        PlayerEntry driverEntry = gamestateTracker.players.Get((short) driverId);
-        
-        // if they are bots, then kick them
-        if(driverEntry.isBot) driverEntry.Delete();
-        // unready and unselect them
-        else
+
+        if (driverId != 0)
         {
-            driverEntry.ready = false;
-            driverEntry.role = (short)PlayerEntry.Role.None;
-            driverEntry.teamId = 0;
-            driverEntry.Commit(TeamRemovePlayerFailureCallback);
+
+            PlayerEntry driverEntry = gamestateTracker.players.Get((short) driverId);
+
+            // if they are bots, then kick them
+            if (driverEntry.isBot) driverEntry.Delete();
+            // unready and unselect them
+            else
+            {
+                driverEntry.ready = false;
+                driverEntry.role = (short) PlayerEntry.Role.None;
+                driverEntry.teamId = 0;
+                driverEntry.Commit(TeamRemovePlayerFailureCallback);
+            }
         }
-        
-        
-        
+
+
+
         // get gunner player (if they exist)
         short gunnerId = teamEntry.gunnerId;
-        PlayerEntry gunnerEntry = gamestateTracker.players.Get((short) gunnerId);
 
-       
-        if(gunnerEntry.isBot) gunnerEntry.Delete();
-        // unready and unselect them
-        else
+        if (gunnerId != 0)
         {
-            gunnerEntry.ready = false;
-            gunnerEntry.role = (short)PlayerEntry.Role.None;
-            gunnerEntry.teamId = 0;
-            gunnerEntry.Commit(TeamRemovePlayerFailureCallback);
+            PlayerEntry gunnerEntry = gamestateTracker.players.Get((short) gunnerId);
+
+
+            if (gunnerEntry.isBot) gunnerEntry.Delete();
+            // unready and unselect them
+            else
+            {
+                gunnerEntry.ready = false;
+                gunnerEntry.role = (short) PlayerEntry.Role.None;
+                gunnerEntry.teamId = 0;
+                gunnerEntry.Commit(TeamRemovePlayerFailureCallback);
+            }
         }
         
+        Debug.Log("Deleting team entry");
+
         teamEntry.Delete();
     }
+
+
 
     void TeamRemovePlayerFailureCallback(PlayerEntry playerEntry, bool success)
     {

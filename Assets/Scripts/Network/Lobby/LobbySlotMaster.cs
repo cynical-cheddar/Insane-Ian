@@ -97,7 +97,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     public void RemoveTeam() {
         if (PhotonNetwork.IsMasterClient) {
             for (int i = lobbyButtons.Count - 1; i >= 0; i--) {
-                if (lobbyButtons[i].gameObject.activeInHierarchy)
+                if (lobbyButtons[i].gameObject.activeInHierarchy && i > 0)
                 {
 
                     
@@ -193,8 +193,9 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         foreach (LobbyButtonScript lobbyButton in lobbyButtons) {
             if (lobbyButton.gameObject.activeInHierarchy) {
                 //gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButton.teamId));
-                TeamEntry team = gamestateTracker.teams.Create((short)lobbyButton.teamId);
-                team.Commit();
+                if(PhotonNetwork.IsMasterClient) lobbyButton.CreateTeamEntry();
+                //TeamEntry team = gamestateTracker.teams.Create((short)lobbyButton.teamId);
+                //team.Commit();
             }
         }
     }

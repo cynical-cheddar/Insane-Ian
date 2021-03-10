@@ -157,7 +157,7 @@ namespace Gamestate {
                     succeeded = teams.AttemptApply(packet);
                 }
 
-                if (succeeded) view.RPC(nameof(ApplyPacket), RpcTarget.Others, packet);
+                if (succeeded) view.RPC(nameof(ApplyPacket), RpcTarget.OthersBuffered, packet);
             }
             else {
                 if (packet.table == Table.Globals) {

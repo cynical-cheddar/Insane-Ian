@@ -175,7 +175,7 @@ namespace Gamestate {
                     }
                 }
             }
-
+            
             if (foundEntry != null) foundEntry.Apply(packet);
             if (created) foundEntry.Release();
         }
