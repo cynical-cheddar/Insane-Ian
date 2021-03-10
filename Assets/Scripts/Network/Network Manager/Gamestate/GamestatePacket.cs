@@ -224,7 +224,7 @@ namespace Gamestate {
             PhotonPeer.RegisterType(typeof(GamestatePacket), 0xFF, GamestatePacket.Serialize, GamestatePacket.Deserialize);
         }
 
-        public static GamestatePacket GetPacket() {x
+        public static GamestatePacket GetPacket() {
             GamestatePacket packet;
             lock (packetPool) {
                 if (packetPool.Count == 0) packet = new GamestatePacket();
