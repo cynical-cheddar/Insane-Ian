@@ -51,6 +51,7 @@ public class PlinthManager : MonoBehaviour
     }
 
     public void ReturnToMainMenu() {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("menu");
     }
+
 }

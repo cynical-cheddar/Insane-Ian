@@ -6,20 +6,19 @@ using Photon.Pun;
 using Gamestate;
 
 [VehicleScript(ScriptType.playerDriverScript)]
-public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
-{
+public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback {
     CinemachineFreeLook cam;
     CinemachineVirtualCamera firstPersonCam;
     GamestateTracker gamestateTracker;
     VehicleManager vehicleManager;
     Transform thirdPersonFocus;
-    
+
 
     public bool lockCursorToWindow = true;
 
     bool isFirstPerson = false;
     int teamId;
-    
+
 
     // Start is called before the first frame update
     void Start() {
@@ -92,6 +91,6 @@ public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
     }
 
     void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
-        
+
     }
 }
