@@ -12,9 +12,6 @@ Shader "Unlit/Shader No Border"
         _RimAmount("Rim Amount", Range(0, 1)) = 0.716
         _RimThreshold("Rim Threshold", Range(0, 1)) = 0.1
 
-        _BorderColor("Border Color", Color) = (1,1,1,1)
-        _BorderAmount("Border Amount", Range(0, 1)) = 0.716
-
         _NumberOfSections("Number Of Sections", Int) = 5
     }
     SubShader
@@ -71,8 +68,6 @@ Shader "Unlit/Shader No Border"
             float _RimAmount;
             float _RimThreshold;
 
-            float4 _BorderColor;
-            float _BorderAmount;
 
             int _NumberOfSections;
 
@@ -103,9 +98,9 @@ Shader "Unlit/Shader No Border"
                 float lightIntensity = 0;
                 float4 light = 0;
 
-                for (int j = 0; j < _NumberOfSections; j++) {
+                for (int j = -_NumberOfSections; j < _NumberOfSections; j++) {
                     lightIntensity = NdotL > (1.0 / (j + 1)) ? 1 : 0;
-                    light += (1.0 / _NumberOfSections) * (lightIntensity * _LightColor0);
+                    light += (0.5 / _NumberOfSections) * (lightIntensity * _LightColor0);
                 }
                 float3 viewDir = normalize(i.viewDir);
                 float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
