@@ -12,6 +12,9 @@ using UnityEngine.UI;
 namespace Gamestate {
     public class GamestateTracker : MonoBehaviourPunCallbacks, IGamestateCommitHandler
     {
+
+        public string nextMap;
+        public string nextMapDisplay;
         public List<string> destoryOnTheseLevels = new List<string>();
 
         public enum Table { Globals, Players, Teams }
@@ -81,6 +84,13 @@ namespace Gamestate {
                 vehiclePrefabName = null;
             }
 
+        }
+
+        [PunRPC]
+        public void UpdateMapDetails(string nextMapName, string nextMapDisplayName)
+        {
+            nextMap = nextMapName;
+            nextMapDisplay = nextMapDisplayName;
         }
         //  END DEPRECATED
     

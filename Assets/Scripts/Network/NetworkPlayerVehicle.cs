@@ -159,7 +159,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if (botGunner) gunnerPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
 
         // check if the driver is a human or a bot
-        //Debug.Log("GOT HERE 0");
+  
         // if they are a bot, then get the MASTER CLIENT to turn on ai controls
         if (botDriver && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiDriverScripts);
         // otherwise, find the driver player by their nickname. Tell their client to turn on player driver controls

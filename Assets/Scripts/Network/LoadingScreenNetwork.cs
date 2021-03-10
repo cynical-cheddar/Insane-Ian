@@ -24,8 +24,8 @@ public class LoadingScreenNetwork : MonoBehaviourPunCallbacks
     {
         // get the next scene from the gamestate tracker
         tracker = FindObjectOfType<GamestateTracker>();
-        nextScene = "Crater";
-        nextSceneDisplayName = "I CANT BE ARSED RIGHT NOW";
+        nextScene = tracker.nextMap;
+        nextSceneDisplayName = tracker.nextMapDisplay;
         nextMapText.text = nextSceneDisplayName;
         // tell all players to load it async
         playersInLobby = PhotonNetwork.CurrentRoom.PlayerCount;

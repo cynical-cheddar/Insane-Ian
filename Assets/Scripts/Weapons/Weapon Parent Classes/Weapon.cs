@@ -193,7 +193,7 @@ public class Weapon : MonoBehaviour
     //-----------------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------------------
     
-    protected void SetupWeapon()
+    public void SetupWeapon()
     {   
         // assign photon view to the gunner
         //Player gunnerPlayer = gunnerPhotonView.Owner;

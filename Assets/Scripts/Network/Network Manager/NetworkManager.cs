@@ -145,15 +145,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             sp = spawnPoints[teamId - 1];
         }
 
-        GameObject[] vehicles = Resources.LoadAll<GameObject>("VehiclePrefabs");
+        List<string> vehicleNames = gamestateTracker.GetComponent<GamestateVehicleLookup>().sortedVehicleNames;
 
         string vehiclePrefabName = defaultPlayerVehiclePrefabName;
-        /*if (!(team.vehiclePrefabName == "null" || team.vehiclePrefabName == null ||
-              team.vehiclePrefabName == ""))
-                vehiclePrefabName = team.vehiclePrefabName;*/
+        
         
         if (vehicle > 0) {
-            vehiclePrefabName = "VehiclePrefabs/" + vehicles[vehicle - 1].name;
+            vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[vehicle];
         }
 
         object[] instantiationData = new object[]{teamId};

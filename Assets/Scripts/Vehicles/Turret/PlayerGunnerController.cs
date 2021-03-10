@@ -31,6 +31,13 @@ public class PlayerGunnerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
       //  transform.parent = transform.parent.parent;
         camera.enabled = true;
+
+        
+        // setup the weapon photonviews such that uis are displayed correctly
+        
+        // this must also be done on the gunner ai script
+        if (gunnerWeaponManager == null) gunnerWeaponManager = GetComponent<GunnerWeaponManager>();
+        gunnerWeaponManager.SetupWeaponOwnerships();
     }
 
     void OnDisable()

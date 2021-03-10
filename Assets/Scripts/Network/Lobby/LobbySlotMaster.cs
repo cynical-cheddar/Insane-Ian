@@ -36,8 +36,9 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     public GamestateTracker gamestateTracker;
 
     bool hasPicked = false;
-    
-    
+
+    public GameObject teamSelectCanvas;
+    public GameObject vehicleSelectCanvas;
     
     
     
@@ -108,11 +109,11 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                     
                     // new gamestate tracker stuff
                     // kick players
-                    lobbyButtons[i].GetComponent<LobbyButtonScript>().TeamRemoveEntry();
+                    bool success = lobbyButtons[i].GetComponent<LobbyButtonScript>().TeamRemoveEntry();
                     
                     //set active false 
                     
-                    lobbyButtons[i].gameObject.SetActive(false);
+                    if(success) lobbyButtons[i].gameObject.SetActive(false);
                     
                     break;
                 }
@@ -156,9 +157,11 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         playersInLobby = PhotonNetwork.CurrentRoom.PlayerCount;
         int count = 0;
         // foreach player, sum the amount of readies
-        foreach(GamestateTracker.PlayerDetails pd in gamestateTracker.schema.playerList)
+        for (int i = 0; i < gamestateTracker.players.count; i++)
         {
-            if (pd.ready && !pd.isBot) count++;
+            PlayerEntry playerEntry = gamestateTracker.players.GetAtIndex(i);
+            if (playerEntry.isBot == false && playerEntry.ready) count++;
+            playerEntry.Release();
         }
         
         
@@ -289,13 +292,6 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         {
             if (readyPlayers >= selectedPlayers && readyPlayers >= playersInLobby && selectedMap != "null")
             {
-                // get all info from lobby buttons and fill in the gametracker object
-                FillIncompleteTeamsWithBots();
-                if (timeLimitText.text != "") gamestateTracker.timeLimit = float.Parse(timeLimitText.text);
-                PhotonNetwork.CurrentRoom.IsVisible = false;
-                gamestateTracker.ForceSynchronisePlayerSchema();
-                //Debug.Log("load new scene");
-                // delayed load just to make sure sync and for Jordan to check the network update. Remove in build
                 Invoke(nameof(delayedLoad), 0.1f);
             }
             else
@@ -303,6 +299,31 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 Debug.Log("Players no ready or no map selected");
             }
         }
+    }
+
+    public void VehicleSelectScreen()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (readyPlayers >= selectedPlayers && readyPlayers >= playersInLobby && selectedMap != "null")
+            {
+                // get all info from lobby buttons and fill in the gametracker object
+                FillIncompleteTeamsWithBots();
+                if (timeLimitText.text != "") gamestateTracker.timeLimit = float.Parse(timeLimitText.text);
+                PhotonNetwork.CurrentRoom.IsVisible = false;
+                Invoke(nameof(delayedVehicleSelect), 0.2f);
+            }
+            else
+            {
+                Debug.Log("Players no ready or no map selected");
+            }
+        }
+    }
+
+    void delayedVehicleSelect()
+    {
+        teamSelectCanvas.SetActive(false);
+        vehicleSelectCanvas.SetActive(true);
     }
 
     void delayedLoad()

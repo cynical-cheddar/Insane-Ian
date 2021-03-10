@@ -296,19 +296,20 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
 
 
     // called by the lobby button master when we create a team
-    public void TeamRemoveEntry()
+    public bool TeamRemoveEntry()
     {
-        
         lobbySlotMaster = FindObjectOfType<LobbySlotMaster>();
         gamestateTracker = FindObjectOfType<GamestateTracker>();
 
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
-        
+
+
+        bool canRemove = true;
         // look for the corresponding players in the team
         
         // get driver player (if they exist)
         short driverId = teamEntry.driverId;
-
+            
         if (driverId != 0)
         {
 
@@ -319,10 +320,8 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             // unready and unselect them
             else
             {
-                driverEntry.ready = false;
-                driverEntry.role = (short) PlayerEntry.Role.None;
-                driverEntry.teamId = 0;
-                driverEntry.Commit(TeamRemovePlayerFailureCallback);
+                canRemove = false;
+                driverEntry.Release();
             }
         }
 
@@ -340,16 +339,18 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             // unready and unselect them
             else
             {
-                gunnerEntry.ready = false;
-                gunnerEntry.role = (short) PlayerEntry.Role.None;
-                gunnerEntry.teamId = 0;
-                gunnerEntry.Commit(TeamRemovePlayerFailureCallback);
+                canRemove = false;
+                gunnerEntry.Release();
             }
         }
         
         Debug.Log("Deleting team entry");
+        
+        
+        if(canRemove)teamEntry.Delete();
+        else teamEntry.Release();
 
-        teamEntry.Delete();
+        return canRemove;
     }
 
 

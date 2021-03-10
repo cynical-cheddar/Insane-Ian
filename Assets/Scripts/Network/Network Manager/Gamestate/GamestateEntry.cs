@@ -225,7 +225,7 @@ namespace Gamestate {
         }
 
         internal void Apply(GamestatePacket packet) {
-            Debug.Log("applying packet" + packet);
+            Debug.Log("applying packet");
             Lock();
 
             if (packet.packetType == GamestatePacket.PacketType.Increment) {

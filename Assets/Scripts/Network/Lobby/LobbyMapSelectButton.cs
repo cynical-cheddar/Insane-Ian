@@ -31,8 +31,8 @@ public class LobbyMapSelectButton : MonoBehaviour
     public void SelectMap()
     {
         lobbySlotMaster.selectedMap = sceneName;
-        GetComponent<PhotonView>().RPC("UpdateMapImageAndName", RpcTarget.AllBufferedViaServer);
-        _gamestateTracker.GetComponent<PhotonView>().RPC("UpdateMapDetails", RpcTarget.AllBufferedViaServer, sceneName, sceneDisplayName);
+        GetComponent<PhotonView>().RPC(nameof(UpdateMapImageAndName), RpcTarget.AllBufferedViaServer);
+        _gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.UpdateMapDetails), RpcTarget.AllBufferedViaServer, sceneName, sceneDisplayName);
 
     }
 

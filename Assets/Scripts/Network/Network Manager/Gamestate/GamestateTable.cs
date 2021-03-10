@@ -102,6 +102,19 @@ namespace Gamestate {
 
             return foundEntry;
         }
+        
+        public T Read(short id) {
+            T foundEntry = null;
+            
+                foreach (T entry in entries) {
+                    if (entry.id == id) {
+                        foundEntry = entry;
+                        break;
+                    }
+                }
+
+                return foundEntry;
+        }
 
         public T GetAtIndex(int index) {
             T foundEntry = null;
