@@ -5,24 +5,23 @@ using Cinemachine;
 using Photon.Pun;
 
 [VehicleScript(ScriptType.playerDriverScript)]
-public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
-{
+public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback {
     CinemachineFreeLook cam;
     CinemachineVirtualCamera firstPersonCam;
     GamestateTracker gamestateTracker;
     VehicleManager vehicleManager;
     Transform thirdPersonFocus;
-    
+
 
     public bool lockCursorToWindow = true;
 
     bool isFirstPerson = false;
     int teamId;
-    
+
 
     // Start is called before the first frame update
     void Start() {
-        if (lockCursorToWindow) Cursor.lockState = CursorLockMode.Locked;
+        if (lockCursorToWindow && FindObjectOfType<PlinthManager>() == null) Cursor.lockState = CursorLockMode.Locked;
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         cam = GetComponentInChildren<CinemachineFreeLook>();
         firstPersonCam = GetComponentInChildren<CinemachineVirtualCamera>();
@@ -87,6 +86,6 @@ public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
     }
 
     void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
-        
+
     }
 }
