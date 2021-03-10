@@ -6,6 +6,8 @@ using UnityEditor;
 
     public class WaypointCircuit : MonoBehaviour
     {
+        [Header("open source code and uncomment gui stuff to edit ai tracks")]
+        
         public WaypointList waypointList = new WaypointList();
         [SerializeField] private bool smoothRoute = true;
         private int numPoints;
@@ -213,6 +215,9 @@ using UnityEditor;
             }
         }
     }
+
+// UNCOMMENT THIS SECTION WHEN YOU NEED TO MAKE WAYPOINTS
+
 /*
 namespace UnityStandardAssets.Utility.Inspector
 {
