@@ -51,6 +51,7 @@ public class VehicleSelector : MonoBehaviour
         // update the selected team vehicle in the gamestate tracker
         TeamEntry teamEntry = gamestateTracker.teams.Get(ourTeamId);
         teamEntry.vehicle = vehicleId;
+        teamEntry.hasSelectedVehicle = true;
         teamEntry.Commit();
         GetComponent<PhotonView>().RPC(nameof(DisplaySelectedVehicle_RPC), RpcTarget.All, vehicleId ,otherId, (short) PhotonNetwork.LocalPlayer.ActorNumber);
         

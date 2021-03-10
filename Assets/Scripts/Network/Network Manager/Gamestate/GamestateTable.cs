@@ -115,6 +115,15 @@ namespace Gamestate {
 
                 return foundEntry;
         }
+        public T ReadAtIndex(short index) {
+            T foundEntry = null;
+            
+            if (index < entries.Count) {
+               foundEntry = entries[index];
+            }
+
+            return foundEntry;
+        }
 
         public T GetAtIndex(int index) {
             T foundEntry = null;

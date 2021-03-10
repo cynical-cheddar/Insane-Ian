@@ -290,9 +290,12 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            // check each team to make sure that they have selected 
+            
             if (readyPlayers >= selectedPlayers && readyPlayers >= playersInLobby && selectedMap != "null")
             {
                 Invoke(nameof(delayedLoad), 0.1f);
+                
             }
             else
             {
@@ -311,7 +314,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 FillIncompleteTeamsWithBots();
                 if (timeLimitText.text != "") gamestateTracker.timeLimit = float.Parse(timeLimitText.text);
                 PhotonNetwork.CurrentRoom.IsVisible = false;
-                Invoke(nameof(delayedVehicleSelect), 0.2f);
+                GetComponent<PhotonView>().RPC(nameof(delayedVehicleSelect), RpcTarget.All);
             }
             else
             {
@@ -320,6 +323,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
     void delayedVehicleSelect()
     {
         teamSelectCanvas.SetActive(false);

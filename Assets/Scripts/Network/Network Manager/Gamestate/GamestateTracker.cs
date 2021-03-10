@@ -86,6 +86,9 @@ namespace Gamestate {
 
         }
 
+
+        
+
         [PunRPC]
         public void UpdateMapDetails(string nextMapName, string nextMapDisplayName)
         {

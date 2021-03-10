@@ -116,7 +116,7 @@ public class BeamWeapon : Weapon
         CeaseFire();
     }
 
-    protected new void SetupWeapon()
+    public override void SetupWeapon()
     {
         base.SetupWeapon();
         Debug.Log("SetupWeapon beam called");

@@ -444,11 +444,15 @@ namespace Gamestate {
         }
 
         //  Max 15 bool fields
-        public enum BoolFields { IsDead }
+        public enum BoolFields { IsDead, HasSelectedVehicle }
 
         public bool isDead {
             get { return boolValues[ (int)BoolFields.IsDead ]; }
             set { ChangeBoolValue( (int)BoolFields.IsDead, value ); }
+        }
+        public bool hasSelectedVehicle {
+            get { return boolValues[ (int)BoolFields.HasSelectedVehicle ]; }
+            set { ChangeBoolValue( (int)BoolFields.HasSelectedVehicle, value ); }
         }
 
         public delegate void TeamListener(TeamEntry entry);

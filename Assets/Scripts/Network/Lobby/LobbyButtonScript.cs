@@ -58,9 +58,17 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         // add a listener to team record
       //  TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
 
-        teamEntry.AddListener(TeamListenerCallback);
+        
         teamEntry.Commit();
- 
+        GetComponent<PhotonView>().RPC(nameof(AddListenerToThisTeam), RpcTarget.AllBufferedViaServer);
+    }
+
+    [PunRPC]
+    void AddListenerToThisTeam()
+    {
+        TeamEntry teamEntry = gamestateTracker.teams.Read((short)teamId);
+        teamEntry.AddListener(TeamListenerCallback);
+     //   teamEntry.Commit();
     }
  
     

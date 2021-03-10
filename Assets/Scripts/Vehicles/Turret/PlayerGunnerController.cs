@@ -91,7 +91,7 @@ public class PlayerGunnerController : MonoBehaviour
         turretController.UpdateTargeterRotation();
 
         CinemachineTransposer cinemachineTransposer = camera.GetCinemachineComponent<CinemachineTransposer>();
-        cinemachineTransposer.m_FollowOffset.y = Mathf.Max(cinemachineTransposer.m_FollowOffset.y - Input.mouseScrollDelta.y * 0.2f, 1.5f);
+        cinemachineTransposer.m_FollowOffset.y = Mathf.Max(cinemachineTransposer.m_FollowOffset.y - Input.mouseScrollDelta.y * 0.1f, 0.8f);
         cinemachineTransposer.m_FollowOffset.z = Mathf.Min(cinemachineTransposer.m_FollowOffset.z + Input.mouseScrollDelta.y * 0.6f, -3f);
     }
 
