@@ -37,15 +37,17 @@ public class PlinthManager : MonoBehaviour
     }
 
     void UpdateText() {
-        sortedTeams = scoringHelper.SortTeams(gamestateTracker.schema.teamsList);
+        // Sort teams by score
+        List<TeamEntry> sortedTeams = scoringHelper.SortTeams(gamestateTracker);
+
         if (PhotonNetwork.IsMasterClient) SpawnPlayerVehicles();
-        plinthTexts[0].text = $"Team {sortedTeams[0].teamId}";
-        if (sortedTeams.Count > 1) plinthTexts[1].text = $"Team {sortedTeams[1].teamId}";
-        if (sortedTeams.Count > 2) plinthTexts[2].text = $"Team {sortedTeams[2].teamId}";
+        plinthTexts[0].text = sortedTeams[0].name;
+        if (sortedTeams.Count > 1) plinthTexts[1].text = sortedTeams[1].name;
+        if (sortedTeams.Count > 2) plinthTexts[2].text = sortedTeams[2].name;
 
         string newText = "";
-        foreach (GamestateTracker.TeamDetails team in sortedTeams) {
-            newText += $"Team {team.teamId} -- Score: {scoringHelper.CalcScore(team)} -- K/D/A: {team.kills}/{team.deaths}/{team.assists}\n";
+        foreach (TeamEntry team in sortedTeams) {
+            newText += $"{team.name} -- Score: {scoringHelper.CalcScore(team)} -- K/D/A: {team.kills}/{team.deaths}/{team.assists}\n";
         }
         scoreboardText.text = newText;
     }
