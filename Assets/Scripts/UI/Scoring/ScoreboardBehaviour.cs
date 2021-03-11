@@ -66,7 +66,10 @@ public class ScoreboardBehaviour : MonoBehaviour {
             teamPanels[0].PositionShadow.sprite = positionImages[0];
         } else {
             // Display player's team score
-            TeamEntry team = gamestateTracker.teams.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+            PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+            short teamId = player.teamId;
+            player.Release();
+            TeamEntry team = gamestateTracker.teams.Get(teamId);
             teamPanels[0].TeamName.text = team.name;
             teamPanels[0].TeamScore.text = $"Score: {scoringHelper.CalcScore(team)}";
             teamPanels[0].TeamKDA.text = $"K/D/A: {team.kills}/{team.deaths}/{team.assists}";
@@ -77,6 +80,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
                     teamPanels[0].PositionShadow.sprite = positionImages[i];
                 }
             }
+            team.Release();
         }
     }
 
