@@ -8,9 +8,12 @@ public class OnlyInteractableIfMaster : MonoBehaviour
 {
     
     // Start is called before the first frame update
+    public bool disableIfNotMaster = false;
     void Start()
     {
         if(!PhotonNetwork.IsMasterClient)GetComponent<Button>().interactable = false;
+        
+        if(disableIfNotMaster && !PhotonNetwork.IsMasterClient) gameObject.SetActive(false);
         
     }
 
