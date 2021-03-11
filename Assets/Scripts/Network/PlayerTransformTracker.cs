@@ -39,6 +39,7 @@ public class PlayerTransformTracker : MonoBehaviour
             if (pair.teamId == id)
             {
                 vehicle = pair.vehicleTransform;
+                break;
             }
         }
 

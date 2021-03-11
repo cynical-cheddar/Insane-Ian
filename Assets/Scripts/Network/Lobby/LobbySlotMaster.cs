@@ -294,6 +294,13 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             
             if (readyPlayers >= selectedPlayers && readyPlayers >= playersInLobby && selectedMap != "null")
             {
+                GlobalsEntry globals = gamestateTracker.globals;
+                if (timeLimitText.text != "") {
+                    globals.timeLimit = short.Parse(timeLimitText.text);
+                } else {
+                    globals.timeLimit = 0;
+                }
+                globals.Commit();
                 Invoke(nameof(delayedLoad), 0.1f);
                 
             }

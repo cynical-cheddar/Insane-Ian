@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 using Random = UnityEngine.Random;
@@ -23,6 +24,8 @@ using Random = UnityEngine.Random;
         // "wandering" is used to give the cars a more human, less robotic feel. They can waver slightly
         // in speed and direction while driving towards their target.
 
+        public LayerMask sensorLayerMask;
+        
         [SerializeField] [Range(0, 1)] private float m_CautiousSpeedFactor = 0.05f;               // percentage of max speed to use when being maximally cautious
         [SerializeField] [Range(0, 180)] private float m_CautiousMaxAngle = 50f;                  // angle of approaching corner to treat as warranting maximum caution
         [SerializeField] private float m_CautiousMaxDistance = 100f;                              // distance at which distance-based cautiousness begins
@@ -51,7 +54,9 @@ using Random = UnityEngine.Random;
 
         public float maxSpeed = 30f;
 
-        public string terraintag = "DustGround";
+
+        public List<string> terrainTags = new List<string>();
+     //   public string terraintag = "DustGround";
         
         [Header("Sensors")]
         public float sensorLength = 3f;
@@ -62,6 +67,8 @@ using Random = UnityEngine.Random;
         public bool yeaaahhhhh = true;
 
         private bool inThreePointTurn = false;
+
+        protected bool circuitFound = false;
         private void Awake()
         {
             // get the car controller reference
@@ -74,6 +81,8 @@ using Random = UnityEngine.Random;
             
             CarDriver = interfaceCarDrive.GetComponent<IDrivable>();
             m_Driving = true;
+            WaypointCircuit wpc = FindObjectOfType<WaypointCircuit>();
+            if (wpc != null) circuitFound = true;
         }
 
         IEnumerator ThreePointTurn()
@@ -110,38 +119,41 @@ using Random = UnityEngine.Random;
 
         private void FixedUpdate()
         {
-            if (m_Rigidbody.velocity.magnitude < 0.2)
+            if (circuitFound)
             {
-                stuckTimer += Time.deltaTime;
-            }
-            else
-            {
-                stuckTimer = 0;
-            }
-
-            if (stuckTimer > 1 && !inThreePointTurn)
-            {
-                StartCoroutine(ThreePointTurn());
-            }
-
-            if (!inThreePointTurn)
-            {
-                if (m_Target == null || !m_Driving)
+                if (m_Rigidbody.velocity.magnitude < 0.2)
                 {
-                    // Car should not be moving,
-                    // use handbrake to stop
-                    //m_CarController.Move(0, 0, -1f, 1f);
-                    CarDriver.Brake();
-                    CarDriver.StopAccellerate();
-                }
-                // do sensor stuff
-                else if (SensorsManouvre())
-                {
-                    
+                    stuckTimer += Time.deltaTime;
                 }
                 else
                 {
-                    NormalDriving();
+                    stuckTimer = 0;
+                }
+
+                if (stuckTimer > 0.5 && !inThreePointTurn)
+                {
+                    StartCoroutine(ThreePointTurn());
+                }
+
+                if (!inThreePointTurn)
+                {
+                    if (m_Target == null || !m_Driving)
+                    {
+                        // Car should not be moving,
+                        // use handbrake to stop
+                        //m_CarController.Move(0, 0, -1f, 1f);
+                        CarDriver.Brake();
+                        CarDriver.StopAccellerate();
+                    }
+                    // do sensor stuff
+                    else if (SensorsManouvre())
+                    {
+
+                    }
+                    else
+                    {
+                        NormalDriving();
+                    }
                 }
             }
         }
@@ -158,46 +170,38 @@ using Random = UnityEngine.Random;
 
             //front right sensor
             sensorStartPos += transform.right * frontSideSensorPosition;
-            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength)) {
-                if (!hit.collider.CompareTag(terraintag)) {
-                    Debug.DrawLine(sensorStartPos, hit.point);
+            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
+                Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier -= 1f;
                 }
-            }
 
             //front right angle sensor
-            else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength)) {
-                if (!hit.collider.CompareTag("DustGround")) {
-                    Debug.DrawLine(sensorStartPos, hit.point);
+            else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength, sensorLayerMask)) {
+                Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier -= 0.5f;
                 }
-            }
 
             //front left sensor
             sensorStartPos -= transform.right * (frontSideSensorPosition * 2);
-            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength)) {
-                if (!hit.collider.CompareTag(terraintag)) {
-                    Debug.DrawLine(sensorStartPos, hit.point);
+            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
+                Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 1f;
-                }
             }
 
             //front left angle sensor
-            else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength)) {
-                if (!hit.collider.CompareTag(terraintag)) {
-                    Debug.DrawLine(sensorStartPos, hit.point);
+            else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength, sensorLayerMask)) {
+                Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 0.5f;
                 }
-            }
 
             //front center sensor
             if (avoidMultiplier == 0) {
-                if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength)) {
-                    if (!hit.collider.CompareTag(terraintag)) {
+                if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
+                    if (!terrainTags.Contains(hit.collider.tag)) {
                         Debug.DrawLine(sensorStartPos, hit.point);
                         avoiding = true;
                         if (hit.normal.x < 0) {
