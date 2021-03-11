@@ -272,7 +272,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         var lEmission = leftPS.emission;
         var rEmission = rightPS.emission;
 
-        if (lGrounded && rearLeftW.rpm > Mathf.Abs(200)) {
+        if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (lHit.collider.CompareTag("DustGround")){
                 lEmission.enabled = true;
             } else {
@@ -281,7 +281,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         } else {
             lEmission.enabled = false;
         }
-        if (rGrounded && rearRightW.rpm > Mathf.Abs(200)) {
+        if (rGrounded && (Mathf.Abs(rearRightW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (rHit.collider.CompareTag("DustGround")) {
                 rEmission.enabled = true;
             } else {
