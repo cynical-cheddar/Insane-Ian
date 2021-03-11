@@ -81,11 +81,25 @@ using Random = UnityEngine.Random;
             inThreePointTurn = true;
             float elapsedTime = 0;
             float maxTime = 1.5f;
+
+            Vector3 targetPos = m_Target.position;
+            Vector3 targetDir = targetPos - transform.position;
+            
+            float dotResult = Vector3.Dot(transform.forward, targetDir);
+            float turnDir = 0;
+            if (dotResult > 0.0) {
+                turnDir = 1.0f;
+            } else if (dotResult < 0.0) {
+                turnDir = -1.0f;
+            } else {
+                turnDir = 0.0f;
+            }
+            
             while (elapsedTime<=maxTime)
             {
                 elapsedTime += Time.deltaTime;
                 CarDriver.Reverse();
-                CarDriver.Steer(1);
+                CarDriver.Steer(-turnDir);
                 yield return new WaitForFixedUpdate();
             }
 
@@ -197,7 +211,8 @@ using Random = UnityEngine.Random;
 
             if (avoiding) {
                 CarDriver.Steer(avoidMultiplier);
-
+                if(avoidMultiplier >= 1 && m_Rigidbody.velocity.magnitude > maxSpeed/2) CarDriver.Brake();
+                else if(avoidMultiplier <= -1 && m_Rigidbody.velocity.magnitude > maxSpeed/2) CarDriver.Brake();
             }
 
             return avoiding;
@@ -261,7 +276,7 @@ using Random = UnityEngine.Random;
                             break;
                     }
 
-                    // Evasive action due to collision with other cars:
+                    // Evasive action due to collision with other objects:
 
                     // our target position starts off as the 'real' target position
                     Vector3 offsetTargetPos = m_Target.position;
