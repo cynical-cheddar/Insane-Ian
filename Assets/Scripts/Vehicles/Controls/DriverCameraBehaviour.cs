@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
+using Gamestate;
 
 [VehicleScript(ScriptType.playerDriverScript)]
 public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback {
@@ -34,7 +35,11 @@ public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
     }
 
     void AssignPriority() {
-        if (gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId == vehicleManager.teamId) {
+        PlayerEntry entry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+        int teamId = entry.teamId;
+        entry.Release();
+
+        if (teamId == vehicleManager.teamId) {
             cam.enabled = true;
             cam.Priority = 100;
         }

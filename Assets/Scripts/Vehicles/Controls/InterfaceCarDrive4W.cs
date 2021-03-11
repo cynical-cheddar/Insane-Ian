@@ -59,7 +59,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
 
     //direction is -1 for left and +1 for right, 0 for center
-    void IDrivable.Steer(int targetDirection) {
+    void IDrivable.Steer(float targetDirection) {
         float targetAngle;
         float steerAngle;
 
@@ -272,7 +272,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         var lEmission = leftPS.emission;
         var rEmission = rightPS.emission;
 
-        if (lGrounded){
+        if (lGrounded && rearLeftW.rpm > Mathf.Abs(200)) {
             if (lHit.collider.CompareTag("DustGround")){
                 lEmission.enabled = true;
             } else {
@@ -281,7 +281,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         } else {
             lEmission.enabled = false;
         }
-        if (rGrounded) {
+        if (rGrounded && rearRightW.rpm > Mathf.Abs(200)) {
             if (rHit.collider.CompareTag("DustGround")) {
                 rEmission.enabled = true;
             } else {

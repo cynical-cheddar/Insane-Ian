@@ -57,6 +57,7 @@ public class BeamWeapon : Weapon
 
     [Header("Beam Settings")] 
     public float extraRechargeTimeOnDepletion = 4f;
+    public float extraRechargeTimeOnCeaseFire = 1f;
     public bool muzzleFlashChildOfBarrel = true;
     public float hitscanRange = 10000f;
     protected Rigidbody parentRigidbody;
@@ -122,14 +123,14 @@ public class BeamWeapon : Weapon
        // DestroyBeam();
         SetIsRemotelyFiring(false);
         weaponPhotonView.RPC(nameof(DestroyBeam), RpcTarget.All);
-        
+        StartCoroutine(DoBonusRecharge(extraRechargeTimeOnCeaseFire));
         
     }
 
-    protected IEnumerator DoBonusRecharge()
+    protected IEnumerator DoBonusRecharge(float amt)
     {
         isRecharging = true;
-        yield return new WaitForSeconds(extraRechargeTimeOnDepletion);
+        yield return new WaitForSeconds(amt);
         isRecharging = false;
     }
 
@@ -202,8 +203,8 @@ public class BeamWeapon : Weapon
 
             if (!HasAmmoToShoot() && !isRecharging)
             {
-                StartCoroutine(DoBonusRecharge());
-                Invoke(nameof(CeaseFire), fireRate/2);
+               // StartCoroutine(DoBonusRecharge(extraRechargeTimeOnDepletion));
+                CeaseFire();
                 
             }
             
@@ -308,14 +309,16 @@ public class BeamWeapon : Weapon
     {
         AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate impact particle with miss sound effect
-        InstantiateImpactEffect(missImpactParticle, targetPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
+        //InstantiateImpactEffect(missImpactParticle, targetPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
+        //PlayImpactSound();
     }
 
     protected void FireBeamRoundEffectHit(Vector3 targetPoint)
     {
         AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate impact particle with miss sound effect
-        InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
+       // InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
+        PlayImpactSound();
     }
     
     
@@ -357,12 +360,13 @@ public class BeamWeapon : Weapon
             // convert local targetpoint into world point
             Vector3 worldPoint = targetVehicle.TransformPoint(oldHit.localHitpoint);
             // instantiate impact at worldPoint
-            InstantiateImpactEffect(imapactParticle, worldPoint, impactParticleSound, imapactParticleVolume, 2f);
+           // InstantiateImpactEffect(imapactParticle, worldPoint, impactParticleSound, imapactParticleVolume, 2f);
+            PlayImpactSound();
         }
         
         else if (oldHit.validHit)
         {
-            InstantiateImpactEffect(missImpactParticle, oldHit.worldHitPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
+           // InstantiateImpactEffect(missImpactParticle, oldHit.worldHitPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
         }
         
 
@@ -649,6 +653,11 @@ public class BeamWeapon : Weapon
         a.volume = volume;
         a.Play();
         Destroy(a, lifeTime);
+    }
+
+    void PlayImpactSound()
+    {
+        beamEnd.GetComponent<AudioSource>().PlayOneShot(impactParticleSound, imapactParticleVolume);
     }
 
     protected void InstantiateMuzzleFlash(GameObject effect, float lifetime, bool childOfMuzzle)

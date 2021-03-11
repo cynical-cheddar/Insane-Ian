@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Gamestate;
 
 
 public class VehicleManager : MonoBehaviour
@@ -265,21 +266,29 @@ public class VehicleManager : MonoBehaviour
         // update my deaths
         if (updateDeath)
         {
-            GamestateTracker.TeamDetails myRecord = gamestateTracker.getTeamDetails(teamId);
+            /*GamestateTracker.TeamDetails myRecord = gamestateTracker.getTeamDetails(teamId);
             myRecord.deaths += 1;
             myRecord.isDead = true;
             gamestateTrackerPhotonView.RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.All, teamId,
-                JsonUtility.ToJson(myRecord));
-            
+                JsonUtility.ToJson(myRecord));*/
+
+            TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+            teamEntry.deaths += 1;
+            teamEntry.isDead = true;
+            teamEntry.Increment();
         }
 
         if (updateKill)
         {
             // update their kills
-            GamestateTracker.TeamDetails theirRecord = gamestateTracker.getTeamDetails(lastHitDetails.sourceTeamId);
+            /*GamestateTracker.TeamDetails theirRecord = gamestateTracker.getTeamDetails(lastHitDetails.sourceTeamId);
             theirRecord.kills += 1;
             gamestateTrackerPhotonView.RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.All,
-                lastHitDetails.sourceTeamId, JsonUtility.ToJson(theirRecord));
+                lastHitDetails.sourceTeamId, JsonUtility.ToJson(theirRecord));*/
+            
+            TeamEntry teamEntry = gamestateTracker.teams.Get((short)lastHitDetails.sourceTeamId);
+            teamEntry.kills += 1;
+            teamEntry.Increment();
         }
 
 
@@ -296,7 +305,23 @@ public class VehicleManager : MonoBehaviour
         inputDriver.enabled = false;
         rb.drag = 0.75f;
         rb.angularDrag = 0.75f;
-        StartCoroutine(stopControls(2.95f));
+        float x, y, z;
+        x = Random.Range(-0.5f, 0.5f);
+        if (x < 0) {
+            x -= 1.5f;
+        } else {
+            x += 1.5f;
+        }
+        y = 0.9f;
+        z = Random.Range(0, 2f);
+        
+        Vector3 explodePos = new Vector3(x, y, z);
+        Vector3 newCom = new Vector3(0, 1.3f, 0);
+        rb.centerOfMass = newCom;
+        rb.angularDrag = 0.1f;
+        rb.AddForce(explodePos*rb.mass * 10f, ForceMode.Impulse);
+        rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
+        StartCoroutine(stopControls(1.7f));
     }
 
     IEnumerator stopControls(float time) {

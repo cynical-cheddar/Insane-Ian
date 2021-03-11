@@ -9,7 +9,7 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GamestateTracker : MonoBehaviourPunCallbacks
+public class GamestateTrackerOld : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
     public List<string> destoryOnTheseLevels = new List<string>();
@@ -381,10 +381,10 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
     // return a list of pairs in the playerlist
     public List<List<PlayerDetails>> GetPlayerPairs()
     {
-        List<GamestateTracker.PlayerDetails> playerDetailsList = schema.playerList;
+        List<PlayerDetails> playerDetailsList = schema.playerList;
         List<int> uniqueTeamIds = new List<int>();
         // iterate through list to get all of the team ids
-        foreach (GamestateTracker.PlayerDetails record in playerDetailsList)
+        foreach (PlayerDetails record in playerDetailsList)
         {
             if (!uniqueTeamIds.Contains(record.teamId))
             {
@@ -393,12 +393,12 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
         }
 
         // get a gunner and driver from each unique team, compiling a list of player detail pairs
-        List<List<GamestateTracker.PlayerDetails>> playerDetailsPairs = new List<List<GamestateTracker.PlayerDetails>>();
+        List<List<PlayerDetails>> playerDetailsPairs = new List<List<PlayerDetails>>();
         foreach (int team in uniqueTeamIds)
         {
             // search our current team for players belonging to team i
-            List<GamestateTracker.PlayerDetails> pair = new List<GamestateTracker.PlayerDetails>();
-            foreach (GamestateTracker.PlayerDetails record in schema.playerList)
+            List<PlayerDetails> pair = new List<PlayerDetails>();
+            foreach (PlayerDetails record in schema.playerList)
             {
                 if (record.teamId == team)
                 {
@@ -417,7 +417,7 @@ public class GamestateTracker : MonoBehaviourPunCallbacks
 
     public PlayerDetails GetPlayerWithDetails(string nickname = null, int playerId = 0, string role = null, string character = null, int teamId = 0)
     {
-        foreach (GamestateTracker.PlayerDetails record in schema.playerList)
+        foreach (PlayerDetails record in schema.playerList)
         {
             if ((nickname  == null || record.nickName  == nickname)  &&
                 (playerId  == 0    || record.playerId  == playerId)  &&

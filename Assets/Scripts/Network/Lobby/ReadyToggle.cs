@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using Gamestate;
 
 public class ReadyToggle : MonoBehaviour
 {
@@ -23,23 +24,21 @@ public class ReadyToggle : MonoBehaviour
 
     public void changeReadyStatus()
     {
+        PlayerEntry playerEntry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         
         bool state = toggle.isOn;
         
         // check if it is valid to ready up. If we have not selected a slot, set to false
-        if (toggle.isOn && !lobbySlotMaster.getHasPicked())
-        {
-            toggle.isOn = false;
-        }
+
+        if (playerEntry.role == (short)PlayerEntry.Role.None) toggle.isOn = false;
+
+
+
+        playerEntry.ready = toggle.isOn;
+        playerEntry.Commit();
         
-        // update gamestate tracker with ready id
-        GamestateTracker.PlayerDetails pd = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber);
-        pd.ready = toggle.isOn;
-        gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.UpdatePlayerWithNewRecord), RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer.ActorNumber, JsonUtility.ToJson(pd)); 
+        lobbySlotMaster.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.UpdateCountAndReady), RpcTarget.All);
         
-    //    if(state)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.changeReadyPlayers), RpcTarget.AllBufferedViaServer, 1);
-     //   else lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.changeReadyPlayers), RpcTarget.AllBufferedViaServer, -1);
-        lobbySlotMaster.changeReadyPlayers(0);
     }
 
     public void setReadyStatus(bool set)
