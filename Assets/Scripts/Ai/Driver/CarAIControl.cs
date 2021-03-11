@@ -62,6 +62,8 @@ using Random = UnityEngine.Random;
         public bool yeaaahhhhh = true;
 
         private bool inThreePointTurn = false;
+
+        protected bool circuitFound = false;
         private void Awake()
         {
             // get the car controller reference
@@ -74,6 +76,8 @@ using Random = UnityEngine.Random;
             
             CarDriver = interfaceCarDrive.GetComponent<IDrivable>();
             m_Driving = true;
+            WaypointCircuit wpc = FindObjectOfType<WaypointCircuit>();
+            if (wpc != null) circuitFound = true;
         }
 
         IEnumerator ThreePointTurn()
@@ -110,38 +114,41 @@ using Random = UnityEngine.Random;
 
         private void FixedUpdate()
         {
-            if (m_Rigidbody.velocity.magnitude < 0.2)
+            if (circuitFound)
             {
-                stuckTimer += Time.deltaTime;
-            }
-            else
-            {
-                stuckTimer = 0;
-            }
-
-            if (stuckTimer > 1 && !inThreePointTurn)
-            {
-                StartCoroutine(ThreePointTurn());
-            }
-
-            if (!inThreePointTurn)
-            {
-                if (m_Target == null || !m_Driving)
+                if (m_Rigidbody.velocity.magnitude < 0.2)
                 {
-                    // Car should not be moving,
-                    // use handbrake to stop
-                    //m_CarController.Move(0, 0, -1f, 1f);
-                    CarDriver.Brake();
-                    CarDriver.StopAccellerate();
-                }
-                // do sensor stuff
-                else if (SensorsManouvre())
-                {
-                    
+                    stuckTimer += Time.deltaTime;
                 }
                 else
                 {
-                    NormalDriving();
+                    stuckTimer = 0;
+                }
+
+                if (stuckTimer > 0.5 && !inThreePointTurn)
+                {
+                    StartCoroutine(ThreePointTurn());
+                }
+
+                if (!inThreePointTurn)
+                {
+                    if (m_Target == null || !m_Driving)
+                    {
+                        // Car should not be moving,
+                        // use handbrake to stop
+                        //m_CarController.Move(0, 0, -1f, 1f);
+                        CarDriver.Brake();
+                        CarDriver.StopAccellerate();
+                    }
+                    // do sensor stuff
+                    else if (SensorsManouvre())
+                    {
+
+                    }
+                    else
+                    {
+                        NormalDriving();
+                    }
                 }
             }
         }
