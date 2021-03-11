@@ -255,7 +255,7 @@ public class Weapon : MonoBehaviour
     {
         if (!isSetup) SetupWeapon();
         
-        if(gunnerPhotonView!=null){ if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);}
+        if(gunnerPhotonView!=null && weaponUi!=null){ if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);}
         
 
         UpdateHud();
