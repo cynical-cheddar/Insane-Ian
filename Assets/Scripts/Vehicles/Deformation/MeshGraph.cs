@@ -29,6 +29,7 @@ namespace GraphBending {
                     groups.Add(new VertexGroup(i, vertices));
                 }
             }
+            groups.TrimExcess();
 
             for (int i = 0; i < mesh.triangles.Length; i += 3) {
                 int vertexIndexA = mesh.triangles[i];
@@ -60,6 +61,11 @@ namespace GraphBending {
                         groupC.connectingEdges.Add(edge);
                     }
                 }
+            }
+
+            for (int i = 0; i < groups.Count; i++) {
+                groups[i].vertexIndices.TrimExcess();
+                groups[i].connectingEdges.TrimExcess();
             }
         }
 

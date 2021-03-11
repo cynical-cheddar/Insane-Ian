@@ -6,7 +6,6 @@ namespace GraphBending {
         public VertexGroup(int vertexIndex, List<Vector3> vertices) {
             vertexIndices = new List<int>();
             connectingEdges = new List<Edge>();
-            connectingEdgeLengths = new List<float>();
             vertexIndices.Add(vertexIndex);
             wasMoved = false;
             enqueued = false;
@@ -63,6 +62,5 @@ namespace GraphBending {
         public Vector3 pos;
         public bool wasMoved;
         public bool enqueued;
-        public List<float> connectingEdgeLengths;
     }
 }
