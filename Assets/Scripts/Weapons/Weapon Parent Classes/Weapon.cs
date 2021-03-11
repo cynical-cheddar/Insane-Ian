@@ -202,7 +202,7 @@ public class Weapon : MonoBehaviour
     //-----------------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------------------
     
-    protected void SetupWeapon()
+    public virtual void SetupWeapon()
     {   
         // assign photon view to the gunner
         //Player gunnerPlayer = gunnerPhotonView.Owner;
@@ -233,7 +233,7 @@ public class Weapon : MonoBehaviour
     {
         if (!isSetup) SetupWeapon();
         
-        if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
+        if(gunnerPhotonView!=null){ if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);}
         
 
         UpdateHud();

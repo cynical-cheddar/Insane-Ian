@@ -1,4 +1,4 @@
-Shader "Unlit/shader 1"
+Shader "Unlit/Shader No Border"
 {
     Properties
     {
@@ -12,8 +12,7 @@ Shader "Unlit/shader 1"
         _RimAmount("Rim Amount", Range(0, 1)) = 0.716
         _RimThreshold("Rim Threshold", Range(0, 1)) = 0.1
 
-        _BorderColor("Border Color", Color) = (1,1,1,1)
-        _BorderAmount("Border Amount", Range(0, 1)) = 0.716
+        _NumberOfSections("Number Of Sections", Int) = 5
     }
     SubShader
     {
@@ -69,8 +68,8 @@ Shader "Unlit/shader 1"
             float _RimAmount;
             float _RimThreshold;
 
-            float4 _BorderColor;
-            float _BorderAmount;
+
+            int _NumberOfSections;
 
 
             v2f vert (appdata v)
@@ -96,17 +95,19 @@ Shader "Unlit/shader 1"
 
 
                 float shadow = SHADOW_ATTENUATION(i);
+                float lightIntensity = 0;
+                float4 light = 0;
 
-                float lightIntensity = smoothstep(0, 0.01, NdotL * shadow);
-
-                float4 light = lightIntensity * _LightColor0;
-
+                for (int j = -_NumberOfSections; j < _NumberOfSections; j++) {
+                    lightIntensity = NdotL > (1.0 / (j + 1)) ? 1 : 0;
+                    light += (0.5 / _NumberOfSections) * (lightIntensity * _LightColor0);
+                }
                 float3 viewDir = normalize(i.viewDir);
                 float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
                 float NdotH = dot(normal, halfVector);
                 float specularIntensity = pow(NdotH * lightIntensity, _Glossiness * _Glossiness);
 
-                float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);
+                float specularIntensitySmooth = smoothstep(0.01, 0.01, specularIntensity);
                 float4 specular = specularIntensitySmooth * _SpecularColor;
 
                 float4 rimDot = 1 - dot(viewDir, normal);
@@ -114,12 +115,9 @@ Shader "Unlit/shader 1"
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 float4 rim = rimIntensity * _RimColor;
 
-                float4 borderDot = 1 - dot(viewDir, normal);
-                float borderIntensity = smoothstep(_BorderAmount - 0.01, _BorderAmount + 0.01, borderDot);
-                float4 border = borderIntensity * _BorderColor;
+  
 
-
-                return _Color*col* (_AmbientColor+light + specular + rim + border);
+                return _Color * col * (_AmbientColor + light + specular + rim);
             }
             ENDCG
         }

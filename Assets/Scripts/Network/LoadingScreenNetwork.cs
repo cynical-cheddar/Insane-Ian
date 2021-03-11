@@ -4,7 +4,8 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-public class LoadingScreenNetwork : MonoBehaviourPunCallbacks
+using Gamestate;
+public class LoadingScreenNetwork : MonoBehaviour
 {
     // Start is called before the first frame update
     private string nextScene;
@@ -31,8 +32,8 @@ public class LoadingScreenNetwork : MonoBehaviourPunCallbacks
         playersInRoom = PhotonNetwork.CurrentRoom.PlayerCount;
         // get the next scene from the gamestate tracker
         tracker = FindObjectOfType<GamestateTracker>();
-        nextScene = tracker.mapDetails.sceneName;
-        nextSceneDisplayName = tracker.mapDetails.sceneDisplayName;
+        nextScene = tracker.nextMap;
+        nextSceneDisplayName = tracker.nextMapDisplay;
         nextMapText.text = nextSceneDisplayName;
         // tell all players to load it async
         playersInLobby = PhotonNetwork.CurrentRoom.PlayerCount;
@@ -70,7 +71,6 @@ public class LoadingScreenNetwork : MonoBehaviourPunCallbacks
         {
 
             float fltProgress = Mathf.Clamp01(operation.progress / 0.9f);
-            Debug.Log(fltProgress);
             progressBar.fillAmount = fltProgress;
             if(fltProgress < 0.99) percentText.text = Mathf.RoundToInt(fltProgress * 100) + "%";
             else percentText.text = "Waiting for players";

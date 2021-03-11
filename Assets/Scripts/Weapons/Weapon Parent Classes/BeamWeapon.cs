@@ -203,7 +203,7 @@ public class BeamWeapon : Weapon
 
             if (!HasAmmoToShoot() && !isRecharging)
             {
-               // StartCoroutine(DoBonusRecharge(extraRechargeTimeOnDepletion));
+                StartCoroutine(DoBonusRecharge(extraRechargeTimeOnDepletion));
                 Invoke(nameof(CeaseFire), fireRate/2);
                 
             }
