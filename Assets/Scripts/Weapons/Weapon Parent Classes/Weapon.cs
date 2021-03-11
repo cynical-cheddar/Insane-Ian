@@ -57,6 +57,7 @@ public class Weapon : MonoBehaviour
     protected int myTeamId = 0;
     // Start is called before the first frame update
     [Header("Primary Properties")]
+    public bool fullClipOnSpawn = true;
     public string weaponName = "defaultWeapon"; 
     [Header("Self Transform")]
     public Transform barrelTransform;
@@ -150,6 +151,14 @@ public class Weapon : MonoBehaviour
     public virtual void DeselectWeapon()
     {
         
+    }
+
+    protected void Start()
+    {
+        if (fullClipOnSpawn)
+        {
+            currentSalvo = salvoSize;
+        }
     }
 
     protected Vector3 CalculateFireDeviation(Vector3 oldTargetPoint, float maxDegrees)

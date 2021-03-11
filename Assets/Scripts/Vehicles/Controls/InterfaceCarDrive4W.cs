@@ -50,11 +50,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public AudioSource EngineLow;
     public AudioSource EngineHigh;
     private float volume = 0;
-    [Space(5)]
-
-    [Header("Dust Trail")]
-    public ParticleSystem leftPS;
-    public ParticleSystem rightPS;
 
 
 
@@ -233,8 +228,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             EngineLow.volume = 1 - EngineHigh.volume;
         }
 
-        EngineLow.pitch = 2.4f + volume / 10;
-        EngineHigh.pitch = 2.4f + volume / 10;
+        EngineLow.pitch = 1.4f + volume / 10;
+        EngineHigh.pitch = 1.4f + volume / 10;
 
     }
     
@@ -264,41 +259,17 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
 
         }
-    }
-    private void Particles() {
-        WheelHit lHit, rHit;
-        bool lGrounded = rearLeftW.GetGroundHit(out lHit);
-        bool rGrounded = rearRightW.GetGroundHit(out rHit);
-        var lEmission = leftPS.emission;
-        var rEmission = rightPS.emission;
 
-        if (lGrounded){
-            if (lHit.collider.CompareTag("DustGround")){
-                lEmission.enabled = true;
-            } else {
-                lEmission.enabled = false;
-            }
-        } else {
-            lEmission.enabled = false;
-        }
-        if (rGrounded) {
-            if (rHit.collider.CompareTag("DustGround")) {
-                rEmission.enabled = true;
-            } else {
-                rEmission.enabled = false;
-            }
-        } else {
-            rEmission.enabled = false;
-        }
+
+
+
+
     }
     void FixedUpdate() {
         EngineNoise();
         AntiRoll(frontLeftW, frontRightW);
         AntiRoll(rearLeftW, rearRightW);
-        Particles();
     }
-
-    
 
     private void Start() {
         EngineIdle.volume = 0;

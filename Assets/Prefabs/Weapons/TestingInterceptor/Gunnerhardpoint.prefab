@@ -355,8 +355,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 1
-      value: 1
+      time: 0.99487305
+      value: 0.12741089
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -370,12 +370,12 @@ MonoBehaviour:
   damageMultiplierClosestRampupThreshold: 10
   salvoSize: 20
   reloadType: 0
-  reloadTime: 0.2
-  fireRate: 0.1
-  ammoPerShot: 1
+  reloadTime: 0.4
+  fireRate: 0.2
+  ammoPerShot: 2
   unlimitedAmmo: 1
   reserveAmmo: 100
-  baseDamage: 10
+  baseDamage: 20
   damageType: 1
   damageMultiplier: 1
   weaponAnimator: {fileID: 3983763730733962014}
@@ -392,7 +392,7 @@ MonoBehaviour:
   missImpactParticleVolume: 0.75
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
-  muzzleflash: {fileID: 1256538573138234745, guid: 7a6b5bbe2de775041b198c68e6b8fa81,
+  muzzleflash: {fileID: 1256538573138234745, guid: 1c7dc0b55fe10d149bf2e550ee9762b9,
     type: 3}
   imapactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
@@ -403,9 +403,9 @@ MonoBehaviour:
   hitscanRange: 10000
   instantBeam: 0
   beamStartLoop: {fileID: 8300000, guid: 24f8877f089cc544c878a85322a79a41, type: 3}
-  beamStartLoopVolume: 1
+  beamStartLoopVolume: 0.788
   beamEndLoop: {fileID: 8300000, guid: 24f8877f089cc544c878a85322a79a41, type: 3}
-  beamEndLoopVolume: 1
+  beamEndLoopVolume: 0.808
   beamLineRendererPrefab: {fileID: 191804, guid: e14870dc8e4e2514097cc525245a2c53,
     type: 3}
   beamStartPrefab: {fileID: 145616, guid: 255092eaa2ad4ee43b3ccbb318023175, type: 3}
@@ -538,14 +538,14 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageMultiplierPlateuDistance: 100
   damageMultiplierClosestRampupThreshold: 10
-  salvoSize: 10
+  salvoSize: 25
   reloadType: 1
   reloadTime: 1
-  fireRate: 0.2
+  fireRate: 0.1
   ammoPerShot: 1
   unlimitedAmmo: 1
   reserveAmmo: 100
-  baseDamage: 2.5
+  baseDamage: 10
   damageType: 0
   damageMultiplier: 1
   weaponAnimator: {fileID: 3983763730733962014}
@@ -562,7 +562,7 @@ MonoBehaviour:
   missImpactParticleVolume: 0.7
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
-  muzzleflash: {fileID: 1256538573138234745, guid: 7a6b5bbe2de775041b198c68e6b8fa81,
+  muzzleflash: {fileID: 1256538573138234745, guid: b2e2d7d52a0928c4a97395023a1a9cc9,
     type: 3}
   imapactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
@@ -577,6 +577,10 @@ MonoBehaviour:
   hitscanRange: 1000
   useRapidFireOptimisation: 1
   stopFireFxLoopThreshold: 0.22
+  rapidFireMuzzleLoopFx: {fileID: 1256538573138234745, guid: 7a6b5bbe2de775041b198c68e6b8fa81,
+    type: 3}
+  rapidFireMuzzleAudioLoop: {fileID: 8300000, guid: b61d95b82840d5941acf99b26909f2e5,
+    type: 3}
 --- !u!1 &8454796729996456043
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,7 +604,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8454796729996456043}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.728, z: -1.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -623,7 +627,7 @@ PrefabInstance:
         type: 3}
       propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[0].weapons.Array.data[0]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8716604607105511506}
     - target: {fileID: 8611565673091648864, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: m_RootOrder
@@ -683,6 +687,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Turret
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950278, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_Lens.FieldOfView
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f84a8310268c4376bb6a418458e0579, type: 3}
