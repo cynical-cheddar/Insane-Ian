@@ -14,6 +14,7 @@ public class PlinthManager : MonoBehaviour {
     GamestateTracker gamestateTracker;
     readonly ScoringHelper scoringHelper = new ScoringHelper();
     List<TeamEntry> sortedTeams;
+    public string returnToMenuScene = "menu";
 
     // Start is called before the first frame update
     void Start() {
@@ -59,8 +60,10 @@ public class PlinthManager : MonoBehaviour {
         scoreboardText.text = newText;
     }
 
-    public void ReturnToMainMenu() {
-        SceneManager.LoadScene("menu");
+    public void ReturnToMainMenu()
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(returnToMenuScene);
     }
 
 }

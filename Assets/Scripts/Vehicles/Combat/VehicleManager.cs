@@ -321,7 +321,7 @@ public class VehicleManager : MonoBehaviour
         rb.angularDrag = 0.1f;
         rb.AddForce(explodePos*rb.mass * 10f, ForceMode.Impulse);
         rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
-        StartCoroutine(stopControls(2.95f));
+        StartCoroutine(stopControls(1.7f));
     }
 
     IEnumerator stopControls(float time) {
