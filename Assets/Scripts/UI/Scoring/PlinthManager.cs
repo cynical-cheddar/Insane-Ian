@@ -14,7 +14,7 @@ public class PlinthManager : MonoBehaviour
     public string defaultVehiclePrefabName;
     GamestateTracker gamestateTracker;
     readonly ScoringHelper scoringHelper = new ScoringHelper();
-    List<GamestateTracker.TeamDetails> sortedTeams;
+    List<TeamEntry> sortedTeams;
 
     // Start is called before the first frame update
     void Start() {
@@ -25,22 +25,30 @@ public class PlinthManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
+
+
     void SpawnPlayerVehicles() {
+        List<string> vehicleNames = gamestateTracker.GetComponent<GamestateVehicleLookup>().sortedVehicleNames;
+
         for (int i = 0; i < Mathf.Min(sortedTeams.Count, spawnpoints.Count); i++) {
-            object[] instantiationData = new object[] { sortedTeams[i].teamId };
-            if (sortedTeams[i].vehiclePrefabName != "" && sortedTeams[i].vehiclePrefabName != null && sortedTeams[i].vehiclePrefabName != "null") {
-                PhotonNetwork.Instantiate(sortedTeams[i].vehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation, 0, instantiationData);
-            } else {
-                PhotonNetwork.Instantiate(defaultVehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation, 0, instantiationData);
+            string vehiclePrefabName = defaultVehiclePrefabName;
+
+            if (sortedTeams[i].vehicle > 0) {
+                vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[sortedTeams[i].vehicle];
             }
+
+            object[] instantiationData = new object[] { (int)sortedTeams[i].id };
+
+            PhotonNetwork.Instantiate(vehiclePrefabName, spawnpoints[i].position, spawnpoints[i].rotation, 0, instantiationData);
         }
     }
 
     void UpdateText() {
         // Sort teams by score
-        List<TeamEntry> sortedTeams = scoringHelper.SortTeams(gamestateTracker);
+        sortedTeams = scoringHelper.SortTeams(gamestateTracker);
 
         if (PhotonNetwork.IsMasterClient) SpawnPlayerVehicles();
+
         plinthTexts[0].text = sortedTeams[0].name;
         if (sortedTeams.Count > 1) plinthTexts[1].text = sortedTeams[1].name;
         if (sortedTeams.Count > 2) plinthTexts[2].text = sortedTeams[2].name;
