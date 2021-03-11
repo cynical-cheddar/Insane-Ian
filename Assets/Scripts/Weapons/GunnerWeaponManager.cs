@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GunnerWeaponManager : MonoBehaviour
 {
 
@@ -90,6 +91,17 @@ public class GunnerWeaponManager : MonoBehaviour
         foreach (Weapon w in currentWeaponControlGroup.weapons)
         {
             w.CeaseFire();
+        }
+    }
+
+    public void SetupWeaponOwnerships()
+    {
+        foreach (WeaponControlGroup wcg in weaponControlGroups.weaponControlGroupList)
+        {
+            foreach (Weapon w in wcg.weapons)
+            {
+                w.SetupWeapon();
+            }
         }
     }
 }

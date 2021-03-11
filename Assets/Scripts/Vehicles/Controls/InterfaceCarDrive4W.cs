@@ -59,7 +59,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
 
     //direction is -1 for left and +1 for right, 0 for center
-    void IDrivable.Steer(int targetDirection) {
+    void IDrivable.Steer(float targetDirection) {
         float targetAngle;
         float steerAngle;
 

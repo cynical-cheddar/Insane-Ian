@@ -54,6 +54,8 @@ public class Weapon : MonoBehaviour
 
     protected int myPlayerId = 0;
 
+    protected VehicleManager myVehicleManager;
+
     protected int myTeamId = 0;
     // Start is called before the first frame update
     [Header("Primary Properties")]
@@ -79,6 +81,17 @@ public class Weapon : MonoBehaviour
     public int ammoPerShot = 1;
     public bool unlimitedAmmo = false;
     public int reserveAmmo = 100;
+    public bool fullSalvoOnStart = true;
+
+    protected int defaultSalvoSize;
+    protected ReloadType defaultReloadType;
+    protected float defaultReloadTime;
+    protected float defaultFireRate;
+    protected int defaultAmmoPerShot;
+    protected bool defaultUnlimitedAmmo;
+    protected int defaultReserveAmmo;
+
+
     [Header("Damage")]
     [SerializeField] protected float baseDamage = 10f;
     [SerializeField] protected DamageType damageType;
@@ -123,12 +136,30 @@ public class Weapon : MonoBehaviour
     
 
     [SerializeField] protected GameObject missImpactParticle;
+
     
-    // ---------------------- COPY THESE FUNCTIONS FOR EACH CHILD CLASS --------------------------------//
-    // ---------------------- RPCs DO NOT INHERIT FROM PARENT ------------------------------------------//
-    
-    // method called by weaponController
-    // we need a new version of this for every child class, otherwise the top level RPC will be called
+    protected void Awake()
+    {
+        defaultSalvoSize = salvoSize;
+        defaultReloadType = reloadType;
+        defaultReloadTime = reloadTime;
+        defaultFireRate = fireRate;
+        defaultAmmoPerShot = ammoPerShot;
+        defaultUnlimitedAmmo = unlimitedAmmo;
+        defaultReserveAmmo = reserveAmmo;
+    }
+
+    public void ResetWeaponToDefaults()
+    {
+        salvoSize = defaultSalvoSize;
+        reloadType = defaultReloadType;
+        reloadTime = defaultReloadTime;
+        fireRate = defaultFireRate;
+        ammoPerShot = defaultAmmoPerShot;
+        unlimitedAmmo = defaultUnlimitedAmmo;
+        reserveAmmo = defaultReserveAmmo;
+        
+    }
 
     protected void PlayAudioClipOneShot(AudioClip clip)
     {
@@ -193,13 +224,13 @@ public class Weapon : MonoBehaviour
     //-----------------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------------------
     
-    protected void SetupWeapon()
+    public virtual void SetupWeapon()
     {   
         // assign photon view to the gunner
         //Player gunnerPlayer = gunnerPhotonView.Owner;
         
         _networkPlayerVehicle = GetComponentInParent<NetworkPlayerVehicle>();
-        
+        myVehicleManager = GetComponentInParent<VehicleManager>();
         if (_networkPlayerVehicle != null)
         {
             myNickName = _networkPlayerVehicle.GetGunnerNickName();
@@ -215,7 +246,7 @@ public class Weapon : MonoBehaviour
 
         weaponUi = FindObjectOfType<WeaponUi>();
         _playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
-        ReloadSalvo();
+        if (fullSalvoOnStart) currentSalvo = salvoSize;
         isSetup = true;
     }
 
@@ -224,7 +255,7 @@ public class Weapon : MonoBehaviour
     {
         if (!isSetup) SetupWeapon();
         
-        if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
+        if(gunnerPhotonView!=null && weaponUi!=null){ if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);}
         
 
         UpdateHud();
@@ -355,7 +386,7 @@ public class Weapon : MonoBehaviour
 
     public virtual bool CanFire()
     {
-        if (currentCooldown <= 0)
+        if (currentCooldown <= 0 && myVehicleManager.health > 0)
         {
             if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
             else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;

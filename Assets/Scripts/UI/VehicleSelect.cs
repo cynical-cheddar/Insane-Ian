@@ -4,60 +4,79 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Photon.Pun;
+using Gamestate;
 
 public class VehicleSelect : MonoBehaviour
 {
     private Dropdown dropdown;
-    private GameObject[] vehicles;
-    private GameObject selectedVehicle;
+    private List<string> vehicleNames;
+    private string selectedVehicle;
     private GamestateTracker gamestateTracker;
+    private GamestateVehicleLookup gamestateVehicleLookup;
     private int currentTeamId = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
-
+        gamestateVehicleLookup = FindObjectOfType<GamestateVehicleLookup>();
         dropdown = GetComponent<Dropdown>();
         dropdown.ClearOptions();
 
-        vehicles = Resources.LoadAll<GameObject>("VehiclePrefabs");
+        vehicleNames = gamestateVehicleLookup.sortedVehicleNames;
 
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-        for (int i = 0; i < vehicles.Length; i++) {
-            options.Add(new Dropdown.OptionData(vehicles[i].name));
+        for (int i = 0; i < vehicleNames.Count; i++) {
+            options.Add(new Dropdown.OptionData(vehicleNames[i]));
         }
         dropdown.AddOptions(options);
 
-        selectedVehicle = vehicles[0];
+        selectedVehicle = vehicleNames[0];
+     
+        
     }
 
     public void SelectVehicle(int i) {
-        selectedVehicle = vehicles[i];
+        selectedVehicle = vehicleNames[i];
 
-        int teamId = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId;
+        PlayerEntry playerEntry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+        
+        
+        int teamId = playerEntry.teamId;
+        playerEntry.Release();
+        
         if (teamId != 0) {
-            GamestateTracker.TeamDetails teamDetails = gamestateTracker.getTeamDetails(teamId);
-            teamDetails.vehiclePrefabName = "VehiclePrefabs/" + selectedVehicle.name;
-            if (PhotonNetwork.IsMasterClient) gamestateTracker.UpdateTeamWithNewRecord(teamId, teamDetails);
-            else gamestateTracker.gameObject.GetComponent<PhotonView>().RPC("UpdateTeamWithNewRecord", RpcTarget.All, teamId, JsonUtility.ToJson(teamDetails));
+            // get team 
+            TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+            teamEntry.vehicle = (short) i;
+            teamEntry.Commit();
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+        
+        
+        
+        
+        
+        
+        /*
+        
+        
         // I cannot be arsed to make this efficient.
 
-        GamestateTracker.PlayerDetails me = gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber);
+        PlayerEntry me = gamestateTracker.players.Read((short)PhotonNetwork.LocalPlayer.ActorNumber);
 
         bool changedTeam = (me.teamId != currentTeamId);
         currentTeamId = me.teamId;
 
         bool interactable = false;
-        if (me.role == "Driver") interactable = true;
+        if (me.role == (short) PlayerEntry.Role.Driver) interactable = true;
         else {
-            if (me.role == "Gunner") {
+            if (me.role == (short) PlayerEntry.Role.Gunner) {
                 GamestateTracker.PlayerDetails them = gamestateTracker.GetPlayerWithDetails(role: "Driver", teamId: me.teamId);
                 interactable = !(them.role == "Driver" && !them.isBot);
             }
@@ -83,6 +102,6 @@ public class VehicleSelect : MonoBehaviour
             }
         }
 
-        dropdown.interactable = interactable;
+        dropdown.interactable = interactable;*/
     }
 }
