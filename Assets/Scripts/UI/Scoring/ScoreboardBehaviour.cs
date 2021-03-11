@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using Gamestate;
 
 public class ScoreboardBehaviour : MonoBehaviour
 {
@@ -18,7 +19,8 @@ public class ScoreboardBehaviour : MonoBehaviour
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         
         // Wait for the host to finish loading first
-        Invoke(nameof(UpdateScores), 0.1f);
+        //Invoke(nameof(UpdateScores), 0.1f);
+        UpdateScores();
     }
 
     private void Update() {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,11 @@ public class TurretFollowTarget : MonoBehaviour
         //}
         if (barrelTransform == null) barrelTransform = transform.Find("BarrelHinge");
         
+        virtualRotation = transform.rotation;
+    }
+
+    private void OnEnable()
+    {
         virtualRotation = transform.rotation;
     }
 
