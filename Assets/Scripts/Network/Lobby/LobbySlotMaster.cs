@@ -294,9 +294,6 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             
             if (readyPlayers >= selectedPlayers && readyPlayers >= playersInLobby && selectedMap != "null")
             {
-                GlobalsEntry globals = gamestateTracker.globals;
-                globals.timeLimit = short.Parse(timeLimitText.text);
-                globals.Commit();
                 Invoke(nameof(delayedLoad), 0.1f);
                 
             }
