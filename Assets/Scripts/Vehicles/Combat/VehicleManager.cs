@@ -296,6 +296,16 @@ public class VehicleManager : MonoBehaviour
         inputDriver.enabled = false;
         rb.drag = 0.75f;
         rb.angularDrag = 0.75f;
+        float x, y, z;
+        x = Random.Range(-1, 1);
+        y = 0.9f;
+        z = Random.Range(0, 2);
+        Vector3 explodePos = new Vector3(x, y, z);
+        rb.centerOfMass = Vector3.zero;
+        rb.angularDrag = 0.1f;
+        rb.AddForce(explodePos*rb.mass * 15f, ForceMode.Impulse);
+        rb.AddTorque(explodePos * rb.mass * 10f, ForceMode.Impulse);
+        Debug.Log("Here");
         StartCoroutine(stopControls(2.95f));
     }
 
