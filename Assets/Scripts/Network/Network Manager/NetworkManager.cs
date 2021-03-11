@@ -56,7 +56,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         //SynchroniseSchemaBeforeSpawn();
-        //SpawnPlayers();
         Invoke(nameof(SpawnPlayers), 2f);
         timer = FindObjectOfType<TimerBehaviour>();
         GlobalsEntry globals = gamestateTracker.globals;
@@ -73,12 +72,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // instantiate the gunner attached to the vehicle for each of them (gunner character)
     
     // only to be called by the master client when we can be sure that everyone has loaded into the game
-    public void SynchroniseSchemaBeforeSpawn()
-    {
-        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>(); 
-        gamestateTracker.ForceSynchronisePlayerSchema();
-        Invoke(nameof(SpawnPlayers), 2f);
-    }
+
 
     void SpawnPlayers()
     { 
@@ -101,7 +95,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 int teamId = entry.id;
                 entry.Release();
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
-                CallRespawnVehicle(0, teamId);
+                spawn(teamId);
             }
         }
     }
@@ -125,15 +119,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
         
-        //List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
-        /*GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(teamId);
-        
-        // set dead = false for team 
-        team.isDead = false;
-        string serializedTeamJson = JsonUtility.ToJson(team);
-        gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.AllBufferedViaServer, teamId, serializedTeamJson);*/
-       // gamestateTracker.UpdateTeamWithNewRecord(teamId, serializedTeamJson);
+        spawn(teamId);
 
+
+    }
+
+    void spawn(int teamId)
+    {
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
         teamEntry.isDead = false;
         short vehicle = teamEntry.vehicle;
