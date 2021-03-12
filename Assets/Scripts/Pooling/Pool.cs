@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pool : MonoBehaviour
-{
-    [Serializable]
-    public class ObjectPool {
+public class Pool : MonoBehaviour {
+    [Serializable] // Let this appear in the inspector.
+    public struct ObjectPool {
         public int amount;
         public PooledObject objectToPool;
+
+        public ObjectPool(int amt, PooledObject poolObj)
+        {
+            amount = amt;
+            objectToPool = poolObj;
+        }
     }
 
     // Singleton boilerplate.
@@ -30,20 +35,44 @@ public class Pool : MonoBehaviour
     // A queue works pretty naturally here.
     private Dictionary<int, Queue<PooledObject>> pool;
 
+
+    public void AddPrefabToPool(PooledObject pooledObject, int amount)
+    {
+        bool alreadyExists = false;
+        foreach (ObjectPool objPool in objectPools)
+        {
+            // if the object already exists, then add it
+            if (objPool.objectToPool.GetInstanceID() == pooledObject.GetInstanceID())
+            {
+
+                alreadyExists = true;
+            }
+        }
+
+        if (!alreadyExists)
+        {
+            objectPools.Add(new ObjectPool(amount, pooledObject));
+        }
+    }
+    
     private void Awake() {
-        // Spawn all objects in provided pools.
+        // Spawn all objects in pools.
+        
+    }
+
+    public void GeneratePrefabPool()
+    {
         pool = new Dictionary<int, Queue<PooledObject>>();
         foreach (ObjectPool objPool in objectPools) {
             int amount = objPool.amount;
             PooledObject obj = objPool.objectToPool;
 
-            // Saved prefabs have an instance id, which we can use to talk about the same prefab from other scripts.
             int id = obj.GetInstanceID();
             Queue<PooledObject> queue = new Queue<PooledObject>(amount);
             for (int i = 0; i < amount; i++) {
                 var clone = Instantiate(obj, transform);
                 clone.id = id;
-                clone.Finished += ReQueue;      // When `Finish()` is called, we put our object back in the queue.
+                clone.Finished += ReQueue;              // When `Finish()` is called, we put our object back in the queue.
                 clone.gameObject.SetActive(false);
                 queue.Enqueue(clone);
             }
@@ -53,13 +82,13 @@ public class Pool : MonoBehaviour
     }
 
     private PooledObject GetNextObject(PooledObject obj) {
-        // @NOTE: create a new queue if none exists, for pooling "unplanned" objects?
+        // TODO: support pooling even when no queue has been created?
         var queue = pool[obj.GetInstanceID()];
         PooledObject clone = null;
         // If queue is empty (has been exhausted -- the pool size was too small), extend the queue by instantiating a new object,
         // and add it to the future queue.
         if (queue.Count == 0) {
-            Debug.LogWarning("Object Pool queue was empty; wasn't able to get a new pooled object, so one will be instatiated.");
+            Debug.LogWarning("Object Pool queue was empty; wasn't able to get a new pooled object, so one will be instantiated.");
             clone = Instantiate(obj, transform);
             clone.id = obj.GetInstanceID();
             clone.Finished += ReQueue;
