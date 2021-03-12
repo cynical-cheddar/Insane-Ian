@@ -59,7 +59,7 @@ public class VehicleManager : HealthManager
     public float defaultCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
     
-    protected Weapon.WeaponDamageDetails lastHitDetails;
+
 
     // Start is called before the first frame update
     public void SetupVehicleManager() {
