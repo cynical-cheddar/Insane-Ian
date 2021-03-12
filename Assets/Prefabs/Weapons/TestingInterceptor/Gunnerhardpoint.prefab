@@ -213,6 +213,7 @@ MonoBehaviour:
   ammoPerShot: 1
   unlimitedAmmo: 1
   reserveAmmo: 100
+  fullSalvoOnStart: 1
   baseDamage: 25
   damageType: 0
   damageMultiplier: 1
@@ -375,6 +376,7 @@ MonoBehaviour:
   ammoPerShot: 1
   unlimitedAmmo: 1
   reserveAmmo: 100
+  fullSalvoOnStart: 1
   baseDamage: 10
   damageType: 1
   damageMultiplier: 1
@@ -399,6 +401,7 @@ MonoBehaviour:
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
   extraRechargeTimeOnDepletion: 2
+  extraRechargeTimeOnCeaseFire: 1
   muzzleFlashChildOfBarrel: 1
   hitscanRange: 10000
   instantBeam: 0
@@ -545,6 +548,7 @@ MonoBehaviour:
   ammoPerShot: 1
   unlimitedAmmo: 1
   reserveAmmo: 100
+  fullSalvoOnStart: 1
   baseDamage: 2.5
   damageType: 0
   damageMultiplier: 1
@@ -683,6 +687,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Turret
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674323517063, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950276, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f84a8310268c4376bb6a418458e0579, type: 3}
