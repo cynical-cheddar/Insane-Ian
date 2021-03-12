@@ -76,7 +76,8 @@ public class ProjectileScript : MonoBehaviour
         if (isTrueProjectile) DamageCollisionHandler(hitVm);
         VisualCollisionHandler(impactNormal, hitVm != null);
 
-        pooledObject.Finish();
+     //   pooledObject.Finish();
+        Destroy(gameObject);
     }
     
     // applies damage to the enemy (if we hit an enemy)
