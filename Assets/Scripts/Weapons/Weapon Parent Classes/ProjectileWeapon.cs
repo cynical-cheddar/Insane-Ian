@@ -7,13 +7,14 @@ public class ProjectileWeapon : Weapon
 {
 
     [Header("Projectile Settings")]
+  //  public PooledObject projectilePrefab;   ------------------ enable and implement if we need pooling
     public GameObject projectilePrefab;
     public GameObject projectileParticleEffectPrefab;
     public float projectileMass = 10f;
     public float projectileSpeed = 100f;
     public bool inheritVelocityFromVehicle = false;
     private Rigidbody parentRigidbody;
-
+    
     
 
     
@@ -77,10 +78,19 @@ public class ProjectileWeapon : Weapon
         Debug.Log("ProjectileWeapon class object has fired");
 
         // if we are the owner of the photonview, then fire the real projectile
-        GameObject obj = projectilePrefab;
-        StopProjectileCollisionsWithSelf(obj);
+
+        
+        /*
+        PooledObject pooledProjectile =
+            Pool.Instance.Spawn(projectilePrefab, barrelTransform.position, barrelTransform.rotation);
+
+
+        GameObject projectile = pooledProjectile.gameObject;
+        */
+
         GameObject projectile = Instantiate(projectilePrefab, barrelTransform.position, barrelTransform.rotation);
         StopProjectileCollisionsWithSelf(projectile);
+        
         ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();
 
         // set projscript stuff
@@ -90,8 +100,7 @@ public class ProjectileWeapon : Weapon
         
         DoMuzzleFlashEffect();
         projectile.transform.LookAt(targetPoint);
-        projectile.transform.position -= projectile.transform.forward;
-        
+
         PlayAudioClipOneShot(weaponFireSound);
         projectile.GetComponent<Rigidbody>().mass = projectileMass;
         // FIRE REAL PROJECTILE
@@ -117,6 +126,8 @@ public class ProjectileWeapon : Weapon
             projectile.transform.position = newPos;
             projectile.GetComponent<Rigidbody>().AddForce(projectileSpeed *(projectile.transform.forward) , ForceMode.VelocityChange);  
         }
-        Destroy(projectile, 6f);
+        
+        Destroy(projectile, 4f);
+        //pooledProjectile.Finish(4f);
     }
 }
