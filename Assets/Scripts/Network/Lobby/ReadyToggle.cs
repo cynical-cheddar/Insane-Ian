@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using Gamestate;
 
 public class ReadyToggle : MonoBehaviour
 {
 
     public LobbySlotMaster lobbySlotMaster;
-
+    GamestateTracker gamestateTracker;
     public Toggle toggle;
     // Start is called before the first frame update
     void Start()
@@ -17,37 +18,35 @@ public class ReadyToggle : MonoBehaviour
         {
             lobbySlotMaster = FindObjectOfType<LobbySlotMaster>();
         }
+
+        gamestateTracker = FindObjectOfType<GamestateTracker>();
     }
 
     public void changeReadyStatus()
     {
+        PlayerEntry playerEntry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         
         bool state = toggle.isOn;
         
         // check if it is valid to ready up. If we have not selected a slot, set to false
-        if (toggle.isOn && !lobbySlotMaster.getHasPicked())
-        {
-            toggle.isOn = false;
-        }
+
+        if (playerEntry.role == (short)PlayerEntry.Role.None) toggle.isOn = false;
+
+
+
+        playerEntry.ready = toggle.isOn;
+        playerEntry.Commit();
         
-        
-        if(state)lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeReadyPlayers", RpcTarget.AllBufferedViaServer, 1);
-        else lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeReadyPlayers", RpcTarget.AllBufferedViaServer, -1);
+        lobbySlotMaster.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.UpdateCountAndReady), RpcTarget.All);
         
     }
 
     public void setReadyStatus(bool set)
     {
-        if (set == false && toggle.isOn)
-        {
-            lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeReadyPlayers", RpcTarget.AllBufferedViaServer, 0);
-        }
-        else if (set == true && !toggle.isOn)
-        {
-            lobbySlotMaster.gameObject.GetComponent<PhotonView>().RPC("changeReadyPlayers", RpcTarget.AllBufferedViaServer, 1);
-        }
+
         
         toggle.isOn = set;
-        
+        changeReadyStatus();
+
     }
 }

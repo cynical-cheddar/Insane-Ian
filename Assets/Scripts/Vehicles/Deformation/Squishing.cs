@@ -5,31 +5,27 @@ using GraphBending;
 
 public class Squishing : MonoBehaviour
 {
-    Mesh mesh;
-    List<Vector3> vertices;
-    MeshGraph meshGraph;
-    MeshCollider meshCollider;
+    private List<Vector3> vertices;
+    private MeshGraph meshGraph;
     public GameObject testMarker;
     public GameObject collisionResolver;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
-    public float stretchiness = 1.2f;
-    public float collisionResistance = 2000;
+    public float stretchiness = 1000000.1f;
+    public float collisionResistance = 200;
+    //public float maxEdgeLength = 0.6f;
+    private List<DeformableMesh> deformableMeshes;
 
     // Start is called before the first frame update.
     void Start() {
-        mesh = GetComponent<MeshFilter>().mesh;
-        vertices = new List<Vector3>(mesh.vertices);
-        meshCollider = GetComponent<MeshCollider>();
+        deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
+        //deformableMeshes[0].Subdivide(maxEdgeLength);
+        vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
 
         //  Group similar vertices.
-        meshGraph = new MeshGraph(mesh, groupRadius);
+        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, groupRadius);
 
         collisionResolver = Instantiate(collisionResolver);
-    }
-
-    // Update is called once per frame
-    void Update() {
     }
 
     // Return the closest vertex group to the given postion
@@ -47,7 +43,7 @@ public class Squishing : MonoBehaviour
     }
 
     // Explode the mesh at a given position, with a given force
-    public void ExplodeMeshAt(Vector3 pos, float force, bool addNoise) {
+    public void ExplodeMeshAt(Vector3 pos, float force, bool addNoise = true) {
         pos = transform.InverseTransformPoint(pos);
 
         List<VertexGroup> moved = new List<VertexGroup>();
@@ -114,14 +110,12 @@ public class Squishing : MonoBehaviour
         }
 
         //  Update the mesh
-        mesh.vertices = vertices.ToArray();
-        mesh.RecalculateNormals();
-
-        meshCollider.sharedMesh = mesh;
+        deformableMeshes[0].GetMeshFilter().mesh.vertices = vertices.ToArray();
+        deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
     }
 
     //  This breaks if this is on a kinematic object (big sad)
-    private void OnCollisionEnter(Collision collision) {
+    void OnCollisionEnter(Collision collision) {
         Vector3 collisionNormal = collision.GetContact(0).normal;
         Vector3 collisionForce = collision.impulse;
         if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
@@ -131,17 +125,10 @@ public class Squishing : MonoBehaviour
 
         if (collisionForce.sqrMagnitude >= 0.01f) {
             if (collision.collider is TerrainCollider || (collision.collider is MeshCollider && !((MeshCollider)collision.collider).convex)) {
-                /*Ray ray = new Ray(, -transform.TransformDirection(collisionForce));
-                RaycastHit raycastHit = new RaycastHit();
-                if (collision.collider.Raycast(ray, out raycastHit, 20)) {*/
-                    collisionResolver.transform.position = collision.GetContact(0).point;
-                    collisionResolver.transform.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
-                    Collider collider = collisionResolver.GetComponent<BoxCollider>();
-                    CollideMesh(collider, collisionForce, true);
-                /*}
-                else {
-                    throw new System.Exception("well, fuck");
-                }*/
+                collisionResolver.transform.position = collision.GetContact(0).point;
+                collisionResolver.transform.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
+                Collider collider = collisionResolver.GetComponent<BoxCollider>();
+                CollideMesh(collider, collisionForce, true);
                 collisionResolver.transform.position = new Vector3(0, 10000, 0);
             }
             else {
@@ -239,8 +226,8 @@ public class Squishing : MonoBehaviour
         }
 
         //  Update the mesh
-        mesh.vertices = vertices.ToArray();
-        mesh.RecalculateNormals();
+        deformableMeshes[0].GetMeshFilter().mesh.vertices = vertices.ToArray();
+        deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
 
         //meshCollider.sharedMesh = mesh;
 

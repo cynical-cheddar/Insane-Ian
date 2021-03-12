@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
@@ -11,6 +12,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public WheelCollider rearRightW;
     public bool is4WD = true;
     [Space(5)]
+
+
 
     [Header("Wheel Geometry Transforms")]
     public Transform frontLeftT;
@@ -33,19 +36,32 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float brakeTorque = 8000;
     [Range(0, 30000)]
     public float brakeForce = 16000;
-    [Range(0, 5)]
-    public float steerRate = 1.0f;
-    [Range(0.01f, 0.5f)]
-    public float steerRateCoefficent = 0.05f;
+    [Range(0.001f, 0.5f)]
+    public float steerRateLerp = 0.1f;
+    [Range(0, 1)]
+    public float baseExtremiumSlip = 0.3f;
     public Vector3 addedDownforce;
+    [Range(0,20000)]
+    public float antiRollStiffness = 5000;
+    [Space(5)]
+
+    [Header("Engine Noises")]
+    public AudioSource EngineIdle;
+    public AudioSource EngineLow;
+    public AudioSource EngineHigh;
+    private float volume = 0;
+    [Space(5)]
+
+    [Header("Dust Trail")]
+    public ParticleSystem leftPS;
+    public ParticleSystem rightPS;
+
+
 
     //direction is -1 for left and +1 for right, 0 for center
-    void IDrivable.Steer(int targetDirection) {
+    void IDrivable.Steer(float targetDirection) {
         float targetAngle;
-        float delta;
         float steerAngle;
-        float horizontalVelocity;
-        float newSteerRate;
 
         //Get the current steer angle
         steerAngle = frontLeftW.steerAngle;
@@ -53,35 +69,30 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         //targetAngle is the angle we want to tend towards
         targetAngle = targetDirection * maxSteerAngle;
 
-        //Get the velocity in x and z dimensions
-        horizontalVelocity = Mathf.Sqrt(Mathf.Pow(carRB.velocity.x, 2) + Mathf.Pow(carRB.velocity.z, 2));
-
-        //set the steer rate to the minimum of normal steer rate and adjusted steer rate
-        newSteerRate = steerRate / (steerRateCoefficent * horizontalVelocity);
-        newSteerRate = Mathf.Min(newSteerRate, steerRate);
-
-        //if the steer rate is less than the distance between target angle and current steering angle, set that to delta else only move the given distance.
-        if (newSteerRate < Mathf.Abs(targetAngle - steerAngle)) {
-            delta = newSteerRate;
-        } else {
-            delta = Mathf.Abs(targetAngle - steerAngle);
-        }
-
-        //if the target is zero return to centre
-        if (!(targetAngle == 0)) {
-            delta *= targetDirection;
-        } else if (steerAngle > 0) {
-            delta *= -1;
-        }
+        steerAngle = Mathf.Lerp(steerAngle, targetAngle, steerRateLerp);
 
 
         //set the steer angle
-        steerAngle += delta;
         frontLeftW.steerAngle = steerAngle;
         frontRightW.steerAngle = steerAngle;
 
-    }
+        float extremiumSlip;
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
+        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
 
+        extremiumSlip = baseExtremiumSlip + Mathf.Abs(steerAngle / maxSteerAngle);
+        flC.extremumSlip = extremiumSlip;
+        frC.extremumSlip = extremiumSlip;
+        rlC.extremumSlip = extremiumSlip;
+        rrC.extremumSlip = extremiumSlip;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeftW.sidewaysFriction = rlC;
+        rearRightW.sidewaysFriction = rrC;
+    }
     void IDrivable.Accellerate() {
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
@@ -113,7 +124,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
 
     }
-
     void IDrivable.Brake() {
         //brake all wheels
         frontLeftW.brakeTorque = brakeTorque;
@@ -131,13 +141,45 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
 
     }
+    void IDrivable.Drift() {
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
+        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
 
+        float stiffness = 1f;
+        flC.stiffness = stiffness;
+        frC.stiffness = stiffness;
+        rlC.stiffness = stiffness;
+        rrC.stiffness = stiffness;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeftW.sidewaysFriction = rlC;
+        rearRightW.sidewaysFriction = rrC;
+    }
+    void IDrivable.StopDrift() {
+        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
+        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
+        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
+        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
+
+        float stiffness = 5f;
+        flC.stiffness = stiffness;
+        frC.stiffness = stiffness;
+        rlC.stiffness = stiffness;
+        rrC.stiffness = stiffness;
+
+        frontLeftW.sidewaysFriction = flC;
+        frontRightW.sidewaysFriction = frC;
+        rearLeftW.sidewaysFriction = rlC;
+        rearRightW.sidewaysFriction = rrC;
+    }
     private bool AllWheelsGrounded() {
         if (frontLeftW.isGrounded & frontRightW.isGrounded & rearLeftW.isGrounded & rearRightW.isGrounded) {
             return true;
         } else return false;
     }
-
     void IDrivable.UpdateWheelPoses() {
         //make geometry match collider position
         UpdateWheelPose(frontLeftW, frontLeftT, true);
@@ -145,7 +187,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         UpdateWheelPose(rearLeftW, rearLeftT, true);
         UpdateWheelPose(rearRightW, rearRightT, false);
     }
-
     private void UpdateWheelPose(WheelCollider collider, Transform transform, bool flip) {
         Vector3 pos = transform.position;
         Quaternion quat = transform.rotation;
@@ -159,7 +200,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             transform.rotation *= new Quaternion(0, 0, -1, 0);
         }
     }
-
     void IDrivable.StopAccellerate() {
         frontLeftW.motorTorque = 0;
         frontRightW.motorTorque = 0;
@@ -167,7 +207,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearRightW.motorTorque = 0;
 
     }
-
     void IDrivable.StopBrake() {
         frontLeftW.brakeTorque = 0;
         frontRightW.brakeTorque = 0;
@@ -175,10 +214,96 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         rearRightW.brakeTorque = 0;
 
     }
-
     void IDrivable.StopSteer() {
         //steer towards 0
         ((IDrivable)this).Steer(0);
+    }
+    
+    private void EngineNoise() {
+        float newpitch;
+        newpitch = Mathf.Clamp((Mathf.Abs(frontLeftW.rpm + frontRightW.rpm + rearLeftW.rpm + rearRightW.rpm)) * 0.01f * 0.25f, 0, 14f);
+        volume = Mathf.Lerp(volume, newpitch, 0.1f);
+        if (volume < 1) {
+            EngineIdle.volume = Mathf.Lerp(EngineIdle.volume, 1.0f, 0.1f);
+            EngineLow.volume = Mathf.Lerp(EngineLow.volume, 0.3f, 0.1f);
+            EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, 0.0f, 0.1f);
+        } else {
+            EngineIdle.volume = Mathf.Lerp(EngineIdle.volume, 0f, 0.1f);
+            EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, volume/10, 0.1f);
+            EngineLow.volume = 1 - EngineHigh.volume;
+        }
+
+        EngineLow.pitch = 2.4f + volume / 10;
+        EngineHigh.pitch = 2.4f + volume / 10;
+
+    }
+    
+    private void AntiRoll(WheelCollider left, WheelCollider right) {
+        WheelHit lHit, rHit;
+        float lDistance = 1f;
+        float rDistance = 1f;
+
+        bool lGrounded = left.GetGroundHit(out lHit);
+        bool rGrounded = right.GetGroundHit(out rHit);
+
+        if (lGrounded) {
+            lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
+        }
+
+        if (rGrounded) {
+            rDistance = (-right.transform.InverseTransformPoint(rHit.point).y - right.radius) / right.suspensionDistance;
+        }
+
+        float addedForce = (lDistance - rDistance) * antiRollStiffness;
+
+        if (lGrounded) {
+            carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position);
+        }
+
+        if (rGrounded) {
+            carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
+
+        }
+    }
+    private void Particles() {
+        WheelHit lHit, rHit;
+        bool lGrounded = rearLeftW.GetGroundHit(out lHit);
+        bool rGrounded = rearRightW.GetGroundHit(out rHit);
+        var lEmission = leftPS.emission;
+        var rEmission = rightPS.emission;
+
+        if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
+            if (lHit.collider.CompareTag("DustGround")){
+                lEmission.enabled = true;
+            } else {
+                lEmission.enabled = false;
+            }
+        } else {
+            lEmission.enabled = false;
+        }
+        if (rGrounded && (Mathf.Abs(rearRightW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
+            if (rHit.collider.CompareTag("DustGround")) {
+                rEmission.enabled = true;
+            } else {
+                rEmission.enabled = false;
+            }
+        } else {
+            rEmission.enabled = false;
+        }
+    }
+    void FixedUpdate() {
+        EngineNoise();
+        AntiRoll(frontLeftW, frontRightW);
+        AntiRoll(rearLeftW, rearRightW);
+        Particles();
+    }
+
+    
+
+    private void Start() {
+        EngineIdle.volume = 0;
+        EngineLow.volume = 0;
+        EngineHigh.volume = 0;
     }
 }
 

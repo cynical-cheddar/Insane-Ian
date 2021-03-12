@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +32,11 @@ public class TurretFollowTarget : MonoBehaviour
         virtualRotation = transform.rotation;
     }
 
+    private void OnEnable()
+    {
+        virtualRotation = transform.rotation;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -48,12 +54,10 @@ public class TurretFollowTarget : MonoBehaviour
                 virtualRotation = Quaternion.Slerp(virtualRotation, targetRotation, deadZoneTrackingSpeed * rotationTime);
             }
             else virtualRotation = Quaternion.RotateTowards(virtualRotation, targetRotation, maxRotation);
-            if (inDeadZone == true) Debug.Log("Left dead zone.");
             inDeadZone = false;
         }
         else {
             virtualRotation = Quaternion.Slerp(virtualRotation, targetRotation, deadZoneTrackingSpeed * Time.deltaTime);
-            if (inDeadZone == false) Debug.Log("Entered dead zone.");
             inDeadZone = true;
         }
 

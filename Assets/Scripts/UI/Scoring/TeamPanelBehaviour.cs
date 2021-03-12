@@ -10,4 +10,5 @@ public class TeamPanelBehaviour : MonoBehaviour
     public Text TeamKDA;
     public Image Position;
     public Image PositionShadow;
+    public Image Glow;
 }

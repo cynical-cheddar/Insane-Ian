@@ -5,6 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using Gamestate;
 
 public class ScoreboardTestingBehaviour : MonoBehaviour
 {

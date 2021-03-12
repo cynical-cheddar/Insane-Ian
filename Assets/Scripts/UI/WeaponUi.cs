@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,22 @@ public class WeaponUi : MonoBehaviour
     {
         salvoText.text = currentSalvo.ToString() + "/" + salvoSize;
         reserveAmmoText.text = reserveAmmo.ToString();
+    }
+
+    private void Start()
+    {
+        SetCanvasVisibility(false);
+    }
+
+    public void SetCanvasVisibility(bool set)
+    {
+        CanvasGroup[] canvasRenderers = GetComponentsInChildren<CanvasGroup>();
+        foreach (CanvasGroup cv in canvasRenderers)
+        {
+            
+            if(set) cv.alpha = 1;
+            if (!set) cv.alpha = 0;
+        }
     }
 
     public void SetWeaponNameText(string weaponName)

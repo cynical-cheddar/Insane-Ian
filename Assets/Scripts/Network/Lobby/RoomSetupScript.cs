@@ -52,15 +52,7 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
     }
 
     public void SetRoomName(string newRoomName) {
-        bool found = false;
-        foreach (RoomInfo roomInfo in createdRooms) {
-            if (roomInfo.Name == newRoomName) found = true;
-        }
-        if (found) {
-            SetRoomName($"{newRoomName} 1");
-        } else {
-            roomName = newRoomName;
-        }
+        roomName = newRoomName;
     }
     // Start is called before the first frame update
     public void CreateRoomWithSettings()
@@ -76,7 +68,7 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
         roomOptions.IsVisible = true;
         roomOptions.MaxPlayers = (byte) maxPlayers; //Set any number
         PhotonNetwork.NickName = observedMyNameText.text;
-        PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
+        PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
         // load the lobby scene for the room
       
     }
