@@ -47,7 +47,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
 
     public void UpdateScores() {
         // Sort teams by score
-        List<TeamEntry> sortedTeams = scoringHelper.SortTeams(gamestateTracker);
+        List<TeamEntry> sortedTeams = scoringHelper.SortTeams();
 
         if (scoreboardIsExpanded) {
             // Display teams in order
