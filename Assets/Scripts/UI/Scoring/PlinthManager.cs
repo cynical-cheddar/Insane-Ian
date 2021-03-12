@@ -45,7 +45,7 @@ public class PlinthManager : MonoBehaviour {
 
     void UpdateText() {
         // Sort teams by score
-        sortedTeams = scoringHelper.SortTeams(gamestateTracker);
+        sortedTeams = scoringHelper.SortTeams();
 
         if (PhotonNetwork.IsMasterClient) SpawnPlayerVehicles();
 

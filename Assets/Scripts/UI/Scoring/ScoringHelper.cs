@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Gamestate;
 
-public class ScoringHelper {
+public class ScoringHelper : MonoBehaviour {
 
     int killValue = 10;
     int deathValue = -5;
@@ -13,7 +13,8 @@ public class ScoringHelper {
         return team.kills * killValue + team.deaths * deathValue + team.assists * assistValue;
     }
 
-    public List<TeamEntry> SortTeams(GamestateTracker gamestateTracker) {
+    public List<TeamEntry> SortTeams() {
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         List<TeamEntry> unsortedTeams = new List<TeamEntry>();
         for (int i = 0; i < gamestateTracker.teams.count; i++) {
             TeamEntry team = gamestateTracker.teams.GetAtIndex(i);
