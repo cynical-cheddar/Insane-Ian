@@ -1,4 +1,4 @@
-Shader "Custom/newTestShader"
+Shader "Custom/groundShader"
 {
     Properties
     {
