@@ -10,7 +10,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
     public List<TeamPanelBehaviour> teamPanels;
     public List<Sprite> positionImages;
     GamestateTracker gamestateTracker;
-    bool scoreboardIsExpanded = false;
+    bool scoreboardIsExpanded = true;
     readonly ScoringHelper scoringHelper = new ScoringHelper();
 
     // Start is called before the first frame update
