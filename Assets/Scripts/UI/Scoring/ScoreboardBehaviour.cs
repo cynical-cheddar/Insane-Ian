@@ -21,6 +21,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
         for (int i = 0; i < gamestateTracker.teams.count; i++) {
             TeamEntry team = gamestateTracker.teams.GetAtIndex(i);
             team.AddListener(TeamListener);
+            team.Release();
         }
 
     }
@@ -32,6 +33,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
     }
 
     void TeamListener(TeamEntry team) {
+        team.Release();
         UpdateScores();
     }
 
