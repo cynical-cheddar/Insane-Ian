@@ -17,7 +17,11 @@ public class ActionReplayBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update() {
         if (Input.GetKeyDown(KeyCode.Return)) {
-            cam.enabled = !cam.enabled;
+            ToggleCamera();
         }
+    }
+
+    public void ToggleCamera() {
+        cam.enabled = !cam.enabled;
     }
 }
