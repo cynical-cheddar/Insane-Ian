@@ -155,7 +155,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        //Debug.Log("newPlayerJoined");
+        Debug.Log("newPlayerJoined");
     }
     
     

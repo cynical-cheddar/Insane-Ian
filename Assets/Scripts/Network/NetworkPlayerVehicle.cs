@@ -170,7 +170,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if (botGunner && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiGunnerScripts);
         if (PhotonNetwork.LocalPlayer.ActorNumber == gunnerId) EnableMonobehaviours(playerGunnerScripts);
         //Debug.Log("GOT HERE2");
-
+        
         //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
     }
 }

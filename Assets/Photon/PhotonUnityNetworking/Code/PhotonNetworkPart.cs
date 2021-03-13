@@ -1196,9 +1196,10 @@ namespace Photon.Pun
                 return; // Block sending on this group
             }
 
+            
             if (view.ViewID < 1)
             {
-                Debug.LogError("Illegal view ID:" + view.ViewID + " method: " + methodName + " GO:" + view.gameObject.name);
+              //  Debug.Log("Illegal view ID:" + view.ViewID + " method: " + methodName + " GO:" + view.gameObject.name);
             }
 
             if (PhotonNetwork.LogLevel >= PunLogLevel.Full)

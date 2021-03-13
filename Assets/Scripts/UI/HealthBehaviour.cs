@@ -14,6 +14,10 @@ public class HealthBehaviour : MonoBehaviour {
     public Transform damageIndicatorInstantiateTransform;
     public int damageTaken;
 
+    public UiBar healthBar;
+    
+    
+
     // Start is called before the first frame update
     void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -37,6 +41,9 @@ public class HealthBehaviour : MonoBehaviour {
                     Instantiate(damageIndicator, damageIndicatorInstantiateTransform);
                     healthLabel.text = Mathf.CeilToInt(vehicle.health).ToString();
                     previousRoundedHealth = Mathf.CeilToInt(vehicle.health);
+                    
+                    healthBar.setProgressBar(vehicle.health / vehicle.maxHealth);
+                    healthBar.setnumber(Mathf.CeilToInt(vehicle.health).ToString());
                 }
                 break;
             }
