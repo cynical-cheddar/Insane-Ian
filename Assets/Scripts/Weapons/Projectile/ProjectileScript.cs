@@ -20,6 +20,9 @@ public class ProjectileScript : MonoBehaviour
     public float explosionForce = 0.3f;
     public float explosionOffset = 1f;
 
+    private PooledObject pooledObject;
+
+    private bool firstInstantiation = true;
     public void SetWeaponDamageDetails(Weapon.WeaponDamageDetails wdd)
     {
         weaponDamageDetails = wdd;
@@ -32,6 +35,7 @@ public class ProjectileScript : MonoBehaviour
     
     public void ActivateProjectile(GameObject imp, GameObject misImp, GameObject projParticle, AudioClip hitS, AudioClip missS, float hitVol, float missVol)
     {
+       
         impactParticle = imp;
         missImpactParticle = misImp;
         projectileParticle = projParticle;
@@ -39,8 +43,18 @@ public class ProjectileScript : MonoBehaviour
         missSound = missS;
         impactParticleVolume = hitVol;
         missImpactParticleVolume = missVol;
+
+        if (firstInstantiation)
+            projectileParticleInstance =
+                Instantiate(projectileParticle, transform.position, transform.rotation, transform) as GameObject;
+        else projectileParticleInstance.transform.rotation = transform.rotation;
+        firstInstantiation = false;
+    }
+
+    void Awake()
+    {
         
-        projectileParticleInstance = Instantiate(projectileParticle, transform.position, transform.rotation, transform) as GameObject;
+        pooledObject = GetComponent<PooledObject>();
     }
 
 
@@ -62,6 +76,7 @@ public class ProjectileScript : MonoBehaviour
         if (isTrueProjectile) DamageCollisionHandler(hitVm);
         VisualCollisionHandler(impactNormal, hitVm != null);
 
+     //   pooledObject.Finish();
         Destroy(gameObject);
     }
     
@@ -89,25 +104,12 @@ public class ProjectileScript : MonoBehaviour
         {
             PlayParticleEffect(missImpactParticle, impactNormal);
         }
-
-        Destroy(projectileParticleInstance, 3f);
-		
-        ParticleSystem[] trails = GetComponentsInChildren<ParticleSystem>();
-        //Component at [0] is that of the parent i.e. this object (if there is any)
-        for (int i = 1; i < trails.Length; i++)
-        {
-				
-            ParticleSystem trail = trails[i];
-				
-            if (trail.gameObject.name.Contains("Trail"))
-            {
-                trail.transform.SetParent(null);
-                Destroy(trail.gameObject, 2f);
-            }
-        }
     }
 
     private void PlayParticleEffect(GameObject particle, Vector3 impactNormal) {
+        
+        // TODO - should load from pool
+        
         GameObject particleInstance = Instantiate(particle, transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal)) as GameObject;
         AudioSource particleAudio = particleInstance.GetComponent<AudioSource>();
         if (particleAudio != null && hitSound != null)

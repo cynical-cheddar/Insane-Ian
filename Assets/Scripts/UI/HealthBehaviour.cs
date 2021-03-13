@@ -35,6 +35,7 @@ public class HealthBehaviour : MonoBehaviour {
                 if (Mathf.CeilToInt(vehicle.health) != previousRoundedHealth) {
                     damageTaken = Mathf.CeilToInt(vehicle.health) - previousRoundedHealth;
                     Instantiate(damageIndicator, damageIndicatorInstantiateTransform);
+                    if (vehicle.health < 0f) vehicle.health = 0f;
                     healthLabel.text = Mathf.CeilToInt(vehicle.health).ToString();
                     previousRoundedHealth = Mathf.CeilToInt(vehicle.health);
                 }
