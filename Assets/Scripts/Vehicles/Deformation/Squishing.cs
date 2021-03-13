@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GraphBending;
+using System.Linq;
 
 public class Squishing : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class Squishing : MonoBehaviour
     //public float maxEdgeLength = 0.6f;
     private List<DeformableMesh> deformableMeshes;
 
+    Mesh originalMesh;
+
     // Start is called before the first frame update.
     void Start() {
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
@@ -25,7 +28,17 @@ public class Squishing : MonoBehaviour
         //  Group similar vertices.
         meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, groupRadius);
 
+        originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().sharedMesh);
         collisionResolver = Instantiate(collisionResolver);
+    }
+
+    public void ResetMesh() {
+        deformableMeshes[0].GetMeshFilter().mesh = Instantiate(originalMesh);
+        vertices = originalMesh.vertices.ToList();
+        foreach (VertexGroup group in meshGraph.groups) {
+            group.UpdatePos(deformableMeshes[0].GetMeshFilter().mesh.vertices.ToList(), true);
+        }
+
     }
 
     // Return the closest vertex group to the given postion
