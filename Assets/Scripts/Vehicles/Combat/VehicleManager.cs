@@ -352,6 +352,12 @@ public class VehicleManager : HealthManager
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         if (team.gunnerId > 0) myPhotonView.RPC(nameof(SetGunnerHealth_RPC), PhotonNetwork.PlayerList[team.gunnerId], maxHealth);
         team.Release();
+        GunnerWeaponManager gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
+        foreach (GunnerWeaponManager.WeaponControlGroup weaponControlGroup in gunnerWeaponManager.weaponControlGroups.weaponControlGroupList) {
+            foreach(Weapon weapon in weaponControlGroup.weapons) {
+                weapon.ResetWeaponToDefaults();
+            }
+        }
         rb.drag = defaultDrag;
         rb.angularDrag = defaultAngularDrag;
         rb.velocity = Vector3.zero;

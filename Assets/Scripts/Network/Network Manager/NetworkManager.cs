@@ -118,16 +118,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator RespawnVehicle(float time, int teamId) {
-        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
-
-        //Spawn(teamId);
-        StartCoroutine(ResetVehicle(teamId));
-        //photonView.RPC(nameof(ResetVehicle_RPC), RpcTarget.All, teamId);
-    }
-
-    [PunRPC]
-    void ResetVehicle_RPC(int teamId) {
         StartCoroutine(ResetVehicle(teamId));
     }
 
