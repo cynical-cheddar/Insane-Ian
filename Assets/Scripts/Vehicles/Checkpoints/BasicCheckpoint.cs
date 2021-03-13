@@ -5,7 +5,7 @@ using UnityEngine;
 public class BasicCheckpoint : MonoBehaviour
 {
     public List<Transform> locations;
-    public Transform init() {
+    public Vector3 init() {
         if (locations.Count < 1) {
             Debug.LogError("Less than one checkpoint");
         } else {
@@ -18,18 +18,27 @@ public class BasicCheckpoint : MonoBehaviour
                 locations[r] = tmp;
             }
         }
-        return locations[0];
+        return locations[0].position;
     }
 
-    public Transform nextCheckpoint(Transform t) {
-        int i = locations.IndexOf(t);
+    public Vector3 nextCheckpoint(Vector3 t) {
+        int count = 0;
+        int i = -1;
+
+        //find the index of the current position
+        foreach (Transform transform in locations ){
+            if (transform.position == t) i = count;
+            count += 1;
+        }
+
+        //if not found panic, else return the next position
         if (i == -1) {
             Debug.LogError("Location not found");
         }
         if (i == locations.Count - 1) {
-            return locations[0];
+            return locations[0].position;
         } else {
-            return locations[i + 1];
+            return locations[i + 1].position;
         }
     }
 }

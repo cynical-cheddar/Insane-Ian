@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class CarCheckpoints : MonoBehaviour
 {
-    public BasicCheckpoint bc;
-    private int checkpoints;
-    public Transform checkpointT;
-    public object activeCheckpoint;
+    private int checkpoints = 0;
+    private BasicCheckpoint bc;
+    public Vector3 checkpointPos;
+    private object activeCheckpoint;
+    private Vector3 prevT;
     // Start is called before the first frame update
     void Start()
     {
-        checkpointT = bc.init();
+        bc = (BasicCheckpoint)FindObjectOfType(typeof(BasicCheckpoint));
+        if (bc) Debug.Log("BasicCheckpoint object found: " + bc.name);
+        else Debug.Log("No BasicCheckpoint object could be found");
+        checkpointPos = bc.init();
     }
 
     // Update is called once per frame
@@ -23,8 +27,9 @@ public class CarCheckpoints : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Checkpoint")) {
             checkpoints++;
-            checkpointT = bc.nextCheckpoint(checkpointT);
+            checkpointPos = bc.nextCheckpoint(checkpointPos);
             Debug.Log(checkpoints);
+            bc.gameObject.transform.position = checkpointPos;
         }
     }
 }
