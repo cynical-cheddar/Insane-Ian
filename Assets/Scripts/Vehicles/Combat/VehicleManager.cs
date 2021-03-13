@@ -5,6 +5,7 @@ using Photon.Pun;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Gamestate;
+using Photon.Realtime;
 
 
 public class VehicleManager : HealthManager
@@ -19,9 +20,10 @@ public class VehicleManager : HealthManager
     public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
     public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
     public float crashMasterVolume = 1f;
-    
-    
-    
+
+    float defaultDrag = 0.15f;
+    float defaultAngularDrag = 0.2f;
+    Vector3 defaultCOM;   
     
     Rigidbody rb;
     InterfaceCarDrive icd;
@@ -38,13 +40,7 @@ public class VehicleManager : HealthManager
     }
     
     public GameObject temporaryDeathExplosion;
-    
-    
 
-    
-
-    
-    
     public Weapon.WeaponDamageDetails rammingDetails {
         get {
             if (_rammingDetails.sourcePlayerNickName == null) {
@@ -59,9 +55,6 @@ public class VehicleManager : HealthManager
     public float defaultCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
     
-
-
-    // Start is called before the first frame update
     public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
@@ -83,6 +76,10 @@ public class VehicleManager : HealthManager
             collisionArea.rotation.eulerAngles = collisionArea.rotationEuler;
             collisionAreas[i] = collisionArea;
         }
+
+        defaultDrag = rb.drag;
+        defaultAngularDrag = rb.angularDrag;
+        defaultCOM = GetComponent<COMDropper>().Shift;
     }
 
     public override void SetupHealthManager()
@@ -258,9 +255,11 @@ public class VehicleManager : HealthManager
     
     // Die is a LOCAL function that is only called by the driver when they get dead.
     protected void Die(bool updateDeath, bool updateKill) {
-        health = 0;
         // Update gamestate
-        
+        health = 0f;
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        if (team.gunnerId > 0) myPhotonView.RPC(nameof(SetGunnerHealth_RPC), PhotonNetwork.PlayerList[team.gunnerId], 0f);
+        team.Release();
         // update my deaths
         if (updateDeath)
         {
@@ -328,20 +327,52 @@ public class VehicleManager : HealthManager
         carDriver.StopBrake();
         carDriver.StopSteer();
         yield return new WaitForSecondsRealtime(time);
-        
 
-        MonoBehaviour[] childBehaviours = GetComponentsInChildren<MonoBehaviour>();
+        /*MonoBehaviour[] childBehaviours = GetComponentsInChildren<MonoBehaviour>();
         foreach (MonoBehaviour childBehaviour in childBehaviours)
         {
             childBehaviour.enabled = false;
-        }
+        }*/
         PlayDeathTrailEffects(false);
         
         
         // call network delete on driver instance
-        if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);
+        //if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);*/
 
         
+    }
+
+    [PunRPC]
+    void SetGunnerHealth_RPC(float value) {
+        health = value;
+    }
+
+    [PunRPC]
+    void ResetMesh_RPC() {
+        GetComponent<Squishing>().ResetMesh();
+    }
+
+    public void ResetProperties() {
+        health = maxHealth;
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        if (team.gunnerId > 0) myPhotonView.RPC(nameof(SetGunnerHealth_RPC), PhotonNetwork.PlayerList[team.gunnerId], maxHealth);
+        team.Release();
+        GunnerWeaponManager gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
+        foreach (GunnerWeaponManager.WeaponControlGroup weaponControlGroup in gunnerWeaponManager.weaponControlGroups.weaponControlGroupList) {
+            foreach(Weapon weapon in weaponControlGroup.weapons) {
+                weapon.ResetWeaponToDefaults();
+            }
+        }
+        rb.drag = defaultDrag;
+        rb.angularDrag = defaultAngularDrag;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        isDead = false;
+        rb.centerOfMass = defaultCOM;
+        TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        teamEntry.isDead = false;
+        teamEntry.Increment();
+        myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
     }
 
 }
