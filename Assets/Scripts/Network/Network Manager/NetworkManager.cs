@@ -122,7 +122,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         yield return new WaitForSecondsRealtime(time);
 
         //Spawn(teamId);
-        StartCoroutine(ResetVehicle(teamId));        
+        StartCoroutine(ResetVehicle(teamId));
+        //photonView.RPC(nameof(ResetVehicle_RPC), RpcTarget.All, teamId);
+    }
+
+    [PunRPC]
+    void ResetVehicle_RPC(int teamId) {
+        StartCoroutine(ResetVehicle(teamId));
     }
 
     IEnumerator ResetVehicle(int teamId) {
@@ -135,7 +141,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 // Remove damping on camera before move
                 List<List<float>> dampingValues = new List<List<float>>();
                 CinemachineFreeLook driverCam = vehicle.GetComponentInChildren<DriverCameraBehaviour>().GetComponentInChildren<CinemachineFreeLook>();
-                for (int i = 0; i < 3; i ++) {
+                for (int i = 0; i < 3; i++) {
                     CinemachineOrbitalTransposer transposer = driverCam.GetRig(i).GetCinemachineComponent<CinemachineOrbitalTransposer>();
                     List<float> values = new List<float>();
                     values.Add(transposer.m_XDamping);
@@ -169,7 +175,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                     transposer.m_ZDamping = dampingValues[i][2];
                     transposer.m_YawDamping = dampingValues[i][3];
                 }
-
+                break;
             }
         }
     }

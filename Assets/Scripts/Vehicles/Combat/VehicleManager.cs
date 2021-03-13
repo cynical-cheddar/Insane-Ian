@@ -5,6 +5,7 @@ using Photon.Pun;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Gamestate;
+using Photon.Realtime;
 
 
 public class VehicleManager : HealthManager
@@ -254,9 +255,11 @@ public class VehicleManager : HealthManager
     
     // Die is a LOCAL function that is only called by the driver when they get dead.
     protected void Die(bool updateDeath, bool updateKill) {
-        health = 0;
         // Update gamestate
-        
+        health = 0f;
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        if (team.gunnerId > 0) myPhotonView.RPC(nameof(SetGunnerHealth_RPC), PhotonNetwork.PlayerList[team.gunnerId], 0f);
+        team.Release();
         // update my deaths
         if (updateDeath)
         {
@@ -329,24 +332,35 @@ public class VehicleManager : HealthManager
         foreach (MonoBehaviour childBehaviour in childBehaviours)
         {
             childBehaviour.enabled = false;
-        }
+        }*/
         PlayDeathTrailEffects(false);
         
         
         // call network delete on driver instance
-        if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);*/
+        //if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);*/
 
         
     }
 
+    [PunRPC]
+    void SetGunnerHealth_RPC(float value) {
+        health = value;
+    }
+
     public void ResetProperties() {
         health = maxHealth;
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        if (team.gunnerId > 0) myPhotonView.RPC(nameof(SetGunnerHealth_RPC), PhotonNetwork.PlayerList[team.gunnerId], maxHealth);
+        team.Release();
         rb.drag = defaultDrag;
         rb.angularDrag = defaultAngularDrag;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         isDead = false;
         rb.centerOfMass = defaultCOM;
+        TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        teamEntry.isDead = false;
+        teamEntry.Increment();
     }
 
 }
