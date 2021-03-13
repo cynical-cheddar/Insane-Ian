@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using Gamestate;
 using System.Linq;
+using Cinemachine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -121,11 +122,34 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         yield return new WaitForSecondsRealtime(time);
 
         //Spawn(teamId);
+        StartCoroutine(ResetVehicle(teamId));        
+    }
 
+    IEnumerator ResetVehicle(int teamId) {
         List<VehicleManager> vehicles = FindObjectsOfType<VehicleManager>().ToList();
         foreach (VehicleManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
+                // Reset stats
                 vehicle.ResetProperties();
+
+                // Remove damping on camera before move
+                List<List<float>> dampingValues = new List<List<float>>();
+                CinemachineFreeLook driverCam = vehicle.GetComponentInChildren<DriverCameraBehaviour>().GetComponentInChildren<CinemachineFreeLook>();
+                for (int i = 0; i < 3; i ++) {
+                    CinemachineOrbitalTransposer transposer = driverCam.GetRig(i).GetCinemachineComponent<CinemachineOrbitalTransposer>();
+                    List<float> values = new List<float>();
+                    values.Add(transposer.m_XDamping);
+                    values.Add(transposer.m_YDamping);
+                    values.Add(transposer.m_ZDamping);
+                    values.Add(transposer.m_YawDamping);
+                    dampingValues.Add(values);
+                    transposer.m_XDamping = 0;
+                    transposer.m_YDamping = 0;
+                    transposer.m_ZDamping = 0;
+                    transposer.m_YawDamping = 0;
+                }
+
+                // Move to spawnpoint
                 vehicle.GetComponent<InputDriver>().enabled = true;
                 Transform spawnPoint;
                 if (teamId > spawnPoints.Count) {
@@ -135,9 +159,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 }
                 vehicle.gameObject.transform.position = spawnPoint.position;
                 vehicle.gameObject.transform.rotation = spawnPoint.rotation;
+
+                // Add back damping on camera after move
+                yield return new WaitForSecondsRealtime(0.5f);
+                for (int i = 0; i < 3; i++) {
+                    CinemachineOrbitalTransposer transposer = driverCam.GetRig(i).GetCinemachineComponent<CinemachineOrbitalTransposer>();
+                    transposer.m_XDamping = dampingValues[i][0];
+                    transposer.m_YDamping = dampingValues[i][1];
+                    transposer.m_ZDamping = dampingValues[i][2];
+                    transposer.m_YawDamping = dampingValues[i][3];
+                }
+
             }
         }
-
     }
 
     void Spawn(int teamId)
