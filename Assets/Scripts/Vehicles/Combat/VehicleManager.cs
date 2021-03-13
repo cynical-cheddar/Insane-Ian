@@ -347,6 +347,11 @@ public class VehicleManager : HealthManager
         health = value;
     }
 
+    [PunRPC]
+    void ResetMesh_RPC() {
+        GetComponent<Squishing>().ResetMesh();
+    }
+
     public void ResetProperties() {
         health = maxHealth;
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
@@ -367,6 +372,7 @@ public class VehicleManager : HealthManager
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
         teamEntry.isDead = false;
         teamEntry.Increment();
+        myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
     }
 
 }
