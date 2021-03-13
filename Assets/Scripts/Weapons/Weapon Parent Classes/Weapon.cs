@@ -46,6 +46,8 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    
+
     protected PlayerTransformTracker _playerTransformTracker;
 
     protected float timeSinceLastFire = 0f;
@@ -57,9 +59,14 @@ public class Weapon : MonoBehaviour
     protected VehicleManager myVehicleManager;
 
     protected int myTeamId = 0;
+
+    protected GunnerWeaponManager gunnerWeaponManager;
+    
     // Start is called before the first frame update
     [Header("Primary Properties")]
-    public string weaponName = "defaultWeapon"; 
+    public string weaponName = "defaultWeapon";
+    public bool isUltimate = false;
+    public bool returnToFirstWeaponGroupOnEmpty = true;
     [Header("Self Transform")]
     public Transform barrelTransform;
     public Transform barrelEndMuzzleTransform;
@@ -81,6 +88,7 @@ public class Weapon : MonoBehaviour
     public int ammoPerShot = 1;
     public bool unlimitedAmmo = false;
     public int reserveAmmo = 100;
+    public int maxReserveAmmo = 100;
     public bool fullSalvoOnStart = true;
 
     protected int defaultSalvoSize;
@@ -183,6 +191,22 @@ public class Weapon : MonoBehaviour
         
     }
 
+    public virtual void PickupAmmo(int amt)
+    {
+        if (reloadType == ReloadType.noReload)
+        {
+            currentSalvo += amt;
+            if (currentSalvo > salvoSize) currentSalvo = salvoSize;
+        }
+        else
+        {
+            reserveAmmo += amt;
+            if (reserveAmmo > maxReserveAmmo) reserveAmmo = maxReserveAmmo;
+        }
+        
+        UpdateHud();
+    }
+
     protected Vector3 CalculateFireDeviation(Vector3 oldTargetPoint, float maxDegrees)
     {
         if (maxDegrees == 0) return oldTargetPoint;
@@ -231,6 +255,7 @@ public class Weapon : MonoBehaviour
         
         _networkPlayerVehicle = GetComponentInParent<NetworkPlayerVehicle>();
         myVehicleManager = GetComponentInParent<VehicleManager>();
+        gunnerWeaponManager = gunnerPhotonView.GetComponent<GunnerWeaponManager>();
         if (_networkPlayerVehicle != null)
         {
             myNickName = _networkPlayerVehicle.GetGunnerNickName();
@@ -259,8 +284,6 @@ public class Weapon : MonoBehaviour
         
 
         UpdateHud();
-        
-
     }
 
     public virtual void ActivateWeaponInternal()
@@ -326,9 +349,16 @@ public class Weapon : MonoBehaviour
         if(currentSalvo > salvoSize) currentSalvo = salvoSize;
         UpdateHud();
     }
-    protected void ReloadFull(){
+    protected void ReloadFull()
+    {
+        int diff = salvoSize - currentSalvo;
         currentSalvo += salvoSize;
         if(currentSalvo > salvoSize) currentSalvo = salvoSize;
+
+        if (reloadType == ReloadType.byClip)
+        {
+            ReduceReserveAmmo(diff);
+        }
         UpdateHud();
     }
 
@@ -381,16 +411,58 @@ public class Weapon : MonoBehaviour
             ReloadFull();
         }
     }
-    
+
+    protected void GunnerUltimateUpdateCallback()
+    {
+        
+        float amt = 0;
+        // find out how much of a fraction of starting ammo a single shot is
+        if (reloadType == ReloadType.noReload)
+        {
+            amt = (float) defaultAmmoPerShot / (float) defaultSalvoSize;
+        }
+        else
+        {
+            if(fullSalvoOnStart) amt = (float) defaultAmmoPerShot /(((float) defaultReserveAmmo) + (float) defaultSalvoSize);
+            else amt = (float) defaultAmmoPerShot /(float) defaultReserveAmmo;
+        }
+
+        amt *= 100;
+        Debug.Log("amt" + amt);
+        gunnerWeaponManager.AdjustGunnerUltimateProgress(-amt * (gunnerWeaponManager.maxGunnerUltimateProgress/100));
+    }
 
 
     public virtual bool CanFire()
     {
+        
+        
+        
         if (currentCooldown <= 0 && myVehicleManager.health > 0)
         {
+            if (isUltimate)
+            {
+                GunnerUltimateUpdateCallback();
+            }
             if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
             else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;
         }
+
+        else if (returnToFirstWeaponGroupOnEmpty)
+        {
+            if (reloadType == ReloadType.noReload && currentSalvo < ammoPerShot)
+            {
+                gunnerPhotonView.gameObject.GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
+                return false;
+            }
+            else if ((reloadType != ReloadType.noReload) && currentSalvo > 0 && reserveAmmo < ammoPerShot)
+            {
+                gunnerPhotonView.gameObject.GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
+                return false;
+            }
+        }
+        
+        
 
         return false;
     }

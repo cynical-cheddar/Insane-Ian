@@ -150,6 +150,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         object[] instantiationData = new object[]{teamId};
 
+        
         PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
     }
 

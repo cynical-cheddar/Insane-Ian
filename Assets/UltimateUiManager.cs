@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Gamestate;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 public class UltimateUiManager : MonoBehaviour
@@ -8,16 +11,52 @@ public class UltimateUiManager : MonoBehaviour
     public UiBar driverBar;
 
     public UiBar gunnerBar;
+
+    private bool cachedRole = false;
+
+    private bool isDriver;
+
+    private bool isGunner;
+
+    public GameObject fullDriverBarObject;
+    public GameObject fullGunnerBarObject;
+    void CacheRole()
+    {
+        if (!cachedRole)
+        {
+            GamestateTracker gs = FindObjectOfType<GamestateTracker>();
+            PlayerEntry playerEntry = gs.players.Read( (short) PhotonNetwork.LocalPlayer.ActorNumber);
+            if (playerEntry.role == (short) PlayerEntry.Role.Driver) isDriver = true;
+            if (playerEntry.role == (short) PlayerEntry.Role.Gunner) isGunner = true;
+        }
+    }
+    
     // Start is called before the first frame update
     public void UpdateDriverBar(float currentValue, float maxValue)
     {
         driverBar.setProgressBar(currentValue/maxValue);
         driverBar.setnumber(Mathf.RoundToInt((currentValue/maxValue)*100).ToString());
+        if (currentValue >= maxValue)
+        {
+            fullDriverBarObject.SetActive(true);
+        }
+        else
+        {
+            fullDriverBarObject.SetActive(false);
+        }
     }
     
     public void UpdateGunnerBar(float currentValue, float maxValue)
     {
         gunnerBar.setProgressBar(currentValue/maxValue);
         gunnerBar.setnumber(Mathf.RoundToInt((currentValue/maxValue)*100).ToString());
+        if (currentValue >= maxValue)
+        {
+            fullGunnerBarObject.SetActive(true);
+        }
+        else
+        {
+            fullGunnerBarObject.SetActive(false);
+        }
     }
 }

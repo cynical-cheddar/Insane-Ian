@@ -99,6 +99,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
     }
 
     void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
+        Debug.Log("Spawn start");
         GetComponent<VehicleManager>().SetupVehicleManager();
 
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -170,7 +171,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if (botGunner && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiGunnerScripts);
         if (PhotonNetwork.LocalPlayer.ActorNumber == gunnerId) EnableMonobehaviours(playerGunnerScripts);
         //Debug.Log("GOT HERE2");
-        
+        Debug.Log("Spawn success");
         //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
     }
 }

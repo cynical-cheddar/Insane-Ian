@@ -1302,6 +1302,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: defaultWeapon
+  isUltimate: 0
+  returnToFirstWeaponGroupOnEmpty: 1
   barrelTransform: {fileID: 3566051237498649254}
   barrelEndMuzzleTransform: {fileID: 2602131457308962192}
   projectileDeviationDegrees: 0
@@ -1338,6 +1340,7 @@ MonoBehaviour:
   ammoPerShot: 1
   unlimitedAmmo: 0
   reserveAmmo: 100
+  maxReserveAmmo: 100
   fullSalvoOnStart: 1
   baseDamage: 20
   damageType: 0
@@ -2522,17 +2525,17 @@ PrefabInstance:
     - target: {fileID: 3150562120589808326, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.042194836
+      value: -0.042194862
       objectReference: {fileID: 0}
     - target: {fileID: 3150562120589808326, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000017324838
+      value: 0.000000017324838
       objectReference: {fileID: 0}
     - target: {fileID: 3150562120589808326, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -7.316705e-10
+      value: 7.316709e-10
       objectReference: {fileID: 0}
     - target: {fileID: 3193194029945470566, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
@@ -2741,9 +2744,29 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6451279103785429609, guid: ea49261a1af561c47b88c473909ef289,
         type: 3}
+      propertyPath: weaponControlGroups.weaponControlGroupList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451279103785429609, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[1].isUltimate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451279103785429609, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[1].weapons.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6451279103785429609, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
       propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[0].weapons.Array.data[0]
       value: 
       objectReference: {fileID: 6318575805010805721}
+    - target: {fileID: 6451279103785429609, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[1].weapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 1143477805431062946}
     - target: {fileID: 6813446063617895652, guid: ea49261a1af561c47b88c473909ef289,
         type: 3}
       propertyPath: m_RootOrder
@@ -2759,6 +2782,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gunnerhardpoint
       objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: salvoSize
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: baseDamage
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: isUltimate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: reloadType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+        type: 3}
+      propertyPath: unlimitedAmmo
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8839088499702659347, guid: ea49261a1af561c47b88c473909ef289,
         type: 3}
       propertyPath: viewIdField
@@ -2766,27 +2814,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea49261a1af561c47b88c473909ef289, type: 3}
---- !u!4 &2602131457308962192 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5995780333550214240, guid: ea49261a1af561c47b88c473909ef289,
-    type: 3}
-  m_PrefabInstance: {fileID: 8586652224838283760}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &3566051237498649254 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5067888789087538006, guid: ea49261a1af561c47b88c473909ef289,
-    type: 3}
-  m_PrefabInstance: {fileID: 8586652224838283760}
-  m_PrefabAsset: {fileID: 0}
 --- !u!95 &4638926100107764462 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 3983763730733962014, guid: ea49261a1af561c47b88c473909ef289,
-    type: 3}
-  m_PrefabInstance: {fileID: 8586652224838283760}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &6977265457132130286 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1728770116775804446, guid: ea49261a1af561c47b88c473909ef289,
     type: 3}
   m_PrefabInstance: {fileID: 8586652224838283760}
   m_PrefabAsset: {fileID: 0}
@@ -2802,6 +2832,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &6977265457132130286 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1728770116775804446, guid: ea49261a1af561c47b88c473909ef289,
+    type: 3}
+  m_PrefabInstance: {fileID: 8586652224838283760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1143477805431062946 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
+    type: 3}
+  m_PrefabInstance: {fileID: 8586652224838283760}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9b6bc1ae0572bf458792bfee0c6f184, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &3566051237498649254 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5067888789087538006, guid: ea49261a1af561c47b88c473909ef289,
+    type: 3}
+  m_PrefabInstance: {fileID: 8586652224838283760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2602131457308962192 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5995780333550214240, guid: ea49261a1af561c47b88c473909ef289,
+    type: 3}
+  m_PrefabInstance: {fileID: 8586652224838283760}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2914590426433692548
 MonoBehaviour:
   m_ObjectHideFlags: 0

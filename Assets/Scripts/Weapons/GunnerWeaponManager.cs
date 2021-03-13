@@ -19,6 +19,9 @@ public class GunnerWeaponManager : MonoBehaviour
     private int gunnerId = 0;
     private bool driverBot = false;
     private bool gunnerBot = false;
+
+    public int ultimateGroupWeaponIndex = 1;
+    
     [Serializable]
     public struct WeaponControlGroups
     {
@@ -58,15 +61,24 @@ public class GunnerWeaponManager : MonoBehaviour
             }
         }
     }
+
+    void ResetWeaponGroup(WeaponControlGroup wcg)
+    {
+        foreach (Weapon w in wcg.weapons)
+        {
+            w.ResetWeaponToDefaults();
+        }
+    }
     
     public void AdjustGunnerUltimateProgress(float amt)
     {
         gunnerUltimateProgress += amt;
         if (gunnerUltimateProgress < 0) gunnerUltimateProgress = 0;
-        if (gunnerUltimateProgress > maxGunnerUltimateProgress) gunnerUltimateProgress = 100;
+        if (gunnerUltimateProgress > maxGunnerUltimateProgress) gunnerUltimateProgress = maxGunnerUltimateProgress;
         
         myPhotonView.RPC(nameof(SetUltimateProgress_RPC), RpcTarget.All, gunnerUltimateProgress);
     }
+   
 
     [PunRPC]
     void SetUltimateProgress_RPC(float amt)
@@ -112,6 +124,15 @@ public class GunnerWeaponManager : MonoBehaviour
     {
         // select the first control group
         SelectWeaponGroup(weaponControlGroups.weaponControlGroupList[0]);
+    }
+
+    public void SelectUltimate()
+    {
+        if (gunnerUltimateProgress >= maxGunnerUltimateProgress)
+        {
+            ResetWeaponGroup(weaponControlGroups.weaponControlGroupList[ultimateGroupWeaponIndex]);
+            SelectWeaponGroup(weaponControlGroups.weaponControlGroupList[ultimateGroupWeaponIndex]);
+        }
     }
 
     public void SelectWeaponGroup(WeaponControlGroup group)
