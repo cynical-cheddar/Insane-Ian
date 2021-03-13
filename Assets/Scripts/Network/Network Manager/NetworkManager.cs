@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using Gamestate;
+using System.Linq;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -95,7 +96,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 int teamId = entry.id;
                 entry.Release();
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
-                spawn(teamId);
+                Spawn(teamId);
             }
         }
     }
@@ -118,13 +119,28 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     IEnumerator RespawnVehicle(float time, int teamId) {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
-        
-        spawn(teamId);
 
+        //Spawn(teamId);
+
+        List<VehicleManager> vehicles = FindObjectsOfType<VehicleManager>().ToList();
+        foreach (VehicleManager vehicle in vehicles) {
+            if (vehicle.teamId == teamId) {
+                vehicle.ResetProperties();
+                vehicle.GetComponent<InputDriver>().enabled = true;
+                Transform spawnPoint;
+                if (teamId > spawnPoints.Count) {
+                    spawnPoint = spawnPoints[0];
+                } else {
+                    spawnPoint = spawnPoints[teamId - 1];
+                }
+                vehicle.gameObject.transform.position = spawnPoint.position;
+                vehicle.gameObject.transform.rotation = spawnPoint.rotation;
+            }
+        }
 
     }
 
-    void spawn(int teamId)
+    void Spawn(int teamId)
     {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);

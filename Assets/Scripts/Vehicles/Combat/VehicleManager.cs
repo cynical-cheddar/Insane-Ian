@@ -19,9 +19,10 @@ public class VehicleManager : HealthManager
     public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
     public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
     public float crashMasterVolume = 1f;
-    
-    
-    
+
+    float defaultDrag = 0.15f;
+    float defaultAngularDrag = 0.2f;
+    Vector3 defaultCOM;   
     
     Rigidbody rb;
     InterfaceCarDrive icd;
@@ -38,13 +39,7 @@ public class VehicleManager : HealthManager
     }
     
     public GameObject temporaryDeathExplosion;
-    
-    
 
-    
-
-    
-    
     public Weapon.WeaponDamageDetails rammingDetails {
         get {
             if (_rammingDetails.sourcePlayerNickName == null) {
@@ -59,9 +54,6 @@ public class VehicleManager : HealthManager
     public float defaultCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
     
-
-
-    // Start is called before the first frame update
     public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
@@ -83,6 +75,10 @@ public class VehicleManager : HealthManager
             collisionArea.rotation.eulerAngles = collisionArea.rotationEuler;
             collisionAreas[i] = collisionArea;
         }
+
+        defaultDrag = rb.drag;
+        defaultAngularDrag = rb.angularDrag;
+        defaultCOM = GetComponent<COMDropper>().Shift;
     }
 
     public override void SetupHealthManager()
@@ -328,9 +324,8 @@ public class VehicleManager : HealthManager
         carDriver.StopBrake();
         carDriver.StopSteer();
         yield return new WaitForSecondsRealtime(time);
-        
 
-        MonoBehaviour[] childBehaviours = GetComponentsInChildren<MonoBehaviour>();
+        /*MonoBehaviour[] childBehaviours = GetComponentsInChildren<MonoBehaviour>();
         foreach (MonoBehaviour childBehaviour in childBehaviours)
         {
             childBehaviour.enabled = false;
@@ -339,9 +334,19 @@ public class VehicleManager : HealthManager
         
         
         // call network delete on driver instance
-        if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);
+        if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);*/
 
         
+    }
+
+    public void ResetProperties() {
+        health = maxHealth;
+        rb.drag = defaultDrag;
+        rb.angularDrag = defaultAngularDrag;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        isDead = false;
+        rb.centerOfMass = defaultCOM;
     }
 
 }
