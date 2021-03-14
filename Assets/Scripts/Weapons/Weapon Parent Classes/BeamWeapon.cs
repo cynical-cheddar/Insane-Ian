@@ -108,7 +108,10 @@ public class BeamWeapon : Weapon
     protected bool localFirstFire = false;
 
 
-
+    protected void Start()
+    {
+        lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
+    }
 
 
     public override void DeselectWeapon()
@@ -152,13 +155,15 @@ public class BeamWeapon : Weapon
         oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
         base.ActivateWeapon();
+        base.SetupWeapon();
         SetupWeapon();
     }
 
     public override bool CanFire()
     {
+        if (isRecharging) return false;
         if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
-        else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;
+        else if (reloadType == ReloadType.noReload && currentSalvo > 0) return true;
         return false;
     }
 
@@ -169,27 +174,34 @@ public class BeamWeapon : Weapon
         {
             
         }*/
-        
-        
-        
-        
-        
-        
-        if (base.CanFire() && gunnerPhotonView.IsMine && !isRecharging)
+
+        /*
+        if (!CanFire() && gunnerPhotonView.IsMine)
+        {
+            SetIsRemotelyFiring(false);
+            CeaseFire();
+        }*/
+
+
+
+        if (base.CanFire() && gunnerPhotonView.IsMine && CanFire())
         {
             timeSinceLastFire = 0;
             targetPoint =
-                CalculateFireDeviation(targetPoint,  projectileDeviationDegrees);
-            
-            
+                CalculateFireDeviation(targetPoint, projectileDeviationDegrees);
+
+
             currentCooldown = fireRate;
             UseAmmo(ammoPerShot);
-            float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
+            float distanceMultiplier =
+                CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier);
-            
-            
-            if(!isRemotelyFiring){
+            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId,
+                damageType, baseDamage * distanceMultiplier);
+
+
+            if (!isRemotelyFiring)
+            {
 
                 //create beam
                 localFirstFire = true;
@@ -203,59 +215,71 @@ public class BeamWeapon : Weapon
 
             if (!HasAmmoToShoot() && !isRecharging)
             {
-               // StartCoroutine(DoBonusRecharge(extraRechargeTimeOnDepletion));
+                // StartCoroutine(DoBonusRecharge(extraRechargeTimeOnDepletion));
+
+                Debug.Log("cease fire");
                 CeaseFire();
-                
+
             }
-            
-            RaycastHitDetails raycastTracerDetails = Fire_HitscanWeaponTracer(targetPoint);
-
-            
-            
-
-            
-            
-            // if the raycast tracer details health field is not null, then damage em
-            if (raycastTracerDetails.hasHealth)
+            else
             {
-                raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleManager>().TakeDamage(weaponDamageDetails);
-            }
-            // do the fire effect on our end
-            
-            
-            // ------------ local firing procedure:
-            // if we hit, then fire a ray effect playing hitsound on hit
-            if(raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)FireBeamRoundEffectHit(raycastTracerDetails.worldHitPoint);
-            // if we miss, then fire a ray effect playing missound on hit
-            else if(!raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget) FireBeamRoundEffectMiss(raycastTracerDetails.worldHitPoint);
+
+                RaycastHitDetails raycastTracerDetails = Fire_HitscanWeaponTracer(targetPoint);
 
 
-            
-            
-            
-            // -----------  remote firing procedure:
-            // if optimisations are not enabled, for all other players:
- 
+
+
+
+
+                // if the raycast tracer details health field is not null, then damage em
+                if (raycastTracerDetails.hasHealth)
+                {
+                    raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleManager>()
+                        .TakeDamage(weaponDamageDetails);
+                }
+                // do the fire effect on our end
+
+
+                // ------------ local firing procedure:
+                // if we hit, then fire a ray effect playing hitsound on hit
+                if (raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)
+                    FireBeamRoundEffectHit(raycastTracerDetails.worldHitPoint);
+                // if we miss, then fire a ray effect playing missound on hit
+                else if (!raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)
+                    FireBeamRoundEffectMiss(raycastTracerDetails.worldHitPoint);
+
+
+
+
+
+                // -----------  remote firing procedure:
+                // if optimisations are not enabled, for all other players:
+
                 // if corrections are applied and we hit a target with health then fire a ray using FireHitscanRoundEffectCorrected, playing the hitsound on hit
                 if (raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)
                 {
-                    int hitTeamId = raycastTracerDetails.hitTransform.GetComponentInParent<NetworkPlayerVehicle>().teamId;
-                    weaponPhotonView.RPC(nameof(FireBeamRoundEffect_RPC), RpcTarget.Others, true, raycastTracerDetails.worldHitPoint, true, raycastTracerDetails.localHitPoint, hitTeamId);
+                    int hitTeamId = raycastTracerDetails.hitTransform.GetComponentInParent<NetworkPlayerVehicle>()
+                        .teamId;
+                    weaponPhotonView.RPC(nameof(FireBeamRoundEffect_RPC), RpcTarget.Others, true,
+                        raycastTracerDetails.worldHitPoint, true, raycastTracerDetails.localHitPoint, hitTeamId);
                 }
                 else if (raycastTracerDetails.validTarget)
                 {
-                    weaponPhotonView.RPC(nameof(FireBeamRoundEffect_RPC), RpcTarget.Others, true, raycastTracerDetails.worldHitPoint, false, raycastTracerDetails.localHitPoint, 0);
+                    weaponPhotonView.RPC(nameof(FireBeamRoundEffect_RPC), RpcTarget.Others, true,
+                        raycastTracerDetails.worldHitPoint, false, raycastTracerDetails.localHitPoint, 0);
                 }
                 else
                 {
-                    weaponPhotonView.RPC(nameof(FireBeamRoundEffect_RPC), RpcTarget.Others, false, raycastTracerDetails.worldHitPoint, false, raycastTracerDetails.localHitPoint, 0);
+                    weaponPhotonView.RPC(nameof(FireBeamRoundEffect_RPC), RpcTarget.Others, false,
+                        raycastTracerDetails.worldHitPoint, false, raycastTracerDetails.localHitPoint, 0);
                 }
+            }
         }
-        
+
         // now deal with beam effects
 
 
-        if (beam != null)
+        if (beam != null && gunnerPhotonView.IsMine)
         {
             if (localFirstFire && !instantBeam)
             {
@@ -301,7 +325,7 @@ public class BeamWeapon : Weapon
 
     
     
-
+    
 
     
 

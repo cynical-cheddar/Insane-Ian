@@ -34,10 +34,15 @@ public class PickupGunnerUlt : PickupItem
        
         NetworkPlayerVehicle npv = otherpv.GetComponentInParent<NetworkPlayerVehicle>();
         GunnerWeaponManager gm = otherpv.gameObject.GetComponentInChildren<GunnerWeaponManager>();
-        
 
-        gm.AdjustGunnerUltimateProgress(ultIncrease);
-        this.photonView.RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
+
+
+        if (!gm.usingUltimate)
+        {
+            gm.AdjustGunnerUltimateProgress(ultIncrease);
+            this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(),
+                npv.GetGunnerID());
+        }
     }
     
     

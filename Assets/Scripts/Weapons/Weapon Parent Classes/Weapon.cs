@@ -305,17 +305,10 @@ public class Weapon : MonoBehaviour
 
     protected void UseAmmo(int amt)
     {
-        // use clips and salvos
-        if (reloadType != ReloadType.noReload)
-        {
+
             DecrementSalvo(amt);
-        }
-        // use reserve ammo
-        else
-        {
-            ReduceReserveAmmo(amt);
-        }
-        UpdateHud();
+            UpdateHud();
+            GunnerUltimateUpdateCallback();
     }
 
     protected void ReduceReserveAmmo(int amt)
@@ -347,7 +340,9 @@ public class Weapon : MonoBehaviour
         if(!unlimitedAmmo) reserveAmmo -= amount;
         
         if(currentSalvo > salvoSize) currentSalvo = salvoSize;
+        GunnerUltimateUpdateCallback();
         UpdateHud();
+        
     }
     protected void ReloadFull()
     {
@@ -410,28 +405,52 @@ public class Weapon : MonoBehaviour
             
             ReloadFull();
         }
+        GunnerUltimateUpdateCallback();
     }
 
     protected void GunnerUltimateUpdateCallback()
     {
-        
-        float amt = 0;
-        // find out how much of a fraction of starting ammo a single shot is
-        if (reloadType == ReloadType.noReload)
+        if (isUltimate)
         {
-            amt = (float) defaultAmmoPerShot / (float) defaultSalvoSize;
-        }
-        else
-        {
-            if(fullSalvoOnStart) amt = (float) defaultAmmoPerShot /(((float) defaultReserveAmmo) + (float) defaultSalvoSize);
-            else amt = (float) defaultAmmoPerShot /(float) defaultReserveAmmo;
-        }
+            float amt = 0;
+            // find out how much of a fraction of starting ammo a single shot is
+            if (reloadType == ReloadType.noReload)
+            {
+                amt = (float) currentSalvo / (float) salvoSize;
+            }
+            else
+            {
+                if (fullSalvoOnStart) amt = (currentSalvo + reserveAmmo) / (salvoSize + defaultReserveAmmo);
 
-        amt *= 100;
-        Debug.Log("amt" + amt);
-        gunnerWeaponManager.AdjustGunnerUltimateProgress(-amt * (gunnerWeaponManager.maxGunnerUltimateProgress/100));
+                else amt = (currentSalvo + reserveAmmo) / (defaultReserveAmmo);
+
+
+            }
+
+            amt *= 100;
+            Debug.Log("amt" + amt);
+            gunnerWeaponManager.SetGunnerUltimateProgress(amt * (gunnerWeaponManager.maxGunnerUltimateProgress / 100));
+        }
     }
 
+    protected void SelectFirstIfEmpty()
+    {
+        if (returnToFirstWeaponGroupOnEmpty)
+        {
+            if (reloadType == ReloadType.noReload && currentSalvo < ammoPerShot)
+            {
+                Debug.Log("out of ammo" + this);
+                gunnerPhotonView.gameObject.GetComponent<GunnerWeaponManager>().SelectFirst();
+                //return false;
+            }
+            else if ((reloadType != ReloadType.noReload) && currentSalvo < ammoPerShot && reserveAmmo < ammoPerShot)
+            {
+                Debug.Log("out of ammo" + this);
+                gunnerPhotonView.gameObject.GetComponent<GunnerWeaponManager>().SelectFirst();
+                //   return false;
+            }
+        }
+    }
 
     public virtual bool CanFire()
     {
@@ -440,27 +459,14 @@ public class Weapon : MonoBehaviour
         
         if (currentCooldown <= 0 && myVehicleManager.health > 0)
         {
-            if (isUltimate)
-            {
-                GunnerUltimateUpdateCallback();
-            }
+            GunnerUltimateUpdateCallback();
             if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
-            else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;
+            else if (reloadType == ReloadType.noReload && currentSalvo > 0) return true;
         }
 
-        else if (returnToFirstWeaponGroupOnEmpty)
-        {
-            if (reloadType == ReloadType.noReload && currentSalvo < ammoPerShot)
-            {
-                gunnerPhotonView.gameObject.GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
-                return false;
-            }
-            else if ((reloadType != ReloadType.noReload) && currentSalvo > 0 && reserveAmmo < ammoPerShot)
-            {
-                gunnerPhotonView.gameObject.GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
-                return false;
-            }
-        }
+        SelectFirstIfEmpty();
+
+        
         
         
 
@@ -470,8 +476,12 @@ public class Weapon : MonoBehaviour
     protected bool HasAmmoToShoot()
     {
         if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
-        else if (reloadType == ReloadType.noReload && reserveAmmo >= ammoPerShot) return true;
-        else return false;
+        else if (reloadType == ReloadType.noReload && currentSalvo > 0) return true;
+        
+        SelectFirstIfEmpty();
+        
+        
+        return false;
     }
     protected bool PenultimateShot()
     {

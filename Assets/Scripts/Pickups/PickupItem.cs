@@ -7,7 +7,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 
 [RequireComponent(typeof(PhotonView))]
-public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
+public class PickupItem : MonoBehaviour
 {
     [Serializable]
     public enum PickupTarget // your custom enumeration
@@ -19,8 +19,7 @@ public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField]
     
     
-    
-    public PickupTarget pickupTarget;
+
     
     public float SecondsBeforeRespawn = 2;
 
@@ -40,7 +39,7 @@ public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
     public double TimeOfRespawn;    // needed when we want to update new players when a PickupItem respawns
 
     /// <summary></summary>
-    public int ViewID { get { return this.photonView.ViewID; } }
+  //  public int ViewID { get { return this.photonView.ViewID; } }
 
     public static HashSet<PickupItem> DisabledPickupItems = new HashSet<PickupItem>();
     public AudioClip pickupSound;
@@ -82,11 +81,12 @@ public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
     
 
 
-
+/*
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         // read the description in SecondsBeforeRespawn
 
+        
         if (stream.IsWriting && SecondsBeforeRespawn <= 0)
         {
             stream.SendNext(this.gameObject.transform.position);
@@ -98,6 +98,7 @@ public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
             this.gameObject.transform.position = lastIncomingPos;
         }
     }
+*/
 
 
     public virtual void Pickup(PhotonView otherpv)
@@ -113,7 +114,7 @@ public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
         NetworkPlayerVehicle npv = otherpv.GetComponentInParent<NetworkPlayerVehicle>();
 
 
-        this.photonView.RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
+        this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
     }
 
 
@@ -122,7 +123,7 @@ public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (this.PickupIsMine)
         {
-            this.photonView.RPC(nameof(PunRespawn), RpcTarget.AllViaServer);
+            this.GetComponent<PhotonView>().RPC(nameof(PunRespawn), RpcTarget.AllViaServer);
         }
     }
 
@@ -131,7 +132,7 @@ public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (this.PickupIsMine)
         {
-            this.photonView.RPC(nameof(PunRespawn), RpcTarget.AllViaServer, newPosition);
+            this.GetComponent<PhotonView>().RPC(nameof(PunRespawn), RpcTarget.AllViaServer, newPosition);
         }
     }
 
@@ -186,7 +187,7 @@ public class PickupItem : MonoBehaviourPunCallbacks, IPunObservable
         if (timeUntilRespawn > 0)
         {
             this.TimeOfRespawn = PhotonNetwork.Time + timeUntilRespawn;
-            Invoke("PunRespawn", timeUntilRespawn);
+            Invoke(nameof(PunRespawn), timeUntilRespawn);
         }
     }
 

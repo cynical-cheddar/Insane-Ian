@@ -30,6 +30,7 @@ public class PickupHealth : PickupItem
     
     public override void Pickup(PhotonView otherpv)
     {
+        
         if (this.SentPickup)
         {
             // skip sending more pickups until the original pickup-RPC got back to this client
@@ -43,7 +44,7 @@ public class PickupHealth : PickupItem
         
         
         hm.HealObject(healthIncrease);
-        this.photonView.RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
+        this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
     }
     
 }

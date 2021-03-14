@@ -20,7 +20,8 @@ public class UltimateUiManager : MonoBehaviour
 
     public GameObject fullDriverBarObject;
     public GameObject fullGunnerBarObject;
-    void CacheRole()
+
+    public void CacheRole()
     {
         if (!cachedRole)
         {
@@ -36,7 +37,7 @@ public class UltimateUiManager : MonoBehaviour
     {
         driverBar.setProgressBar(currentValue/maxValue);
         driverBar.setnumber(Mathf.RoundToInt((currentValue/maxValue)*100).ToString());
-        if (currentValue >= maxValue)
+        if (currentValue >= maxValue && isDriver)
         {
             fullDriverBarObject.SetActive(true);
         }
@@ -50,7 +51,7 @@ public class UltimateUiManager : MonoBehaviour
     {
         gunnerBar.setProgressBar(currentValue/maxValue);
         gunnerBar.setnumber(Mathf.RoundToInt((currentValue/maxValue)*100).ToString());
-        if (currentValue >= maxValue)
+        if (currentValue >= maxValue && isGunner)
         {
             fullGunnerBarObject.SetActive(true);
         }

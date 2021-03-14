@@ -20,6 +20,8 @@ public class GunnerWeaponManager : MonoBehaviour
     private bool driverBot = false;
     private bool gunnerBot = false;
 
+    private bool hasSelectedWeaponGroup = false;
+
     public int ultimateGroupWeaponIndex = 1;
     
     [Serializable]
@@ -78,6 +80,15 @@ public class GunnerWeaponManager : MonoBehaviour
         
         myPhotonView.RPC(nameof(SetUltimateProgress_RPC), RpcTarget.All, gunnerUltimateProgress);
     }
+
+    public void SetGunnerUltimateProgress(float amt)
+    {
+        gunnerUltimateProgress = amt;
+        if (gunnerUltimateProgress < 0) gunnerUltimateProgress = 0;
+        if (gunnerUltimateProgress > maxGunnerUltimateProgress) gunnerUltimateProgress = maxGunnerUltimateProgress;
+        
+        myPhotonView.RPC(nameof(SetUltimateProgress_RPC), RpcTarget.All, gunnerUltimateProgress);
+    }
    
 
     [PunRPC]
@@ -100,15 +111,24 @@ public class GunnerWeaponManager : MonoBehaviour
 
     public void StartWeaponManager()
     {
-        SelectFirst();
         myPhotonView = GetComponent<PhotonView>();
-        StartCoroutine(nameof(LateStart));
+        
         ultimateUiManager = FindObjectOfType<UltimateUiManager>();
+        ultimateUiManager.CacheRole();
+        
+        
+        SetupWeaponOwnerships();
+        
+        
+        SelectFirst();
+        
+        Invoke(nameof(LateStart), 0.2f);
+        
+        
     }
 
-    IEnumerator LateStart()
+    void LateStart()
     {
-        yield return new WaitForSeconds(0.1f);
         NetworkPlayerVehicle npv = GetComponentInParent<NetworkPlayerVehicle>();
         if (npv != null)
         {
@@ -120,8 +140,16 @@ public class GunnerWeaponManager : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    void SetUsingUltimate_RPC(bool set)
+    {
+        usingUltimate = set;
+    }
+
     public void SelectFirst()
     {
+        
+        
         // select the first control group
         SelectWeaponGroup(weaponControlGroups.weaponControlGroupList[0]);
     }
@@ -130,18 +158,46 @@ public class GunnerWeaponManager : MonoBehaviour
     {
         if (gunnerUltimateProgress >= maxGunnerUltimateProgress)
         {
+            usingUltimate = true;
             ResetWeaponGroup(weaponControlGroups.weaponControlGroupList[ultimateGroupWeaponIndex]);
             SelectWeaponGroup(weaponControlGroups.weaponControlGroupList[ultimateGroupWeaponIndex]);
         }
     }
 
+    public bool usingUltimate = false;
+
     public void SelectWeaponGroup(WeaponControlGroup group)
     {
+        
+        // deselect current weapon group
+       if(hasSelectedWeaponGroup) DeselectWeaponGroup(group);
+        
         currentWeaponControlGroup = group;
         // foreach weapon in the group, activate the weapon
+        if (group.isUltimate) myPhotonView.RPC(nameof(SetUsingUltimate_RPC), RpcTarget.All, true);
+        else myPhotonView.RPC(nameof(SetUsingUltimate_RPC), RpcTarget.All, false);
+        
         foreach (Weapon w in currentWeaponControlGroup.weapons)
         {
-            if(w!=null) w.ActivateWeapon();
+            if (w != null)
+            {
+                w.ActivateWeapon();
+            }
+            
+        }
+
+        hasSelectedWeaponGroup = true;
+    }
+
+    public void DeselectWeaponGroup(WeaponControlGroup group)
+    {
+        foreach (Weapon w in currentWeaponControlGroup.weapons)
+        {
+            if (w != null)
+            {
+                w.DeselectWeapon();
+            }
+            
         }
     }
 
