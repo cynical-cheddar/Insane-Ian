@@ -15,8 +15,6 @@ public class CarCheckpoints : MonoBehaviour
         bc = (BasicCheckpoint)FindObjectOfType(typeof(BasicCheckpoint));
         if (bc) Debug.Log("BasicCheckpoint object found: " + bc.name);
         else Debug.Log("No BasicCheckpoint object could be found");
-        checkpointPos = new Vector3();
-        checkpointPos = bc.init();
     }
 
     private void OnTriggerEnter(Collider other) {
