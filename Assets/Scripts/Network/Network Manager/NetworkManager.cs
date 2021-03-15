@@ -175,8 +175,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        bool selected = teamEntry.hasSelectedVehicle;
         teamEntry.isDead = false;
         short vehicle = teamEntry.vehicle;
+        
         teamEntry.Commit(RespawnErrorHandler);
         
         Transform sp;
@@ -191,7 +193,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string vehiclePrefabName = defaultPlayerVehiclePrefabName;
         
         
-        if (vehicle > 0) {
+        if (selected) {
             vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[vehicle];
         }
 
