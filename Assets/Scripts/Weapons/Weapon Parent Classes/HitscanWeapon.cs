@@ -179,7 +179,7 @@ public class HitscanWeapon : Weapon
             UseAmmo(ammoPerShot);
             float distanceMultiplier = CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier);
+            
             
 
 
@@ -192,6 +192,7 @@ public class HitscanWeapon : Weapon
             // if the raycast tracer details health field is not null, then damage em
             if (raycastTracerDetails.hasHealth)
             {
+                WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier, raycastTracerDetails.localHitPoint);
                 raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleManager>().TakeDamage(weaponDamageDetails);
             }
             // do the fire effect on our end

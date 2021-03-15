@@ -36,13 +36,15 @@ public class Weapon : MonoBehaviour
         public int sourceTeamId;
         public DamageType damageType;
         public float damage;
-        public WeaponDamageDetails(string nickName, int id, int teamId ,DamageType dt, float d)
+        public Vector3 localHitPoint;
+        public WeaponDamageDetails(string nickName, int id, int teamId ,DamageType dt, float d, Vector3 localHp)
         {
             sourcePlayerId = id;
             sourceTeamId = teamId;
             sourcePlayerNickName = nickName;
             damageType = dt;
             damage = d;
+            localHitPoint = localHp;
         }
     }
 

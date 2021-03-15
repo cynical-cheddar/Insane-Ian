@@ -196,8 +196,7 @@ public class BeamWeapon : Weapon
             float distanceMultiplier =
                 CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
-            WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId,
-                damageType, baseDamage * distanceMultiplier);
+            
 
 
             if (!isRemotelyFiring)
@@ -234,6 +233,10 @@ public class BeamWeapon : Weapon
                 // if the raycast tracer details health field is not null, then damage em
                 if (raycastTracerDetails.hasHealth)
                 {
+                    WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId,
+                        damageType, baseDamage * distanceMultiplier, raycastTracerDetails.localHitPoint);
+                    
+                    
                     raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleManager>()
                         .TakeDamage(weaponDamageDetails);
                 }

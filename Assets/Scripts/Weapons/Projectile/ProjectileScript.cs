@@ -56,8 +56,7 @@ public class ProjectileScript : MonoBehaviour
         
         pooledObject = GetComponent<PooledObject>();
     }
-
-
+    
 
     void OnCollisionEnter(Collision collision)
     {
@@ -72,8 +71,9 @@ public class ProjectileScript : MonoBehaviour
             }
         }
 
+        Vector3 hitPoint = collision.GetContact(0).point;
         VehicleManager hitVm = collision.gameObject.GetComponentInParent<VehicleManager>();
-        if (isTrueProjectile) DamageCollisionHandler(hitVm);
+        if (isTrueProjectile) DamageCollisionHandler(hitVm, hitPoint);
         VisualCollisionHandler(impactNormal, hitVm != null);
 
      //   pooledObject.Finish();
@@ -81,12 +81,13 @@ public class ProjectileScript : MonoBehaviour
     }
     
     // applies damage to the enemy (if we hit an enemy)
-    private void DamageCollisionHandler(VehicleManager hitVm)
+    private void DamageCollisionHandler(VehicleManager hitVm, Vector3 hitpoint)
     {
         
         if (hitVm != null)
         {
             // call take damage rpc
+            weaponDamageDetails.localHitPoint = hitVm.transform.InverseTransformPoint(hitpoint);
             hitVm.TakeDamage(weaponDamageDetails);
         }
 
