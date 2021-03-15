@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d67916c710c3141aecc0de55ffe6a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SecondsBeforeRespawn: 2
+  SecondsBeforeRespawn: 20
   PickupIsMine: 0
   SentPickup: 0
   TimeOfRespawn: 0
@@ -343,7 +343,7 @@ MonoBehaviour:
     type: 3}
   audioSourcePrefab3d: {fileID: 3306505398464978976, guid: cff3d34efdf3ccb469fe426735474783,
     type: 3}
-  pickupSoundVolume: 1
+  pickupSoundVolume: 0.4
   ultIncrease: 25
 --- !u!1 &4346240356563619191
 GameObject:
@@ -784,6 +784,7 @@ MonoBehaviour:
     - isUltimate: 0
       weapons:
       - {fileID: 0}
+  usingUltimate: 0
 --- !u!1 &6610427299459201408
 GameObject:
   m_ObjectHideFlags: 0
