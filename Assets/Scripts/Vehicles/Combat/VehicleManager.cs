@@ -76,7 +76,7 @@ public class VehicleManager : HealthManager
 
         baseCollisionResistance = deathForce / maxHealth;
 
-        _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0);
+        _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
         for (int i = 0; i < collisionAreas.Count; i++) {
             CollisionArea collisionArea = collisionAreas[i];

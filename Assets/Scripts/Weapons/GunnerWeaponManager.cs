@@ -114,13 +114,13 @@ public class GunnerWeaponManager : MonoBehaviour
         myPhotonView = GetComponent<PhotonView>();
         
         ultimateUiManager = FindObjectOfType<UltimateUiManager>();
-        ultimateUiManager.CacheRole();
+        if(ultimateUiManager!=null) ultimateUiManager.CacheRole();
         
-        
+        SelectFirst();
         SetupWeaponOwnerships();
         
         
-        SelectFirst();
+        
         
         Invoke(nameof(LateStart), 0.2f);
         
@@ -239,7 +239,7 @@ public class GunnerWeaponManager : MonoBehaviour
         {
             foreach (Weapon w in wcg.weapons)
             {
-                w.SetupWeapon();
+                 w.SetupWeapon();
             }
         }
     }
