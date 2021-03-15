@@ -127,7 +127,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         foreach (VehicleManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
                 // Reset stats
-              //  vehicle.ResetProperties();
+                vehicle.ResetProperties();
 
                 // Remove damping on camera before move
                 List<List<float>> dampingValues = new List<List<float>>();
