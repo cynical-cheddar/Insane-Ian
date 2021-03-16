@@ -275,9 +275,8 @@ public class VehicleManager : HealthManager
     // Die is a LOCAL function that is only called by the driver when they get dead.
     protected void Die(bool updateDeath, bool updateKill) {
         // Update gamestate
-        health = 0f;
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
-        if (team.gunnerId > 0) myPhotonView.RPC(nameof(SetGunnerHealth_RPC), PhotonNetwork.PlayerList[team.gunnerId], 0f);
+        myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
         team.Release();
         // update my deaths
         if (updateDeath)
@@ -372,9 +371,8 @@ public class VehicleManager : HealthManager
     }
 
     public void ResetProperties() {
-        health = maxHealth;
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
-        if (team.gunnerId > 0) myPhotonView.RPC(nameof(SetGunnerHealth_RPC), PhotonNetwork.PlayerList[team.gunnerId], maxHealth);
+        myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, maxHealth);
         team.Release();
         GunnerWeaponManager gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
         gunnerWeaponManager.Reset();
@@ -382,8 +380,6 @@ public class VehicleManager : HealthManager
         DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
         driverAbilityManager.Reset();
 
-        
-        
         rb.drag = defaultDrag;
         rb.angularDrag = defaultAngularDrag;
         rb.velocity = Vector3.zero;
