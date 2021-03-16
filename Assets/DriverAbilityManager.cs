@@ -40,16 +40,19 @@ public class DriverAbilityManager : MonoBehaviour
 
     private bool isSetup = false;
 
+    private bool isHost = false;
     // driver keeps track of this
     
     
     void Start()
     {
+        isHost = PhotonNetwork.IsMasterClient;
         Invoke(nameof(SetupDriverAbilityManager), 0.5f);
     }
     
     public void SetupDriverAbilityManager()
     {
+        
         ultimateUiManager = FindObjectOfType<UltimateUiManager>();
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         driverPhotonView = GetComponent<PhotonView>();
@@ -66,6 +69,7 @@ public class DriverAbilityManager : MonoBehaviour
         abilityPrimary.SetupAbility();
 
         gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
+        
         isSetup = true;
         //  abilitySecondary.SetupAbility();
     }
@@ -148,7 +152,7 @@ public class DriverAbilityManager : MonoBehaviour
         }
 
         
-        if(isSetup && isDriver){
+        if(isSetup && (isDriver  || (driverBot  && isHost))){
         
             gunnerDamageDealt = gunnerWeaponManager.gunnerDamageDealt;
             if (lastGunnerDamageDealt < gunnerDamageDealt)
