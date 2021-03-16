@@ -60,6 +60,8 @@ public class ProjectileScript : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        
+        
         Vector3 impactNormal = collision.GetContact(0).normal;
 
         // if we are the true projectile, then deal with game altering stuff like damage n that

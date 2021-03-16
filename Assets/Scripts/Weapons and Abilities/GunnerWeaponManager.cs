@@ -6,7 +6,7 @@ using Photon.Pun;
 using UnityEngine;
 
 
-public class GunnerWeaponManager : MonoBehaviour
+public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
 {
     private UltimateUiManager ultimateUiManager;
     
@@ -23,6 +23,33 @@ public class GunnerWeaponManager : MonoBehaviour
     private bool hasSelectedWeaponGroup = false;
 
     public int ultimateGroupWeaponIndex = 1;
+
+    public float gunnerDamageDealt = 0;
+    
+    public void UpdateDamageDealt(Weapon.WeaponDamageDetails hitDetails)
+    {
+        // only let the gunner update this 
+
+        if (hitDetails.sourcePlayerId == gunnerId)
+        {
+            gunnerDamageDealt += hitDetails.damage;
+        }
+    }
+    
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(gunnerDamageDealt);
+        }
+        else
+        {
+            gunnerDamageDealt = (float)stream.ReceiveNext();
+        }
+    }
+    
+    
+    
     
     [Serializable]
     public struct WeaponControlGroups
@@ -54,7 +81,17 @@ public class GunnerWeaponManager : MonoBehaviour
 
     public void Reset()
     {
+        myPhotonView.RPC(nameof(Reset_RPC), RpcTarget.All);
+    }
+
+    [PunRPC]
+    void Reset_RPC()
+    {
         gunnerUltimateProgress = 0;
+        SetGunnerUltimateProgress(0);
+        SelectFirst();
+        
+        
         foreach (WeaponControlGroup wcg in weaponControlGroups.weaponControlGroupList)
         {
             foreach (Weapon w in wcg.weapons)
@@ -122,12 +159,16 @@ public class GunnerWeaponManager : MonoBehaviour
         
         
         
-        Invoke(nameof(LateStart), 0.2f);
+        Invoke(nameof(SetupGunnerWeaponManager), 0.2f);
         
         
     }
 
-    void LateStart()
+
+
+
+
+    void SetupGunnerWeaponManager()
     {
         NetworkPlayerVehicle npv = GetComponentInParent<NetworkPlayerVehicle>();
         if (npv != null)
@@ -239,7 +280,7 @@ public class GunnerWeaponManager : MonoBehaviour
         {
             foreach (Weapon w in wcg.weapons)
             {
-                 w.SetupWeapon();
+                if(w!=null) w.SetupWeapon();
             }
         }
     }

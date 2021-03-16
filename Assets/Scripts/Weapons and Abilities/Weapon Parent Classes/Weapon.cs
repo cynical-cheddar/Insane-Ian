@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class Weapon : MonoBehaviour
+public class Weapon : Equipment
 {
     public enum ReloadType
     {

@@ -14,7 +14,7 @@ public class ProjectileWeapon : Weapon
     public float projectileSpeed = 100f;
     public bool inheritVelocityFromVehicle = false;
     private Rigidbody parentRigidbody;
-    
+
     
 
     
@@ -75,7 +75,7 @@ public class ProjectileWeapon : Weapon
         parentRigidbody = transform.root.GetComponent<Rigidbody>();
         // debug function to fire weapon
         weaponAnimator.SetTrigger(primaryFireAnimatorTriggerName);
-        Debug.Log("ProjectileWeapon class object has fired");
+      //  Debug.Log("ProjectileWeapon class object has fired");
 
         // if we are the owner of the photonview, then fire the real projectile
 
@@ -88,7 +88,9 @@ public class ProjectileWeapon : Weapon
         GameObject projectile = pooledProjectile.gameObject;
         */
 
-        GameObject projectile = Instantiate(projectilePrefab, barrelTransform.position, barrelTransform.rotation);
+        GameObject obj = projectilePrefab;
+        StopProjectileCollisionsWithSelf(obj);
+        GameObject projectile = Instantiate(obj, barrelTransform.position, barrelTransform.rotation);
         StopProjectileCollisionsWithSelf(projectile);
         
         ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();

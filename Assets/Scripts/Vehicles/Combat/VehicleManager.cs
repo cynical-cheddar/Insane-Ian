@@ -21,6 +21,8 @@ public class VehicleManager : HealthManager
     public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
     public float crashMasterVolume = 1f;
 
+    protected PlayerTransformTracker playerTransformTracker;
+    
     float defaultDrag = 0.15f;
     float defaultAngularDrag = 0.2f;
     Vector3 defaultCOM;   
@@ -80,6 +82,7 @@ public class VehicleManager : HealthManager
         defaultDrag = rb.drag;
         defaultAngularDrag = rb.angularDrag;
         defaultCOM = GetComponent<COMDropper>().Shift;
+        playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
     }
 
     public override void SetupHealthManager()
@@ -229,8 +232,24 @@ public class VehicleManager : HealthManager
         }
     }
 
+    protected void ChargeDriverAbility(Weapon.WeaponDamageDetails hitDetails)
+    {
+        int sourceTeamId = hitDetails.sourceTeamId;
+        Transform sourceTransform = playerTransformTracker.GetVehicleTransformFromTeamId(sourceTeamId);
+        // now add damage dealt back to the source transform driver ability manager
+        GunnerWeaponManager gunnerWeaponManager = sourceTransform.GetComponentInChildren<GunnerWeaponManager>();
+        
+        // adjust damage dealth modifier
+        gunnerWeaponManager.UpdateDamageDealt(hitDetails);
+
+    }
+
     public override void TakeDamage(Weapon.WeaponDamageDetails hitDetails)
     {
+
+        ChargeDriverAbility(hitDetails);
+        
+        
         // call take damage on everyone else's instance of the game
         string hitDetailsJson = JsonUtility.ToJson(hitDetails);
         
@@ -358,11 +377,13 @@ public class VehicleManager : HealthManager
         if (team.gunnerId > 0) myPhotonView.RPC(nameof(SetGunnerHealth_RPC), PhotonNetwork.PlayerList[team.gunnerId], maxHealth);
         team.Release();
         GunnerWeaponManager gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
-        foreach (GunnerWeaponManager.WeaponControlGroup weaponControlGroup in gunnerWeaponManager.weaponControlGroups.weaponControlGroupList) {
-            foreach(Weapon weapon in weaponControlGroup.weapons) {
-                weapon.ResetWeaponToDefaults();
-            }
-        }
+        gunnerWeaponManager.Reset();
+
+        DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
+        driverAbilityManager.Reset();
+
+        
+        
         rb.drag = defaultDrag;
         rb.angularDrag = defaultAngularDrag;
         rb.velocity = Vector3.zero;
