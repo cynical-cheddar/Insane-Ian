@@ -73,7 +73,7 @@ public class BasicCheckpoint : MonoBehaviour {
     }
 
     [PunRPC]
-    public void UpdatePosition_RPC(float x, float y, float z, int gunnerId) {
+    public void UpdatePosition_RPC(float x, float y, float z, short gunnerId) {
         if (PhotonNetwork.LocalPlayer.ActorNumber == gunnerId) {
             transform.position = new Vector3(x, y, z);
         }
