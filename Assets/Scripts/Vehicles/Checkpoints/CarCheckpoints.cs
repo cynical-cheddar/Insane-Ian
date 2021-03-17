@@ -4,6 +4,8 @@ using UnityEngine;
 using Gamestate;
 using Photon.Pun;
 
+[VehicleScript(ScriptType.playerDriverScript)]
+
 public class CarCheckpoints : MonoBehaviour
 {
     private int checkpoints = 0;
