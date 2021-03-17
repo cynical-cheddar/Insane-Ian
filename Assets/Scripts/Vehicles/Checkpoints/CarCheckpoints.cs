@@ -22,14 +22,16 @@ public class CarCheckpoints : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Checkpoint") && gamestateTracker.teams.Get((short)GetComponent<VehicleManager>().teamId).driverId == PhotonNetwork.LocalPlayer.ActorNumber) {
+        TeamEntry team = gamestateTracker.teams.Get((short)GetComponent<VehicleManager>().teamId);
+        if (other.CompareTag("Checkpoint") && team.driverId == PhotonNetwork.LocalPlayer.ActorNumber) {
             checkpoints++;
             checkpointPos = bc.NextCheckpoint(checkpointPos);
             bc.gameObject.transform.position = checkpointPos;
-            bc.photonView.RPC(nameof(BasicCheckpoint.UpdatePosition_RPC), PhotonNetwork.PlayerList[gamestateTracker.teams.Get((short)GetComponent<VehicleManager>().teamId).gunnerId], checkpointPos.x, checkpointPos.y, checkpointPos.z);
-            TeamEntry team = gamestateTracker.teams.Get((short)gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber).teamId);
+            bc.photonView.RPC(nameof(BasicCheckpoint.UpdatePosition_RPC), RpcTarget.All, checkpointPos.x, checkpointPos.y, checkpointPos.z, team.gunnerId);
             team.checkpoint = (short)checkpoints;
             team.Increment();
+        } else {
+            team.Release();
         }
     }
 }
