@@ -23,9 +23,6 @@ public class BasicCheckpoint : MonoBehaviour {
     public LocationStruct indexListStruct = new LocationStruct();
 
     void Start() {
-        gamestateTracker = FindObjectOfType<GamestateTracker>();
-        if (gamestateTracker.teams.Get((short)GetComponent<VehicleManager>().teamId).driverId != PhotonNetwork.LocalPlayer.ActorNumber) enabled = false;
-
         photonView = GetComponent<PhotonView>();
         indexListStruct.indexList = new List<int>();
 

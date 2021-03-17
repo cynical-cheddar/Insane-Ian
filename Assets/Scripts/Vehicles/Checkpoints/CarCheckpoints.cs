@@ -16,6 +16,7 @@ public class CarCheckpoints : MonoBehaviour
     void Start()
     {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
+        if (gamestateTracker.teams.Get((short)GetComponent<VehicleManager>().teamId).driverId != PhotonNetwork.LocalPlayer.ActorNumber) enabled = false;
         bc = (BasicCheckpoint)FindObjectOfType(typeof(BasicCheckpoint));
         if (!bc) Debug.LogWarning("No BasicCheckpoint object could be found (this is fine in menus but BAD in game");
     }
