@@ -11,13 +11,13 @@ public class CarCheckpoints : MonoBehaviour
     void Start()
     {
         bc = (BasicCheckpoint)FindObjectOfType(typeof(BasicCheckpoint));
-        if (!bc) Debug.LogError("No BasicCheckpoint object could be found");
+        if (!bc) Debug.LogWarning("No BasicCheckpoint object could be found (this is fine in menus but BAD in game");
     }
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Checkpoint")) {
             checkpoints++;
-            checkpointPos = bc.nextCheckpoint(checkpointPos);
+            checkpointPos = bc.NextCheckpoint(checkpointPos);
             Debug.Log(checkpoints);
             bc.gameObject.transform.position = checkpointPos;
         }
