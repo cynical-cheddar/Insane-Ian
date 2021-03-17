@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.Linq;
+using Gamestate;
 
 public class BasicCheckpoint : MonoBehaviour {
     public List<Transform> locations;
@@ -10,6 +11,7 @@ public class BasicCheckpoint : MonoBehaviour {
     private int prev1, prev2, next;
     private int current;
     private PhotonView photonView;
+    private GamestateTracker gamestateTracker;
 
     public struct LocationStruct {
         public List<int> indexList;
@@ -21,6 +23,9 @@ public class BasicCheckpoint : MonoBehaviour {
     public LocationStruct indexListStruct = new LocationStruct();
 
     void Start() {
+        gamestateTracker = FindObjectOfType<GamestateTracker>();
+        if (gamestateTracker.teams.Get((short)GetComponent<VehicleManager>().teamId).driverId != PhotonNetwork.LocalPlayer.ActorNumber) enabled = false;
+
         photonView = GetComponent<PhotonView>();
         indexListStruct.indexList = new List<int>();
 
