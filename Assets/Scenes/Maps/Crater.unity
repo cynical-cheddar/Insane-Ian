@@ -665,6 +665,7 @@ Transform:
   - {fileID: 1719216751}
   - {fileID: 154237220}
   - {fileID: 274361820}
+  - {fileID: 730649952}
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2400,6 +2401,36 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 667207900}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &730649951
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 730649952}
+  m_Layer: 0
+  m_Name: Checkpoint (6)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &730649952
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730649951}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -106.4, y: -41.5, z: -46.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 215439954}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &741273549
 GameObject:
   m_ObjectHideFlags: 0
@@ -8855,6 +8886,8 @@ MonoBehaviour:
   - {fileID: 1719216751}
   - {fileID: 154237220}
   - {fileID: 274361820}
+  - {fileID: 730649952}
+  checkpointCount: 3
 --- !u!1 &1322320322
 GameObject:
   m_ObjectHideFlags: 0
