@@ -25,15 +25,13 @@ public class PlinthManager : MonoBehaviour {
         Cursor.lockState = CursorLockMode.None;
     }
 
-
-
     void SpawnPlayerVehicles() {
         List<string> vehicleNames = gamestateTracker.GetComponent<GamestateVehicleLookup>().sortedVehicleNames;
 
         for (int i = 0; i < Mathf.Min(sortedTeams.Count, spawnpoints.Count); i++) {
             string vehiclePrefabName = defaultVehiclePrefabName;
 
-            if (sortedTeams[i].vehicle > 0) {
+            if (sortedTeams[i].hasSelectedVehicle) {
                 vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[sortedTeams[i].vehicle];
             }
 
