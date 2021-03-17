@@ -38,7 +38,7 @@ public class TeamPanelBehaviour : MonoBehaviour
             if (isCurrentTeam) {
                 transform.localScale = new Vector3(1f, 1f, 1f);
                 transform.localPosition = parentPanel.transform.localPosition + new Vector3(-70f, -120f, 0f);
-            } else if () {
+            } else if (parentPanel.GetComponent<TeamPanelBehaviour>().isCurrentTeam) {
                 transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
                 transform.localPosition = parentPanel.transform.localPosition + new Vector3(70f, -120f, 0f);
             } else {
