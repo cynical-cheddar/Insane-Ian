@@ -43,9 +43,6 @@ public class BasicCheckpoint : MonoBehaviour {
                     prev1 = next;
                 }
             }
-            foreach (int i in indexListStruct.indexList) { // turn index list into location list
-                Debug.Log(i);
-            }
             string details = JsonUtility.ToJson(indexListStruct);
             photonView.RPC(nameof(ShareList_RPC), RpcTarget.All, details);
         } 

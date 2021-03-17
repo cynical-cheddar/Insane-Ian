@@ -29,7 +29,7 @@ public class CarCheckpoints : MonoBehaviour
             TeamEntry team = gamestateTracker.teams.Get((short)gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber).teamId);
             team.checkpoint = (short)checkpoints;
             team.Increment();
-            Debug.Log(team.checkpoint);
+            Debug.Log($"team {GetComponent<VehicleManager>().teamId} hit the checkpoint");
         }
     }
 }
