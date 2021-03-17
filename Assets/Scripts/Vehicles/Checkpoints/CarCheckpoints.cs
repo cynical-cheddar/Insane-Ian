@@ -7,14 +7,11 @@ public class CarCheckpoints : MonoBehaviour
     private int checkpoints = 0;
     private BasicCheckpoint bc;
     public Vector3 checkpointPos;
-    private object activeCheckpoint;
-    private Vector3 prevT;
     // Start is called before the first frame update
     void Start()
     {
         bc = (BasicCheckpoint)FindObjectOfType(typeof(BasicCheckpoint));
-        if (bc) Debug.Log("BasicCheckpoint object found: " + bc.name);
-        else Debug.Log("No BasicCheckpoint object could be found");
+        if (!bc) Debug.LogError("No BasicCheckpoint object could be found");
     }
 
     private void OnTriggerEnter(Collider other) {
