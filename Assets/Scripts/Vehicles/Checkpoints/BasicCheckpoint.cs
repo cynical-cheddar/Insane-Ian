@@ -10,7 +10,7 @@ public class BasicCheckpoint : MonoBehaviour {
     private List<Transform> checkpointList = new List<Transform>();
     private int prev1, prev2, next;
     private int current;
-    private PhotonView photonView;
+    public PhotonView photonView;
     private GamestateTracker gamestateTracker;
 
     public struct LocationStruct {
@@ -70,5 +70,10 @@ public class BasicCheckpoint : MonoBehaviour {
         return checkpointList[current].position;
 
 
+    }
+
+    [PunRPC]
+    public void UpdatePosition_RPC(float x, float y, float z) {
+        transform.position = new Vector3(x, y, z);
     }
 }

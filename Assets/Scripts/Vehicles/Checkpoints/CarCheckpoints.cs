@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Gamestate;
 using Photon.Pun;
+using Photon.Realtime;
 
 [VehicleScript(ScriptType.playerDriverScript)]
 
@@ -25,6 +26,7 @@ public class CarCheckpoints : MonoBehaviour
             checkpoints++;
             checkpointPos = bc.NextCheckpoint(checkpointPos);
             bc.gameObject.transform.position = checkpointPos;
+            bc.photonView.RPC(nameof(BasicCheckpoint.UpdatePosition_RPC), PhotonNetwork.PlayerList[gamestateTracker.teams.Get((short)GetComponent<VehicleManager>().teamId).gunnerId], checkpointPos.x, checkpointPos.y, checkpointPos.z);
             TeamEntry team = gamestateTracker.teams.Get((short)gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber).teamId);
             team.checkpoint = (short)checkpoints;
             team.Increment();
