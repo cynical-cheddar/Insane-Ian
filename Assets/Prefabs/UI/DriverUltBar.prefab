@@ -175,6 +175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 57912052034211915}
   - component: {fileID: 1155275488722651891}
+  - component: {fileID: 5850235127078390448}
   m_Layer: 5
   m_Name: DriverUltBar
   m_TagString: Untagged
@@ -216,6 +217,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bar: {fileID: 3934952386760843346}
   numberHolder: {fileID: 6608015563710555033}
+--- !u!114 &5850235127078390448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4518484563278992602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86f3cc5b5a441044390c0e19d0a9ee12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: {fileID: 6608015563710555033}
+  ultIndicator: {fileID: 1709846967130175556, guid: e32f1ea332954ae43a516fbc7158e89d,
+    type: 3}
+  ultIndicatorInstantiateTransform: {fileID: 0}
+  change: 0
 --- !u!1 &7683934317831956125
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,8 +328,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8
-  m_fontSizeBase: 8
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

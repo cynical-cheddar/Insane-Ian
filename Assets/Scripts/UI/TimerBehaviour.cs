@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using TMPro;
 
 public class TimerBehaviour : MonoBehaviour
 {
     public float defaultTimeLimit = 300f;
-    public Text timerText;
+    public TextMeshProUGUI timerText;
     public Timer timer = new Timer();
     bool gameOverLoading = false;
 
