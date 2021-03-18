@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class WeaponUi : MonoBehaviour
 {
-    public Text salvoText;
-    public Text reserveAmmoText;
-    public Text weaponNameText;
+    public TextMeshProUGUI salvoText;
+    public TextMeshProUGUI reserveAmmoText;
+    public TextMeshProUGUI weaponNameText;
     // Start is called before the first frame update
     public void UpdateAmmo(int currentSalvo, int salvoSize, int reserveAmmo)
     {
