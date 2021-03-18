@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using TMPro;
 
 public class TimerBehaviour : MonoBehaviour
 {
     public float defaultTimeLimit = 300f;
-    public Text timerText;
+    public TextMeshProUGUI timerText;
     public Timer timer = new Timer();
     bool gameOverLoading = false;
 
@@ -53,6 +54,9 @@ public class TimerBehaviour : MonoBehaviour
         } else {
             timerText.text = $"{minutes}:{seconds}";
         }
+
+        if (Mathf.CeilToInt(timer.timeLeft) == 30) timerText.color = new Color(255, 16, 0);
+        if (Mathf.CeilToInt(timer.timeLeft) == 10) timerText.color = new Color(118, 0, 0);
         
         if (timer.timeLeft <= 0) {
             EndGame();
