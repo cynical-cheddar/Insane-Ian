@@ -53,7 +53,10 @@ public class PlinthManager : MonoBehaviour {
 
         string newText = "";
         foreach (TeamEntry team in sortedTeams) {
-            newText += $"{team.name} -- Score: {scoringHelper.CalcScore(team)} -- K/D/A: {team.kills}/{team.deaths}/{team.assists}\n";
+            string name;
+            if (team.name == null) name = $"Team {team.id}";
+            else name = team.name;
+            newText += $"{name} -- Score: {scoringHelper.CalcScore(team)} -- K/D/A: {team.kills}/{team.deaths}/{team.assists}\n";
         }
         scoreboardText.text = newText;
     }

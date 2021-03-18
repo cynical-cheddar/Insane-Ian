@@ -39,7 +39,8 @@ public class ScoreboardBehaviour : MonoBehaviour {
 
         // Display teams in order
         for (int i = 0; i < sortedTeams.Count; i++) {
-            teamPanels[i].TeamName.text = sortedTeams[i].name;
+            if (sortedTeams[i].name == null) teamPanels[i].TeamName.text = $"Team {sortedTeams[i].id}";
+            else teamPanels[i].TeamName.text = sortedTeams[i].name;
             teamPanels[i].TeamScore.text = $"Score: {scoringHelper.CalcScore(sortedTeams[i])}";
             teamPanels[i].TeamKDA.text = $"K/D/A: {sortedTeams[i].kills}/{sortedTeams[i].deaths}/{sortedTeams[i].assists}";
             PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
