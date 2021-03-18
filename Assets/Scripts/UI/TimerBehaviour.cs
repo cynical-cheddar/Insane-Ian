@@ -54,6 +54,9 @@ public class TimerBehaviour : MonoBehaviour
         } else {
             timerText.text = $"{minutes}:{seconds}";
         }
+
+        if (Mathf.CeilToInt(timer.timeLeft) == 30) timerText.color = new Color(255, 16, 0);
+        if (Mathf.CeilToInt(timer.timeLeft) == 10) timerText.color = new Color(118, 0, 0);
         
         if (timer.timeLeft <= 0) {
             EndGame();
