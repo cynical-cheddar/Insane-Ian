@@ -10,7 +10,7 @@ public class HealthBehaviour : MonoBehaviour {
 
     public TextMeshProUGUI healthLabel;
     GamestateTracker gamestateTracker;
-    int previousRoundedHealth;
+    int previousRoundedHealth = 100;
     public GameObject damageIndicator;
     public Transform damageIndicatorInstantiateTransform;
     public int damageTaken;
