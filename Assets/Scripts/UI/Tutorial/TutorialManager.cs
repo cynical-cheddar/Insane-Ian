@@ -7,10 +7,7 @@ using Photon.Pun;
 
 public class TutorialManager : MonoBehaviour
 {
-    public GameObject movementObject; // active on start if player is driver
-    public GameObject shootObject; // active on start if player is gunner
-    public GameObject driftObject; // active 10 seconds after start if player is driver
-    public GameObject selfDestructObject; // active if vehicle is (pretty much) stationary for 5 or more seconds
+    public List<bool> tutorials;
 
     float counter = 0f;
 
@@ -22,17 +19,17 @@ public class TutorialManager : MonoBehaviour
 
         PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         if (player.role == (short)PlayerEntry.Role.Driver) {
-            movementObject.SetActive(true);
-            Invoke(nameof(ActivateDriftObject), 10f);
+            tutorials[0] = true;
+            Invoke(nameof(ActivateDriftObject), 30f);
         }
         if (player.role == (short)PlayerEntry.Role.Gunner) {
-            shootObject.SetActive(true);
+            tutorials[1] = true;
         }
         player.Release();
     }
 
     void ActivateDriftObject() {
-        driftObject.SetActive(true);
+        tutorials[2] = true;
     }
 
     // Update is called once per frame
@@ -57,7 +54,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         if (counter >= 5f) {
-            selfDestructObject.SetActive(true);
+            tutorials[3] = true;
         }
         
     }

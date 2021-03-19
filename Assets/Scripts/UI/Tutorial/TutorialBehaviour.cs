@@ -5,15 +5,28 @@ using UnityEngine;
 public class TutorialBehaviour : MonoBehaviour
 {
     public KeyCode dismissKey;
+    public int tutorialNumber;
+    public GameObject effect;
+
+    TutorialManager tutorialManager;
+    
+
+    private void Start() {
+        tutorialManager = FindObjectOfType<TutorialManager>();
+    }
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetKeyDown(dismissKey)) {
-            Invoke(nameof(Deactivate), 1.75f);
-        }
+        if (tutorialManager.tutorials[tutorialNumber]) {
+            effect.SetActive(true);
+            if (Input.GetKeyDown(dismissKey)) {
+                tutorialManager.tutorials[tutorialNumber] = false;
+                Invoke(nameof(Deactivate), 1.75f);
+            }
+        } 
     }
 
     void Deactivate() {
-        gameObject.SetActive(false);
+        effect.SetActive(false);
     }
 }
