@@ -402,7 +402,10 @@ public class Weapon : Equipment
         if (reloadType == ReloadType.byClip)
         {
             currentCooldown = reloadTime;
-            
+
+            ReloadBehaviour reloadIcon = FindObjectOfType<ReloadBehaviour>();
+            if (reloadIcon != null) StartCoroutine(reloadIcon.Reload(reloadTime));
+
             weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, reloadAnimatorTriggerName);
             
             ReloadFull();
