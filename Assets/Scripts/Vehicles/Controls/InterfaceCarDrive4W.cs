@@ -30,9 +30,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Header("Force Parameters")]
     [Range(12, 35)]
     public float maxSteerAngle = 20;
-    [Range(1000, 20000)]
+    [Range(1000, 80000)]
     public float motorTorque = 4500;
-    [Range(2000, 20000)]
+    [Range(2000, 80000)]
     public float brakeTorque = 8000;
     [Range(0, 30000)]
     public float brakeForce = 16000;

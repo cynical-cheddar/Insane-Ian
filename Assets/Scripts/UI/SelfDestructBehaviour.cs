@@ -4,12 +4,13 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using Gamestate;
+using TMPro;
 
 public class SelfDestructBehaviour : MonoBehaviour
 {
     GamestateTracker gamestateTracker;
-    public Text title;
-    public Text timeLeftText;
+    public TextMeshProUGUI title;
+    public TextMeshProUGUI timeLeftText;
     public float timeToDestruct = 3f;
     float timeLeft;
     bool shouldBlowUp;
