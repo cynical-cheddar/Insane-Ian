@@ -460,6 +460,9 @@ public class Weapon : Equipment
     public virtual bool CanFire()
     {
         
+        if (currentSalvo <= 0) {
+            ReloadSalvo();
+        }
         
         
         if (currentCooldown <= 0 && myVehicleManager.health > 0)
