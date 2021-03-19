@@ -1414,7 +1414,6 @@ GameObject:
   - component: {fileID: 4317725991465890806}
   - component: {fileID: 3259053200411725802}
   - component: {fileID: 8392620475525738692}
-  - component: {fileID: -43502626636389124}
   m_Layer: 8
   m_Name: Ian Interceptor
   m_TagString: Untagged
@@ -1748,19 +1747,6 @@ MonoBehaviour:
   usingUltimate: 0
   pauseableAbility: 0
   chargeIncreasePerDamagePoint: 0.75
---- !u!114 &-43502626636389124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8105189967758323200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 615ef6471510f824387c85e1b1cdc4c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  checkpointPos: {x: 0, y: 0, z: 0}
 --- !u!1 &8105189969027782720
 GameObject:
   m_ObjectHideFlags: 0
@@ -2656,12 +2642,12 @@ PrefabInstance:
     - target: {fileID: 2899952247829076371, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.00000001717722
+      value: 0.00000001717722
       objectReference: {fileID: 0}
     - target: {fileID: 2899952247829076371, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000010013296
+      value: 0.0000000010013296
       objectReference: {fileID: 0}
     - target: {fileID: 3150562120589808326, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
@@ -3196,11 +3182,6 @@ PrefabInstance:
       propertyPath: m_FollowOffset.z
       value: -16.2
       objectReference: {fileID: 0}
-    - target: {fileID: 7938989743184017760, guid: ea49261a1af561c47b88c473909ef289,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.17
-      objectReference: {fileID: 0}
     - target: {fileID: 7938989743184017761, guid: ea49261a1af561c47b88c473909ef289,
         type: 3}
       propertyPath: m_Layer
@@ -3315,26 +3296,14 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: ea49261a1af561c47b88c473909ef289, type: 3}
 --- !u!114 &3068282692341630956 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6451279103785429609, guid: ea49261a1af561c47b88c473909ef289,
+  m_CorrespondingSourceObject: {fileID: 8716604607105511506, guid: ea49261a1af561c47b88c473909ef289,
     type: 3}
   m_PrefabInstance: {fileID: 5936627693680211902}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54092c34360e04a4c94568e83daed3a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6744777223263837270 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1151057047430065128, guid: ea49261a1af561c47b88c473909ef289,
-    type: 3}
-  m_PrefabInstance: {fileID: 5936627693680211902}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Script: {fileID: 11500000, guid: a9b6bc1ae0572bf458792bfee0c6f184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7138024163973368840 stripped
@@ -3347,6 +3316,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c65593f099372042a0836a022c88fd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1456880874408738024 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5067888789087538006, guid: ea49261a1af561c47b88c473909ef289,
+    type: 3}
+  m_PrefabInstance: {fileID: 5936627693680211902}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &857002540758851031 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6451279103785429609, guid: ea49261a1af561c47b88c473909ef289,
+    type: 3}
+  m_PrefabInstance: {fileID: 5936627693680211902}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54092c34360e04a4c94568e83daed3a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &6744777223263837270 stripped
