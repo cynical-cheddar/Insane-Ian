@@ -10,9 +10,6 @@ public class TeamPanelBehaviour : MonoBehaviour
     public TextMeshProUGUI TeamScore;
     public TextMeshProUGUI TeamKDA;
     public TextMeshProUGUI TeamCheckpoints;
-    public Image Position;
-    public Image PositionShadow;
-    public Image Glow;
     public int id;
     public GameObject parentPanel;
     public bool isFirstPanel = false;
