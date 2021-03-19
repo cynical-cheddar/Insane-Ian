@@ -47,7 +47,7 @@ public class TimerBehaviour : MonoBehaviour
 
     private void Update() {
         timer.timeLeft -= Time.deltaTime;
-        int minutes = Mathf.FloorToInt(timer.timeLeft / 60);
+        int minutes = Mathf.FloorToInt(timer.timeLeft / 60f);
         int seconds = Mathf.FloorToInt(timer.timeLeft - minutes * 60f);
         if (seconds < 10) {
             timerText.text = $"{minutes}:0{seconds}";
@@ -55,8 +55,8 @@ public class TimerBehaviour : MonoBehaviour
             timerText.text = $"{minutes}:{seconds}";
         }
 
-        if (Mathf.CeilToInt(timer.timeLeft) == 30) timerText.color = new Color(255, 16, 0);
-        if (Mathf.CeilToInt(timer.timeLeft) == 10) timerText.color = new Color(118, 0, 0);
+        if (Mathf.CeilToInt(timer.timeLeft) <= 30) timerText.color = new Color(255f, 16f, 0f);
+        if (Mathf.CeilToInt(timer.timeLeft) <= 10) timerText.color = new Color(118f, 0f, 0f);
         
         if (timer.timeLeft <= 0) {
             EndGame();
