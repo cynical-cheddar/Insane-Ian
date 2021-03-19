@@ -1,17 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using UnityEngine;
+using Photon.Pun;
 
-public class PropHealthManager : HealthManager
+public class explodingPropHealth : PropHealthManager
 {
+    public float maxExplosionDamage = 50;
     
-    public GameObject wreckPrefab;
-    
+
+    void explode(){
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5);
+        foreach (Collider collider in hitColliders){
+            collider.gameObject.GetComponent<HealthManager>().TakeDamage(maxExplosionDamage);
+        }
+    }
+
     protected override void Die() {
         health = 0;
         isDead = true;
         myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+        explode();
+        
     }
     
     [PunRPC]
@@ -20,4 +29,5 @@ public class PropHealthManager : HealthManager
         Instantiate(wreckPrefab, transform.position, transform.rotation);
         PhotonNetwork.Destroy(gameObject);
     }
+
 }
