@@ -44,9 +44,6 @@ public class ScoreboardBehaviour : MonoBehaviour {
             teamPanels[i].TeamScore.text = $"Score: {scoringHelper.CalcScore(sortedTeams[i])}";
             teamPanels[i].TeamKDA.text = $"K/D/A: {sortedTeams[i].kills}/{sortedTeams[i].deaths}/{sortedTeams[i].assists}";
             teamPanels[i].TeamCheckpoints.text = $"Checkpoints: {sortedTeams[i].checkpoint}";
-            PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
-            int teamId = player.teamId;
-            player.Release();
         }
     }
 
