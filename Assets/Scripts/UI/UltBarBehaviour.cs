@@ -10,6 +10,7 @@ public class UltBarBehaviour : MonoBehaviour
     public TextMeshProUGUI value;
     int previousValue = 0;
     public GameObject ultIndicator;
+    public GameObject fire;
     public Transform ultIndicatorInstantiateTransform;
     public int change;
 
@@ -21,6 +22,11 @@ public class UltBarBehaviour : MonoBehaviour
                 GameObject indicator = Instantiate(ultIndicator, ultIndicatorInstantiateTransform);
                 indicator.GetComponentInChildren<TextMeshProUGUI>().text = change.ToString();
             }
+        }
+
+        if (fire != null) {
+            if (float.Parse(value.text) == 100) fire.SetActive(true);
+            else fire.SetActive(false);
         }
     }
 }
