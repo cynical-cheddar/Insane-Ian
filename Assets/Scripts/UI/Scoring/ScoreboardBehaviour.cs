@@ -48,15 +48,11 @@ public class ScoreboardBehaviour : MonoBehaviour {
             int teamId = player.teamId;
             player.Release();
             if (teamId == sortedTeams[i].id) {
-                teamPanels[i].Glow.enabled = true;
                 teamPanels[i].UpdateTransform(true);
             } else {
-                teamPanels[i].Glow.enabled = false;
                 teamPanels[i].UpdateTransform(false);
             }
         }
-        teamPanels[0].Position.sprite = positionImages[0];
-        teamPanels[0].PositionShadow.sprite = positionImages[0];
     }
 
 }
