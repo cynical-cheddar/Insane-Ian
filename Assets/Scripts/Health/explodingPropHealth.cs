@@ -11,22 +11,26 @@ public class explodingPropHealth : PropHealthManager
     void explode(){
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5);
         foreach (Collider collider in hitColliders){
-            collider.gameObject.GetComponent<HealthManager>().TakeDamage(maxExplosionDamage);
+            if(collider.gameObject.GetComponent<HealthManager>()!=null){
+                collider.gameObject.GetComponent<HealthManager>().TakeDamage(maxExplosionDamage);
+            }
         }
     }
 
     protected override void Die() {
+        Debug.Log("Henlo");
         health = 0;
-        isDead = true;
-        myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+        isDead = true;        
         explode();
-        
+        myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
     }
     
     [PunRPC]
     protected override void PlayDeathEffects_RPC()
     {
-        Instantiate(wreckPrefab, transform.position, transform.rotation);
+        if(wreckPrefab!=null){
+            Instantiate(wreckPrefab, transform.position, transform.rotation);
+        }
         PhotonNetwork.Destroy(gameObject);
     }
 
