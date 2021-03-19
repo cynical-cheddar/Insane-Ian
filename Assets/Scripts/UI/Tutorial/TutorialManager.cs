@@ -54,8 +54,10 @@ public class TutorialManager : MonoBehaviour
         }
 
         if (counter >= 5f) {
+            counter = 0f;
             tutorials[3] = true;
         }
         
     }
+
 }

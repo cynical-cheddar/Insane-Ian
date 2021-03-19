@@ -7,6 +7,7 @@ public class TutorialBehaviour : MonoBehaviour
     public KeyCode dismissKey;
     public int tutorialNumber;
     public GameObject effect;
+    public bool requireDismissal = true;
 
     TutorialManager tutorialManager;
     
@@ -22,6 +23,10 @@ public class TutorialBehaviour : MonoBehaviour
             if (Input.GetKeyDown(dismissKey)) {
                 tutorialManager.tutorials[tutorialNumber] = false;
                 Invoke(nameof(Deactivate), 1.75f);
+            }
+            if (!requireDismissal) {
+                tutorialManager.tutorials[tutorialNumber] = false;
+                Invoke(nameof(Deactivate), 6f);
             }
         } 
     }
