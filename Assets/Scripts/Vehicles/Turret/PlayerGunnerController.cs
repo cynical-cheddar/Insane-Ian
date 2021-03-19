@@ -66,6 +66,14 @@ public class PlayerGunnerController : MonoBehaviour {
             }
         }
 
+        if (Input.GetButtonDown("Jump"))
+        {
+            if (gunnerPhotonView.IsMine)
+            {
+                gunnerWeaponManager.SelectUltimate();
+            }
+        }
+
         turretController.ChangeTargetYaw(cameraSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime);
         turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime));
         turretController.UpdateTargeterRotation();

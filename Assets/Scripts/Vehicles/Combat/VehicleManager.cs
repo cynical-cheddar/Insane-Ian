@@ -5,6 +5,7 @@ using Photon.Pun;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Gamestate;
+using Photon.Realtime;
 
 
 public class VehicleManager : HealthManager
@@ -19,9 +20,12 @@ public class VehicleManager : HealthManager
     public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
     public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
     public float crashMasterVolume = 1f;
+
+    protected PlayerTransformTracker playerTransformTracker;
     
-    
-    
+    float defaultDrag = 0.15f;
+    float defaultAngularDrag = 0.2f;
+    Vector3 defaultCOM;   
     
     Rigidbody rb;
     InterfaceCarDrive icd;
@@ -38,13 +42,7 @@ public class VehicleManager : HealthManager
     }
     
     public GameObject temporaryDeathExplosion;
-    
-    
 
-    
-
-    
-    
     public Weapon.WeaponDamageDetails rammingDetails {
         get {
             if (_rammingDetails.sourcePlayerNickName == null) {
@@ -59,9 +57,6 @@ public class VehicleManager : HealthManager
     public float defaultCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
     
-
-
-    // Start is called before the first frame update
     public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
@@ -76,13 +71,18 @@ public class VehicleManager : HealthManager
 
         baseCollisionResistance = deathForce / maxHealth;
 
-        _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0);
+        _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
         for (int i = 0; i < collisionAreas.Count; i++) {
             CollisionArea collisionArea = collisionAreas[i];
             collisionArea.rotation.eulerAngles = collisionArea.rotationEuler;
             collisionAreas[i] = collisionArea;
         }
+
+        defaultDrag = rb.drag;
+        defaultAngularDrag = rb.angularDrag;
+        defaultCOM = GetComponent<COMDropper>().Shift;
+        playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
     }
 
     public override void SetupHealthManager()
@@ -232,8 +232,24 @@ public class VehicleManager : HealthManager
         }
     }
 
+    protected void ChargeDriverAbility(Weapon.WeaponDamageDetails hitDetails)
+    {
+        int sourceTeamId = hitDetails.sourceTeamId;
+        Transform sourceTransform = playerTransformTracker.GetVehicleTransformFromTeamId(sourceTeamId);
+        // now add damage dealt back to the source transform driver ability manager
+        GunnerWeaponManager gunnerWeaponManager = sourceTransform.GetComponentInChildren<GunnerWeaponManager>();
+        
+        // adjust damage dealth modifier
+        gunnerWeaponManager.UpdateDamageDealt(hitDetails);
+
+    }
+
     public override void TakeDamage(Weapon.WeaponDamageDetails hitDetails)
     {
+
+        ChargeDriverAbility(hitDetails);
+        
+        
         // call take damage on everyone else's instance of the game
         string hitDetailsJson = JsonUtility.ToJson(hitDetails);
         
@@ -258,9 +274,10 @@ public class VehicleManager : HealthManager
     
     // Die is a LOCAL function that is only called by the driver when they get dead.
     protected void Die(bool updateDeath, bool updateKill) {
-        health = 0;
         // Update gamestate
-        
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
+        team.Release();
         // update my deaths
         if (updateDeath)
         {
@@ -328,20 +345,51 @@ public class VehicleManager : HealthManager
         carDriver.StopBrake();
         carDriver.StopSteer();
         yield return new WaitForSecondsRealtime(time);
-        
 
-        MonoBehaviour[] childBehaviours = GetComponentsInChildren<MonoBehaviour>();
+        /*MonoBehaviour[] childBehaviours = GetComponentsInChildren<MonoBehaviour>();
         foreach (MonoBehaviour childBehaviour in childBehaviours)
         {
             childBehaviour.enabled = false;
-        }
+        }*/
         PlayDeathTrailEffects(false);
         
         
         // call network delete on driver instance
-        if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);
+        //if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);*/
 
         
+    }
+
+    [PunRPC]
+    void SetGunnerHealth_RPC(float value) {
+        health = value;
+    }
+
+    [PunRPC]
+    void ResetMesh_RPC() {
+        GetComponent<Squishing>().ResetMesh();
+    }
+
+    public void ResetProperties() {
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, maxHealth);
+        team.Release();
+        GunnerWeaponManager gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
+        gunnerWeaponManager.Reset();
+
+        DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
+        driverAbilityManager.Reset();
+
+        rb.drag = defaultDrag;
+        rb.angularDrag = defaultAngularDrag;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        isDead = false;
+        rb.centerOfMass = defaultCOM;
+        TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        teamEntry.isDead = false;
+        teamEntry.Increment();
+        myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
     }
 
 }

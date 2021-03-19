@@ -28,7 +28,7 @@ public class HealthManager : MonoBehaviour
     protected PhotonView myPhotonView;
     
     public float health = 100f;
-    protected float maxHealth;
+    public float maxHealth = 100f;
     protected float deathForce = Mathf.Pow(10, 6.65f);
     protected float baseCollisionResistance = 1;
     protected Weapon.WeaponDamageDetails _rammingDetails;
@@ -65,6 +65,19 @@ public class HealthManager : MonoBehaviour
     public virtual void TakeDamage(float amount)
     {
         myPhotonView.RPC(nameof(TakeAnonymousDamage_RPC), RpcTarget.All, amount);
+    }
+
+    public virtual void HealObject(float amount)
+    {
+        health += amount;
+        if (health > maxHealth) health = maxHealth;
+        myPhotonView.RPC(nameof(SetHealth_RPC), RpcTarget.All, health);
+    }
+
+    [PunRPC]
+    protected void SetHealth_RPC(float amt)
+    {
+        health = amt;
     }
     
     
