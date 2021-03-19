@@ -155,8 +155,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 266988698092872512}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.083, z: 0.621}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.000061035, y: 0.121, z: 0.851}
+  m_LocalScale: {x: 2.0957, y: 2.0957, z: 13.146978}
   m_Children: []
   m_Father: {fileID: 8611565673112314574}
   m_RootOrder: 1
@@ -168,7 +168,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 266988698092872512}
-  m_Mesh: {fileID: -856059019632272089, guid: 63aa828bc8c564d4698e16fb28802b8a, type: 3}
+  m_Mesh: {fileID: 8989324824668654689, guid: c3c82d8dbc81fa04d81cb246958c293d, type: 3}
 --- !u!23 &5063459066284469036
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -318,7 +318,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2328535958084676606}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.18, z: 1.244}
+  m_LocalPosition: {x: 0, y: 0.13700074, z: 2.1400006}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.7}
   m_Children: []
   m_Father: {fileID: 8611565673112314574}
@@ -413,7 +413,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5328219874732084459}
-  m_Mesh: {fileID: 8145136920215169916, guid: 8c04f1b11d0fd47b7847a3e7cf9681cd, type: 3}
+  m_Mesh: {fileID: -5236411567420481277, guid: 31705aa5bfa4a4d439db899a0e5766c4, type: 3}
 --- !u!23 &5661292524835640515
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -617,6 +617,7 @@ MonoBehaviour:
   gunnerWeaponManager: {fileID: 7516828217327879153}
   barrelTransform: {fileID: 8611565673112314574}
   gunnerPhotonView: {fileID: 4481027835023491696}
+  maxZoomOut: 6
 --- !u!114 &4481027835023491696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,6 +638,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 6870663108256298800}
+  - {fileID: 7516828217327879153}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -685,11 +687,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54092c34360e04a4c94568e83daed3a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gunnerUltimateProgress: 0
+  maxGunnerUltimateProgress: 100
+  ultimateGroupWeaponIndex: 1
+  gunnerDamageDealt: 0
   weaponControlGroups:
     weaponControlGroupList:
     - isUltimate: 0
       weapons:
       - {fileID: 0}
+  usingUltimate: 0
 --- !u!1 &8611565673112314573
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,7 +723,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8611565673112314573}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.186, z: 0.159}
+  m_LocalPosition: {x: 0, y: 0.779, z: -1.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7125790997404546552}

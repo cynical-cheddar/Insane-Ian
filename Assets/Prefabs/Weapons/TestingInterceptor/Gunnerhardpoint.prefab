@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4782537027952292280
 Transform:
   m_ObjectHideFlags: 0
@@ -177,6 +177,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: beamWeapon
+  isUltimate: 0
+  returnToFirstWeaponGroupOnEmpty: 1
   barrelTransform: {fileID: 5995780333550214240}
   barrelEndMuzzleTransform: {fileID: 5995780333550214240}
   projectileDeviationDegrees: 0
@@ -213,6 +215,7 @@ MonoBehaviour:
   ammoPerShot: 1
   unlimitedAmmo: 1
   reserveAmmo: 100
+  maxReserveAmmo: 100
   fullSalvoOnStart: 1
   baseDamage: 10
   damageType: 1
@@ -349,6 +352,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponName: Hitscan Test
+  isUltimate: 0
+  returnToFirstWeaponGroupOnEmpty: 1
   barrelTransform: {fileID: 5995780333550214240}
   barrelEndMuzzleTransform: {fileID: 5995780333550214240}
   projectileDeviationDegrees: 2
@@ -385,6 +390,7 @@ MonoBehaviour:
   ammoPerShot: 1
   unlimitedAmmo: 1
   reserveAmmo: 100
+  maxReserveAmmo: 100
   fullSalvoOnStart: 1
   baseDamage: 2.5
   damageType: 0
@@ -459,6 +465,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1728770116775804446}
     m_Modifications:
+    - target: {fileID: 5063459066284469036, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
+    - target: {fileID: 5661292524835640515, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[0].weapons.Array.data[0]
