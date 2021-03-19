@@ -10,6 +10,8 @@ public class WeaponUi : MonoBehaviour
     public TextMeshProUGUI salvoText;
     public TextMeshProUGUI reserveAmmoText;
     public TextMeshProUGUI weaponNameText;
+    public Text crosshair;
+
     // Start is called before the first frame update
     public void UpdateAmmo(int currentSalvo, int salvoSize, int reserveAmmo)
     {
@@ -24,6 +26,7 @@ public class WeaponUi : MonoBehaviour
 
     public void SetCanvasVisibility(bool set)
     {
+        if (crosshair != null) crosshair.gameObject.SetActive(set);
         CanvasGroup[] canvasRenderers = GetComponentsInChildren<CanvasGroup>();
         foreach (CanvasGroup cv in canvasRenderers)
         {
