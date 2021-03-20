@@ -21,6 +21,8 @@ public class VehicleManager : HealthManager
     public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
     public float crashMasterVolume = 1f;
 
+    public GameObject tutorials;
+
     protected PlayerTransformTracker playerTransformTracker;
     
     float defaultDrag = 0.15f;
@@ -83,6 +85,10 @@ public class VehicleManager : HealthManager
         defaultAngularDrag = rb.angularDrag;
         defaultCOM = GetComponent<COMDropper>().Shift;
         playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
+
+        PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+        if (player.teamId == teamId) tutorials.SetActive(true);
+        else tutorials.SetActive(false);
     }
 
     public override void SetupHealthManager()
