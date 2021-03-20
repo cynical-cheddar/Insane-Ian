@@ -129,22 +129,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 // Reset stats
                 vehicle.ResetProperties();
 
-                // Remove damping on camera before move
-                List<List<float>> dampingValues = new List<List<float>>();
-                CinemachineFreeLook driverCam = vehicle.GetComponentInChildren<DriverCameraBehaviour>().GetComponentInChildren<CinemachineFreeLook>();
-                for (int i = 0; i < 3; i++) {
-                    CinemachineOrbitalTransposer transposer = driverCam.GetRig(i).GetCinemachineComponent<CinemachineOrbitalTransposer>();
-                    List<float> values = new List<float>();
-                    values.Add(transposer.m_XDamping);
-                    values.Add(transposer.m_YDamping);
-                    values.Add(transposer.m_ZDamping);
-                    values.Add(transposer.m_YawDamping);
-                    dampingValues.Add(values);
-                    transposer.m_XDamping = 0;
-                    transposer.m_YDamping = 0;
-                    transposer.m_ZDamping = 0;
-                    transposer.m_YawDamping = 0;
-                }
+
 
                 // Move to spawnpoint
                 vehicle.GetComponent<InputDriver>().enabled = true;
@@ -159,14 +144,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
                 // Add back damping on camera after move
                 yield return new WaitForSecondsRealtime(0.5f);
-                for (int i = 0; i < 3; i++) {
-                    CinemachineOrbitalTransposer transposer = driverCam.GetRig(i).GetCinemachineComponent<CinemachineOrbitalTransposer>();
-                    transposer.m_XDamping = dampingValues[i][0];
-                    transposer.m_YDamping = dampingValues[i][1];
-                    transposer.m_ZDamping = dampingValues[i][2];
-                    transposer.m_YawDamping = dampingValues[i][3];
-                }
-                break;
+
             }
         }
     }

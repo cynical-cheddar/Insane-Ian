@@ -8,6 +8,8 @@ using Cinemachine;
 
 public class DriverCinematicCam : MonoBehaviour
 {
+    
+    
     private float speed = 0;
     private float fov = 70;
     private DriverCrashDetector _driverCrashDetector;
@@ -36,7 +38,12 @@ public class DriverCinematicCam : MonoBehaviour
         SetCam(defaultCam);
         GetComponent<Animator>().enabled = true;
         _driverCrashDetector = GetComponentInParent<DriverCrashDetector>();
-
+        
+        // set default cam follow targets
+        defaultCam.m_LookAt = transform.root;
+        environmentCrashLeft.m_LookAt = transform.root;
+        environmentCrashCentre.m_LookAt = transform.root;
+        environmentCrashRight.m_LookAt = transform.root;
 
     }
 
@@ -79,8 +86,9 @@ public class DriverCinematicCam : MonoBehaviour
         environmentCrashLeft.enabled = false;
         environmentCrashCentre.enabled = false;
         environmentCrashRight.enabled = false;
-       
         
+
+
         cam.enabled = true;
     }
 

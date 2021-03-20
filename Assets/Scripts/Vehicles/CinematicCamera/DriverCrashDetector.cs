@@ -15,7 +15,7 @@ public class DriverCrashDetector : MonoBehaviour
 
     public float crashAngleThreshold = 50;
 
-    public float crashThreshold = 1.5f;
+
     
     public float playerSensorMultiplier = 3f;
 
@@ -32,13 +32,16 @@ public class DriverCrashDetector : MonoBehaviour
     [Header("Sensors")]
     public LayerMask sensorLayerMask;
     float sensorLength = 5f;
-
+    
+    
+    [Header("Default: 15 and 10")]
     public SpeedSensorLengthPair slowRange;
+    [Header("Default: 35 and 20")]
     public SpeedSensorLengthPair fastRange;
     
-    public Vector3 frontSensorPosition = new Vector3(0f, 0.2f, 0.5f);
+    public Vector3 frontSensorPosition = new Vector3(0f, 0.2f, 1f);
     public float frontSideSensorPosition = 0.2f;
-    public float frontSensorAngle = 15f;
+    public float frontSensorAngle = 30f;
     private Rigidbody myRb;
     
     
@@ -69,7 +72,7 @@ public class DriverCrashDetector : MonoBehaviour
 
 
 
-    [SerializeField]
+   // [SerializeField]
     public CurrentSensorReportStruct currentSensorReport;
     
     

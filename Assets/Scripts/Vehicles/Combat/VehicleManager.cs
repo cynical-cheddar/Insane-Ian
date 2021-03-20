@@ -396,6 +396,7 @@ public class VehicleManager : HealthManager
         teamEntry.isDead = false;
         teamEntry.Increment();
         myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
+        GetComponentInChildren<DriverCinematicCam>().ResetCam();
     }
 
 }
