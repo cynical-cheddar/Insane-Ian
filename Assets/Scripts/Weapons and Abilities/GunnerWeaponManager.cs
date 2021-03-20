@@ -96,7 +96,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
         {
             foreach (Weapon w in wcg.weapons)
             {
-                w.ResetWeaponToDefaults();
+                if(w!=null) w.ResetWeaponToDefaults();
             }
         }
     }

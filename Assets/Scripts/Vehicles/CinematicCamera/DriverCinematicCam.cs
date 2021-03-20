@@ -49,9 +49,12 @@ public class DriverCinematicCam : MonoBehaviour
 
     public void ResetCam()
     {
-        SetCam(defaultCam);
-        GetComponent<Animator>().Rebind();
-        GetComponent<Animator>().enabled = true;
+        if (this.enabled)
+        {
+            SetCam(defaultCam);
+            GetComponent<Animator>().Rebind();
+            GetComponent<Animator>().enabled = true;
+        }
     }
 
     public void SetCam(Cams cam)
