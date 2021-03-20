@@ -352,6 +352,8 @@ public class Weapon : Equipment
         currentSalvo += salvoSize;
         if(currentSalvo > salvoSize) currentSalvo = salvoSize;
 
+        if (diff > reserveAmmo) reserveAmmo = diff;
+        
         if (reloadType == ReloadType.byClip)
         {
             ReduceReserveAmmo(diff);
@@ -399,7 +401,7 @@ public class Weapon : Equipment
     // called manually by player / ai to reload the gun
     public void ReloadSalvo()
     {
-        if (reloadType == ReloadType.byClip)
+        if (reloadType == ReloadType.byClip && reserveAmmo > 0)
         {
             currentCooldown = reloadTime;
 
