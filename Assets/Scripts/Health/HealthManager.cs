@@ -50,6 +50,7 @@ public class HealthManager : MonoBehaviour
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
         networkManager = FindObjectOfType<NetworkManager>();
         maxHealth = health;
+        myPhotonView = GetComponent<PhotonView>();
     }
     
     
