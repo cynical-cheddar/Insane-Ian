@@ -164,6 +164,12 @@ public class BeamWeapon : Weapon
         if (isRecharging) return false;
         if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
         else if (reloadType == ReloadType.noReload && currentSalvo > 0) return true;
+        
+        if (currentSalvo <= 0) {
+            ReloadSalvo();
+        }
+        
+        
         return false;
     }
 
@@ -181,6 +187,8 @@ public class BeamWeapon : Weapon
             SetIsRemotelyFiring(false);
             CeaseFire();
         }*/
+        
+        if (currentCooldown <= 0 && reserveAmmo <= 0) return;
 
 
 
@@ -193,6 +201,7 @@ public class BeamWeapon : Weapon
 
             currentCooldown = fireRate;
             UseAmmo(ammoPerShot);
+            
             float distanceMultiplier =
                 CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
