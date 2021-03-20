@@ -42,11 +42,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.37
   m_SuspensionSpring:
-    spring: 16907.992
-    damper: 13526.394
+    spring: 16908.188
+    damper: 13526.551
     targetPosition: 0.7
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0.64880264
+  m_ForceAppPointDistance: 0.64879847
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -118,11 +118,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.31
   m_SuspensionSpring:
-    spring: 8044.5337
-    damper: 6435.627
+    spring: 8044.337
+    damper: 6435.4697
     targetPosition: 0.7
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0.57679397
+  m_ForceAppPointDistance: 0.5767898
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -392,7 +392,8 @@ MonoBehaviour:
   steerRateLerp: 0.04
   baseExtremiumSlip: 0.3
   addedDownforce: {x: 0, y: 5, z: 0}
-  antiRollStiffness: 7000
+  antiRollStiffness: 18000
+  baseStiffness: 3.5
   EngineIdle: {fileID: 8129776033949159376}
   EngineLow: {fileID: 4979435539793011968}
   EngineHigh: {fileID: 6567186082044929194}
@@ -550,11 +551,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.31
   m_SuspensionSpring:
-    spring: 8092.006
-    damper: 6473.6045
+    spring: 8091.8086
+    damper: 6473.447
     targetPosition: 0.7
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0.57679397
+  m_ForceAppPointDistance: 0.5767898
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -626,11 +627,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.37
   m_SuspensionSpring:
-    spring: 16955.463
-    damper: 13564.371
+    spring: 16955.66
+    damper: 13564.528
     targetPosition: 0.7
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0.64880264
+  m_ForceAppPointDistance: 0.64879847
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2100,12 +2101,12 @@ PrefabInstance:
     - target: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.988
+      value: -0.567
       objectReference: {fileID: 0}
     - target: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.748
+      value: -3.318
       objectReference: {fileID: 0}
     - target: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
         type: 3}
@@ -2195,7 +2196,7 @@ PrefabInstance:
     - target: {fileID: 6021752850087161433, guid: 7935690737e43b54c8e1f5d97875ad7c,
         type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6021752850087161433, guid: 7935690737e43b54c8e1f5d97875ad7c,
         type: 3}
@@ -2336,12 +2337,12 @@ PrefabInstance:
     - target: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.9880066
+      value: -0.567
       objectReference: {fileID: 0}
     - target: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.748001
+      value: -3.318
       objectReference: {fileID: 0}
     - target: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
         type: 3}
@@ -2742,7 +2743,7 @@ PrefabInstance:
     - target: {fileID: 3150562120589808326, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.042194836
+      value: -0.042194862
       objectReference: {fileID: 0}
     - target: {fileID: 3150562120589808326, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
@@ -2752,7 +2753,7 @@ PrefabInstance:
     - target: {fileID: 3150562120589808326, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -7.316705e-10
+      value: -7.316709e-10
       objectReference: {fileID: 0}
     - target: {fileID: 3193194029945470566, guid: 885e7a0ac4d7d4d40869a340867a7948,
         type: 3}

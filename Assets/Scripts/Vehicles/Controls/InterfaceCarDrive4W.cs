@@ -43,6 +43,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public Vector3 addedDownforce;
     [Range(0,20000)]
     public float antiRollStiffness = 5000;
+    [Range(1, 7)]
+    public float baseStiffness = 5;
+
     [Space(5)]
 
     [Header("Engine Noises")]
@@ -164,7 +167,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
         WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
 
-        float stiffness = 5f;
+        float stiffness = baseStiffness;
         flC.stiffness = stiffness;
         frC.stiffness = stiffness;
         rlC.stiffness = stiffness;
