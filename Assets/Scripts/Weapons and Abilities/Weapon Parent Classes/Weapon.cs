@@ -348,8 +348,19 @@ public class Weapon : Equipment
     }
     protected void ReloadFull()
     {
+        if (reserveAmmo <= 0) return;
         int diff = salvoSize - currentSalvo;
-        currentSalvo += salvoSize;
+
+        if (diff > reserveAmmo && reloadType != ReloadType.noReload)
+        {
+            currentSalvo += reserveAmmo;
+        }
+        else
+        {
+            currentSalvo += salvoSize;
+        }
+        
+       
         if(currentSalvo > salvoSize) currentSalvo = salvoSize;
 
         if (diff > reserveAmmo) reserveAmmo = diff;
@@ -403,6 +414,7 @@ public class Weapon : Equipment
     {
         if (reloadType == ReloadType.byClip && reserveAmmo > 0)
         {
+            Debug.Log("reload salvo");
             currentCooldown = reloadTime;
 
             ReloadBehaviour reloadIcon = FindObjectOfType<ReloadBehaviour>();
@@ -462,7 +474,7 @@ public class Weapon : Equipment
     public virtual bool CanFire()
     {
         
-        if (currentSalvo <= 0) {
+        if (currentSalvo <= 0 && reserveAmmo > 0) {
             ReloadSalvo();
         }
         

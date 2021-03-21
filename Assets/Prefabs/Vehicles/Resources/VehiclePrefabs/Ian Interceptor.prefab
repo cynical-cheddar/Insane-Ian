@@ -402,7 +402,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5016711106861025696}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6432739510521137236
 MeshFilter:
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Lance Beam
   isUltimate: 0
-  returnToFirstWeaponGroupOnEmpty: 1
+  returnToFirstWeaponGroupOnEmpty: 0
   barrelTransform: {fileID: 96380016535186398}
   barrelEndMuzzleTransform: {fileID: 96380016535186398}
   projectileDeviationDegrees: 0
@@ -500,13 +500,13 @@ MonoBehaviour:
   salvoSize: 10
   reloadType: 1
   reloadTime: 2
-  fireRate: 0.1
+  fireRate: 0.15
   ammoPerShot: 2
   unlimitedAmmo: 0
   reserveAmmo: 50
   maxReserveAmmo: 50
   fullSalvoOnStart: 1
-  baseDamage: 10
+  baseDamage: 12
   damageType: 1
   damageMultiplier: 1
   weaponAnimator: {fileID: 7289655914573178016}
@@ -1645,8 +1645,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22234.82
-    damper: 5336.3574
+    spring: 22236.73
+    damper: 5336.8154
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.2060288
@@ -2000,6 +2000,7 @@ MonoBehaviour:
   baseExtremiumSlip: 0.3
   addedDownforce: {x: 0, y: 5, z: 0}
   antiRollStiffness: 5000
+  baseStiffness: 5
   EngineIdle: {fileID: 1322015503113332562}
   EngineLow: {fileID: 3216202774783986104}
   EngineHigh: {fileID: 1088472574208435861}
@@ -2220,8 +2221,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22169.016
-    damper: 5320.564
+    spring: 22170.928
+    damper: 5321.023
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.2060288
