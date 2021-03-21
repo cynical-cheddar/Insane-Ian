@@ -109,7 +109,9 @@ public class Weapon : Equipment
     
     
     [Header("Animation")]
+    
     [SerializeField] protected Animator weaponAnimator;
+    [SerializeField] protected string weaponSelectTriggerName = "Primary";
     [SerializeField] protected string reloadAnimatorTriggerName = "Reload";
     [SerializeField] protected string primaryFireAnimatorTriggerName = "Fire";
     [Header("Network")]
@@ -284,6 +286,7 @@ public class Weapon : Equipment
         
         if(gunnerPhotonView!=null && weaponUi!=null){ if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);}
         
+        weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);
 
         UpdateHud();
     }
@@ -348,10 +351,23 @@ public class Weapon : Equipment
     }
     protected void ReloadFull()
     {
+        if (reserveAmmo <= 0) return;
         int diff = salvoSize - currentSalvo;
-        currentSalvo += salvoSize;
+
+        if (diff > reserveAmmo && reloadType != ReloadType.noReload)
+        {
+            currentSalvo += reserveAmmo;
+        }
+        else
+        {
+            currentSalvo += salvoSize;
+        }
+        
+       
         if(currentSalvo > salvoSize) currentSalvo = salvoSize;
 
+        if (diff > reserveAmmo) reserveAmmo = diff;
+        
         if (reloadType == ReloadType.byClip)
         {
             ReduceReserveAmmo(diff);
@@ -399,8 +415,9 @@ public class Weapon : Equipment
     // called manually by player / ai to reload the gun
     public void ReloadSalvo()
     {
-        if (reloadType == ReloadType.byClip)
+        if (reloadType == ReloadType.byClip && reserveAmmo > 0)
         {
+            Debug.Log("reload salvo");
             currentCooldown = reloadTime;
 
             ReloadBehaviour reloadIcon = FindObjectOfType<ReloadBehaviour>();
@@ -460,7 +477,7 @@ public class Weapon : Equipment
     public virtual bool CanFire()
     {
         
-        if (currentSalvo <= 0) {
+        if (currentSalvo <= 0 && reserveAmmo > 0) {
             ReloadSalvo();
         }
         

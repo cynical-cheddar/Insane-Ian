@@ -150,7 +150,8 @@ public class BeamWeapon : Weapon
 
     public override void ActivateWeapon()
     {
-               colliders = transform.root.GetComponentsInChildren<Collider>();
+        weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);
+        colliders = transform.root.GetComponentsInChildren<Collider>();
         newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
@@ -161,9 +162,25 @@ public class BeamWeapon : Weapon
 
     public override bool CanFire()
     {
+        if (currentSalvo <= 0 && reserveAmmo > 0) {
+            ReloadSalvo();
+        }
+        
         if (isRecharging) return false;
         if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
         else if (reloadType == ReloadType.noReload && currentSalvo > 0) return true;
+        
+        
+        
+        
+        
+        /*
+        if (currentSalvo <= 0 && reserveAmmo > 0) {
+            ReloadSalvo();
+        }*/
+        
+        
+        
         return false;
     }
 
@@ -184,6 +201,8 @@ public class BeamWeapon : Weapon
 
 
 
+
+
         if (base.CanFire() && gunnerPhotonView.IsMine && CanFire())
         {
             timeSinceLastFire = 0;
@@ -193,6 +212,7 @@ public class BeamWeapon : Weapon
 
             currentCooldown = fireRate;
             UseAmmo(ammoPerShot);
+            
             float distanceMultiplier =
                 CalculateDamageMultiplierCurve(Vector3.Distance(barrelTransform.position, targetPoint));
             // define weapon damage details
@@ -276,6 +296,8 @@ public class BeamWeapon : Weapon
                     weaponPhotonView.RPC(nameof(FireBeamRoundEffect_RPC), RpcTarget.Others, false,
                         raycastTracerDetails.worldHitPoint, false, raycastTracerDetails.localHitPoint, 0);
                 }
+                
+
             }
         }
 
@@ -344,7 +366,7 @@ public class BeamWeapon : Weapon
     {
         AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate impact particle with miss sound effect
-       // InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
+        InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
         PlayImpactSound();
     }
     

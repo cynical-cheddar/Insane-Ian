@@ -88,7 +88,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
     void Reset_RPC()
     {
         gunnerUltimateProgress = 0;
-        SetGunnerUltimateProgress(0);
+       // SetGunnerUltimateProgress(0);
         SelectFirst();
         
         
@@ -96,7 +96,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
         {
             foreach (Weapon w in wcg.weapons)
             {
-                w.ResetWeaponToDefaults();
+                if(w!=null) w.ResetWeaponToDefaults();
             }
         }
     }

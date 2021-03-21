@@ -377,6 +377,8 @@ public class VehicleManager : HealthManager
     }
 
     public void ResetProperties() {
+        Debug.Log("reset properties");
+        isDead = false;
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, maxHealth);
         team.Release();
@@ -396,6 +398,7 @@ public class VehicleManager : HealthManager
         teamEntry.isDead = false;
         teamEntry.Increment();
         myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
+        GetComponentInChildren<DriverCinematicCam>().ResetCam();
     }
 
 }

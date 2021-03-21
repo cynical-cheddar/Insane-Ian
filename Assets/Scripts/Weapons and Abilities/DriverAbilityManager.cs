@@ -4,6 +4,11 @@ using Gamestate;
 using Photon.Pun;
 using UnityEngine;
 
+
+
+
+
+
 public class DriverAbilityManager : MonoBehaviour
 {
 
@@ -121,7 +126,7 @@ public class DriverAbilityManager : MonoBehaviour
     void ResetDriverAbilityManager_RPC()
     {
         DeactivatePrimaryAbility();
-        SetDriverUltimateProgress(0);
+       // SetDriverUltimateProgress(0);
         abilityPrimary.ResetAbility();
     }
 
