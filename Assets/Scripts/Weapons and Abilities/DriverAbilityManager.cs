@@ -133,7 +133,7 @@ public class DriverAbilityManager : MonoBehaviour
 
     void Update()
     {
-        if (isDriver && Input.GetButtonDown("Jump") && !usingUltimate &&
+        if (isDriver && Input.GetButtonDown("Ultimate") && !usingUltimate &&
             driverUltimateProgress >= maxDriverUltimateProgress)
         {
             SetUsingDriverUltimate(true);
@@ -146,12 +146,12 @@ public class DriverAbilityManager : MonoBehaviour
         }
         
         // if we can pause the ability (ie hold down space)
-        else if (isDriver && Input.GetButton("Jump") && usingUltimate && pauseableAbility)
+        else if (isDriver && Input.GetButtonDown("Ultimate") && usingUltimate && pauseableAbility)
         {
             FirePrimaryAbility();
         }
 
-        if (isDriver && Input.GetButtonUp("Jump") && usingUltimate && pauseableAbility)
+        if (isDriver && Input.GetKeyUp("Ultimate") && usingUltimate && pauseableAbility)
         {
             CeasePrimaryAbility();
         }
