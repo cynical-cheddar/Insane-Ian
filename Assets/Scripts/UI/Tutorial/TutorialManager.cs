@@ -21,8 +21,6 @@ public class TutorialManager : MonoBehaviour
         gamestateTracker = FindObjectOfType<GamestateTracker>();
 
         PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
-        // get 
-        
         
         if (player.role == (short)PlayerEntry.Role.Driver) {
             tutorials[0] = true;
