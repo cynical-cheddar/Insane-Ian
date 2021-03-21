@@ -5,21 +5,14 @@ using Photon.Pun;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Gamestate;
+using Photon.Realtime;
 
 
-public class VehicleManager : MonoBehaviour
+public class VehicleManager : HealthManager
 {
-    [Serializable]
-    public struct CollisionArea {
-        public bool show;
-        public Vector3 rotationEuler;
 
-        [HideInInspector]
-        public Quaternion rotation;
-        public float width;
-        public float height;
-        public float collisionResistance;
-    }
+    
+    // car stuff
 
     public GameObject audioSourcePrefab;
     public float crashSoundsSmallDamageThreshold = 5f;
@@ -27,10 +20,15 @@ public class VehicleManager : MonoBehaviour
     public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
     public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
     public float crashMasterVolume = 1f;
+
+    public GameObject tutorials;
+
+    protected PlayerTransformTracker playerTransformTracker;
     
-    GamestateTracker gamestateTracker;
-    NetworkManager networkManager;
-    PhotonView driverPhotonView;
+    float defaultDrag = 0.15f;
+    float defaultAngularDrag = 0.2f;
+    Vector3 defaultCOM;   
+    
     Rigidbody rb;
     InterfaceCarDrive icd;
     InputDriver inputDriver;
@@ -44,15 +42,9 @@ public class VehicleManager : MonoBehaviour
             npv.teamId = value;
         }
     }
-    public float health = 100f;
-    float maxHealth;
+    
     public GameObject temporaryDeathExplosion;
-    PhotonView gamestateTrackerPhotonView;
-    bool isDead = false;
-    public List<CollisionArea> collisionAreas;
-    private float deathForce = Mathf.Pow(10, 6.65f);
-    private float baseCollisionResistance = 1;
-    private Weapon.WeaponDamageDetails _rammingDetails;
+
     public Weapon.WeaponDamageDetails rammingDetails {
         get {
             if (_rammingDetails.sourcePlayerNickName == null) {
@@ -67,9 +59,6 @@ public class VehicleManager : MonoBehaviour
     public float defaultCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
     
-    Weapon.WeaponDamageDetails lastHitDetails;
-
-    // Start is called before the first frame update
     public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
@@ -79,18 +68,33 @@ public class VehicleManager : MonoBehaviour
         icd = GetComponent<InterfaceCarDrive>();
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
-        driverPhotonView = GetComponent<PhotonView>();
+        myPhotonView = GetComponent<PhotonView>();
         npv = GetComponent<NetworkPlayerVehicle>();
 
         baseCollisionResistance = deathForce / maxHealth;
 
-        _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0);
+        _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
         for (int i = 0; i < collisionAreas.Count; i++) {
             CollisionArea collisionArea = collisionAreas[i];
             collisionArea.rotation.eulerAngles = collisionArea.rotationEuler;
             collisionAreas[i] = collisionArea;
         }
+
+        defaultDrag = rb.drag;
+        defaultAngularDrag = rb.angularDrag;
+        defaultCOM = GetComponent<COMDropper>().Shift;
+        playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
+
+        PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+        if (player.teamId == teamId) tutorials.SetActive(true);
+        else tutorials.SetActive(false);
+    }
+
+    public override void SetupHealthManager()
+    {
+        base.SetupHealthManager();
+        SetupVehicleManager();
     }
 
     void OnDrawGizmos() {
@@ -138,7 +142,7 @@ public class VehicleManager : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision collision) {
-        if (driverPhotonView.IsMine) {
+        if (myPhotonView.IsMine) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
             if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
@@ -157,7 +161,7 @@ public class VehicleManager : MonoBehaviour
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
             
             // instantiate damage sound over network
-            if(damage > crashSoundsSmallDamageThreshold) driverPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
             
             if (otherVehicleManager != null) {
                 Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
@@ -194,7 +198,7 @@ public class VehicleManager : MonoBehaviour
     }
 
     [PunRPC]
-    void TakeDamage_RPC(string weaponDetailsJson)
+    protected override void TakeDamage_RPC(string weaponDetailsJson)
     {
         Weapon.WeaponDamageDetails weaponDamageDetails =
             JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
@@ -202,7 +206,7 @@ public class VehicleManager : MonoBehaviour
         float amount = weaponDamageDetails.damage;
         if (health > 0) {
             health -= amount;
-            if (health <= 0&&!isDead && driverPhotonView.IsMine)
+            if (health <= 0&&!isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
                 isDead = true;
@@ -210,18 +214,18 @@ public class VehicleManager : MonoBehaviour
                 // do death effects for all other players
                 
                 // TODO- update to take damage type parameter
-                driverPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+                myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
                 
             }
         }
     }
 
     [PunRPC]
-    void TakeAnonymousDamage_RPC(float amount)
+    protected override void TakeAnonymousDamage_RPC(float amount)
     {
         if (health > 0) {
             health -= amount;
-            if (health <= 0&&!isDead && driverPhotonView.IsMine)
+            if (health <= 0&&!isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
                 isDead = true;
@@ -229,23 +233,39 @@ public class VehicleManager : MonoBehaviour
                 // do death effects for all other players
 
                 // TODO- update to take damage type parameter
-                driverPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+                myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
             }
         }
     }
 
-    public void TakeDamage(Weapon.WeaponDamageDetails hitDetails)
+    protected void ChargeDriverAbility(Weapon.WeaponDamageDetails hitDetails)
     {
+        int sourceTeamId = hitDetails.sourceTeamId;
+        Transform sourceTransform = playerTransformTracker.GetVehicleTransformFromTeamId(sourceTeamId);
+        // now add damage dealt back to the source transform driver ability manager
+        GunnerWeaponManager gunnerWeaponManager = sourceTransform.GetComponentInChildren<GunnerWeaponManager>();
+        
+        // adjust damage dealth modifier
+        gunnerWeaponManager.UpdateDamageDealt(hitDetails);
+
+    }
+
+    public override void TakeDamage(Weapon.WeaponDamageDetails hitDetails)
+    {
+
+        ChargeDriverAbility(hitDetails);
+        
+        
         // call take damage on everyone else's instance of the game
         string hitDetailsJson = JsonUtility.ToJson(hitDetails);
         
-        driverPhotonView.RPC(nameof(TakeDamage_RPC), RpcTarget.All, hitDetailsJson);
+        myPhotonView.RPC(nameof(TakeDamage_RPC), RpcTarget.All, hitDetailsJson);
     }
 
     // overloaded method that doesn't care about assigning a kill
-    public void TakeDamage(float amount)
+    public override void TakeDamage(float amount)
     {
-        driverPhotonView.RPC(nameof(TakeAnonymousDamage_RPC), RpcTarget.All, amount);
+        myPhotonView.RPC(nameof(TakeAnonymousDamage_RPC), RpcTarget.All, amount);
     }
 
     void PlayDeathTrailEffects(bool childExplosion)
@@ -259,10 +279,11 @@ public class VehicleManager : MonoBehaviour
 
     
     // Die is a LOCAL function that is only called by the driver when they get dead.
-    void Die(bool updateDeath, bool updateKill) {
-        health = 0;
+    protected void Die(bool updateDeath, bool updateKill) {
         // Update gamestate
-        
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
+        team.Release();
         // update my deaths
         if (updateDeath)
         {
@@ -299,7 +320,7 @@ public class VehicleManager : MonoBehaviour
     }
 
     [PunRPC]
-    void PlayDeathEffects_RPC()
+    protected override void PlayDeathEffects_RPC()
     {
         PlayDeathTrailEffects(true);
         inputDriver.enabled = false;
@@ -330,20 +351,54 @@ public class VehicleManager : MonoBehaviour
         carDriver.StopBrake();
         carDriver.StopSteer();
         yield return new WaitForSecondsRealtime(time);
-        
 
-        MonoBehaviour[] childBehaviours = GetComponentsInChildren<MonoBehaviour>();
+        /*MonoBehaviour[] childBehaviours = GetComponentsInChildren<MonoBehaviour>();
         foreach (MonoBehaviour childBehaviour in childBehaviours)
         {
             childBehaviour.enabled = false;
-        }
+        }*/
         PlayDeathTrailEffects(false);
         
         
         // call network delete on driver instance
-        if (driverPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);
+        //if (myPhotonView.IsMine) PhotonNetwork.Destroy(gameObject);*/
 
         
+    }
+
+    [PunRPC]
+    void SetGunnerHealth_RPC(float value) {
+        health = value;
+    }
+
+    [PunRPC]
+    void ResetMesh_RPC() {
+        GetComponent<Squishing>().ResetMesh();
+    }
+
+    public void ResetProperties() {
+        Debug.Log("reset properties");
+        isDead = false;
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, maxHealth);
+        team.Release();
+        GunnerWeaponManager gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
+        gunnerWeaponManager.Reset();
+
+        DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
+        driverAbilityManager.Reset();
+
+        rb.drag = defaultDrag;
+        rb.angularDrag = defaultAngularDrag;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        isDead = false;
+        rb.centerOfMass = defaultCOM;
+        TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        teamEntry.isDead = false;
+        teamEntry.Increment();
+        myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
+        GetComponentInChildren<DriverCinematicCam>().ResetCam();
     }
 
 }

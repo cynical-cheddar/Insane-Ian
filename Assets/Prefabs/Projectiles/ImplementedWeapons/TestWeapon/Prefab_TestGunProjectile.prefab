@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 1540927066123236008}
   - component: {fileID: 1540927066131801260}
   - component: {fileID: 1540927066129508212}
-  - component: {fileID: 3301273641928075652}
+  - component: {fileID: -9031109656145948099}
+  - component: {fileID: -6674781048089617136}
   m_Layer: 0
   m_Name: Prefab_TestGunProjectile
   m_TagString: Untagged
@@ -70,8 +71,8 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
-  m_CollisionDetection: 2
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!114 &1540927066129508212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,11 +85,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b44085c409024ec4293afa0c9d973694, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testMarker: {fileID: 2261013147703951740, guid: 0794adf1204984304a5c0bf513611257,
-    type: 3}
   explosionForce: 1.5
   explosionOffset: 0.25
---- !u!114 &3301273641928075652
+--- !u!114 &-9031109656145948099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540927066135063348}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4370f84a087632248bfad92b852c6921, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-6674781048089617136
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,7 +108,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1540927066135063348}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5af20d703d2e68f4f93c7418386f608f, type: 3}
+  m_Script: {fileID: 11500000, guid: c4f5e83598af2ec45a263fdaeb50725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 9
+  id: 0

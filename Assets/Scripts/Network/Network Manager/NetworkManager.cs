@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using Gamestate;
+using System.Linq;
+using Cinemachine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -95,7 +97,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 int teamId = entry.id;
                 entry.Release();
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
-                spawn(teamId);
+                Spawn(teamId);
             }
         }
     }
@@ -116,20 +118,45 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator RespawnVehicle(float time, int teamId) {
-        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
-        
-        spawn(teamId);
-
-
+        StartCoroutine(ResetVehicle(teamId));
     }
 
-    void spawn(int teamId)
+    IEnumerator ResetVehicle(int teamId) {
+        List<VehicleManager> vehicles = FindObjectsOfType<VehicleManager>().ToList();
+        foreach (VehicleManager vehicle in vehicles) {
+            if (vehicle.teamId == teamId) {
+                // Reset stats
+                vehicle.ResetProperties();
+
+
+
+                // Move to spawnpoint
+                vehicle.GetComponent<InputDriver>().enabled = true;
+                Transform spawnPoint;
+                if (teamId > spawnPoints.Count) {
+                    spawnPoint = spawnPoints[0];
+                } else {
+                    spawnPoint = spawnPoints[teamId - 1];
+                }
+                vehicle.gameObject.transform.position = spawnPoint.position;
+                vehicle.gameObject.transform.rotation = spawnPoint.rotation;
+
+                // Add back damping on camera after move
+                yield return new WaitForSecondsRealtime(0.5f);
+
+            }
+        }
+    }
+
+    void Spawn(int teamId)
     {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        bool selected = teamEntry.hasSelectedVehicle;
         teamEntry.isDead = false;
         short vehicle = teamEntry.vehicle;
+        
         teamEntry.Commit(RespawnErrorHandler);
         
         Transform sp;
@@ -144,7 +171,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string vehiclePrefabName = defaultPlayerVehiclePrefabName;
         
         
-        if (vehicle > 0) {
+        if (selected) {
             vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[vehicle];
         }
 

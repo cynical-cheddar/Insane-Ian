@@ -12,6 +12,7 @@ public class GamestateVehicleLookup : MonoBehaviour
     {
         GameObject[] vehicles = Resources.LoadAll<GameObject>("VehiclePrefabs");
         List<string> vehicleNames = new List<string>();
+        
         foreach (GameObject vehicle in vehicles)
         {
             vehicleNames.Add(vehicle.name);
