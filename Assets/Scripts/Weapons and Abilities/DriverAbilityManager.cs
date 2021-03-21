@@ -126,7 +126,7 @@ public class DriverAbilityManager : MonoBehaviour
     void ResetDriverAbilityManager_RPC()
     {
         DeactivatePrimaryAbility();
-        SetDriverUltimateProgress(0);
+       // SetDriverUltimateProgress(0);
         abilityPrimary.ResetAbility();
     }
 
