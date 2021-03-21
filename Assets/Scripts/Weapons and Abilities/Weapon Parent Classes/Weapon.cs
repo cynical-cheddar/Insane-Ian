@@ -450,7 +450,7 @@ public class Weapon : Equipment
             }
 
             amt *= 100;
-            Debug.Log("amt" + amt);
+         //   Debug.Log("amt" + amt);
             gunnerWeaponManager.SetGunnerUltimateProgress(amt * (gunnerWeaponManager.maxGunnerUltimateProgress / 100));
         }
     }

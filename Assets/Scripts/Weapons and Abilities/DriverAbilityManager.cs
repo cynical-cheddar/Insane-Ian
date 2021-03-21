@@ -49,15 +49,11 @@ public class DriverAbilityManager : MonoBehaviour
     // driver keeps track of this
     
     
-    void Start()
-    {
-        isHost = PhotonNetwork.IsMasterClient;
-        Invoke(nameof(SetupDriverAbilityManager), 0.5f);
-    }
+
     
     public void SetupDriverAbilityManager()
     {
-        
+        isHost = PhotonNetwork.IsMasterClient;
         ultimateUiManager = FindObjectOfType<UltimateUiManager>();
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         driverPhotonView = GetComponent<PhotonView>();
@@ -113,7 +109,6 @@ public class DriverAbilityManager : MonoBehaviour
         if (driverId == PhotonNetwork.LocalPlayer.ActorNumber || gunnerId == PhotonNetwork.LocalPlayer.ActorNumber)
         {
             if(ultimateUiManager!=null) ultimateUiManager.UpdateDriverBar(driverUltimateProgress, maxDriverUltimateProgress);
-           
         }
     }
 
@@ -151,14 +146,14 @@ public class DriverAbilityManager : MonoBehaviour
             FirePrimaryAbility();
         }
 
-        if (isDriver && Input.GetKeyUp("Ultimate") && usingUltimate && pauseableAbility)
+        if (isDriver && Input.GetButtonUp("Ultimate") && usingUltimate && pauseableAbility)
         {
             CeasePrimaryAbility();
         }
 
         
         if(isSetup && (isDriver  || (driverBot  && isHost))){
-        
+           // Debug.Log("updating gunner damage dealt in ability manager");
             gunnerDamageDealt = gunnerWeaponManager.gunnerDamageDealt;
             if (lastGunnerDamageDealt < gunnerDamageDealt)
             {

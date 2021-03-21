@@ -183,8 +183,10 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         }
         //Debug.Log("GOT HERE2");
         Debug.Log("Spawn success");
-        
-      
+
+
+        GetComponent<DriverAbilityManager>().SetupDriverAbilityManager();
+
         //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
     }
 }

@@ -33,6 +33,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
         if (hitDetails.sourcePlayerId == gunnerId)
         {
             gunnerDamageDealt += hitDetails.damage;
+            Debug.Log("update damage dealt");
         }
     }
     
@@ -87,7 +88,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
     [PunRPC]
     void Reset_RPC()
     {
-        gunnerUltimateProgress = 0;
+       // gunnerUltimateProgress = 0;
        // SetGunnerUltimateProgress(0);
         SelectFirst();
         
