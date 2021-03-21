@@ -184,6 +184,13 @@ public class BeamWeapon : Weapon
         return false;
     }
 
+
+    public override void ResetWeaponToDefaults()
+    {
+        base.ResetWeaponToDefaults();
+        SetIsRemotelyFiring_RPC(false);
+    }
+
     public override void Fire(Vector3 targetPoint)
     {
         

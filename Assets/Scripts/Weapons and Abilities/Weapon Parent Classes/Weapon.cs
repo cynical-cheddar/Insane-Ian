@@ -161,7 +161,7 @@ public class Weapon : Equipment
         defaultReserveAmmo = reserveAmmo;
     }
 
-    public void ResetWeaponToDefaults()
+    public virtual void ResetWeaponToDefaults()
     {
         salvoSize = defaultSalvoSize;
         reloadType = defaultReloadType;

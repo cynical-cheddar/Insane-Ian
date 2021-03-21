@@ -63,7 +63,7 @@ public class PlinthManager : MonoBehaviour {
 
     public void ReturnToMainMenu()
     {
-        PhotonNetwork.LeaveRoom();
+       // PhotonNetwork.Disconnect();
         SceneManager.LoadScene(returnToMenuScene);
     }
 
