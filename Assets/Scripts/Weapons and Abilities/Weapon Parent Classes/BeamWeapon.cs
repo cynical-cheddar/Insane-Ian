@@ -150,7 +150,8 @@ public class BeamWeapon : Weapon
 
     public override void ActivateWeapon()
     {
-               colliders = transform.root.GetComponentsInChildren<Collider>();
+        weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);
+        colliders = transform.root.GetComponentsInChildren<Collider>();
         newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
