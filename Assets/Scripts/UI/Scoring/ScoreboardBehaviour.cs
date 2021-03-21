@@ -59,5 +59,4 @@ public class ScoreboardBehaviour : MonoBehaviour {
             Debug.Log(" Scoreboard loop end");
         }
     }
-
 }
