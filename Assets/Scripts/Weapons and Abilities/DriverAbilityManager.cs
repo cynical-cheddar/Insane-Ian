@@ -208,23 +208,27 @@ public class DriverAbilityManager : MonoBehaviour
     [PunRPC]
     void SetUsingDriverUltimate_RPC(bool set)
     {
-        if (set)
+        if (isDriver)
         {
-            abilityPrimary.ActivateAbility();
-          //  abilitySecondary.ActivateAbility();
+            if (set)
+            {
+                abilityPrimary.ActivateAbility();
+                //  abilitySecondary.ActivateAbility();
+            }
+            else
+            {
+                abilityPrimary.DeactivateAbility();
+                //  abilitySecondary.DeactivateAbility();
+            }
         }
-        else
-        {
-            abilityPrimary.DeactivateAbility();
-          //  abilitySecondary.DeactivateAbility();
-        }
+
         usingUltimate = set;
     }
 
 
     public void SetUsingDriverUltimate(bool set)
     {
-        if(set!=usingUltimate) driverPhotonView.RPC(nameof(SetUsingDriverUltimate_RPC), RpcTarget.All, set);
+        if(set!=usingUltimate && isDriver) driverPhotonView.RPC(nameof(SetUsingDriverUltimate_RPC), RpcTarget.All, set);
         usingUltimate = set;
     }
 }

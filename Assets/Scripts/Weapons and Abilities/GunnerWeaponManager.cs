@@ -197,7 +197,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
 
     public void SelectUltimate()
     {
-        if (gunnerUltimateProgress >= maxGunnerUltimateProgress)
+        if (gunnerUltimateProgress >= maxGunnerUltimateProgress && myPhotonView.IsMine)
         {
             usingUltimate = true;
             ResetWeaponGroup(weaponControlGroups.weaponControlGroupList[ultimateGroupWeaponIndex]);
