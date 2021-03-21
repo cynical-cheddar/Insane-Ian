@@ -569,8 +569,8 @@ MonoBehaviour:
   reserveAmmo: 100
   maxReserveAmmo: 100
   fullSalvoOnStart: 1
-  baseDamage: 5
-  damageType: 0
+  baseDamage: 20
+  damageType: 1
   damageMultiplier: 1
   weaponAnimator: {fileID: 3571881367042851317}
   weaponSelectTriggerName: Primary
@@ -578,8 +578,8 @@ MonoBehaviour:
   primaryFireAnimatorTriggerName: Fire
   weaponPhotonView: {fileID: 7562676511663549325}
   gunnerPhotonView: {fileID: 657969082931476739}
-  weaponFireSound: {fileID: 8300000, guid: b61d95b82840d5941acf99b26909f2e5, type: 3}
-  muzzleflashVolume: 0.3
+  weaponFireSound: {fileID: 8300000, guid: 273bb14059509c242b984e04c1ca2b0a, type: 3}
+  muzzleflashVolume: 0.6
   impactParticleSound: {fileID: 8300000, guid: d3c93452fd29dae49a849a1fe977c52d, type: 3}
   imapactParticleVolume: 0.8
   impactParticleSoundMiss: {fileID: 8300000, guid: a7a98f71358637345b38ad21620ce6b5,
@@ -823,7 +823,7 @@ PrefabInstance:
         type: 3}
       propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[0].weapons.Array.data[0]
       value: 
-      objectReference: {fileID: 8902805692153213542}
+      objectReference: {fileID: 4013986462378830173}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[1].weapons.Array.data[0]

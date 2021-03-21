@@ -9,7 +9,7 @@ using UnityEngine;
 
 
 
-public class DriverAbilityManager : MonoBehaviour
+public class DriverAbilityManager : MonoBehaviour, IPunObservable
 {
 
     public DriverAbility abilityPrimary;
@@ -85,8 +85,6 @@ public class DriverAbilityManager : MonoBehaviour
         driverUltimateProgress += amt;
         if (driverUltimateProgress < 0) driverUltimateProgress = 0;
         if (driverUltimateProgress > maxDriverUltimateProgress) driverUltimateProgress = maxDriverUltimateProgress;
-        
-        driverPhotonView.RPC(nameof(SetDriverUltimateProgress_RPC), RpcTarget.All, driverUltimateProgress);
     }
 
     public void SetDriverUltimateProgress(float amt)
@@ -96,6 +94,18 @@ public class DriverAbilityManager : MonoBehaviour
         if (driverUltimateProgress > maxDriverUltimateProgress) driverUltimateProgress = maxDriverUltimateProgress;
         
         driverPhotonView.RPC(nameof(SetDriverUltimateProgress_RPC), RpcTarget.All, driverUltimateProgress);
+    }
+    
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(driverUltimateProgress);
+        }
+        else
+        {
+            driverUltimateProgress = (float)stream.ReceiveNext();
+        }
     }
    
 
@@ -168,10 +178,16 @@ public class DriverAbilityManager : MonoBehaviour
                 }
             }
         }
-            
-            
-        
-        
+
+        if (driverId == PhotonNetwork.LocalPlayer.ActorNumber || gunnerId == PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            // update hud
+            ultimateUiManager.UpdateDriverBar(driverUltimateProgress, maxDriverUltimateProgress);
+        }
+
+
+
+
     }
 
 
