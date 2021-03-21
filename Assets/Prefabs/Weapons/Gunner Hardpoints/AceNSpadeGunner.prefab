@@ -1072,8 +1072,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.9975586
-      value: 0.49670494
+      time: 0.9892578
+      value: 0.77909935
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1085,16 +1085,16 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageMultiplierPlateuDistance: 100
   damageMultiplierClosestRampupThreshold: 10
-  salvoSize: 20
+  salvoSize: 25
   reloadType: 1
   reloadTime: 1
-  fireRate: 0.2
+  fireRate: 0.1
   ammoPerShot: 1
   unlimitedAmmo: 0
   reserveAmmo: 100
   maxReserveAmmo: 100
   fullSalvoOnStart: 1
-  baseDamage: 2.5
+  baseDamage: 5
   damageType: 0
   damageMultiplier: 1
   weaponAnimator: {fileID: 7999835914426730253}
@@ -2100,7 +2100,7 @@ MonoBehaviour:
   returnToFirstWeaponGroupOnEmpty: 1
   barrelTransform: {fileID: 826769053063465075}
   barrelEndMuzzleTransform: {fileID: 826769053063465075}
-  projectileDeviationDegrees: 3
+  projectileDeviationDegrees: 1
   damageRampupMultiplierCurve:
     serializedVersion: 2
     m_Curve:
@@ -2130,13 +2130,13 @@ MonoBehaviour:
   salvoSize: 100
   reloadType: 2
   reloadTime: 1
-  fireRate: 0.2
+  fireRate: 0.4
   ammoPerShot: 1
   unlimitedAmmo: 0
   reserveAmmo: 100
   maxReserveAmmo: 100
   fullSalvoOnStart: 1
-  baseDamage: 10
+  baseDamage: 20
   damageType: 0
   damageMultiplier: 1
   weaponAnimator: {fileID: 7999835914426730253}
@@ -2159,12 +2159,12 @@ MonoBehaviour:
   imapactParticle: {fileID: 169654, guid: 1dadf691cda82fa44a8a66d7dd374612, type: 3}
   missImpactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
-  projectilePrefab: {fileID: 1540927066135063348, guid: 2c93f0aed6cd60541bb19e1a6c3ee024,
+  projectilePrefab: {fileID: 1540927066135063348, guid: 45e930d2774331d41b3609c6b726b2c4,
     type: 3}
   projectileParticleEffectPrefab: {fileID: 417134808801317985, guid: 25fe656145cc6ed4585c4535e0bb67b9,
     type: 3}
-  projectileMass: 10
-  projectileSpeed: 300
+  projectileMass: 25
+  projectileSpeed: 200
   inheritVelocityFromVehicle: 0
   overrideBarrelTransforms:
   - {fileID: 2236727264869767725}

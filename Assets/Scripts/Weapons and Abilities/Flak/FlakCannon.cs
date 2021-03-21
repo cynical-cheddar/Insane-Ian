@@ -25,12 +25,20 @@ public class FlakCannon : ProjectileWeapon
                 WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId,
                     damageType, baseDamage, Vector3.zero);
                 string weaponDamageDetailsJson = JsonUtility.ToJson(weaponDamageDetails);
-                weaponPhotonView.RPC(nameof(FireRPC_FlakCannon), RpcTarget.All, targetPoint,
-                    weaponDamageDetailsJson, i);
+                int j = 0;
+                if (i >= 2) j = 1;
+                StartCoroutine(delayedFire(j * 0.1f, targetPoint, weaponDamageDetailsJson, i));
                 // do the rest in subclass
                 i++;
             }
         }
+    }
+
+    IEnumerator delayedFire(float t, Vector3 targetPoint, string weaponDamageDetailsJson, int i)
+    {
+        yield return new WaitForSeconds(t);
+        weaponPhotonView.RPC(nameof(FireRPC_FlakCannon), RpcTarget.All, targetPoint,
+            weaponDamageDetailsJson, i);
     }
     
     
