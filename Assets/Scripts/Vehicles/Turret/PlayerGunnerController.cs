@@ -66,7 +66,7 @@ public class PlayerGunnerController : MonoBehaviour {
             }
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Ultimate"))
         {
             if (gunnerPhotonView.IsMine)
             {

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class TutorialBehaviour : MonoBehaviour
 {
     public KeyCode dismissKey;
@@ -10,15 +12,16 @@ public class TutorialBehaviour : MonoBehaviour
     public bool requireDismissal = true;
 
     TutorialManager tutorialManager;
-    
+    private NetworkPlayerVehicle npv;
 
     private void Start() {
         tutorialManager = FindObjectOfType<TutorialManager>();
+        npv = GetComponentInParent<NetworkPlayerVehicle>();
     }
 
     // Update is called once per frame
     void Update() {
-        if (tutorialManager.tutorials[tutorialNumber]) {
+        if (tutorialManager.tutorials[tutorialNumber] ) {
             effect.SetActive(true);
             if (Input.GetKeyDown(dismissKey)) {
                 tutorialManager.tutorials[tutorialNumber] = false;
