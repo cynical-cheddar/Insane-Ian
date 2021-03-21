@@ -12,6 +12,7 @@ public class TeamPanelBehaviour : MonoBehaviour
     public TextMeshProUGUI TeamCheckpoints;
     public int id;
     public GameObject parentPanel;
+    public TeamPanelBehaviour parentTeamPanelBehaviour;
     public bool isFirstPanel = false;
     public bool isCurrentTeam = false;
 
@@ -20,7 +21,8 @@ public class TeamPanelBehaviour : MonoBehaviour
 
     private void Start() {
         if (isFirstPanel) initialPosition = new Vector3(90f, 20f, 0f);
-        else initialPosition = transform.localPosition; 
+        else initialPosition = transform.localPosition;
+        parentTeamPanelBehaviour = parentPanel.GetComponent<TeamPanelBehaviour>();
         UpdateTransform(isCurrentTeam);
     }
 
@@ -38,7 +40,7 @@ public class TeamPanelBehaviour : MonoBehaviour
             if (isCurrentTeam) {
                 transform.localScale = new Vector3(1f, 1f, 1f);
                 transform.localPosition = parentPanel.transform.localPosition + new Vector3(-90f, -110f, 0f);
-            } else if (parentPanel.GetComponent<TeamPanelBehaviour>().isCurrentTeam) {
+            } else if (parentTeamPanelBehaviour.isCurrentTeam) {
                 transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
                 transform.localPosition = parentPanel.transform.localPosition + new Vector3(90f, -110f, 0f);
             } else {
