@@ -35,7 +35,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
 
     public void UpdateScores() {
         // Sort teams by score
-        List<TeamEntry> sortedTeams = scoringHelper.SortTeams();
+        List<TeamEntry> sortedTeams = scoringHelper.SortTeams(gamestateTracker);
 
         // Display teams in order
         for (int i = 0; i < sortedTeams.Count; i++) {
@@ -59,5 +59,4 @@ public class ScoreboardBehaviour : MonoBehaviour {
             Debug.Log(" Scoreboard loop end");
         }
     }
-
 }

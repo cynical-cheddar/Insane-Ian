@@ -14,8 +14,7 @@ public class ScoringHelper : MonoBehaviour {
         return team.kills * killValue + team.deaths * deathValue + team.assists * assistValue + team.checkpoint * checkpointValue;
     }
 
-    public List<TeamEntry> SortTeams() {
-        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+    public List<TeamEntry> SortTeams(GamestateTracker gamestateTracker) {
         List<TeamEntry> unsortedTeams = new List<TeamEntry>();
         for (int i = 0; i < gamestateTracker.teams.count; i++) {
             TeamEntry team = gamestateTracker.teams.GetAtIndex(i);
