@@ -32,7 +32,7 @@ public class PickupDriverUlt : PickupItem
         
        
         NetworkPlayerVehicle npv = otherpv.GetComponentInParent<NetworkPlayerVehicle>();
-        DriverAbilityManager dam = otherpv.gameObject.GetComponentInChildren<DriverAbilityManager>();
+        DriverAbilityManager dam = otherpv.gameObject.GetComponent<DriverAbilityManager>();
 
 
 

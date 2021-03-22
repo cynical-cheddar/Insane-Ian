@@ -6,7 +6,6 @@ using Photon.Pun;
 using Photon.Realtime;
 
 [VehicleScript(ScriptType.playerDriverScript)]
-
 public class CarCheckpoints : MonoBehaviour
 {
     private int checkpoints = 0;
