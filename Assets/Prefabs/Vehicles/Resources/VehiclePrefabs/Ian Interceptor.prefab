@@ -1227,7 +1227,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 1
   ObservedComponents: []
-  viewIdField: 0
+  viewIdField: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!82 &1178013403465005438
@@ -1389,11 +1389,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22236.73
-    damper: 5336.8154
+    spring: 22236.766
+    damper: 5336.8237
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060288
+  m_ForceAppPointDistance: 1.2060275
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1465,11 +1465,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27829.076
-    damper: 6678.978
+    spring: 27829.113
+    damper: 6678.987
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560288
+  m_ForceAppPointDistance: 1.2560275
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1625,7 +1625,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 8104481329884975997}
   - {fileID: 8392620475525738692}
-  viewIdField: 0
+  viewIdField: 6
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &7036181132495416452
@@ -1901,15 +1901,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crashAngleThreshold: 50
   playerSensorMultiplier: 3
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  playerLayer: 8
   sensorLayerMask:
     serializedVersion: 2
     m_Bits: 320
   slowRange:
     speed: 15
-    sensorLength: 10
+    sensorLength: 1
   fastRange:
     speed: 35
     sensorLength: 20
@@ -1924,6 +1922,8 @@ MonoBehaviour:
     crashed: 0
     lastCrashedPlayer: {fileID: 0}
     leftRightCoefficient: 0
+    estimatedTimeToHit: 0
+    estimatedDistanceToHit: 0
 --- !u!1 &8105189969027782720
 GameObject:
   m_ObjectHideFlags: 0
@@ -1966,11 +1966,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22170.928
-    damper: 5321.023
+    spring: 22170.88
+    damper: 5321.0117
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060288
+  m_ForceAppPointDistance: 1.2060275
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2042,11 +2042,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27763.275
-    damper: 6663.1865
+    spring: 27763.23
+    damper: 6663.1753
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560288
+  m_ForceAppPointDistance: 1.2560275
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2627,15 +2627,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7935690737e43b54c8e1f5d97875ad7c, type: 3}
---- !u!198 &5129428240925787101 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: 7935690737e43b54c8e1f5d97875ad7c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1494899990216650116}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6475838724287988303 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1494899990216650116}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &5129428240925787101 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: 7935690737e43b54c8e1f5d97875ad7c,
     type: 3}
   m_PrefabInstance: {fileID: 1494899990216650116}
   m_PrefabAsset: {fileID: 0}
@@ -2875,7 +2875,7 @@ PrefabInstance:
     - target: {fileID: 657969082931476739, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
       propertyPath: viewIdField
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1235429334662900981, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
@@ -2935,7 +2935,7 @@ PrefabInstance:
     - target: {fileID: 1365914871908541255, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
       propertyPath: viewIdField
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1424103995004584018, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
@@ -2945,17 +2945,22 @@ PrefabInstance:
     - target: {fileID: 7562676511663549325, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
       propertyPath: viewIdField
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7643251693754608468, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
       propertyPath: viewIdField
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8326465186341069440, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
       propertyPath: m_Name
       value: IanGunnerHardpoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902805692153213542, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: baseDamage
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8902805692153213542, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
@@ -2972,14 +2977,18 @@ PrefabInstance:
       propertyPath: missImpactParticleVolume
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8902805692153213542, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: damageRampupMultiplierCurve.m_Curve.Array.data[1].time
+      value: 1.0023499
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902805692153213542, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: damageRampupMultiplierCurve.m_Curve.Array.data[1].value
+      value: 0.96765137
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}
---- !u!4 &5016711106861025696 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1235429334662900981, guid: c08dd695c7a00924cb5237b8fd04570b,
-    type: 3}
-  m_PrefabInstance: {fileID: 6105702706626209109}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6744777223263837270 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 657969082931476739, guid: c08dd695c7a00924cb5237b8fd04570b,
@@ -2992,3 +3001,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &5016711106861025696 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1235429334662900981, guid: c08dd695c7a00924cb5237b8fd04570b,
+    type: 3}
+  m_PrefabInstance: {fileID: 6105702706626209109}
+  m_PrefabAsset: {fileID: 0}
