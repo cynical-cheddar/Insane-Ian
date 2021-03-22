@@ -34,17 +34,19 @@ public class TutorialBehaviour : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if (tutorialManager.tutorials[tutorialNumber] ) {
-            effect.SetActive(true);
-            if (Input.GetKeyDown(dismissKey)) {
-                tutorialManager.tutorials[tutorialNumber] = false;
-                Invoke(nameof(Deactivate), 1.75f);
+        if (tutorialManager != null) {
+            if (tutorialManager.tutorials[tutorialNumber]) {
+                effect.SetActive(true);
+                if (Input.GetKeyDown(dismissKey)) {
+                    tutorialManager.tutorials[tutorialNumber] = false;
+                    Invoke(nameof(Deactivate), 1.75f);
+                }
+                if (!requireDismissal) {
+                    tutorialManager.tutorials[tutorialNumber] = false;
+                    Invoke(nameof(Deactivate), 6f);
+                }
             }
-            if (!requireDismissal) {
-                tutorialManager.tutorials[tutorialNumber] = false;
-                Invoke(nameof(Deactivate), 6f);
-            }
-        } 
+        }
     }
 
     void Deactivate() {
