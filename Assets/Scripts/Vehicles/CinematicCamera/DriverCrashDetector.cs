@@ -144,18 +144,18 @@ public class DriverCrashDetector : MonoBehaviour
 
         Vector3 velocityDifference = localVel - otherVel;
         
-        Debug.Log("Velocity difference player" + velocityDifference);
+    //    Debug.Log("Velocity difference player" + velocityDifference);
 
         if (velocityDifference.z <= 0)
         {
-            Debug.Log("Velocity difference not gonna hit player" + velocityDifference);
+      //      Debug.Log("Velocity difference not gonna hit player" + velocityDifference);
         }
         else if (velocityDifference.z > 0)
         {
             float relativeSpeed = currentSpeed = velocityDifference.z;
             float relativeDistance = Vector3.Distance(otherPlayer.position, transform.position);
             answer = relativeDistance / relativeSpeed;
-            Debug.Log("Velocity difference estimated time player" + answer);
+      //      Debug.Log("Velocity difference estimated time player" + answer);
         }
         return answer;
     }
@@ -166,18 +166,18 @@ public class DriverCrashDetector : MonoBehaviour
 
         Vector3 velocityDifference = localVel - otherVel;
         
-        Debug.Log("Velocity difference" + velocityDifference);
+      //  Debug.Log("Velocity difference" + velocityDifference);
 
         if (velocityDifference.z <= 0)
         {
-            Debug.Log("Velocity difference not gonna hit" + velocityDifference);
+           // Debug.Log("Velocity difference not gonna hit" + velocityDifference);
         }
         else if (velocityDifference.z > 0)
         {
             float relativeSpeed = currentSpeed = velocityDifference.z;
             float relativeDistance = Vector3.Distance(hitpoint, transform.position);
             answer = relativeDistance / relativeSpeed;
-            Debug.Log("Velocity difference estimated time " + answer);
+           // Debug.Log("Velocity difference estimated time " + answer);
         }
         return answer;
     }
