@@ -41,21 +41,25 @@ public class UltimateUiManager : MonoBehaviour
         {
             fullDriverBarObject.SetActive(true);
         }
-        else
+        else if(isDriver)
         {
             fullDriverBarObject.SetActive(false);
         }
     }
-    
+
+    private float currentValueGunner;
+    private float maxValueGunner;
     public void UpdateGunnerBar(float currentValue, float maxValue)
     {
+        currentValueGunner = currentValue;
+        maxValueGunner = maxValue;
         gunnerBar.SetProgressBar(currentValue/maxValue);
         gunnerBar.SetNumber(Mathf.RoundToInt((currentValue/maxValue)*100).ToString());
         if (currentValue >= maxValue && isGunner)
         {
             fullGunnerBarObject.SetActive(true);
         }
-        else
+        else if(isGunner)
         {
             fullGunnerBarObject.SetActive(false);
         }
