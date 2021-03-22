@@ -37,6 +37,8 @@ public class BaseCameraBehaviour : StateMachineBehaviour
     protected float cooldown = 2f;
     
     
+    
+    
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         StartState(animator);
@@ -70,18 +72,24 @@ public class BaseCameraBehaviour : StateMachineBehaviour
             // if we are about to crash into the environment, then set the trigger
             if (currentSensorReport.crashValue >= crashThreshold)
             {
+                // look at crash distance
+                
+                
                 // look at the left/right stuff
                 if (currentSensorReport.leftRightCoefficient < -0.5)
                 {
                     myAnimator.SetTrigger(crashTriggerEnvironmentDetectLeft);
+                    return true;
                 }
                 else if (currentSensorReport.leftRightCoefficient > 0.5)
                 {
                     myAnimator.SetTrigger(crashTriggerEnvironmentDetectRight);
+                    return true;
                 }
                 else
                 {
                     myAnimator.SetTrigger(crashTriggerEnvironmentDetectAhead);
+                    return true;
                 }
             }
         }

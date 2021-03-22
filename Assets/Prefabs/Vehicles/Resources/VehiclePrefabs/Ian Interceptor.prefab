@@ -1389,11 +1389,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22236.73
-    damper: 5336.8154
+    spring: 22236.885
+    damper: 5336.8525
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060288
+  m_ForceAppPointDistance: 1.2060275
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1465,11 +1465,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27829.076
-    damper: 6678.978
+    spring: 27829.234
+    damper: 6679.016
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560288
+  m_ForceAppPointDistance: 1.2560275
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1624,6 +1624,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 8104481329884975997}
+  - {fileID: 8392620475525738692}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1965,11 +1966,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22170.928
-    damper: 5321.023
+    spring: 22170.766
+    damper: 5320.9834
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060288
+  m_ForceAppPointDistance: 1.2060275
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2041,11 +2042,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27763.275
-    damper: 6663.1865
+    spring: 27763.11
+    damper: 6663.146
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560288
+  m_ForceAppPointDistance: 1.2560275
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2675,6 +2676,11 @@ PrefabInstance:
       propertyPath: m_SoftZoneHeight
       value: 0.209
       objectReference: {fileID: 0}
+    - target: {fileID: 952094985116747272, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LookAt
+      value: 
+      objectReference: {fileID: 8103896753619876248}
     - target: {fileID: 1174249634495627729, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: mNoiseOffsets.x
@@ -2716,6 +2722,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2352148811259180391, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LookAt
+      value: 
+      objectReference: {fileID: 8103896753619876248}
     - target: {fileID: 5656757840181123761, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_Name
@@ -2776,35 +2787,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6491060584344204206, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LookAt
+      value: 
+      objectReference: {fileID: 8103896753619876248}
+    - target: {fileID: 7608381510351402660, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LookAt
+      value: 
+      objectReference: {fileID: 8103896753619876248}
     - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.550003
+      value: 3.6900024
       objectReference: {fileID: 0}
     - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.239998
+      value: -8.319992
       objectReference: {fileID: 0}
     - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.99835443
+      value: 0.9955698
       objectReference: {fileID: 0}
     - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.057345163
+      value: 0.094025426
       objectReference: {fileID: 0}
     - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000005131011
+      value: 0.000000017130155
       objectReference: {fileID: 0}
     - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000029472371
+      value: -0.0000000016178376
       objectReference: {fileID: 0}
     - target: {fileID: 8839082291315134073, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
@@ -2831,6 +2852,11 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 8103896753619876248}
+    - target: {fileID: 9004718497254749207, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ecdc7bb0cf94601428d4a9616df82aca, type: 3}
 --- !u!4 &5865527675417988366 stripped
@@ -2846,6 +2872,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8103896753619876248}
     m_Modifications:
+    - target: {fileID: 657969082931476739, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1235429334662900981, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
       propertyPath: m_RootOrder
@@ -2901,9 +2932,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1365914871908541255, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1424103995004584018, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7562676511663549325, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7643251693754608468, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: viewIdField
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8326465186341069440, guid: c08dd695c7a00924cb5237b8fd04570b,
