@@ -5,6 +5,9 @@ using Gamestate;
 using System.Linq;
 using Photon.Pun;
 
+
+
+
 public class TutorialManager : MonoBehaviour
 {
     public List<bool> tutorials;
@@ -18,6 +21,7 @@ public class TutorialManager : MonoBehaviour
         gamestateTracker = FindObjectOfType<GamestateTracker>();
 
         PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+        
         if (player.role == (short)PlayerEntry.Role.Driver) {
             tutorials[0] = true;
             Invoke(nameof(ActivateDriftObject), 30f);

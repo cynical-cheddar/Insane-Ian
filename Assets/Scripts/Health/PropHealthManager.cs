@@ -7,9 +7,10 @@ public class PropHealthManager : HealthManager
 {
     
     public GameObject wreckPrefab;
-    public float environmentCollisionResistance = 1;
+    public float environmentCollisionResistance = 500;
     
     protected override void Die() {
+        Debug.Log("Dead prop");
         health = 0;
         isDead = true;
         myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
@@ -42,7 +43,7 @@ public class PropHealthManager : HealthManager
 
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-            
+            Debug.Log(damage);
             
             if (otherVehicleManager != null) {
                 Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;

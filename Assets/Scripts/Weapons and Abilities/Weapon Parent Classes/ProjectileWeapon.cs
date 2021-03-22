@@ -13,7 +13,7 @@ public class ProjectileWeapon : Weapon
     public float projectileMass = 10f;
     public float projectileSpeed = 100f;
     public bool inheritVelocityFromVehicle = false;
-    private Rigidbody parentRigidbody;
+    protected Rigidbody parentRigidbody;
 
     
 
@@ -69,7 +69,7 @@ public class ProjectileWeapon : Weapon
     // RENAME THIS METHOD AS PER THE NAMING CONVENTION TO AVOID RPC SHENANIGANS
     // Convention: FireRPC_ClassName
     [PunRPC]
-    protected void FireRPC_ProjectileWeapon(Vector3 targetPoint, string serializedDamageDetails)
+    protected virtual void FireRPC_ProjectileWeapon(Vector3 targetPoint, string serializedDamageDetails)
     {
         WeaponDamageDetails weaponDamageDetails = JsonUtility.FromJson<WeaponDamageDetails>(serializedDamageDetails);
         parentRigidbody = transform.root.GetComponent<Rigidbody>();

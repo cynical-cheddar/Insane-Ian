@@ -8,13 +8,13 @@ public class ScoringHelper : MonoBehaviour {
     int killValue = 10;
     int deathValue = -5;
     int assistValue = 5;
+    int checkpointValue = 10;
 
     public int CalcScore(TeamEntry team) {
-        return team.kills * killValue + team.deaths * deathValue + team.assists * assistValue;
+        return team.kills * killValue + team.deaths * deathValue + team.assists * assistValue + team.checkpoint * checkpointValue;
     }
 
-    public List<TeamEntry> SortTeams() {
-        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+    public List<TeamEntry> SortTeams(GamestateTracker gamestateTracker) {
         List<TeamEntry> unsortedTeams = new List<TeamEntry>();
         for (int i = 0; i < gamestateTracker.teams.count; i++) {
             TeamEntry team = gamestateTracker.teams.GetAtIndex(i);

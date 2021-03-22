@@ -56,9 +56,10 @@ public class DriverCrashDetector : MonoBehaviour
         public bool crashed;
         public Transform lastCrashedPlayer;
         public float leftRightCoefficient;
+        private float estimatedTimeToHit;
 
         public CurrentSensorReportStruct(float speedLocal, float crashValueLocal, float telecastCrashValueLocal,
-            bool playerAheadLocal, bool crashedLocal, Transform lastCrashedPlayerLocal, float leftRightCoefficientLocal)
+            bool playerAheadLocal, bool crashedLocal, Transform lastCrashedPlayerLocal, float leftRightCoefficientLocal, float estimatedTimeToHitLocal)
         {
             speed = speedLocal;
             crashValue = crashValueLocal;
@@ -67,10 +68,11 @@ public class DriverCrashDetector : MonoBehaviour
             crashed = crashedLocal;
             lastCrashedPlayer = lastCrashedPlayerLocal;
             leftRightCoefficient = leftRightCoefficientLocal;
+            estimatedTimeToHit = estimatedTimeToHitLocal;
         }
     }
 
-
+    private List<float> distList = new List<float>();
 
    // [SerializeField]
     public CurrentSensorReportStruct currentSensorReport;
@@ -95,7 +97,7 @@ public class DriverCrashDetector : MonoBehaviour
     {
         myRb = GetComponent<Rigidbody>();
         currentSensorReport = new CurrentSensorReportStruct();
-       
+
     }
 
 
@@ -104,12 +106,13 @@ public class DriverCrashDetector : MonoBehaviour
         currentSensorReport.crashed = true;
     }
 
-
+    private Vector3 vel = Vector3.zero;
+    private Vector3 localVel = Vector3.zero;
     private void FixedUpdate()
     {
 
-        Vector3 vel = myRb.velocity;
-        Vector3 localVel = transform.InverseTransformDirection(vel);
+        vel = myRb.velocity;
+        localVel = transform.InverseTransformDirection(vel);
         
         // interpolate speed;
         currentSpeed = localVel.z;
@@ -134,6 +137,50 @@ public class DriverCrashDetector : MonoBehaviour
         CalculateSensors();
     }
 
+    float CalculateTimeToHit(Rigidbody otherPlayer)
+    {
+        float answer = Mathf.Infinity;
+        Vector3 otherVel = transform.InverseTransformDirection(otherPlayer.velocity);
+
+        Vector3 velocityDifference = localVel - otherVel;
+        
+    //    Debug.Log("Velocity difference player" + velocityDifference);
+
+        if (velocityDifference.z <= 0)
+        {
+      //      Debug.Log("Velocity difference not gonna hit player" + velocityDifference);
+        }
+        else if (velocityDifference.z > 0)
+        {
+            float relativeSpeed = currentSpeed = velocityDifference.z;
+            float relativeDistance = Vector3.Distance(otherPlayer.position, transform.position);
+            answer = relativeDistance / relativeSpeed;
+      //      Debug.Log("Velocity difference estimated time player" + answer);
+        }
+        return answer;
+    }
+    float CalculateTimeToHit(Vector3 hitpoint)
+    {
+        float answer = Mathf.Infinity;
+        Vector3 otherVel = Vector3.zero;
+
+        Vector3 velocityDifference = localVel - otherVel;
+        
+      //  Debug.Log("Velocity difference" + velocityDifference);
+
+        if (velocityDifference.z <= 0)
+        {
+           // Debug.Log("Velocity difference not gonna hit" + velocityDifference);
+        }
+        else if (velocityDifference.z > 0)
+        {
+            float relativeSpeed = currentSpeed = velocityDifference.z;
+            float relativeDistance = Vector3.Distance(hitpoint, transform.position);
+            answer = relativeDistance / relativeSpeed;
+           // Debug.Log("Velocity difference estimated time " + answer);
+        }
+        return answer;
+    }
 
     void CalculateSensors()
     {
@@ -147,8 +194,10 @@ public class DriverCrashDetector : MonoBehaviour
             sensorStartPos += transform.up * frontSensorPosition.y;
             float crashSensorValue = 0;
             float telecastCrashSensorValue = 0;
+            
+            distList.Clear();
             // calculate a value of crashing
-
+         //   Vector3 targetVel = Vector3.zero;
             //front right sensor
             sensorStartPos += transform.right * frontSideSensorPosition;
             if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
@@ -163,11 +212,16 @@ public class DriverCrashDetector : MonoBehaviour
                         {
                             telecastIncrease *= playerSensorMultiplier;
                             playerAhead = true;
+                            CalculateTimeToHit(hit.collider.attachedRigidbody);
                         }
+                        else CalculateTimeToHit(hit.point);
+
+                        
 
                         crashSensorValue += increase;
                         telecastCrashSensorValue += telecastIncrease;
                         leftRightCoefficient += 0.75f;
+                        
                     }
             }
 
@@ -185,7 +239,9 @@ public class DriverCrashDetector : MonoBehaviour
                     {
                         telecastIncrease *= playerSensorMultiplier;
                         playerAhead = true;
+                        CalculateTimeToHit(hit.collider.attachedRigidbody);
                     }
+                    else CalculateTimeToHit(hit.point);
 
                     crashSensorValue += increase;
                     telecastCrashSensorValue += telecastIncrease;
@@ -205,7 +261,9 @@ public class DriverCrashDetector : MonoBehaviour
                     {
                         telecastIncrease *= playerSensorMultiplier;
                         playerAhead = true;
+                        CalculateTimeToHit(hit.collider.attachedRigidbody);
                     }
+                    else CalculateTimeToHit(hit.point);
 
                     crashSensorValue += increase;
                     telecastCrashSensorValue += telecastIncrease;
@@ -227,7 +285,9 @@ public class DriverCrashDetector : MonoBehaviour
                     {
                         telecastIncrease *= playerSensorMultiplier;
                         playerAhead = true;
+                        CalculateTimeToHit(hit.collider.attachedRigidbody);
                     }
+                    else CalculateTimeToHit(hit.point);
 
                     crashSensorValue += increase;
                     telecastCrashSensorValue += telecastIncrease;
@@ -248,7 +308,9 @@ public class DriverCrashDetector : MonoBehaviour
                         {
                             telecastIncrease *= playerSensorMultiplier;
                             playerAhead = true;
+                            CalculateTimeToHit(hit.collider.attachedRigidbody);
                         }
+                        else CalculateTimeToHit(hit.point);
 
                         crashSensorValue += increase;
                         telecastCrashSensorValue += telecastIncrease;

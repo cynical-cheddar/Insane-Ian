@@ -18,7 +18,7 @@ public class explodingPropHealth : PropHealthManager
     }
 
     protected override void Die() {
-        Debug.Log("Henlo");
+        
         health = 0;
         isDead = true;        
         explode();

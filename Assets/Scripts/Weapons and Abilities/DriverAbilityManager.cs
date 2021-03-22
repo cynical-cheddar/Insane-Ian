@@ -9,7 +9,7 @@ using UnityEngine;
 
 
 
-public class DriverAbilityManager : MonoBehaviour
+public class DriverAbilityManager : MonoBehaviour, IPunObservable
 {
 
     public DriverAbility abilityPrimary;
@@ -49,15 +49,11 @@ public class DriverAbilityManager : MonoBehaviour
     // driver keeps track of this
     
     
-    void Start()
-    {
-        isHost = PhotonNetwork.IsMasterClient;
-        Invoke(nameof(SetupDriverAbilityManager), 0.5f);
-    }
+
     
     public void SetupDriverAbilityManager()
     {
-        
+        isHost = PhotonNetwork.IsMasterClient;
         ultimateUiManager = FindObjectOfType<UltimateUiManager>();
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         driverPhotonView = GetComponent<PhotonView>();
@@ -89,8 +85,6 @@ public class DriverAbilityManager : MonoBehaviour
         driverUltimateProgress += amt;
         if (driverUltimateProgress < 0) driverUltimateProgress = 0;
         if (driverUltimateProgress > maxDriverUltimateProgress) driverUltimateProgress = maxDriverUltimateProgress;
-        
-        driverPhotonView.RPC(nameof(SetDriverUltimateProgress_RPC), RpcTarget.All, driverUltimateProgress);
     }
 
     public void SetDriverUltimateProgress(float amt)
@@ -100,6 +94,18 @@ public class DriverAbilityManager : MonoBehaviour
         if (driverUltimateProgress > maxDriverUltimateProgress) driverUltimateProgress = maxDriverUltimateProgress;
         
         driverPhotonView.RPC(nameof(SetDriverUltimateProgress_RPC), RpcTarget.All, driverUltimateProgress);
+    }
+    
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(driverUltimateProgress);
+        }
+        else
+        {
+            driverUltimateProgress = (float)stream.ReceiveNext();
+        }
     }
    
 
@@ -113,7 +119,6 @@ public class DriverAbilityManager : MonoBehaviour
         if (driverId == PhotonNetwork.LocalPlayer.ActorNumber || gunnerId == PhotonNetwork.LocalPlayer.ActorNumber)
         {
             if(ultimateUiManager!=null) ultimateUiManager.UpdateDriverBar(driverUltimateProgress, maxDriverUltimateProgress);
-           
         }
     }
 
@@ -126,14 +131,14 @@ public class DriverAbilityManager : MonoBehaviour
     void ResetDriverAbilityManager_RPC()
     {
         DeactivatePrimaryAbility();
-        SetDriverUltimateProgress(0);
+       // SetDriverUltimateProgress(0);
         abilityPrimary.ResetAbility();
     }
 
 
     void Update()
     {
-        if (isDriver && Input.GetButtonDown("Jump") && !usingUltimate &&
+        if (isDriver && Input.GetButtonDown("Ultimate") && !usingUltimate &&
             driverUltimateProgress >= maxDriverUltimateProgress)
         {
             SetUsingDriverUltimate(true);
@@ -146,19 +151,19 @@ public class DriverAbilityManager : MonoBehaviour
         }
         
         // if we can pause the ability (ie hold down space)
-        else if (isDriver && Input.GetButton("Jump") && usingUltimate && pauseableAbility)
+        else if (isDriver && Input.GetButtonDown("Ultimate") && usingUltimate && pauseableAbility)
         {
             FirePrimaryAbility();
         }
 
-        if (isDriver && Input.GetButtonUp("Jump") && usingUltimate && pauseableAbility)
+        if (isDriver && Input.GetButtonUp("Ultimate") && usingUltimate && pauseableAbility)
         {
             CeasePrimaryAbility();
         }
 
         
         if(isSetup && (isDriver  || (driverBot  && isHost))){
-        
+           // Debug.Log("updating gunner damage dealt in ability manager");
             gunnerDamageDealt = gunnerWeaponManager.gunnerDamageDealt;
             if (lastGunnerDamageDealt < gunnerDamageDealt)
             {
@@ -173,10 +178,16 @@ public class DriverAbilityManager : MonoBehaviour
                 }
             }
         }
-            
-            
-        
-        
+
+        if (driverId == PhotonNetwork.LocalPlayer.ActorNumber || gunnerId == PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            // update hud
+            ultimateUiManager.UpdateDriverBar(driverUltimateProgress, maxDriverUltimateProgress);
+        }
+
+
+
+
     }
 
 
@@ -208,23 +219,27 @@ public class DriverAbilityManager : MonoBehaviour
     [PunRPC]
     void SetUsingDriverUltimate_RPC(bool set)
     {
-        if (set)
+        if (isDriver)
         {
-            abilityPrimary.ActivateAbility();
-          //  abilitySecondary.ActivateAbility();
+            if (set)
+            {
+                abilityPrimary.ActivateAbility();
+                //  abilitySecondary.ActivateAbility();
+            }
+            else
+            {
+                abilityPrimary.DeactivateAbility();
+                //  abilitySecondary.DeactivateAbility();
+            }
         }
-        else
-        {
-            abilityPrimary.DeactivateAbility();
-          //  abilitySecondary.DeactivateAbility();
-        }
+
         usingUltimate = set;
     }
 
 
     public void SetUsingDriverUltimate(bool set)
     {
-        if(set!=usingUltimate) driverPhotonView.RPC(nameof(SetUsingDriverUltimate_RPC), RpcTarget.All, set);
+        if(set!=usingUltimate && isDriver) driverPhotonView.RPC(nameof(SetUsingDriverUltimate_RPC), RpcTarget.All, set);
         usingUltimate = set;
     }
 }
