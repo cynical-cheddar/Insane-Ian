@@ -22,7 +22,6 @@ public class TeamPanelBehaviour : MonoBehaviour
     private void Start() {
         if (isFirstPanel) initialPosition = new Vector3(90f, 20f, 0f);
         else initialPosition = transform.localPosition;
-        parentTeamPanelBehaviour = parentPanel.GetComponent<TeamPanelBehaviour>();
         UpdateTransform(isCurrentTeam);
     }
 
