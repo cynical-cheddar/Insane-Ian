@@ -42,8 +42,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 10359.812
-    damper: 2486.355
+    spring: 10359.738
+    damper: 2486.3372
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.3904235
@@ -118,11 +118,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 11459.641
-    damper: 2750.314
+    spring: 11459.694
+    damper: 2750.3267
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3094177
+  m_ForceAppPointDistance: 1.3094176
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -279,6 +279,7 @@ MonoBehaviour:
   OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 482347747890627913}
+  - {fileID: 1164203337574378399}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -504,7 +505,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 482493435927083060}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 615ef6471510f824387c85e1b1cdc4c9, type: 3}
   m_Name: 
@@ -620,11 +621,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 8829.39
-    damper: 2119.0537
+    spring: 8829.422
+    damper: 2119.0615
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3244171
+  m_ForceAppPointDistance: 1.324417
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -696,8 +697,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 19351.152
-    damper: 4644.277
+    spring: 19351.146
+    damper: 4644.2754
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.3904235
@@ -2556,6 +2557,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7053310777506682151, guid: 8eb5d13a026809f4b950b385874bce5c,
+        type: 3}
+      propertyPath: muzzleflashVolume
+      value: 0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053310777506682151, guid: 8eb5d13a026809f4b950b385874bce5c,
+        type: 3}
+      propertyPath: imapactParticleVolume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053310777506682151, guid: 8eb5d13a026809f4b950b385874bce5c,
+        type: 3}
+      propertyPath: missImpactParticleVolume
+      value: 0.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8eb5d13a026809f4b950b385874bce5c, type: 3}
 --- !u!114 &8705610900734401048 stripped
@@ -2642,6 +2658,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.32
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ecdc7bb0cf94601428d4a9616df82aca, type: 3}
@@ -2956,15 +2977,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d81031a3f75ded4da67eed23984b1b9, type: 3}
---- !u!1 &4036733053461866557 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7484011151301161624, guid: 0d81031a3f75ded4da67eed23984b1b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 6906788097744312997}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4036733053461866556 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7484011151301161625, guid: 0d81031a3f75ded4da67eed23984b1b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 6906788097744312997}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4036733053461866557 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7484011151301161624, guid: 0d81031a3f75ded4da67eed23984b1b9,
     type: 3}
   m_PrefabInstance: {fileID: 6906788097744312997}
   m_PrefabAsset: {fileID: 0}
