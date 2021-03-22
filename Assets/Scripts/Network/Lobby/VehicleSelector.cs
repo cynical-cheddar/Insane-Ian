@@ -28,6 +28,10 @@ public class VehicleSelector : MonoBehaviour
     public List<VehicleButtonScript> vehicleButtons;
 
     private GameObject currentVehicleInstance;
+
+    private short currentVehicleId;
+
+    public Button lockButton;
     
     // if you are the driver on the team, or a gunner with only a bot, then you may select the vehicle
     
@@ -49,12 +53,18 @@ public class VehicleSelector : MonoBehaviour
     public void SelectVehicle(short vehicleId)
     {
         // update the selected team vehicle in the gamestate tracker
+        currentVehicleId = vehicleId;
+        lockButton.interactable = true;
+        GetComponent<PhotonView>().RPC(nameof(DisplaySelectedVehicle_RPC), RpcTarget.All, vehicleId ,otherId, (short) PhotonNetwork.LocalPlayer.ActorNumber);
+    }
+
+    public void LockSelectedVehicle()
+    {
+        SetButtonsInteractable(false);
         TeamEntry teamEntry = gamestateTracker.teams.Get(ourTeamId);
-        teamEntry.vehicle = vehicleId;
+        teamEntry.vehicle = currentVehicleId;
         teamEntry.hasSelectedVehicle = true;
         teamEntry.Commit();
-        GetComponent<PhotonView>().RPC(nameof(DisplaySelectedVehicle_RPC), RpcTarget.All, vehicleId ,otherId, (short) PhotonNetwork.LocalPlayer.ActorNumber);
-        
     }
 
     [PunRPC]
@@ -69,17 +79,23 @@ public class VehicleSelector : MonoBehaviour
                 Destroy(currentVehicleInstance);
             }
             // spawn new vehicle
-            currentVehicleInstance = Instantiate (Resources.Load (prefix + currentVehicle) as GameObject);
-            currentVehicleInstance.transform.position = spawnPoint.position;
-            currentVehicleInstance.transform.rotation = spawnPoint.rotation;
+            // currentVehicleInstance = Instantiate (Resources.Load (prefix + currentVehicle) as GameObject);
+            // currentVehicleInstance.transform.position = spawnPoint.position;
+            // currentVehicleInstance.transform.rotation = spawnPoint.rotation;
         }
     }
 
     void SetupButtons()
     {
-        for (int i = 0; i < vehicleNames.Count; i++)
+        int maxVehicles = vehicleNames.Count;
+        for (int i = 0; i < maxVehicles; i++)
         {
             vehicleButtons[i].SetupButton(vehicleNames[i], (short) i, this);
+        }
+
+        for (int i = maxVehicles; i < vehicleButtons.Count; i++)
+        {
+            vehicleButtons[i].gameObject.SetActive(false);
         }
     }
     

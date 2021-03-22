@@ -99,6 +99,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
     }
 
     void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
+        Debug.Log("Spawn start");
         GetComponent<VehicleManager>().SetupVehicleManager();
 
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -164,12 +165,27 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if (botDriver && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiDriverScripts);
         // otherwise, find the driver player by their nickname. Tell their client to turn on player driver controls
         //Debug.Log("My local name is " + PhotonNetwork.LocalPlayer.NickName);
-        if (PhotonNetwork.LocalPlayer.ActorNumber == driverId) EnableMonobehaviours(playerDriverScripts);
+        GetComponent<TeamNameSetup>().SetupTeamName("Team " + teamId);
+
+        if (PhotonNetwork.LocalPlayer.ActorNumber == driverId)
+        {
+            EnableMonobehaviours(playerDriverScripts);
+            GetComponent<TeamNameSetup>().SetupTeamName("");
+
+        }
         //Debug.Log("GOT HERE");
         // Do the same again for the gunner
         if (botGunner && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiGunnerScripts);
-        if (PhotonNetwork.LocalPlayer.ActorNumber == gunnerId) EnableMonobehaviours(playerGunnerScripts);
+        if (PhotonNetwork.LocalPlayer.ActorNumber == gunnerId)
+        {
+            EnableMonobehaviours(playerGunnerScripts);
+            GetComponent<TeamNameSetup>().SetupTeamName("");
+        }
         //Debug.Log("GOT HERE2");
+        Debug.Log("Spawn success");
+
+
+        GetComponent<DriverAbilityManager>().SetupDriverAbilityManager();
 
         //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
     }

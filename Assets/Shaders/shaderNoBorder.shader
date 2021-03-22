@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Unlit/Shader No Border"
 {
     Properties
@@ -7,6 +9,7 @@ Shader "Unlit/Shader No Border"
         _AmbientColor("Ambient Color", Color) = (0.4,0.4,0.4,1)
         _SpecularColor("Specular Color", Color) = (0.9,0.9,0.9,1)
         _Glossiness("Glossiness", Float) = 32
+        _Metallic("Metallic", Range(0,1)) = 0.0
 
         _RimColor("Rim Color", Color) = (1,1,1,1)
         _RimAmount("Rim Amount", Range(0, 1)) = 0.716
@@ -29,7 +32,7 @@ Shader "Unlit/Shader No Border"
             // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile_fwdbase
-
+            #pragma target 3.0
 
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
@@ -46,11 +49,12 @@ Shader "Unlit/Shader No Border"
             {
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
-                SHADOW_COORDS(2)
+                
+                //SHADOW_COORDS(2)
                 float3 worldNormal : NORMAL;
                 float3 viewDir : TEXCOORD1;
                 float4 pos : SV_POSITION;
-
+                LIGHTING_COORDS(2, 3)
 
             };
 
@@ -115,9 +119,9 @@ Shader "Unlit/Shader No Border"
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 float4 rim = rimIntensity * _RimColor;
 
-  
+                float attenuation = LIGHT_ATTENUATION(i);
 
-                return _Color * col * (_AmbientColor + light + specular + rim);
+                return attenuation * _Color * col * (_AmbientColor + light + specular + rim);
             }
             ENDCG
         }

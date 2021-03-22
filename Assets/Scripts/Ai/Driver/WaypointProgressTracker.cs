@@ -49,7 +49,8 @@ using UnityEngine;
         private Vector3 lastPosition; // Used to calculate current speed (since we may not have a rigidbody component)
         private float speed; // current speed of this object (calculated from delta since last frame)
 
-
+        protected bool circuitFound = false;
+        
         private CarAIControl _carAIControl;
         // setup script properties
         private void Start()
@@ -66,7 +67,7 @@ using UnityEngine;
                 target = new GameObject(name + " Waypoint Target").transform;
             }
             circuit = FindObjectOfType<WaypointCircuit>();
-
+            if (circuit != null) circuitFound = true;
             Reset();
         }
 
@@ -86,7 +87,7 @@ using UnityEngine;
 
         private void Update()
         {
-            if (progressStyle == ProgressStyle.SmoothAlongRoute)
+            if (progressStyle == ProgressStyle.SmoothAlongRoute &&circuitFound)
             {
                 // determine the position we should currently be aiming for
                 // (this is different to the current progress position, it is a a certain amount ahead along the route)
@@ -96,9 +97,7 @@ using UnityEngine;
                     speed = Mathf.Lerp(speed, (lastPosition - transform.position).magnitude/Time.deltaTime,
                                        Time.deltaTime);
                 }
-
-                if (target != null)
-                {
+                
                     target.position =
                         circuit.GetRoutePoint(progressDistance + lookAheadForTargetOffset +
                                               lookAheadForTargetFactor * speed)
@@ -108,10 +107,9 @@ using UnityEngine;
                             circuit.GetRoutePoint(progressDistance + lookAheadForSpeedOffset +
                                                   lookAheadForSpeedFactor * speed)
                                 .direction);
-                }
 
 
-                // get our current progress along the route
+                    // get our current progress along the route
                 progressPoint = circuit.GetRoutePoint(progressDistance);
                 Vector3 progressDelta = progressPoint.position - transform.position;
                 if (Vector3.Dot(progressDelta, progressPoint.direction) < 0)
@@ -121,7 +119,7 @@ using UnityEngine;
 
                 lastPosition = transform.position;
             }
-            else
+            else if(circuitFound)
             {
                 // point to point mode. Just increase the waypoint if we're close enough:
 
@@ -144,13 +142,13 @@ using UnityEngine;
                 }
                 lastPosition = transform.position;
             }
-            _carAIControl.SetTarget(target);
+            if(circuitFound)_carAIControl.SetTarget(target);
         }
 
 
         private void OnDrawGizmos()
         {
-            if (Application.isPlaying)
+            if (Application.isPlaying&&circuitFound)
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(transform.position, target.position);

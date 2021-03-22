@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using Gamestate;
+using System.Linq;
+using Cinemachine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -56,7 +58,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         //SynchroniseSchemaBeforeSpawn();
-        //SpawnPlayers();
         Invoke(nameof(SpawnPlayers), 2f);
         timer = FindObjectOfType<TimerBehaviour>();
         GlobalsEntry globals = gamestateTracker.globals;
@@ -73,12 +74,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // instantiate the gunner attached to the vehicle for each of them (gunner character)
     
     // only to be called by the master client when we can be sure that everyone has loaded into the game
-    public void SynchroniseSchemaBeforeSpawn()
-    {
-        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>(); 
-        gamestateTracker.ForceSynchronisePlayerSchema();
-        Invoke(nameof(SpawnPlayers), 2f);
-    }
+
 
     void SpawnPlayers()
     { 
@@ -101,7 +97,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 int teamId = entry.id;
                 entry.Release();
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
-                CallRespawnVehicle(0, teamId);
+                Spawn(teamId);
             }
         }
     }
@@ -122,21 +118,45 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator RespawnVehicle(float time, int teamId) {
-        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         yield return new WaitForSecondsRealtime(time);
-        
-        //List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
-        /*GamestateTracker.TeamDetails team = gamestateTracker.getTeamDetails(teamId);
-        
-        // set dead = false for team 
-        team.isDead = false;
-        string serializedTeamJson = JsonUtility.ToJson(team);
-        gamestateTracker.GetComponent<PhotonView>().RPC(nameof(GamestateTracker.UpdateTeamWithNewRecord), RpcTarget.AllBufferedViaServer, teamId, serializedTeamJson);*/
-       // gamestateTracker.UpdateTeamWithNewRecord(teamId, serializedTeamJson);
+        StartCoroutine(ResetVehicle(teamId));
+    }
 
+    IEnumerator ResetVehicle(int teamId) {
+        List<VehicleManager> vehicles = FindObjectsOfType<VehicleManager>().ToList();
+        foreach (VehicleManager vehicle in vehicles) {
+            if (vehicle.teamId == teamId) {
+                // Reset stats
+                vehicle.ResetProperties();
+
+
+
+                // Move to spawnpoint
+                vehicle.GetComponent<InputDriver>().enabled = true;
+                Transform spawnPoint;
+                if (teamId > spawnPoints.Count) {
+                    spawnPoint = spawnPoints[0];
+                } else {
+                    spawnPoint = spawnPoints[teamId - 1];
+                }
+                vehicle.gameObject.transform.position = spawnPoint.position;
+                vehicle.gameObject.transform.rotation = spawnPoint.rotation;
+
+                // Add back damping on camera after move
+                yield return new WaitForSecondsRealtime(0.5f);
+
+            }
+        }
+    }
+
+    void Spawn(int teamId)
+    {
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        bool selected = teamEntry.hasSelectedVehicle;
         teamEntry.isDead = false;
         short vehicle = teamEntry.vehicle;
+        
         teamEntry.Commit(RespawnErrorHandler);
         
         Transform sp;
@@ -151,7 +171,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string vehiclePrefabName = defaultPlayerVehiclePrefabName;
         
         
-        if (vehicle > 0) {
+        if (selected) {
             vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[vehicle];
         }
 

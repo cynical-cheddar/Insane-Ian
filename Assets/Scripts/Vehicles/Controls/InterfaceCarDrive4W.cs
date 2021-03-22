@@ -30,9 +30,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Header("Force Parameters")]
     [Range(12, 35)]
     public float maxSteerAngle = 20;
-    [Range(1000, 20000)]
+    [Range(1000, 80000)]
     public float motorTorque = 4500;
-    [Range(2000, 20000)]
+    [Range(2000, 80000)]
     public float brakeTorque = 8000;
     [Range(0, 30000)]
     public float brakeForce = 16000;
@@ -43,6 +43,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public Vector3 addedDownforce;
     [Range(0,20000)]
     public float antiRollStiffness = 5000;
+    [Range(1, 7)]
+    public float baseStiffness = 5;
+
     [Space(5)]
 
     [Header("Engine Noises")]
@@ -164,7 +167,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
         WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
 
-        float stiffness = 5f;
+        float stiffness = baseStiffness;
         flC.stiffness = stiffness;
         frC.stiffness = stiffness;
         rlC.stiffness = stiffness;
@@ -272,7 +275,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         var lEmission = leftPS.emission;
         var rEmission = rightPS.emission;
 
-        if (lGrounded){
+        if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (lHit.collider.CompareTag("DustGround")){
                 lEmission.enabled = true;
             } else {
@@ -281,7 +284,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         } else {
             lEmission.enabled = false;
         }
-        if (rGrounded) {
+        if (rGrounded && (Mathf.Abs(rearRightW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (rHit.collider.CompareTag("DustGround")) {
                 rEmission.enabled = true;
             } else {

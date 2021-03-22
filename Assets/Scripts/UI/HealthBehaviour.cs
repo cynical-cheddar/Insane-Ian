@@ -4,15 +4,19 @@ using Photon.Pun;
 using System.Linq;
 using System.Collections.Generic;
 using Gamestate;
+using TMPro;
 
 public class HealthBehaviour : MonoBehaviour {
 
-    public Text healthLabel;
+    public TextMeshProUGUI healthLabel;
     GamestateTracker gamestateTracker;
-    int previousRoundedHealth;
+    int previousRoundedHealth = 100;
     public GameObject damageIndicator;
     public Transform damageIndicatorInstantiateTransform;
     public int damageTaken;
+    public UiBar healthBar;
+    
+    
 
     // Start is called before the first frame update
     void Start() {
@@ -35,8 +39,12 @@ public class HealthBehaviour : MonoBehaviour {
                 if (Mathf.CeilToInt(vehicle.health) != previousRoundedHealth) {
                     damageTaken = Mathf.CeilToInt(vehicle.health) - previousRoundedHealth;
                     Instantiate(damageIndicator, damageIndicatorInstantiateTransform);
+                    if (vehicle.health < 0f) vehicle.health = 0f;
                     healthLabel.text = Mathf.CeilToInt(vehicle.health).ToString();
                     previousRoundedHealth = Mathf.CeilToInt(vehicle.health);
+                    healthBar.SetProgressBar(vehicle.health / vehicle.maxHealth);
+                    healthBar.SetNumber(Mathf.CeilToInt(vehicle.health).ToString());
+                    
                 }
                 break;
             }
