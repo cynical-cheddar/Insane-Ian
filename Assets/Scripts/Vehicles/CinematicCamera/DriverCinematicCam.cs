@@ -20,8 +20,12 @@ public class DriverCinematicCam : MonoBehaviour
     public CinemachineVirtualCamera environmentCrashCentre;
     public CinemachineVirtualCamera environmentCrashRight;
     
+    public CinemachineVirtualCamera environmentWarning1Left;
+    public CinemachineVirtualCamera environmentWarning1Centre;
+    public CinemachineVirtualCamera environmentWarning1Right;
     
-    public enum Cams {defaultCamEnum, environmentCrashLeftEnum, environmentCrashCentreEnum, environmentCrashRightEnum}
+    
+    public enum Cams {defaultCamEnum, environmentCrashLeftEnum, environmentCrashCentreEnum, environmentCrashRightEnum,environmentWarning1LeftEnum, environmentWarning1CentreEnum, environmentWarning1RightEnum }
 
     [Serializable]
     public struct FovSpeedState
@@ -44,6 +48,9 @@ public class DriverCinematicCam : MonoBehaviour
         environmentCrashLeft.m_LookAt = transform.root;
         environmentCrashCentre.m_LookAt = transform.root;
         environmentCrashRight.m_LookAt = transform.root;
+        environmentWarning1Left.m_LookAt = transform.root;
+        environmentWarning1Centre.m_LookAt = transform.root;
+        environmentWarning1Right.m_LookAt = transform.root;
 
     }
 
@@ -63,6 +70,9 @@ public class DriverCinematicCam : MonoBehaviour
         if(cam == Cams.environmentCrashLeftEnum) SetCam(environmentCrashLeft);
         if(cam == Cams.environmentCrashCentreEnum) SetCam(environmentCrashCentre);
         if(cam == Cams.environmentCrashRightEnum) SetCam(environmentCrashRight);
+        if(cam == Cams.environmentWarning1LeftEnum) SetCam(environmentWarning1Left);
+        if(cam == Cams.environmentWarning1CentreEnum) SetCam(environmentWarning1Centre);
+        if(cam == Cams.environmentWarning1RightEnum) SetCam(environmentWarning1Right);
 
     }
 
@@ -90,7 +100,9 @@ public class DriverCinematicCam : MonoBehaviour
         environmentCrashCentre.enabled = false;
         environmentCrashRight.enabled = false;
         
-
+        environmentWarning1Left.enabled = false;
+        environmentWarning1Centre.enabled = false;
+        environmentWarning1Right.enabled = false;
 
         cam.enabled = true;
     }

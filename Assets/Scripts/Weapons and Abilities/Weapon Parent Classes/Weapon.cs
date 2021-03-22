@@ -109,7 +109,9 @@ public class Weapon : Equipment
     
     
     [Header("Animation")]
+    
     [SerializeField] protected Animator weaponAnimator;
+    [SerializeField] protected string weaponSelectTriggerName = "Primary";
     [SerializeField] protected string reloadAnimatorTriggerName = "Reload";
     [SerializeField] protected string primaryFireAnimatorTriggerName = "Fire";
     [Header("Network")]
@@ -159,7 +161,7 @@ public class Weapon : Equipment
         defaultReserveAmmo = reserveAmmo;
     }
 
-    public void ResetWeaponToDefaults()
+    public virtual void ResetWeaponToDefaults()
     {
         salvoSize = defaultSalvoSize;
         reloadType = defaultReloadType;
@@ -284,6 +286,7 @@ public class Weapon : Equipment
         
         if(gunnerPhotonView!=null && weaponUi!=null){ if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);}
         
+        weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);
 
         UpdateHud();
     }
@@ -447,7 +450,7 @@ public class Weapon : Equipment
             }
 
             amt *= 100;
-            Debug.Log("amt" + amt);
+         //   Debug.Log("amt" + amt);
             gunnerWeaponManager.SetGunnerUltimateProgress(amt * (gunnerWeaponManager.maxGunnerUltimateProgress / 100));
         }
     }

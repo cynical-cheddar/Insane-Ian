@@ -33,6 +33,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
         if (hitDetails.sourcePlayerId == gunnerId)
         {
             gunnerDamageDealt += hitDetails.damage;
+            Debug.Log("update damage dealt");
         }
     }
     
@@ -87,8 +88,8 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
     [PunRPC]
     void Reset_RPC()
     {
-        gunnerUltimateProgress = 0;
-        SetGunnerUltimateProgress(0);
+       // gunnerUltimateProgress = 0;
+       // SetGunnerUltimateProgress(0);
         SelectFirst();
         
         
@@ -197,7 +198,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
 
     public void SelectUltimate()
     {
-        if (gunnerUltimateProgress >= maxGunnerUltimateProgress)
+        if (gunnerUltimateProgress >= maxGunnerUltimateProgress && myPhotonView.IsMine)
         {
             usingUltimate = true;
             ResetWeaponGroup(weaponControlGroups.weaponControlGroupList[ultimateGroupWeaponIndex]);

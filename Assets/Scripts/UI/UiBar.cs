@@ -10,9 +10,14 @@ public class UiBar : MonoBehaviour
     public GameObject specialValueEffect;
     public float specialValueLimit = 100f;
     public bool specialValueShouldBeGreaterThanOrEqualToLimit = true;
+    private RectTransform rectTransform;
 
     // List<GameObject> dividers = new List<GameObject>();
     // Start is called before the first frame update
+
+    void Start() {
+        rectTransform = bar.GetComponent<RectTransform>();
+    }
 
     private void Update() {
         if (specialValueEffect != null) {
@@ -29,7 +34,7 @@ public class UiBar : MonoBehaviour
 
     public void SetProgressBar(float fraction){
         if (fraction < 0) fraction = 0;
-        bar.GetComponent<RectTransform>().localScale = new Vector3(1, fraction, 1);
+        rectTransform.localScale = new Vector3(1, fraction, 1);
     }
     public void SetNumber(string text){
         numberHolder.text = text;

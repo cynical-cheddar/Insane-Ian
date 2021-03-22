@@ -107,6 +107,7 @@ public class DriverAbility : Equipment
 
     public virtual void ActivateAbility()
     {
+        
         if (!isSetup)
         {
             SetupAbility();

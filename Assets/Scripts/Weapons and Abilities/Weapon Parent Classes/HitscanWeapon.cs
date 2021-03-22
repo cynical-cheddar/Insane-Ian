@@ -48,6 +48,7 @@ public class HitscanWeapon : Weapon
     protected bool isRemotelyFiring = false;
     protected bool lastIsRemotelyFiring = false;
 
+    
     private Collider[] colliders;
     
     

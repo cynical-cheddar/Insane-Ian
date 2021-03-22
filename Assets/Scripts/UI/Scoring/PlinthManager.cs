@@ -43,7 +43,7 @@ public class PlinthManager : MonoBehaviour {
 
     void UpdateText() {
         // Sort teams by score
-        sortedTeams = scoringHelper.SortTeams();
+        sortedTeams = scoringHelper.SortTeams(gamestateTracker);
 
         if (PhotonNetwork.IsMasterClient) SpawnPlayerVehicles();
 
@@ -63,7 +63,7 @@ public class PlinthManager : MonoBehaviour {
 
     public void ReturnToMainMenu()
     {
-        PhotonNetwork.LeaveRoom();
+       // PhotonNetwork.Disconnect();
         SceneManager.LoadScene(returnToMenuScene);
     }
 
