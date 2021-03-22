@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Cinemachine;
 
@@ -19,7 +20,7 @@ public class DriverCrashDetector : MonoBehaviour
     
     public float playerSensorMultiplier = 3f;
 
-    public LayerMask playerLayer;
+    public int playerLayer = 8;
 
     private float currentSpeed;
 
@@ -39,7 +40,7 @@ public class DriverCrashDetector : MonoBehaviour
     [Header("Default: 35 and 20")]
     public SpeedSensorLengthPair fastRange;
     
-    public Vector3 frontSensorPosition = new Vector3(0f, 0.2f, 1f);
+    public Vector3 frontSensorPosition = new Vector3(0f, 0.2f, 2.5f);
     public float frontSideSensorPosition = 0.2f;
     public float frontSensorAngle = 30f;
     private Rigidbody myRb;
@@ -56,10 +57,10 @@ public class DriverCrashDetector : MonoBehaviour
         public bool crashed;
         public Transform lastCrashedPlayer;
         public float leftRightCoefficient;
-        private float estimatedTimeToHit;
-
+        public float estimatedTimeToHit;
+        public float estimatedDistanceToHit;
         public CurrentSensorReportStruct(float speedLocal, float crashValueLocal, float telecastCrashValueLocal,
-            bool playerAheadLocal, bool crashedLocal, Transform lastCrashedPlayerLocal, float leftRightCoefficientLocal, float estimatedTimeToHitLocal)
+            bool playerAheadLocal, bool crashedLocal, Transform lastCrashedPlayerLocal, float leftRightCoefficientLocal, float estimatedTimeToHitLocal, float estimatedDistanceToHitLocal)
         {
             speed = speedLocal;
             crashValue = crashValueLocal;
@@ -69,11 +70,12 @@ public class DriverCrashDetector : MonoBehaviour
             lastCrashedPlayer = lastCrashedPlayerLocal;
             leftRightCoefficient = leftRightCoefficientLocal;
             estimatedTimeToHit = estimatedTimeToHitLocal;
+            estimatedDistanceToHit = estimatedDistanceToHitLocal;
         }
     }
 
     private List<float> distList = new List<float>();
-
+    private List<float> timeList = new List<float>();
    // [SerializeField]
     public CurrentSensorReportStruct currentSensorReport;
     
@@ -137,7 +139,7 @@ public class DriverCrashDetector : MonoBehaviour
         CalculateSensors();
     }
 
-    float CalculateTimeToHit(Rigidbody otherPlayer)
+    void CalculateTimeToHit(Rigidbody otherPlayer)
     {
         float answer = Mathf.Infinity;
         Vector3 otherVel = transform.InverseTransformDirection(otherPlayer.velocity);
@@ -146,21 +148,52 @@ public class DriverCrashDetector : MonoBehaviour
         
         
 
-        if (velocityDifference.z <= 0)
+        if (velocityDifference.z <= 1)
         {
-          //  Debug.Log("Velocity difference not gonna hit player" + velocityDifference);
+            float relativeDistance = Vector3.Distance(otherPlayer.position, transform.position + transform.forward * frontSensorPosition.z);
+
+
+
+
+
+            if (relativeDistance < 2)
+            {
+                distList.Add(relativeDistance);
+                timeList.Add(0.05f);
+            }
+          
         }
-        else if (velocityDifference.z > 0)
+        else if (velocityDifference.z > 1)
         {
             float relativeSpeed = currentSpeed = velocityDifference.z;
-            float relativeDistance = Vector3.Distance(otherPlayer.position, transform.position);
+            float relativeDistance = Vector3.Distance(otherPlayer.position , transform.position + transform.forward * frontSensorPosition.z);
+
+            if (distList.Count > 0)
+            {
+                // if distance is more that 50% further than all other, don't add
+                if (relativeDistance > distList.Max() * 1.5f) return;
+
+                // if distance is more that 30 percent closer than other distances, invalidate list and add this
+                if (relativeDistance < distList.Min() * 0.70f)
+                {
+                    distList.Clear();
+                    timeList.Clear();
+                }
+            }
+
             answer = relativeDistance / relativeSpeed;
-            Debug.Log("Velocity difference player" + velocityDifference);
-            Debug.Log("Velocity difference estimated time player" + answer);
+            if (relativeDistance < 2) answer = 0;
+            
+          //  Debug.Log("Velocity difference player" + velocityDifference);
+            Debug.Log("Velocity difference estimated time player" + answer + " and velocity differnce was " + velocityDifference);
+            
+            distList.Add(relativeDistance);
+            timeList.Add(answer);
         }
-        return answer;
+        
+        
     }
-    float CalculateTimeToHit(Vector3 hitpoint)
+    void CalculateTimeToHit(Vector3 hitpoint)
     {
         float answer = Mathf.Infinity;
         Vector3 otherVel = Vector3.zero;
@@ -169,23 +202,53 @@ public class DriverCrashDetector : MonoBehaviour
         
         
 
-        if (velocityDifference.z <= 0)
+        if (velocityDifference.z <= 1)
         {
           //  Debug.Log("Velocity difference not gonna hit" + velocityDifference);
+          float relativeDistance = Vector3.Distance(hitpoint, transform.position + transform.forward * frontSensorPosition.z);
+
+
+
+
+
+          if (relativeDistance < 2)
+          {
+              distList.Add(relativeDistance);
+              timeList.Add(0.05f);
+          }
         }
-        else if (velocityDifference.z > 0)
+        else if (velocityDifference.z > 1)
         {
             float relativeSpeed = currentSpeed = velocityDifference.z;
-            float relativeDistance = Vector3.Distance(hitpoint, transform.position);
+            float relativeDistance = Vector3.Distance(hitpoint, transform.position + transform.forward * frontSensorPosition.z);
+            
+            // if distance is more that 50% further than all other, don't add
+            if (distList.Count > 0)
+            {
+                if (relativeDistance > distList.Max() * 1.5f) return;
+                if (relativeDistance < distList.Min() * 0.70f)
+                {
+                    distList.Clear();
+                    timeList.Clear();
+                }
+            }
+
+            // if distance is more that 30 percent closer than other distances, invalidate list and add this
+            
+            
+            
             answer = relativeDistance / relativeSpeed;
-            Debug.Log("Velocity difference" + velocityDifference);
-            Debug.Log("Velocity difference estimated time " + answer);
+            if (relativeDistance < 2) answer = 0;
+            // Debug.Log("Velocity difference" + velocityDifference);
+            // Debug.Log("Velocity difference estimated time " + answer);
+            distList.Add(relativeDistance);
+            timeList.Add(answer);
         }
-        return answer;
     }
 
     void CalculateSensors()
     {
+        Debug.Log("player layer: " + playerLayer);
             float leftRightCoefficient = 0;
             
             bool avoiding = false;
@@ -198,6 +261,7 @@ public class DriverCrashDetector : MonoBehaviour
             float telecastCrashSensorValue = 0;
             
             distList.Clear();
+            timeList.Clear();
             // calculate a value of crashing
          //   Vector3 targetVel = Vector3.zero;
             //front right sensor
@@ -215,6 +279,7 @@ public class DriverCrashDetector : MonoBehaviour
                             telecastIncrease *= playerSensorMultiplier;
                             playerAhead = true;
                             CalculateTimeToHit(hit.collider.attachedRigidbody);
+                            
                         }
                         else CalculateTimeToHit(hit.point);
 
@@ -298,8 +363,7 @@ public class DriverCrashDetector : MonoBehaviour
             }
 
             //front center sensor
-            if (crashSensorValue == 0) {
-                if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask))
+            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask))
                 {
                     Debug.DrawLine(sensorStartPos, hit.point);
                     float increase = 1.5f;
@@ -318,10 +382,15 @@ public class DriverCrashDetector : MonoBehaviour
                         telecastCrashSensorValue += telecastIncrease;
                     }
                 }
-            }
 
-            
+            float meanDist = Mathf.Infinity;
+            float meanCrashTime = Mathf.Infinity;;
 
+            if (distList.Count > 0) meanDist = distList.Average();
+            if (timeList.Count > 0) meanCrashTime = timeList.Average();
+
+            currentSensorReport.estimatedDistanceToHit = meanDist;
+            currentSensorReport.estimatedTimeToHit = meanCrashTime;
             currentSensorReport.crashValue = crashSensorValue;
             currentSensorReport.telecastCrashValue = telecastCrashSensorValue;
             currentSensorReport.playerAhead = playerAhead;

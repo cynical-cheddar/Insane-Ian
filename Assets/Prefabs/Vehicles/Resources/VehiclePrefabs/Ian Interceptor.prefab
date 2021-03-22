@@ -1393,7 +1393,7 @@ WheelCollider:
     damper: 5336.8525
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060275
+  m_ForceAppPointDistance: 1.2060293
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1469,7 +1469,7 @@ WheelCollider:
     damper: 6679.016
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560275
+  m_ForceAppPointDistance: 1.2560294
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1901,19 +1901,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crashAngleThreshold: 50
   playerSensorMultiplier: 3
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  playerLayer: 8
   sensorLayerMask:
     serializedVersion: 2
     m_Bits: 320
   slowRange:
-    speed: 15
+    speed: 5
     sensorLength: 10
   fastRange:
     speed: 35
-    sensorLength: 20
-  frontSensorPosition: {x: 0, y: 0.2, z: 0.5}
+    sensorLength: 25
+  frontSensorPosition: {x: 0, y: 0.4, z: 2.5}
   frontSideSensorPosition: 0.2
   frontSensorAngle: 30
   currentSensorReport:
@@ -1924,6 +1922,8 @@ MonoBehaviour:
     crashed: 0
     lastCrashedPlayer: {fileID: 0}
     leftRightCoefficient: 0
+    estimatedTimeToHit: 0
+    estimatedDistanceToHit: 0
 --- !u!1 &8105189969027782720
 GameObject:
   m_ObjectHideFlags: 0
@@ -1970,7 +1970,7 @@ WheelCollider:
     damper: 5320.9834
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060275
+  m_ForceAppPointDistance: 1.2060293
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2046,7 +2046,7 @@ WheelCollider:
     damper: 6663.146
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560275
+  m_ForceAppPointDistance: 1.2560294
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
