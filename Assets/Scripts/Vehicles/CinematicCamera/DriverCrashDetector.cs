@@ -185,7 +185,7 @@ public class DriverCrashDetector : MonoBehaviour
             if (relativeDistance < 2) answer = 0;
             
           //  Debug.Log("Velocity difference player" + velocityDifference);
-            Debug.Log("Velocity difference estimated time player" + answer + " and velocity differnce was " + velocityDifference);
+          //  Debug.Log("Velocity difference estimated time player" + answer + " and velocity differnce was " + velocityDifference);
             
             distList.Add(relativeDistance);
             timeList.Add(answer);
@@ -211,11 +211,7 @@ public class DriverCrashDetector : MonoBehaviour
 
 
 
-          if (relativeDistance < 2)
-          {
-              distList.Add(relativeDistance);
-              timeList.Add(0.05f);
-          }
+
         }
         else if (velocityDifference.z > 1)
         {
@@ -386,9 +382,12 @@ public class DriverCrashDetector : MonoBehaviour
             float meanDist = Mathf.Infinity;
             float meanCrashTime = Mathf.Infinity;;
 
-            if (distList.Count > 0) meanDist = distList.Average();
-            if (timeList.Count > 0) meanCrashTime = timeList.Average();
+            if (distList.Count > 0) meanDist = distList.Min();
+            if (timeList.Count > 0) meanCrashTime = timeList.Min();
 
+            
+            Debug.Log(meanCrashTime);
+            
             currentSensorReport.estimatedDistanceToHit = meanDist;
             currentSensorReport.estimatedTimeToHit = meanCrashTime;
             currentSensorReport.crashValue = crashSensorValue;

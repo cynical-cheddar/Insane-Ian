@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class BaseCameraBehaviour : StateMachineBehaviour
 {
-    public float minimumCameraDuration = 1f;
+    public float backTimeoutTime = 1f;
+    public float minimumStateTime = 0f;
     public bool setCam = true;
     public DriverCinematicCam.Cams stateCam;
     
@@ -14,9 +15,14 @@ public class BaseCameraBehaviour : StateMachineBehaviour
     protected DriverCinematicCamBehaviourDictionary _driverCinematicCamBehaviourDictionary;
     protected DriverCrashDetector.CurrentSensorReportStruct currentSensorReport;
     protected Animator myAnimator;
-    public float crashThreshold = 1f;
+    public float timeToCrashThreshold = 0.2f;
     
     // crash into environment 
+    public string crashTriggerEnvironmentAhead = "suddenEnvironmentCrashAhead";
+    public string crashTriggerEnvironmentLeft = "suddenEnvironmentCrashLeft";
+    public string crashTriggerEnvironmentRight = "suddenEnvironmentCrashRight";
+    
+    
     public string crashTriggerEnvironmentDetectAhead = "environmentCrashAhead";
     public string crashTriggerEnvironmentDetectLeft = "environmentCrashLeft";
     public string crashTriggerEnvironmentDetectRight = "environmentCrashRight";
@@ -35,8 +41,9 @@ public class BaseCameraBehaviour : StateMachineBehaviour
     protected bool crashTimeout = false;
 
     protected float cooldown = 2f;
-    
-    
+    protected float lockCooldown = 2f;
+
+    protected bool locked = true;
     
     
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -51,9 +58,10 @@ public class BaseCameraBehaviour : StateMachineBehaviour
         _driverCinematicCamBehaviourDictionary = myAnimator.GetComponent<DriverCinematicCamBehaviourDictionary>();
         _driverCrashDetector = myAnimator.GetComponentInParent<DriverCrashDetector>();
         _driverCinematicCam = myAnimator.GetComponent<DriverCinematicCam>();
-        
+        locked = true;
         crashTimeout = false;
-        cooldown = minimumCameraDuration;
+        cooldown = backTimeoutTime;
+        lockCooldown = minimumStateTime;
         if (setCam)
         {
             _driverCinematicCam.SetCam(stateCam);
@@ -66,15 +74,15 @@ public class BaseCameraBehaviour : StateMachineBehaviour
     // returns true if we detect we are gonna crash with the environment
     protected virtual bool Update_EnvironmentCrashDetectSensorActions()
     {
-        if (crashTimeout)
+        if (!locked)
         {
             currentSensorReport = _driverCrashDetector.currentSensorReport;
             // if we are about to crash into the environment, then set the trigger
-            if (currentSensorReport.crashValue >= crashThreshold)
+            if (currentSensorReport.estimatedTimeToHit <= timeToCrashThreshold)
             {
                 // look at crash distance
-                
-                
+
+
                 // look at the left/right stuff
                 if (currentSensorReport.leftRightCoefficient < -0.5)
                 {
@@ -94,9 +102,47 @@ public class BaseCameraBehaviour : StateMachineBehaviour
             }
         }
 
+
         return false;
         // if in a few seconds, we no longer have the crash signal from the sensors, then go back (to do in about to crash state)
     }
+    
+    protected virtual bool Update_EnvironmentCrashCloseSensorActions()
+    {
+        if (!locked)
+        {
+            currentSensorReport = _driverCrashDetector.currentSensorReport;
+            // if we are about to crash into the environment, then set the trigger
+            if (currentSensorReport.estimatedTimeToHit <= timeToCrashThreshold)
+            {
+                // look at crash distance
+
+
+                // look at the left/right stuff
+                if (currentSensorReport.leftRightCoefficient < -0.5)
+                {
+                    myAnimator.SetTrigger(crashTriggerEnvironmentLeft);
+                    return true;
+                }
+                else if (currentSensorReport.leftRightCoefficient > 0.5)
+                {
+                    myAnimator.SetTrigger(crashTriggerEnvironmentRight);
+                    return true;
+                }
+                else
+                {
+                    myAnimator.SetTrigger(crashTriggerEnvironmentAhead);
+                    return true;
+                }
+            }
+        }
+
+
+        return false;
+        // if in a few seconds, we no longer have the crash signal from the sensors, then go back (to do in about to crash state)
+    }
+    
+    
 
 
     protected void Update_TimeoutTimer()
@@ -104,8 +150,18 @@ public class BaseCameraBehaviour : StateMachineBehaviour
         cooldown -= Time.deltaTime;
         if(cooldown<=0) SetCrashBackTimeout(true);
     }
+    protected void Update_Lock()
+    {
+        lockCooldown -= Time.deltaTime;
+        if(lockCooldown<=0) SetLock(false);
+    }
 
 
+    protected void SetLock(bool set)
+    {
+        locked = set;
+    }
+    
     protected void SetCrashBackTimeout(bool set)
     {
         crashTimeout = set;
@@ -115,10 +171,10 @@ public class BaseCameraBehaviour : StateMachineBehaviour
 
     protected virtual bool Update_CrashDetectBack()
     {
-        if (crashTimeout)
+        if (crashTimeout && !locked)
         {
             currentSensorReport = _driverCrashDetector.currentSensorReport;
-            if (currentSensorReport.crashValue < crashThreshold)
+            if (currentSensorReport.estimatedTimeToHit > timeToCrashThreshold)
             {
                 myAnimator.SetTrigger(backTrigger);
             }

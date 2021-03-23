@@ -2,12 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrashCameraBehaviour : BaseCameraBehaviour
+public class CrashWarningBehaviour : BaseCameraBehaviour
 {
-    
-    
-    
-    
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         // setup
@@ -24,10 +20,10 @@ public class CrashCameraBehaviour : BaseCameraBehaviour
         
         Update_TimeoutTimer();
         Update_Lock();
-        if (!Update_EnvironmentCrashDetectSensorActions())
+        if (!Update_EnvironmentCrashCloseSensorActions())
         {
             Update_CrashDetectBack();
         }
+        
     }
-    
 }

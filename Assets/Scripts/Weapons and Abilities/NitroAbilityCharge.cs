@@ -73,7 +73,7 @@ public class NitroAbilityCharge : DriverAbility
     }
     public override void DeactivateAbility()
     {
-        if(abilityPhotonView.IsMine) abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, false);
+        abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, false);
         abilityActivated = false;
         
 

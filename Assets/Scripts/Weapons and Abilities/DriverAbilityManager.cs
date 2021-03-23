@@ -7,7 +7,8 @@ using UnityEngine;
 
 
 
-
+[VehicleScript(ScriptType.playerDriverScript)]
+// [VehicleScript(ScriptType.playerDriverScript)]
 
 public class DriverAbilityManager : MonoBehaviour, IPunObservable
 {
