@@ -4,6 +4,7 @@ using UnityEngine;
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     // Start is called before the first frame update
 
+    public float maxSpeed = 30f;
 
     [Header("Wheel Colliders:")]
     public WheelCollider frontLeftW;
@@ -100,11 +101,25 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
             ((IDrivable)this).StopBrake();
-            rearLeftW.motorTorque = motorTorque;
-            rearRightW.motorTorque = motorTorque;
-            if (is4WD) {
-                frontLeftW.motorTorque = motorTorque;
-                frontRightW.motorTorque = motorTorque;
+            if (carRB.velocity.magnitude < maxSpeed)
+            {
+                rearLeftW.motorTorque = motorTorque;
+                rearRightW.motorTorque = motorTorque;
+                if (is4WD)
+                {
+                    frontLeftW.motorTorque = motorTorque;
+                    frontRightW.motorTorque = motorTorque;
+                }
+            }
+            else
+            {
+                rearLeftW.motorTorque = 0;
+                rearRightW.motorTorque = 0;
+                if (is4WD)
+                {
+                    frontLeftW.motorTorque = 0;
+                    frontRightW.motorTorque = 0;
+                }
             }
         } else {
             ((IDrivable)this).Brake();
