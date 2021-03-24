@@ -3,24 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Photon.Pun;
+using Gamestate;
+
 [VehicleScript(ScriptType.playerDriverScript)]
-public class DriverCameraBehaviour : MonoBehaviour
-{
+public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback {
     CinemachineFreeLook cam;
     CinemachineVirtualCamera firstPersonCam;
     GamestateTracker gamestateTracker;
     VehicleManager vehicleManager;
     Transform thirdPersonFocus;
-    
+
 
     public bool lockCursorToWindow = true;
 
     bool isFirstPerson = false;
-    
+    int teamId;
+
 
     // Start is called before the first frame update
     void Start() {
-        if (lockCursorToWindow) Cursor.lockState = CursorLockMode.Locked;
+        if (lockCursorToWindow && FindObjectOfType<PlinthManager>() == null) Cursor.lockState = CursorLockMode.Locked;
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         cam = GetComponentInChildren<CinemachineFreeLook>();
         firstPersonCam = GetComponentInChildren<CinemachineVirtualCamera>();
@@ -28,12 +30,18 @@ public class DriverCameraBehaviour : MonoBehaviour
         vehicleManager = GetComponentInParent<VehicleManager>();
         thirdPersonFocus = cam.LookAt;
         // Give the vehicle manager time to assign teamIds
-        Invoke(nameof(AssignPriority), 0.5f);
+        //Invoke(nameof(AssignPriority), 3f);
+        AssignPriority();
     }
 
     void AssignPriority() {
-        if (gamestateTracker.getPlayerDetails(PhotonNetwork.LocalPlayer.ActorNumber).teamId == vehicleManager.teamId) {
-            cam.Priority = 1;
+        PlayerEntry entry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+        int teamId = entry.teamId;
+        entry.Release();
+
+        if (teamId == vehicleManager.teamId) {
+            cam.enabled = true;
+            cam.Priority = 100;
         }
 
     }
@@ -60,25 +68,29 @@ public class DriverCameraBehaviour : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F)) {
             isFirstPerson = !isFirstPerson;
             if (isFirstPerson) {
-                cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTarget;
+                /*cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTarget;
                 cam.m_XAxis.m_InputAxisName = "";
                 cam.m_XAxis.m_MinValue = 180;
                 cam.m_XAxis.m_MaxValue = 180;
                 cam.m_YAxis.Value = 0;
-                cam.LookAt = null;
+                cam.LookAt = null;*/
                 firstPersonCam.enabled = true;
                 cam.enabled = false;
 
             } else {
-                cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTargetWithWorldUp;
+                /*cam.m_BindingMode = CinemachineTransposer.BindingMode.LockToTargetWithWorldUp;
                 cam.m_XAxis.m_InputAxisName = "Mouse X";
                 cam.m_XAxis.m_MinValue = -90;
                 cam.m_XAxis.m_MaxValue = 90;
                 cam.m_XAxis.Value = 0;
-                cam.LookAt = thirdPersonFocus;
+                cam.LookAt = thirdPersonFocus;*/
                 firstPersonCam.enabled = false;
                 cam.enabled = true;
             }
         }
+    }
+
+    void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
+
     }
 }

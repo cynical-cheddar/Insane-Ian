@@ -4,7 +4,8 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-public class LoadingScreenNetwork : MonoBehaviourPunCallbacks
+using Gamestate;
+public class LoadingScreenNetwork : MonoBehaviour
 {
     // Start is called before the first frame update
     private string nextScene;
@@ -14,29 +15,81 @@ public class LoadingScreenNetwork : MonoBehaviourPunCallbacks
 
     public Image progressBar;
 
+    public Text percentText;
+    
     private GamestateTracker tracker;
 
     private int playersInLobby;
     private int playersDone = 0;
     private bool ready = false;
+
+    private int loadedPlayers = 0;
+    private int playersInRoom = 0;
+
+    
     void Start()
     {
+        playersInRoom = PhotonNetwork.CurrentRoom.PlayerCount;
         // get the next scene from the gamestate tracker
         tracker = FindObjectOfType<GamestateTracker>();
-        nextScene = tracker.mapDetails.sceneName;
-        nextSceneDisplayName = tracker.mapDetails.sceneDisplayName;
+        nextScene = tracker.nextMap;
+        nextSceneDisplayName = tracker.nextMapDisplay;
         nextMapText.text = nextSceneDisplayName;
         // tell all players to load it async
         playersInLobby = PhotonNetwork.CurrentRoom.PlayerCount;
 
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel(nextScene);
+            GetComponent<PhotonView>().RPC(nameof(StartLoadAsync_RPC), RpcTarget.All);
         }
 
         // when done, callback to the master, buffered via server
 
         // when number of finished players = players in room, then load the next scene
+    }
+
+    [PunRPC]
+    void StartLoadAsync_RPC()
+    {
+        StartCoroutine((LoadAsync(nextScene)));
+    }
+
+
+    [PunRPC]
+    void AddReady()
+    {
+        Debug.Log("loadedPlayers += 1");
+        loadedPlayers += 1;
+    }
+    IEnumerator LoadAsync(string name)
+    {
+
+        bool sentReady = false;
+        AsyncOperation operation = SceneManager.LoadSceneAsync(name);
+        operation.allowSceneActivation = false;
+
+        while (operation.isDone == false)
+        {
+            
+            float fltProgress = Mathf.Clamp01(operation.progress);
+            progressBar.fillAmount = fltProgress;
+            if(fltProgress < 0.99) percentText.text = Mathf.RoundToInt(fltProgress * 100) + "%";
+            else percentText.text = "Waiting for players";
+
+            if (operation.progress >= 0.89 && sentReady == false)
+            {
+                GetComponent<PhotonView>().RPC(nameof(AddReady), RpcTarget.AllBufferedViaServer);
+                sentReady = true;
+                Debug.Log("sentReady");
+            }
+            if(loadedPlayers >= playersInRoom)
+            {
+                Debug.Log("activate scene");
+                operation.allowSceneActivation = true;
+            }
+            yield return null;
+            
+        }
     }
     
     
