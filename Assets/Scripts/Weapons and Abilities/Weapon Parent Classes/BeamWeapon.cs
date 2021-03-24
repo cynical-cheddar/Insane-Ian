@@ -264,7 +264,7 @@ public class BeamWeapon : Weapon
                         damageType, baseDamage * distanceMultiplier, raycastTracerDetails.localHitPoint);
                     
                     
-                    raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleManager>()
+                    raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleHealthManager>()
                         .TakeDamage(weaponDamageDetails);
                 }
                 // do the fire effect on our end
@@ -561,7 +561,7 @@ public class BeamWeapon : Weapon
                 // get local hitpoint
                 Vector3 localHitPoint = closestHit.root.InverseTransformPoint(hitPoint);
                 // the health script exists
-                if (hit.transform.root.GetComponent<VehicleManager>() != null)
+                if (hit.transform.root.GetComponent<VehicleHealthManager>() != null)
                 {
                     raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,true,true );
                 }

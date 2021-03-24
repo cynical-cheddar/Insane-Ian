@@ -38,10 +38,10 @@ public class TutorialManager : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        List<VehicleManager> vehicles = FindObjectsOfType<VehicleManager>().ToList();
-        VehicleManager playerVehicle = null;
+        List<VehicleHealthManager> vehicles = FindObjectsOfType<VehicleHealthManager>().ToList();
+        VehicleHealthManager playerVehicle = null;
         PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
-        foreach (VehicleManager vehicle in vehicles) {
+        foreach (VehicleHealthManager vehicle in vehicles) {
             if (player.teamId == vehicle.teamId) {
                 playerVehicle = vehicle;
                 break;

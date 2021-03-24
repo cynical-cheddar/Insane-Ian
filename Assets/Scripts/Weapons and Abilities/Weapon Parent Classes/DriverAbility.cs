@@ -12,7 +12,7 @@ public class DriverAbility : Equipment
     protected PhotonView driverPhotonView;
     protected PhotonView abilityPhotonView;
     protected NetworkPlayerVehicle _networkPlayerVehicle;
-    protected VehicleManager myVehicleManager;
+    protected VehicleHealthManager myVehicleManager;
     protected DriverAbilityManager driverAbilityManager;
         
     protected int myPlayerId;
@@ -83,7 +83,7 @@ public class DriverAbility : Equipment
         //Player gunnerPlayer = gunnerPhotonView.Owner;
 
         _networkPlayerVehicle = driverPhotonView.GetComponent<NetworkPlayerVehicle>();
-        myVehicleManager = driverPhotonView.GetComponent<VehicleManager>();
+        myVehicleManager = driverPhotonView.GetComponent<VehicleHealthManager>();
         driverAbilityManager = driverPhotonView.GetComponent<DriverAbilityManager>();
 
         if (_networkPlayerVehicle != null)

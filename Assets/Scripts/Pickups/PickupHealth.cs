@@ -21,7 +21,7 @@ public class PickupHealth : PickupItem
             if(hm == null) hm = otherpv.gameObject.GetComponentInChildren<HealthManager>();
             if (hm != null)
             {
-                if (hm.health < hm.maxHealth) Pickup(otherpv);
+                if (!hm.isAtFullHealth) Pickup(otherpv);
             }
 
         }

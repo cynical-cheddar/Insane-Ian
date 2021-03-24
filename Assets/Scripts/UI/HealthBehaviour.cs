@@ -28,13 +28,13 @@ public class HealthBehaviour : MonoBehaviour {
     }
 
     public void SetHealth() {
-        List<VehicleManager> vehicles = new List<VehicleManager>(FindObjectsOfType<VehicleManager>());
+        List<VehicleHealthManager> vehicles = new List<VehicleHealthManager>(FindObjectsOfType<VehicleHealthManager>());
 
         PlayerEntry entry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         int teamId = entry.teamId;
         entry.Release();
 
-        foreach (VehicleManager vehicle in vehicles) {
+        foreach (VehicleHealthManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
                 if (Mathf.CeilToInt(vehicle.health) != previousRoundedHealth) {
                     damageTaken = Mathf.CeilToInt(vehicle.health) - previousRoundedHealth;
@@ -42,7 +42,7 @@ public class HealthBehaviour : MonoBehaviour {
                     if (vehicle.health < 0f) vehicle.health = 0f;
                     healthLabel.text = Mathf.CeilToInt(vehicle.health).ToString();
                     previousRoundedHealth = Mathf.CeilToInt(vehicle.health);
-                    healthBar.SetProgressBar(vehicle.health / vehicle.maxHealth);
+                    healthBar.SetProgressBar(vehicle.scaledHealth);
                     healthBar.SetNumber(Mathf.CeilToInt(vehicle.health).ToString());
                     
                 }

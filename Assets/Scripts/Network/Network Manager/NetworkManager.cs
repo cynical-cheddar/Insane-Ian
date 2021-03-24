@@ -123,8 +123,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     IEnumerator ResetVehicle(int teamId) {
-        List<VehicleManager> vehicles = FindObjectsOfType<VehicleManager>().ToList();
-        foreach (VehicleManager vehicle in vehicles) {
+        List<VehicleHealthManager> vehicles = FindObjectsOfType<VehicleHealthManager>().ToList();
+        foreach (VehicleHealthManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
                 // Reset stats
                 vehicle.ResetProperties();
