@@ -168,18 +168,7 @@ public class DriverCrashDetector : MonoBehaviour
             float relativeSpeed = currentSpeed = velocityDifference.z;
             float relativeDistance = Vector3.Distance(otherPlayer.position , transform.position + transform.forward * frontSensorPosition.z);
 
-            if (distList.Count > 0)
-            {
-                // if distance is more that 50% further than all other, don't add
-                if (relativeDistance > distList.Max() * 1.5f) return;
 
-                // if distance is more that 30 percent closer than other distances, invalidate list and add this
-                if (relativeDistance < distList.Min() * 0.70f)
-                {
-                    distList.Clear();
-                    timeList.Clear();
-                }
-            }
 
             answer = relativeDistance / relativeSpeed;
             if (relativeDistance < 2) answer = 0;
@@ -218,16 +207,7 @@ public class DriverCrashDetector : MonoBehaviour
             float relativeSpeed = currentSpeed = velocityDifference.z;
             float relativeDistance = Vector3.Distance(hitpoint, transform.position + transform.forward * frontSensorPosition.z);
             
-            // if distance is more that 50% further than all other, don't add
-            if (distList.Count > 0)
-            {
-                if (relativeDistance > distList.Max() * 1.5f) return;
-                if (relativeDistance < distList.Min() * 0.70f)
-                {
-                    distList.Clear();
-                    timeList.Clear();
-                }
-            }
+
 
             // if distance is more that 30 percent closer than other distances, invalidate list and add this
             
@@ -286,6 +266,11 @@ public class DriverCrashDetector : MonoBehaviour
                         leftRightCoefficient += 0.75f;
                         
                     }
+                    else
+                    {
+                        distList.Add(myRb.velocity.magnitude * sensorLength);
+                        timeList.Add(1f);
+                    }
             }
 
             //front right angle sensor
@@ -310,6 +295,11 @@ public class DriverCrashDetector : MonoBehaviour
                     telecastCrashSensorValue += telecastIncrease;
                     leftRightCoefficient += 0.25f;
                 }
+                else
+                {
+                    distList.Add(myRb.velocity.magnitude * sensorLength);
+                    timeList.Add(1f);
+                }
             }
 
             //front left sensor
@@ -331,6 +321,11 @@ public class DriverCrashDetector : MonoBehaviour
                     crashSensorValue += increase;
                     telecastCrashSensorValue += telecastIncrease;
                     leftRightCoefficient -= 0.75f;
+                }
+                else
+                {
+                    distList.Add(myRb.velocity.magnitude * sensorLength);
+                    timeList.Add(1f);
                 }
             }
 
@@ -356,6 +351,11 @@ public class DriverCrashDetector : MonoBehaviour
                     telecastCrashSensorValue += telecastIncrease;
                     leftRightCoefficient -= 0.25f;
                 }
+                else
+                {
+                    distList.Add(myRb.velocity.magnitude * sensorLength);
+                    timeList.Add(1f);
+                }
             }
 
             //front center sensor
@@ -377,13 +377,18 @@ public class DriverCrashDetector : MonoBehaviour
                         crashSensorValue += increase;
                         telecastCrashSensorValue += telecastIncrease;
                     }
+                    else
+                    {
+                        distList.Add(myRb.velocity.magnitude * sensorLength);
+                        timeList.Add(1f);
+                    }
                 }
 
             float meanDist = Mathf.Infinity;
             float meanCrashTime = Mathf.Infinity;;
 
-            if (distList.Count > 0) meanDist = distList.Min();
-            if (timeList.Count > 0) meanCrashTime = timeList.Min();
+            if (distList.Count > 0) meanDist = distList.Average();
+            if (timeList.Count > 0) meanCrashTime = timeList.Average();
 
             
             Debug.Log(meanCrashTime);
