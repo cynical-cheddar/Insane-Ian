@@ -58,7 +58,7 @@ public class Weapon : Equipment
 
     protected int myPlayerId = 0;
 
-    protected VehicleManager myVehicleManager;
+    protected VehicleHealthManager myVehicleManager;
 
     protected int myTeamId = 0;
 
@@ -258,7 +258,7 @@ public class Weapon : Equipment
         //Player gunnerPlayer = gunnerPhotonView.Owner;
         
         _networkPlayerVehicle = GetComponentInParent<NetworkPlayerVehicle>();
-        myVehicleManager = GetComponentInParent<VehicleManager>();
+        myVehicleManager = GetComponentInParent<VehicleHealthManager>();
         gunnerWeaponManager = gunnerPhotonView.GetComponent<GunnerWeaponManager>();
         if (_networkPlayerVehicle != null)
         {

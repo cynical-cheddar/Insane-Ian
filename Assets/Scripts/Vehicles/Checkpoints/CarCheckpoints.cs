@@ -22,7 +22,7 @@ public class CarCheckpoints : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if (this.enabled) {
-            short teamId = (short)GetComponent<VehicleManager>().teamId;
+            short teamId = (short)GetComponent<VehicleHealthManager>().teamId;
             TeamEntry team = gamestateTracker.teams.Get(teamId);
             if (other.CompareTag("Checkpoint") && team.driverId == PhotonNetwork.LocalPlayer.ActorNumber) {
                 checkpoints++;

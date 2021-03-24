@@ -7,37 +7,28 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-    
-    
-    [Serializable]
-    public struct CollisionArea {
-        public bool show;
-        public Vector3 rotationEuler;
-
-        [HideInInspector]
-        public Quaternion rotation;
-        public float width;
-        public float height;
-        public float collisionResistance;
-    }
-    
-    
     protected GamestateTracker gamestateTracker;
     protected PhotonView gamestateTrackerPhotonView;
     protected NetworkManager networkManager;
     protected PhotonView myPhotonView;
     
     public float health = 100f;
-    public float maxHealth = 100f;
-    protected float deathForce = Mathf.Pow(10, 6.65f);
-    protected float baseCollisionResistance = 1;
-    protected Weapon.WeaponDamageDetails _rammingDetails;
-    public List<CollisionArea> collisionAreas;
-
+    protected float maxHealth = 100f;
     
     protected Weapon.WeaponDamageDetails lastHitDetails;
     
     protected bool isDead = false;
+    public bool isAtFullHealth {
+        get {
+            return health == maxHealth;
+        }
+    }
+
+    public float scaledHealth {
+        get {
+            return health / maxHealth;
+        }
+    }
 
 
     protected void Start()

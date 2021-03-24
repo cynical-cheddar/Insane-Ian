@@ -194,7 +194,7 @@ public class HitscanWeapon : Weapon
             if (raycastTracerDetails.hasHealth)
             {
                 WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier, raycastTracerDetails.localHitPoint);
-                raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleManager>().TakeDamage(weaponDamageDetails);
+                raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleHealthManager>().TakeDamage(weaponDamageDetails);
             }
             // do the fire effect on our end
             
@@ -385,7 +385,7 @@ public class HitscanWeapon : Weapon
                 // get local hitpoint
                 Vector3 localHitPoint = closestHit.root.InverseTransformPoint(hitPoint);
                 // the health script exists
-                if (hit.transform.root.GetComponent<VehicleManager>() != null)
+                if (hit.transform.root.GetComponent<VehicleHealthManager>() != null)
                 {
                     raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,true,true );
                 }

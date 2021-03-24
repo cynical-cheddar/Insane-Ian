@@ -8,11 +8,12 @@ using Gamestate;
 using Photon.Realtime;
 
 
-public class VehicleManager : HealthManager
+public class VehicleHealthManager : CollidableHealthManager
 {
 
     
     // car stuff
+    protected Weapon.WeaponDamageDetails _rammingDetails;
 
     public GameObject audioSourcePrefab;
     public float crashSoundsSmallDamageThreshold = 5f;
@@ -57,7 +58,6 @@ public class VehicleManager : HealthManager
         }
     }
     public float defaultCollisionResistance = 1;
-    public float environmentCollisionResistance = 1;
     
     public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -149,7 +149,7 @@ public class VehicleManager : HealthManager
             collisionForce /= Time.fixedDeltaTime;
             collisionForce = transform.InverseTransformDirection(collisionForce);
 
-            VehicleManager otherVehicleManager = collision.gameObject.GetComponent<VehicleManager>();
+            VehicleHealthManager otherVehicleManager = collision.gameObject.GetComponent<VehicleHealthManager>();
 
             Vector3 collisionPoint = Vector3.zero;
             for (int i = 0; i < collision.contactCount; i++) {
