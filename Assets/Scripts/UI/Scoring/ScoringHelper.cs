@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Gamestate;
 
-public class ScoringHelper : MonoBehaviour {
+public class ScoringHelper {
 
     int killValue = 10;
     int deathValue = -5;
