@@ -32,7 +32,7 @@ public class PlinthManager : MonoBehaviour {
             string vehiclePrefabName = defaultVehiclePrefabName;
 
             if (sortedTeams[i].hasSelectedVehicle) {
-                vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[sortedTeams[i].vehicle];
+                vehiclePrefabName = "VehicleDummyPrefabs/" + vehicleNames[sortedTeams[i].vehicle];
             }
 
             object[] instantiationData = new object[] { (int)sortedTeams[i].id };
