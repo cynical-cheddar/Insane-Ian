@@ -1685,7 +1685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 125
-  maxHealth: 125
+  environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
     rotationEuler: {x: 30, y: 0, z: 0}
@@ -1713,7 +1713,6 @@ MonoBehaviour:
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
   defaultCollisionResistance: 1
-  environmentCollisionResistance: 2
 --- !u!114 &8173052085500956509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1746,7 +1745,8 @@ MonoBehaviour:
   baseExtremiumSlip: 0.3
   addedDownforce: {x: 0, y: 5, z: 0}
   antiRollStiffness: 5000
-  baseStiffness: 5
+  baseStiffness: 1
+  driftStiffness: 0.2
   EngineIdle: {fileID: 1322015503113332562}
   EngineLow: {fileID: 3216202774783986104}
   EngineHigh: {fileID: 1088472574208435861}

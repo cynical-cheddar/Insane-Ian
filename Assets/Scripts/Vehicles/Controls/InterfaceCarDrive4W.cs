@@ -44,8 +44,10 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public Vector3 addedDownforce;
     [Range(0, 20000)]
     public float antiRollStiffness = 5000;
-    [Range(1, 7)]
-    public float baseStiffness = 5;
+    [Range(0, 3)]
+    public float baseStiffness = 1;
+    [Range(0, 1)]
+    public float driftStiffness = 0.4f;
 
     [Space(5)]
 
@@ -60,8 +62,20 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public ParticleSystem leftPS;
     public ParticleSystem rightPS;
 
-    private float surfaceMultiplier;
-    private List<WheelCollider> wheelColliders = new List<WheelCollider>();
+    private List<wheelStruct> wheelStructs = new List<wheelStruct>();
+
+    struct wheelStruct {
+        public float groundStiffness;
+        public string surface;
+        public WheelCollider collider;
+
+        public wheelStruct(float groundStiffness, string surface, WheelCollider wc) {
+            this.groundStiffness = groundStiffness;
+            this.surface = surface;
+            this.collider = wc;
+        }
+        
+    }
 
     //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(float targetDirection) {
@@ -83,10 +97,10 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
         float extremiumSlip;
         extremiumSlip = baseExtremiumSlip + Mathf.Abs(steerAngle / maxSteerAngle);
-        foreach (WheelCollider wc in wheelColliders) {
-            WheelFrictionCurve wfc = wc.sidewaysFriction;
+        foreach (wheelStruct ws in wheelStructs) {
+            WheelFrictionCurve wfc = ws.collider.sidewaysFriction;
             wfc.extremumSlip = extremiumSlip;
-            wc.sidewaysFriction = wfc;
+            ws.collider.sidewaysFriction = wfc;
         }
     }
     void IDrivable.Accellerate() {
@@ -131,8 +145,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
     void IDrivable.Brake() {
         //brake all wheels
-        foreach (WheelCollider wc in wheelColliders) {
-            wc.brakeTorque = brakeTorque;
+        foreach (wheelStruct ws in wheelStructs) {
+            ws.collider.brakeTorque = brakeTorque;
         }
         //if all wheels grounded, add additional brake force
         if (AllWheelsGrounded()) {
@@ -145,19 +159,17 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Drift() {
-        float stiffness = 1f;
-        foreach (WheelCollider wc in wheelColliders) {
-            WheelFrictionCurve wfc = wc.sidewaysFriction;
-            wfc.stiffness = stiffness;
-            wc.sidewaysFriction = wfc;
+        foreach (wheelStruct ws in wheelStructs) {
+            WheelFrictionCurve wfc = ws.collider.sidewaysFriction;
+            wfc.stiffness = ws.groundStiffness * driftStiffness;
+            ws.collider.sidewaysFriction = wfc;
         }
     }
     void IDrivable.StopDrift() {
-        float stiffness = baseStiffness;
-        foreach (WheelCollider wc in wheelColliders) {
-            WheelFrictionCurve wfc = wc.sidewaysFriction;
-            wfc.stiffness = stiffness;
-            wc.sidewaysFriction = wfc;
+        foreach (wheelStruct ws in wheelStructs) {
+            WheelFrictionCurve wfc = ws.collider.sidewaysFriction;
+            wfc.stiffness = ws.groundStiffness * baseStiffness;
+            ws.collider.sidewaysFriction = wfc;
         }
     }
     private bool AllWheelsGrounded() {
@@ -186,15 +198,15 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
     }
     void IDrivable.StopAccellerate() {
-        foreach (WheelCollider wc in wheelColliders) {
-            wc.motorTorque = 0;
+        foreach (wheelStruct ws in wheelStructs) {
+            ws.collider.motorTorque = 0;
         }
 
 
     }
     void IDrivable.StopBrake() {
-        foreach (WheelCollider wc in wheelColliders) {
-            wc.brakeTorque = 0;
+        foreach (wheelStruct ws in wheelStructs) {
+            ws.collider.brakeTorque = 0;
         }
 
     }
@@ -276,11 +288,19 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
     }
 
-    private void getSurfaceMultiplier() {
-
+    private void getSurface() {
+        for (int i = 0; i < wheelStructs.Count; i++) { 
+            WheelHit hit;
+            wheelStructs[i].collider.GetGroundHit(out hit);
+            if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
+                currentTag = "DustGround";
+                wheelStructs[i] = new wheelStruct(5f, wheelStructs[i].surface, wheelStructs[i].collider);
+            }
+        }
     }
 
     void FixedUpdate() {
+        getSurface();
         EngineNoise();
         AntiRoll(frontLeftW, frontRightW);
         AntiRoll(rearLeftW, rearRightW);
@@ -293,10 +313,12 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         EngineIdle.volume = 0;
         EngineLow.volume = 0;
         EngineHigh.volume = 0;
-        wheelColliders.Add(frontLeftW);
-        wheelColliders.Add(frontRightW);
-        wheelColliders.Add(rearLeftW);
-        wheelColliders.Add(rearRightW);
+
+        wheelStructs.Add(new wheelStruct(0f, "", frontLeftW));
+        wheelStructs.Add(new wheelStruct(0f, "", frontRightW));
+        wheelStructs.Add(new wheelStruct(0f, "", rearLeftW));
+        wheelStructs.Add(new wheelStruct(0f, "", rearRightW));
+
     }
 }
 
