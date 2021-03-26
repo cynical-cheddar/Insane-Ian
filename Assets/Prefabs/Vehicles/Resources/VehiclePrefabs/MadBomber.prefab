@@ -340,7 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  maxHealth: 100
+  environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
     rotationEuler: {x: 30, y: 0, z: 0}
@@ -368,7 +368,6 @@ MonoBehaviour:
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
   defaultCollisionResistance: 1
-  environmentCollisionResistance: 2
 --- !u!114 &551059824757152105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,6 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxSpeed: 30
   frontLeftW: {fileID: 339765059635199494}
   frontRightW: {fileID: 339765053948368918}
   rearLeftW: {fileID: 339765053709699068}
@@ -556,9 +556,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crashAngleThreshold: 50
   playerSensorMultiplier: 3
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  playerLayer: 8
   sensorLayerMask:
     serializedVersion: 2
     m_Bits: 320
@@ -579,6 +577,8 @@ MonoBehaviour:
     crashed: 0
     lastCrashedPlayer: {fileID: 0}
     leftRightCoefficient: 0
+    estimatedTimeToHit: 0
+    estimatedDistanceToHit: 0
 --- !u!1 &482493436807253620
 GameObject:
   m_ObjectHideFlags: 0
