@@ -156,7 +156,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         float stiffness = baseStiffness;
         foreach (WheelCollider wc in wheelColliders) {
             WheelFrictionCurve wfc = wc.sidewaysFriction;
-            wfc.stiffness = baseStiffness;
+            wfc.stiffness = stiffness;
             wc.sidewaysFriction = wfc;
         }
     }
