@@ -84,12 +84,12 @@ public class BaseCameraBehaviour : StateMachineBehaviour
 
 
                 // look at the left/right stuff
-                if (currentSensorReport.leftRightCoefficient < -0.5)
+                if (currentSensorReport.leftRightCoefficient <= 0)
                 {
                     myAnimator.SetTrigger(crashTriggerEnvironmentDetectLeft);
                     return true;
                 }
-                else if (currentSensorReport.leftRightCoefficient > 0.5)
+                else if (currentSensorReport.leftRightCoefficient > 0)
                 {
                     myAnimator.SetTrigger(crashTriggerEnvironmentDetectRight);
                     return true;
