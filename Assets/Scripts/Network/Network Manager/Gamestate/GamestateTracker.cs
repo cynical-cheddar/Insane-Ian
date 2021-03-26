@@ -14,8 +14,11 @@ namespace Gamestate {
     {
         protected bool bufferPackets = false;
         public List<string> bufferRpcScenes;
+
+        //  FUCK
         public string nextMap;
         public string nextMapDisplay;
+        
         public List<string> destoryOnTheseLevels = new List<string>();
 
         public enum Table { Globals, Players, Teams }
@@ -46,50 +49,7 @@ namespace Gamestate {
 
 
         //  START DEPRECATED
-        public float timeLimit;
-
-        [SerializeField] public PlayerSchema schema = new PlayerSchema();
-        
-
-        [Serializable]
-        public struct PlayerSchema
-        {
-            public List<PlayerDetails> playerList;
-            public List<TeamDetails> teamsList;
-        }
-        
-        [Serializable]
-        public struct PlayerDetails
-        {
-            public string nickName;
-            public int playerId;
-            public string role;
-            public int teamId;
-            public bool isBot;
-            public bool ready;
-        }
-        
-        [Serializable]
-        public struct TeamDetails {
-            public int teamId, kills, deaths, assists, checkpoint;
-            public bool isDead;
-            public string vehiclePrefabName;
-
-            public TeamDetails(int id) {
-                teamId = id;
-                kills = 0;
-                deaths = 0;
-                assists = 0;
-                checkpoint = 0;
-                isDead = false;
-                vehiclePrefabName = null;
-            }
-
-        }
-
-
-        
-
+        //  FUCK FUCK FUCK FUCK
         [PunRPC]
         public void UpdateMapDetails(string nextMapName, string nextMapDisplayName)
         {
@@ -211,67 +171,6 @@ namespace Gamestate {
             {
                 bufferPackets = false;
             }
-        }
-
-
-
-
-        //  START DEPRECATED
-        public Player GetPlayerFromDetails(PlayerDetails pd)
-        {
-            return PhotonNetwork.LocalPlayer;
-        }
-        
-        public PlayerDetails getPlayerDetails(int id) {
-            return new PlayerDetails();
-        }
-
-        public TeamDetails getTeamDetails(int teamId) {
-            return new TeamDetails();
-        }
-        
-        [PunRPC]
-        public void RemovePlayerFromSchema(int id)
-        {
-            
-        }
-
-        public void ForceSynchronisePlayerSchema()
-        {
-            
-        }
-
-        [PunRPC]    
-        public void AddBotToSchema(string serialisedPlayerDetails)
-        {
-            
-        }
-
-        public bool mayAddBotToSchema(PlayerDetails bd)
-        {
-            return true;
-        }
-        
-        // preferred method
-        [PunRPC]
-        public void UpdatePlayerWithNewRecord(int id, string newDetailsSerialized)
-        {
-            
-        }
-
-        // call this via rpc
-        [PunRPC]
-        public void UpdateTeamWithNewRecord(int teamId, string newDetailsSerialized) {
-            
-        }
-
-        public void UpdateTeamWithNewRecord(int teamId, TeamDetails newDetails) {
-            
-        }
-
-        public PlayerDetails GetPlayerWithDetails(string nickname = null, int playerId = 0, string role = null, string character = null, int teamId = 0)
-        {
-            return new PlayerDetails();
         }
     }
 }
