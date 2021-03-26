@@ -31,6 +31,7 @@ public class NitroAbilityCharge : DriverAbility
     [PunRPC]
     void nitro_RPC(bool set)
     {
+        /*
         if (set)
         {
             if (loopingNitroPrefab != null)
@@ -41,6 +42,7 @@ public class NitroAbilityCharge : DriverAbility
         }
         else
         {
+        */
           //  Destroy(loopingNitroInstance);
 
             {
@@ -49,8 +51,7 @@ public class NitroAbilityCharge : DriverAbility
                     Destroy(child.gameObject);
                 }
             }
-        }
-        
+
     }
 
 
@@ -75,6 +76,13 @@ public class NitroAbilityCharge : DriverAbility
     {
         abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, false);
         abilityActivated = false;
+        Rigidbody rb = driverPhotonView.GetComponent<Rigidbody>();
+        if (rb.transform.InverseTransformDirection(rb.velocity).z > interfaceCarDrive4W.maxSpeed)
+        {
+            Vector3 vel = rb.transform.InverseTransformDirection(rb.velocity);
+            vel.z = interfaceCarDrive4W.maxSpeed;
+            rb.velocity = rb.transform.TransformDirection(vel);
+        }
         
 
 

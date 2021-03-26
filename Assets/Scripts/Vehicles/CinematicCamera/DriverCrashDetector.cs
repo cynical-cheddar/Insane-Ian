@@ -35,9 +35,9 @@ public class DriverCrashDetector : MonoBehaviour
     float sensorLength = 5f;
     
     
-    [Header("Default: 15 and 10")]
+    [Header("Default: 15 and 15")]
     public SpeedSensorLengthPair slowRange;
-    [Header("Default: 35 and 20")]
+    [Header("Default: 35 and 35")]
     public SpeedSensorLengthPair fastRange;
     
     public Vector3 frontSensorPosition = new Vector3(0f, 0.2f, 2.5f);
@@ -222,9 +222,11 @@ public class DriverCrashDetector : MonoBehaviour
         }
     }
 
+    private float dotThreshold = 0.93f;
+
     void CalculateSensors()
     {
-        Debug.Log("player layer: " + playerLayer);
+       // Debug.Log("player layer: " + playerLayer);
             float leftRightCoefficient = 0;
             
             bool avoiding = false;
@@ -248,14 +250,13 @@ public class DriverCrashDetector : MonoBehaviour
                     float increase = 1f;
                     float telecastIncrease = 1f;
                     // if normal is > angle
-                    if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold)
+                    if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold &&  Vector3.Dot(hit.normal, Vector3.up) < dotThreshold)
                     {
                         if (hit.collider.gameObject.layer == playerLayer)
                         {
                             telecastIncrease *= playerSensorMultiplier;
                             playerAhead = true;
                             CalculateTimeToHit(hit.collider.attachedRigidbody);
-                            
                         }
                         else CalculateTimeToHit(hit.point);
 
@@ -281,7 +282,7 @@ public class DriverCrashDetector : MonoBehaviour
                 Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 0.5f;
                 float telecastIncrease = 0.5f;
-                if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold)
+                if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold*0.75 &&  Vector3.Dot(hit.normal, Vector3.up) < dotThreshold)
                 {
                     if (hit.collider.gameObject.layer == playerLayer)
                     {
@@ -308,7 +309,7 @@ public class DriverCrashDetector : MonoBehaviour
                 Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 1f;
                 float telecastIncrease = 1f;
-                if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold)
+                if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold &&  Vector3.Dot(hit.normal, Vector3.up) < dotThreshold)
                 {
                     if (hit.collider.gameObject.layer == playerLayer)
                     {
@@ -337,7 +338,7 @@ public class DriverCrashDetector : MonoBehaviour
                 Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 0.5f;
                 float telecastIncrease = 0.5f;
-                if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold)
+                if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold*0.75 &&  Vector3.Dot(hit.normal, Vector3.up) < dotThreshold)
                 {
                     if (hit.collider.gameObject.layer == playerLayer)
                     {
@@ -364,7 +365,7 @@ public class DriverCrashDetector : MonoBehaviour
                     Debug.DrawLine(sensorStartPos, hit.point);
                     float increase = 1.5f;
                     float telecastIncrease = 1.5f;
-                    if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold)
+                    if (Vector3.Angle(hit.normal, transform.up) > crashAngleThreshold &&  Vector3.Dot(hit.normal, Vector3.up) < dotThreshold)
                     {
                         if (hit.collider.gameObject.layer == playerLayer)
                         {
@@ -391,7 +392,7 @@ public class DriverCrashDetector : MonoBehaviour
             if (timeList.Count > 0) meanCrashTime = timeList.Average();
 
             
-            Debug.Log(meanCrashTime);
+        //    Debug.Log(meanCrashTime);
             
             currentSensorReport.estimatedDistanceToHit = meanDist;
             currentSensorReport.estimatedTimeToHit = meanCrashTime;
