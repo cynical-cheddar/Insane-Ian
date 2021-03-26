@@ -20,7 +20,7 @@ public class VehicleSelector : MonoBehaviour
 
     private string currentVehicle = "";
 
-    private string prefix = "VehiclePrefabs/";
+    private string prefix = "VehicleDummyPrefabs/";
 
     private GamestateTracker gamestateTracker;
     private GamestateVehicleLookup gamestateVehicleLookup;
@@ -58,6 +58,7 @@ public class VehicleSelector : MonoBehaviour
         GetComponent<PhotonView>().RPC(nameof(DisplaySelectedVehicle_RPC), RpcTarget.All, vehicleId ,otherId, (short) PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
+    //  USED
     public void LockSelectedVehicle()
     {
         SetButtonsInteractable(false);
@@ -105,25 +106,27 @@ public class VehicleSelector : MonoBehaviour
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateVehicleLookup = FindObjectOfType<GamestateVehicleLookup>();
         vehicleNames = gamestateVehicleLookup.sortedVehicleNames;
-        
-        // get us
-        PlayerEntry playerEntry = gamestateTracker.players.Read((short)PhotonNetwork.LocalPlayer.ActorNumber);
 
-        // get our role
+        PlayerEntry playerEntry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         PlayerEntry.Role ourRole = (PlayerEntry.Role)playerEntry.role;
+        ourTeamId = playerEntry.teamId;
+        playerEntry.Release();
 
 
         // get the team we are in
-        TeamEntry teamEntry = gamestateTracker.teams.Read((short) playerEntry.teamId);
-        ourTeamId = playerEntry.teamId;
-       
+        TeamEntry teamEntry = gamestateTracker.teams.Get(ourTeamId);
+        short driverId = teamEntry.driverId;
+        short gunnerId = teamEntry.gunnerId;
+        teamEntry.Release();
+
 
         // if we are a gunner, check if the driver is a bot.
         // if so, get priority
         if (ourRole == PlayerEntry.Role.Gunner)
         {
-            PlayerEntry driverEntry = gamestateTracker.players.Read((short) teamEntry.driverId);
+            PlayerEntry driverEntry = gamestateTracker.players.Get(driverId);
             if (driverEntry.isBot) priority = true;
+            driverEntry.Release();
         }
 
         // if we are a driver, get priority
@@ -135,14 +138,12 @@ public class VehicleSelector : MonoBehaviour
         if (priority && ourRole == PlayerEntry.Role.Driver)
         {
             // get gunner id
-            PlayerEntry gunnerEntry = gamestateTracker.players.Read(teamEntry.gunnerId);
-
+            PlayerEntry gunnerEntry = gamestateTracker.players.Get(gunnerId);
             otherId = gunnerEntry.id;
+            gunnerEntry.Release();
         }
 
         SetButtonsInteractable(priority);
         SetupButtons();
     }
-
-    
 }

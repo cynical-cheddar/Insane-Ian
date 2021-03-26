@@ -139,7 +139,7 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     
     // functions to add:
 
-    
+    //  USED
     // select driver slot
     public void SelectDriver()
     {
@@ -175,6 +175,7 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         }
     }
 
+    //  USED
     public void SelectGunner()
     {
 
@@ -218,6 +219,8 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     
     // ------------------------------------------------------------------------ BOT STUFF
     // bot stuff
+
+    //  USED
     // add gunner bot
     public void AddGunnerBot()
     {
@@ -238,6 +241,7 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         }
     }
 
+    //  USED
     // add the driver bot
     public void AddDriverBot()
     {
@@ -258,6 +262,7 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         }
     }
 
+    //  USED
     public void RemoveGunnerBot()
     {
         // if there is a gunner bot on our team, then remove it from our team and remove it from the gamestate tracker
@@ -278,6 +283,8 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
         teamEntry.gunnerId = 0;
         teamEntry.Commit();
     }
+
+    //  USED
     public void RemoveDriverBot()
     {
         // if there is a gunner bot on our team, then remove it from our team and remove it from the gamestate tracker
