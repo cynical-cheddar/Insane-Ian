@@ -224,7 +224,7 @@ public class DriverCrashDetector : MonoBehaviour
 
     void CalculateSensors()
     {
-        Debug.Log("player layer: " + playerLayer);
+        //Debug.Log("player layer: " + playerLayer);
             float leftRightCoefficient = 0;
             
             bool avoiding = false;
@@ -391,7 +391,7 @@ public class DriverCrashDetector : MonoBehaviour
             if (timeList.Count > 0) meanCrashTime = timeList.Average();
 
             
-            Debug.Log(meanCrashTime);
+            //Debug.Log(meanCrashTime);
             
             currentSensorReport.estimatedDistanceToHit = meanDist;
             currentSensorReport.estimatedTimeToHit = meanCrashTime;

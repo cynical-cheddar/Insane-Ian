@@ -18,7 +18,7 @@ public class ExplodingPropHealthManager : PropHealthManager
     }
 
     protected override void Die() {
-        
+        //Debug.Log("Dead exploding prop");
         health = 0;
         isDead = true;        
         explode();
