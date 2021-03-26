@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
@@ -42,7 +42,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Range(0, 1)]
     public float baseExtremiumSlip = 0.3f;
     public Vector3 addedDownforce;
-    [Range(0,20000)]
+    [Range(0, 20000)]
     public float antiRollStiffness = 5000;
     [Range(1, 7)]
     public float baseStiffness = 5;
@@ -60,7 +60,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public ParticleSystem leftPS;
     public ParticleSystem rightPS;
 
-
+    private float surfaceMultiplier;
+    private List<WheelCollider> wheelColliders = new List<WheelCollider>();
 
     //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(float targetDirection) {
@@ -81,42 +82,28 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         frontRightW.steerAngle = steerAngle;
 
         float extremiumSlip;
-        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
-        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
-        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
-        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
-
         extremiumSlip = baseExtremiumSlip + Mathf.Abs(steerAngle / maxSteerAngle);
-        flC.extremumSlip = extremiumSlip;
-        frC.extremumSlip = extremiumSlip;
-        rlC.extremumSlip = extremiumSlip;
-        rrC.extremumSlip = extremiumSlip;
-
-        frontLeftW.sidewaysFriction = flC;
-        frontRightW.sidewaysFriction = frC;
-        rearLeftW.sidewaysFriction = rlC;
-        rearRightW.sidewaysFriction = rrC;
+        foreach (WheelCollider wc in wheelColliders) {
+            WheelFrictionCurve wfc = wc.sidewaysFriction;
+            wfc.extremumSlip = extremiumSlip;
+            wc.sidewaysFriction = wfc;
+        }
     }
     void IDrivable.Accellerate() {
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
             ((IDrivable)this).StopBrake();
-            if (carRB.velocity.magnitude < maxSpeed)
-            {
+            if (carRB.velocity.magnitude < maxSpeed) {
                 rearLeftW.motorTorque = motorTorque;
                 rearRightW.motorTorque = motorTorque;
-                if (is4WD)
-                {
+                if (is4WD) {
                     frontLeftW.motorTorque = motorTorque;
                     frontRightW.motorTorque = motorTorque;
                 }
-            }
-            else
-            {
+            } else {
                 rearLeftW.motorTorque = 0;
                 rearRightW.motorTorque = 0;
-                if (is4WD)
-                {
+                if (is4WD) {
                     frontLeftW.motorTorque = 0;
                     frontRightW.motorTorque = 0;
                 }
@@ -144,11 +131,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
     void IDrivable.Brake() {
         //brake all wheels
-        frontLeftW.brakeTorque = brakeTorque;
-        frontRightW.brakeTorque = brakeTorque;
-        rearLeftW.brakeTorque = brakeTorque;
-        rearRightW.brakeTorque = brakeTorque;
-
+        foreach (WheelCollider wc in wheelColliders) {
+            wc.brakeTorque = brakeTorque;
+        }
         //if all wheels grounded, add additional brake force
         if (AllWheelsGrounded()) {
             if (transform.InverseTransformDirection(carRB.velocity).z < 0) {
@@ -160,38 +145,20 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Drift() {
-        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
-        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
-        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
-        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
-
         float stiffness = 1f;
-        flC.stiffness = stiffness;
-        frC.stiffness = stiffness;
-        rlC.stiffness = stiffness;
-        rrC.stiffness = stiffness;
-
-        frontLeftW.sidewaysFriction = flC;
-        frontRightW.sidewaysFriction = frC;
-        rearLeftW.sidewaysFriction = rlC;
-        rearRightW.sidewaysFriction = rrC;
+        foreach (WheelCollider wc in wheelColliders) {
+            WheelFrictionCurve wfc = wc.sidewaysFriction;
+            wfc.stiffness = stiffness;
+            wc.sidewaysFriction = wfc;
+        }
     }
     void IDrivable.StopDrift() {
-        WheelFrictionCurve flC = frontLeftW.sidewaysFriction;
-        WheelFrictionCurve frC = frontRightW.sidewaysFriction;
-        WheelFrictionCurve rlC = rearLeftW.sidewaysFriction;
-        WheelFrictionCurve rrC = rearRightW.sidewaysFriction;
-
         float stiffness = baseStiffness;
-        flC.stiffness = stiffness;
-        frC.stiffness = stiffness;
-        rlC.stiffness = stiffness;
-        rrC.stiffness = stiffness;
-
-        frontLeftW.sidewaysFriction = flC;
-        frontRightW.sidewaysFriction = frC;
-        rearLeftW.sidewaysFriction = rlC;
-        rearRightW.sidewaysFriction = rrC;
+        foreach (WheelCollider wc in wheelColliders) {
+            WheelFrictionCurve wfc = wc.sidewaysFriction;
+            wfc.stiffness = baseStiffness;
+            wc.sidewaysFriction = wfc;
+        }
     }
     private bool AllWheelsGrounded() {
         if (frontLeftW.isGrounded & frontRightW.isGrounded & rearLeftW.isGrounded & rearRightW.isGrounded) {
@@ -219,24 +186,23 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
     }
     void IDrivable.StopAccellerate() {
-        frontLeftW.motorTorque = 0;
-        frontRightW.motorTorque = 0;
-        rearLeftW.motorTorque = 0;
-        rearRightW.motorTorque = 0;
+        foreach (WheelCollider wc in wheelColliders) {
+            wc.motorTorque = 0;
+        }
+
 
     }
     void IDrivable.StopBrake() {
-        frontLeftW.brakeTorque = 0;
-        frontRightW.brakeTorque = 0;
-        rearLeftW.brakeTorque = 0;
-        rearRightW.brakeTorque = 0;
+        foreach (WheelCollider wc in wheelColliders) {
+            wc.brakeTorque = 0;
+        }
 
     }
     void IDrivable.StopSteer() {
         //steer towards 0
         ((IDrivable)this).Steer(0);
     }
-    
+
     private void EngineNoise() {
         float newpitch;
         newpitch = Mathf.Clamp((Mathf.Abs(frontLeftW.rpm + frontRightW.rpm + rearLeftW.rpm + rearRightW.rpm)) * 0.01f * 0.25f, 0, 14f);
@@ -247,7 +213,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, 0.0f, 0.1f);
         } else {
             EngineIdle.volume = Mathf.Lerp(EngineIdle.volume, 0f, 0.1f);
-            EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, volume/10, 0.1f);
+            EngineHigh.volume = Mathf.Lerp(EngineHigh.volume, volume / 10, 0.1f);
             EngineLow.volume = 1 - EngineHigh.volume;
         }
 
@@ -255,7 +221,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         EngineHigh.pitch = 2.4f + volume / 10;
 
     }
-    
+
     private void AntiRoll(WheelCollider left, WheelCollider right) {
         WheelHit lHit, rHit;
         float lDistance = 1f;
@@ -291,7 +257,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         var rEmission = rightPS.emission;
 
         if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
-            if (lHit.collider.CompareTag("DustGround")){
+            if (lHit.collider.CompareTag("DustGround")) {
                 lEmission.enabled = true;
             } else {
                 lEmission.enabled = false;
@@ -309,6 +275,11 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             rEmission.enabled = false;
         }
     }
+
+    private void getSurfaceMultiplier() {
+
+    }
+
     void FixedUpdate() {
         EngineNoise();
         AntiRoll(frontLeftW, frontRightW);
@@ -316,12 +287,16 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         Particles();
     }
 
-    
+
 
     private void Start() {
         EngineIdle.volume = 0;
         EngineLow.volume = 0;
         EngineHigh.volume = 0;
+        wheelColliders.Add(frontLeftW);
+        wheelColliders.Add(frontRightW);
+        wheelColliders.Add(rearLeftW);
+        wheelColliders.Add(rearRightW);
     }
 }
 
