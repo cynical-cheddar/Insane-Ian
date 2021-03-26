@@ -10,7 +10,7 @@ public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
     CinemachineFreeLook cam;
     CinemachineVirtualCamera firstPersonCam;
     GamestateTracker gamestateTracker;
-    VehicleManager vehicleManager;
+    VehicleHealthManager vehicleManager;
     Transform thirdPersonFocus;
 
 
@@ -27,7 +27,7 @@ public class DriverCameraBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
         cam = GetComponentInChildren<CinemachineFreeLook>();
         firstPersonCam = GetComponentInChildren<CinemachineVirtualCamera>();
         firstPersonCam.enabled = false;
-        vehicleManager = GetComponentInParent<VehicleManager>();
+        vehicleManager = GetComponentInParent<VehicleHealthManager>();
         thirdPersonFocus = cam.LookAt;
         // Give the vehicle manager time to assign teamIds
         //Invoke(nameof(AssignPriority), 3f);

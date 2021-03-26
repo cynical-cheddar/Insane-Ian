@@ -340,7 +340,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  maxHealth: 100
+  defaultCollisionResistance: 1
+  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
+    type: 3}
+  crashSoundsSmallDamageThreshold: 5
+  crashSoundsLargeDamageThreshold: 35
+  crashSoundsSmall:
+  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
+  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
+  crashSoundsLarge:
+  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
+  crashMasterVolume: 1
+  environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
     rotationEuler: {x: 30, y: 0, z: 0}
@@ -354,21 +365,9 @@ MonoBehaviour:
     width: 45
     height: 100
     collisionResistance: 0.25
-  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
-    type: 3}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 35
-  crashSoundsSmall:
-  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
-  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
-  crashSoundsLarge:
-  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
-  crashMasterVolume: 1
   tutorials: {fileID: 4258766399270976573}
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
-  defaultCollisionResistance: 1
-  environmentCollisionResistance: 2
 --- !u!114 &551059824757152105
 MonoBehaviour:
   m_ObjectHideFlags: 0

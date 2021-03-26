@@ -100,7 +100,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
 
     void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
         Debug.Log("Spawn start");
-        GetComponent<VehicleManager>().SetupVehicleManager();
+        GetComponent<VehicleHealthManager>().SetupVehicleManager();
 
         gamestateTracker = FindObjectOfType<GamestateTracker>();
 

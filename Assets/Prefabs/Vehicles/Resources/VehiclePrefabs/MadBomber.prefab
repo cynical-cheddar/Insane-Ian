@@ -340,7 +340,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  maxHealth: 100
+  defaultCollisionResistance: 1
+  environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
     rotationEuler: {x: 30, y: 0, z: 0}
@@ -367,8 +368,6 @@ MonoBehaviour:
   tutorials: {fileID: 3629508308435872544}
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
-  defaultCollisionResistance: 1
-  environmentCollisionResistance: 2
 --- !u!114 &551059824757152105
 MonoBehaviour:
   m_ObjectHideFlags: 0
