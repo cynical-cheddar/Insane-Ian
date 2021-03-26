@@ -21,6 +21,7 @@ public class VehicleHealthManager : CollidableHealthManager
     public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
     public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
     public float crashMasterVolume = 1f;
+    public HotPotatoManager hpm;
 
     public GameObject tutorials;
 
@@ -311,9 +312,12 @@ public class VehicleHealthManager : CollidableHealthManager
             teamEntry.kills += 1;
             teamEntry.Increment();
         }
+        if(hpm.isPotato)
+        {
+            hpm.removePotato();
+        }
 
-
-
+        
         networkManager.CallRespawnVehicle(5f, teamId);
         
 
