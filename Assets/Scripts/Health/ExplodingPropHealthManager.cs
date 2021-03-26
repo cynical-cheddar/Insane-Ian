@@ -6,9 +6,11 @@ using Photon.Pun;
 public class ExplodingPropHealthManager : PropHealthManager
 {
     public float maxExplosionDamage = 50;
+    public GameObject temporaryDeathExplosion;
     
 
     void explode(){
+        GameObject temporaryDeathExplosionInstance = Instantiate(temporaryDeathExplosion, transform.position, transform.rotation);
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5);
         foreach (Collider collider in hitColliders){
             if(collider.gameObject.GetComponent<HealthManager>()!=null){
