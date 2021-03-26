@@ -274,6 +274,12 @@ public class VehicleHealthManager : CollidableHealthManager
         
     }
 
+    // [PunRPC]
+    // protected new void PlayDamageSoundNetwork(float damage)
+    // {
+    //     base.PlayDamageSoundNetwork(damage);
+    // }
+
     [PunRPC]
     void SetGunnerHealth_RPC(float value) {
         health = value;

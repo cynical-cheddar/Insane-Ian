@@ -97,7 +97,7 @@ public class CollidableHealthManager : HealthManager
 
 
     [PunRPC]
-    void PlayDamageSoundNetwork(float damage)
+    protected void PlayDamageSoundNetwork(float damage)
     {
         GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
         AudioSource a = crashSound.GetComponent<AudioSource>();
