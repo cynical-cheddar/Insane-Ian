@@ -292,9 +292,12 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         for (int i = 0; i < wheelStructs.Count; i++) { 
             WheelHit hit;
             wheelStructs[i].collider.GetGroundHit(out hit);
-            if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
-                currentTag = "DustGround";
-                wheelStructs[i] = new wheelStruct(5f, wheelStructs[i].surface, wheelStructs[i].collider);
+            if (hit.collider != null) {
+                if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
+                    wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
+                } else {
+                    wheelStructs[i] = new wheelStruct(8f, "0", wheelStructs[i].collider);
+                }
             }
         }
     }
