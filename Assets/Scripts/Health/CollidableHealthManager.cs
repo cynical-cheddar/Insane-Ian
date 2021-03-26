@@ -19,19 +19,17 @@ public class CollidableHealthManager : HealthManager
         public float collisionResistance;
     }
 
-
-    public GameObject audioSourcePrefab;
-    public float crashSoundsSmallDamageThreshold = 5f;
-    public float crashSoundsLargeDamageThreshold = 40f;
-    public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
-    public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
-    public float crashMasterVolume = 1f;
-
+    public float defaultCollisionResistance = 1;
     protected float deathForce = Mathf.Pow(10, 6.65f);
     protected float baseCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
 
     public List<CollisionArea> collisionAreas;
+
+    protected new void Start(){
+        baseCollisionResistance = deathForce / maxHealth;
+        base.Start();
+    }
     
     protected void OnCollisionEnter(Collision collision) {
         if (PhotonNetwork.IsMasterClient) {
@@ -51,10 +49,7 @@ public class CollidableHealthManager : HealthManager
 
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-            Debug.Log(damage);
-
-            // instantiate damage sound over network
-            if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            //Debug.Log(damage);
             
             if (otherVehicleManager != null) {
                 Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
@@ -68,7 +63,7 @@ public class CollidableHealthManager : HealthManager
     }
 
     protected float CalculateCollisionDamage(Vector3 collisionForce, Vector3 collisionDirection, bool hitVehicle) {
-        float collisionResistance = 1;
+        float collisionResistance = defaultCollisionResistance;
 
         foreach (CollisionArea collisionArea in collisionAreas) {
             Vector3 verticalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.right).normalized;

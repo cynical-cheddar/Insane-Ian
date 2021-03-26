@@ -50,7 +50,6 @@ public class VehicleHealthManager : CollidableHealthManager
             return _rammingDetails;
         }
     }
-    public float defaultCollisionResistance = 1;
     
     public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -64,7 +63,7 @@ public class VehicleHealthManager : CollidableHealthManager
         myPhotonView = GetComponent<PhotonView>();
         npv = GetComponent<NetworkPlayerVehicle>();
 
-        baseCollisionResistance = deathForce / maxHealth;
+        
 
         _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
@@ -123,7 +122,7 @@ public class VehicleHealthManager : CollidableHealthManager
                 // do death effects for all other players
                 
                 // TODO- update to take damage type parameter
-                myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+                myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All); 
                 
             }
         }
