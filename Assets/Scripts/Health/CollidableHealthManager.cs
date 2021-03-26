@@ -20,6 +20,13 @@ public class CollidableHealthManager : HealthManager
     }
 
     public float defaultCollisionResistance = 1;
+    public GameObject audioSourcePrefab;
+    public float crashSoundsSmallDamageThreshold = 5f;
+    public float crashSoundsLargeDamageThreshold = 40f;
+    public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
+    public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
+    public float crashMasterVolume = 1f;
+
     protected float deathForce = Mathf.Pow(10, 6.65f);
     protected float baseCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
@@ -30,7 +37,7 @@ public class CollidableHealthManager : HealthManager
         baseCollisionResistance = deathForce / maxHealth;
         base.Start();
     }
-    
+
     protected void OnCollisionEnter(Collision collision) {
         if (PhotonNetwork.IsMasterClient) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
@@ -50,6 +57,9 @@ public class CollidableHealthManager : HealthManager
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
             //Debug.Log(damage);
+
+            // instantiate damage sound over network
+            if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
             
             if (otherVehicleManager != null) {
                 Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
