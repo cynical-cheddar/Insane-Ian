@@ -23,13 +23,14 @@ public class ExplodingPropHealthManager : PropHealthManager
         //Debug.Log("Dead exploding prop");
         health = 0;
         isDead = true;        
-        explode();
+        
         myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
     }
     
     [PunRPC]
     protected override void PlayDeathEffects_RPC()
     {
+        explode();
         if(wreckPrefab!=null){
             Instantiate(wreckPrefab, transform.position, transform.rotation);
         }
