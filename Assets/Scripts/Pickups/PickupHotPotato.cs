@@ -21,7 +21,12 @@ public class PickupHotPotato : PickupItem
             if(hm == null) hm = otherpv.gameObject.GetComponentInChildren<HealthManager>();
             if (hm != null)
             {
-                Pickup(otherpv);
+                HotPotatoManager hpm = otherpv.gameObject.GetComponentInParent<HotPotatoManager>();
+                if (hpm.canPickupPotato)
+                {
+                    Pickup(otherpv);
+                }
+                
             }
 
         }
@@ -30,7 +35,6 @@ public class PickupHotPotato : PickupItem
     
     public override void Pickup(PhotonView otherpv)
     {
-        Debug.Log("HERE");
         if (this.SentPickup)
         {
             // skip sending more pickups until the original pickup-RPC got back to this client
@@ -48,6 +52,8 @@ public class PickupHotPotato : PickupItem
         tns.ChangeColour(true);
         hpm.pickupPotato();
         this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
+        PhotonNetwork.Destroy(this.gameObject);
     }
     
+
 }

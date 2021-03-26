@@ -391,7 +391,7 @@ public class VehicleHealthManager : CollidableHealthManager
 
         DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
         driverAbilityManager.Reset();
-
+        hpm.canPickupPotato = true;
         rb.drag = defaultDrag;
         rb.angularDrag = defaultAngularDrag;
         rb.velocity = Vector3.zero;
