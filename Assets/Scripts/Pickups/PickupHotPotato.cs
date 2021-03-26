@@ -52,7 +52,8 @@ public class PickupHotPotato : PickupItem
         tns.ChangeColour(true);
         hpm.pickupPotato();
         this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
-        PhotonNetwork.Destroy(this.gameObject);
+        if(PhotonNetwork.IsMasterClient) PhotonNetwork.Destroy(this.gameObject);
+        if(GetComponent<PhotonView>().IsMine) PhotonNetwork.Destroy(this.gameObject);
     }
     
 
