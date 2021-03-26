@@ -184,6 +184,7 @@ public class DriverAbilityManager : MonoBehaviour, IPunObservable
         {
             // update hud
             ultimateUiManager.UpdateDriverBar(driverUltimateProgress, maxDriverUltimateProgress);
+
         }
 
 
