@@ -12,7 +12,6 @@ public class CrashCameraBehaviour : BaseCameraBehaviour
     {
         // setup
         StartState(animator);
-        cooldown = minimumCameraDuration;
     }
     
     
@@ -24,10 +23,11 @@ public class CrashCameraBehaviour : BaseCameraBehaviour
     {
         
         Update_TimeoutTimer();
-        Update_CrashDetectBack();
-        
-        // go back after time
-        
+        Update_Lock();
+        if (!Update_EnvironmentCrashDetectSensorActions())
+        {
+            Update_CrashDetectBack();
+        }
     }
     
 }

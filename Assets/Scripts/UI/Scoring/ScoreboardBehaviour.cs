@@ -14,26 +14,34 @@ public class ScoreboardBehaviour : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        Debug.Log(" scoreboard start called");
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         SetUpScoreboard();
+        Debug.Log(" scoreboard start done");
     }
 
     void SetUpScoreboard() {
+        Debug.Log(" scoreboard setup start");
         for (int i = 0; i < gamestateTracker.teams.count; i++) {
             TeamEntry team = gamestateTracker.teams.GetAtIndex(i);
             team.AddListener(TeamListener);
+            Debug.Log(" scoreboard listener added");
             team.Release();
             teamPanels[i].gameObject.SetActive(true);
         }
         UpdateScores();
+        Debug.Log(" scoreboard setup done");
     }
 
     void TeamListener(TeamEntry team) {
+        Debug.Log(" scoreboard listener called");
         team.Release();
         UpdateScores();
+        Debug.Log(" scoreboard listener done");
     }
 
     public void UpdateScores() {
+        Debug.Log(" scoreboard Update start");
         // Sort teams by score
         List<TeamEntry> sortedTeams = scoringHelper.SortTeams(gamestateTracker);
 

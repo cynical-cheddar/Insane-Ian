@@ -1389,11 +1389,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22236.885
-    damper: 5336.8525
+    spring: 22236.73
+    damper: 5336.8154
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060275
+  m_ForceAppPointDistance: 1.2060288
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1465,11 +1465,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27829.234
-    damper: 6679.016
+    spring: 27829.076
+    damper: 6678.978
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560275
+  m_ForceAppPointDistance: 1.2560288
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1565,7 +1565,7 @@ Rigidbody:
   m_GameObject: {fileID: 8105189967758323200}
   serializedVersion: 2
   m_Mass: 4000
-  m_Drag: 0.15
+  m_Drag: 0.05
   m_AngularDrag: 0.2
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -1726,6 +1726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxSpeed: 30
   frontLeftW: {fileID: 8250124929661036594}
   frontRightW: {fileID: 8250124923536690722}
   rearLeftW: {fileID: 8250124923785843144}
@@ -1868,7 +1869,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105189967758323200}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 615ef6471510f824387c85e1b1cdc4c9, type: 3}
   m_Name: 
@@ -1901,19 +1902,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crashAngleThreshold: 50
   playerSensorMultiplier: 3
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  playerLayer: 8
   sensorLayerMask:
     serializedVersion: 2
     m_Bits: 320
   slowRange:
     speed: 15
-    sensorLength: 10
+    sensorLength: 15
   fastRange:
     speed: 35
-    sensorLength: 20
-  frontSensorPosition: {x: 0, y: 0.2, z: 0.5}
+    sensorLength: 35
+  frontSensorPosition: {x: 0, y: 0.2, z: 3.5}
   frontSideSensorPosition: 0.2
   frontSensorAngle: 30
   currentSensorReport:
@@ -1924,6 +1923,8 @@ MonoBehaviour:
     crashed: 0
     lastCrashedPlayer: {fileID: 0}
     leftRightCoefficient: 0
+    estimatedTimeToHit: 0
+    estimatedDistanceToHit: 0
 --- !u!1 &8105189969027782720
 GameObject:
   m_ObjectHideFlags: 0
@@ -1966,11 +1967,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22170.766
-    damper: 5320.9834
+    spring: 22170.928
+    damper: 5321.023
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060275
+  m_ForceAppPointDistance: 1.2060288
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2042,11 +2043,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27763.11
-    damper: 6663.146
+    spring: 27763.275
+    damper: 6663.1865
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560275
+  m_ForceAppPointDistance: 1.2560288
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2959,6 +2960,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8902805692153213542, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
+      propertyPath: baseDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902805692153213542, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
       propertyPath: muzzleflashVolume
       value: 0.5
       objectReference: {fileID: 0}
@@ -2971,6 +2977,16 @@ PrefabInstance:
         type: 3}
       propertyPath: missImpactParticleVolume
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902805692153213542, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: damageRampupMultiplierCurve.m_Curve.Array.data[1].time
+      value: 1.0023499
+      objectReference: {fileID: 0}
+    - target: {fileID: 8902805692153213542, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: damageRampupMultiplierCurve.m_Curve.Array.data[1].value
+      value: 0.96765137
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}

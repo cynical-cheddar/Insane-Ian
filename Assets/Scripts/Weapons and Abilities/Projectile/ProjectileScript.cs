@@ -74,7 +74,7 @@ public class ProjectileScript : MonoBehaviour
         }
 
         Vector3 hitPoint = collision.GetContact(0).point;
-        VehicleManager hitVm = collision.gameObject.GetComponentInParent<VehicleManager>();
+        VehicleHealthManager hitVm = collision.gameObject.GetComponentInParent<VehicleHealthManager>();
         if (isTrueProjectile) DamageCollisionHandler(hitVm, hitPoint);
         VisualCollisionHandler(impactNormal, hitVm != null);
 
@@ -83,7 +83,7 @@ public class ProjectileScript : MonoBehaviour
     }
     
     // applies damage to the enemy (if we hit an enemy)
-    private void DamageCollisionHandler(VehicleManager hitVm, Vector3 hitpoint)
+    private void DamageCollisionHandler(VehicleHealthManager hitVm, Vector3 hitpoint)
     {
         
         if (hitVm != null)

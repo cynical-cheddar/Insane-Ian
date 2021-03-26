@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class explodingPropHealth : PropHealthManager
+public class ExplodingPropHealthManager : PropHealthManager
 {
     public float maxExplosionDamage = 50;
     

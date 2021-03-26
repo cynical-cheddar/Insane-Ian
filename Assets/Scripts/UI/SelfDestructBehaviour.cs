@@ -43,7 +43,7 @@ public class SelfDestructBehaviour : MonoBehaviour
                 int teamId = entry.teamId;
                 entry.Release();
 
-                foreach (VehicleManager vehicle in FindObjectsOfType<VehicleManager>()) {
+                foreach (VehicleHealthManager vehicle in FindObjectsOfType<VehicleHealthManager>()) {
                     if (vehicle.teamId == teamId) {
                         vehicle.TakeDamage(99999);
                         shouldBlowUp = false;
