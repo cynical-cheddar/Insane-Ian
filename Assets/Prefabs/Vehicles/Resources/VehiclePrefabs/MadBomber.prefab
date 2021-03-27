@@ -42,11 +42,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 19933.955
-    damper: 4784.1494
+    spring: 19934.174
+    damper: 4784.2017
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.1336857
+  m_ForceAppPointDistance: 1.1336852
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -118,11 +118,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 17567.887
-    damper: 4216.293
+    spring: 17567.732
+    damper: 4216.2563
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.0836856
+  m_ForceAppPointDistance: 1.0836852
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 4985399305099245685}
   m_Layer: 8
   m_Name: MadBomber
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -340,6 +340,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  defaultCollisionResistance: 1
+  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
+    type: 3}
+  crashSoundsSmallDamageThreshold: 5
+  crashSoundsLargeDamageThreshold: 35
+  crashSoundsSmall:
+  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
+  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
+  crashSoundsLarge:
+  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
+  crashMasterVolume: 1
   environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
@@ -354,20 +365,9 @@ MonoBehaviour:
     width: 45
     height: 100
     collisionResistance: 0.25
-  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
-    type: 3}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 35
-  crashSoundsSmall:
-  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
-  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
-  crashSoundsLarge:
-  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
-  crashMasterVolume: 1
   tutorials: {fileID: 3629508308435872544}
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
-  defaultCollisionResistance: 1
 --- !u!114 &551059824757152105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -558,6 +558,7 @@ MonoBehaviour:
   crashAngleThreshold: 50
   playerSensorMultiplier: 3
   playerLayer: 8
+  drawDebugLines: 0
   sensorLayerMask:
     serializedVersion: 2
     m_Bits: 320
@@ -566,8 +567,8 @@ MonoBehaviour:
     sensorLength: 10
   fastRange:
     speed: 35
-    sensorLength: 20
-  frontSensorPosition: {x: 0, y: 0.2, z: 1}
+    sensorLength: 35
+  frontSensorPosition: {x: 0, y: 0.2, z: 3}
   frontSideSensorPosition: 0.2
   frontSensorAngle: 30
   currentSensorReport:
@@ -622,11 +623,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 17566.047
-    damper: 4215.8516
+    spring: 17565.826
+    damper: 4215.7983
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.0836856
+  m_ForceAppPointDistance: 1.0836852
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -698,11 +699,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 19932.115
-    damper: 4783.708
+    spring: 19932.264
+    damper: 4783.7437
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.1336857
+  m_ForceAppPointDistance: 1.1336852
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2791,6 +2792,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 486267010860937132}
     m_Modifications:
+    - target: {fileID: 565721555941412212, guid: a1aa85d3c2276dc4ea98cc4d686eb67b,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 802017480730283664, guid: a1aa85d3c2276dc4ea98cc4d686eb67b,
         type: 3}
       propertyPath: muzzleflashVolume
@@ -2805,6 +2811,11 @@ PrefabInstance:
         type: 3}
       propertyPath: missImpactParticleVolume
       value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2021271748291499824, guid: a1aa85d3c2276dc4ea98cc4d686eb67b,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2296109907995744386, guid: a1aa85d3c2276dc4ea98cc4d686eb67b,
         type: 3}
@@ -2859,6 +2870,16 @@ PrefabInstance:
     - target: {fileID: 2296109907995744386, guid: a1aa85d3c2276dc4ea98cc4d686eb67b,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7241437345873648303, guid: a1aa85d3c2276dc4ea98cc4d686eb67b,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7353337585850114042, guid: a1aa85d3c2276dc4ea98cc4d686eb67b,
+        type: 3}
+      propertyPath: viewIdField
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9040343329870354167, guid: a1aa85d3c2276dc4ea98cc4d686eb67b,

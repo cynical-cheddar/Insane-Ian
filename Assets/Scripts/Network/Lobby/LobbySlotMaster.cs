@@ -28,14 +28,10 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     public string loadingSceneName = "loadingScene";
     // player, nickname, role, character
-    
-    public PlayerSchema playerSlotSchema = new PlayerSchema();
 
     public List<LobbyButtonScript> lobbyButtons = new List<LobbyButtonScript>();
 
     public GamestateTracker gamestateTracker;
-
-    bool hasPicked = false;
 
     public GameObject teamSelectCanvas;
     public GameObject vehicleSelectCanvas;
@@ -70,13 +66,9 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     [PunRPC]
     void ChangeLobbyButtonActiveState_RPC(int index, bool state) {
         lobbyButtons[index].gameObject.SetActive(state);
-        if (state) {
-            gamestateTracker.schema.teamsList.Add(new GamestateTracker.TeamDetails(lobbyButtons[index].teamId));
-        } else {
-            // Scream
-        }
     }
 
+    //  USED
     public void AddTeam() {
         if (PhotonNetwork.IsMasterClient) {
             for (int i = 0; i < lobbyButtons.Count; i++) {
@@ -95,6 +87,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         }
     }
 
+    //  USED
     public void RemoveTeam() {
         if (PhotonNetwork.IsMasterClient) {
             for (int i = lobbyButtons.Count - 1; i >= 0; i--) {
@@ -119,36 +112,6 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 }
             }
         }
-    }
-
-    public void setHasPicked(bool set)
-    {
-        hasPicked = set;
-        // if it is true, add to the host's ability to 
-    }
-
-    [PunRPC]
-    public void UpdateMapName(string sceneName, string sceneDisplayName)
-    {
-        selectedMap = sceneName;
-        selectedMapDisplayName = sceneDisplayName;
-    }
-    [PunRPC]
-    public void changeSelectedPlayers(int amt)
-    {
-        selectedPlayers += amt;
-        // update the lobby stats on screen
-        GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
-    }
-    [PunRPC]
-    public void changeReadyPlayers(int amt)
-    {
-        gamestateTracker.ForceSynchronisePlayerSchema();
-        GetComponent<PhotonView>().RPC("UpdateCountAndReady", RpcTarget.AllBufferedViaServer);
-    }
-    public bool getHasPicked()
-    {
-        return hasPicked;
     }
 
     [PunRPC]
@@ -285,7 +248,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     
 
 
-
+    //  USED
     public void launchGame()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -311,6 +274,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         }
     }
 
+    //  USED
     public void VehicleSelectScreen()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -319,7 +283,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             {
                 // get all info from lobby buttons and fill in the gametracker object
                 FillIncompleteTeamsWithBots();
-                if (timeLimitText.text != "") gamestateTracker.timeLimit = float.Parse(timeLimitText.text);
+                //if (timeLimitText.text != "") gamestateTracker.timeLimit = float.Parse(timeLimitText.text);
                 PhotonNetwork.CurrentRoom.IsVisible = false;
                 GetComponent<PhotonView>().RPC(nameof(delayedVehicleSelect), RpcTarget.All);
             }
@@ -339,7 +303,6 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
 
     void delayedLoad()
     {
-        gamestateTracker.ForceSynchronisePlayerSchema();
         PhotonNetwork.LoadLevel(loadingSceneName);
     }
 

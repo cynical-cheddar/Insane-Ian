@@ -1527,7 +1527,7 @@ GameObject:
   - component: {fileID: 5758374990144816268}
   m_Layer: 8
   m_Name: Ian Interceptor
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1540,7 +1540,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105189967758323200}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 74.91, y: -1.9059494, z: 27.240652}
+  m_LocalPosition: {x: 74.9, y: -1.9059494, z: 27.240652}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5016711106861025696}
@@ -1685,6 +1685,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 125
+  defaultCollisionResistance: 1
+  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
+    type: 3}
+  crashSoundsSmallDamageThreshold: 5
+  crashSoundsLargeDamageThreshold: 35
+  crashSoundsSmall:
+  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
+  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
+  crashSoundsLarge:
+  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
+  crashMasterVolume: 1
   environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
@@ -1699,20 +1710,9 @@ MonoBehaviour:
     width: 45
     height: 100
     collisionResistance: 0.25
-  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
-    type: 3}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 35
-  crashSoundsSmall:
-  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
-  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
-  crashSoundsLarge:
-  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
-  crashMasterVolume: 1
   tutorials: {fileID: 7724176753103133533}
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
-  defaultCollisionResistance: 1
 --- !u!114 &8173052085500956509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1900,12 +1900,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 679291833f0445940b0a438799115d3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crashAngleThreshold: 50
+  crashAngleThreshold: 70
   playerSensorMultiplier: 3
   playerLayer: 8
+  drawDebugLines: 0
   sensorLayerMask:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 449
   slowRange:
     speed: 15
     sensorLength: 15
@@ -2628,15 +2629,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7935690737e43b54c8e1f5d97875ad7c, type: 3}
---- !u!4 &6475838724287988303 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1494899990216650116}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &5129428240925787101 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: 7935690737e43b54c8e1f5d97875ad7c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1494899990216650116}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6475838724287988303 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
     type: 3}
   m_PrefabInstance: {fileID: 1494899990216650116}
   m_PrefabAsset: {fileID: 0}
@@ -2990,6 +2991,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}
+--- !u!4 &5016711106861025696 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1235429334662900981, guid: c08dd695c7a00924cb5237b8fd04570b,
+    type: 3}
+  m_PrefabInstance: {fileID: 6105702706626209109}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6744777223263837270 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 657969082931476739, guid: c08dd695c7a00924cb5237b8fd04570b,
@@ -3002,9 +3009,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &5016711106861025696 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1235429334662900981, guid: c08dd695c7a00924cb5237b8fd04570b,
-    type: 3}
-  m_PrefabInstance: {fileID: 6105702706626209109}
-  m_PrefabAsset: {fileID: 0}

@@ -15,13 +15,6 @@ public class VehicleHealthManager : CollidableHealthManager
     // car stuff
     protected Weapon.WeaponDamageDetails _rammingDetails;
 
-    public GameObject audioSourcePrefab;
-    public float crashSoundsSmallDamageThreshold = 5f;
-    public float crashSoundsLargeDamageThreshold = 40f;
-    public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
-    public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
-    public float crashMasterVolume = 1f;
-
     public GameObject tutorials;
 
     protected PlayerTransformTracker playerTransformTracker;
@@ -57,7 +50,6 @@ public class VehicleHealthManager : CollidableHealthManager
             return _rammingDetails;
         }
     }
-    public float defaultCollisionResistance = 1;
     
     public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -71,7 +63,7 @@ public class VehicleHealthManager : CollidableHealthManager
         myPhotonView = GetComponent<PhotonView>();
         npv = GetComponent<NetworkPlayerVehicle>();
 
-        baseCollisionResistance = deathForce / maxHealth;
+        
 
         _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
@@ -114,90 +106,6 @@ public class VehicleHealthManager : CollidableHealthManager
     }
 
     [PunRPC]
-    void PlayDamageSoundNetwork(float damage)
-    {
-        GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
-        AudioSource a = crashSound.GetComponent<AudioSource>();
-        if (damage > crashSoundsLargeDamageThreshold && crashSoundsLarge.Count > 0)
-        {
-            int randInt = Random.Range(0, crashSoundsLarge.Count - 1);
-            a.clip = crashSoundsLarge[randInt];
-        }
-        else if(crashSoundsSmall.Count > 0)
-        {
-            int randInt = Random.Range(0, crashSoundsSmall.Count - 1);
-            a.clip = crashSoundsLarge[randInt];
-        }
-
-        if (a.clip != null)
-        {
-            a.Play();
-            Destroy(crashSound, a.clip.length);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        
-    }
-
-    void OnCollisionEnter(Collision collision) {
-        if (myPhotonView.IsMine) {
-            Vector3 collisionNormal = collision.GetContact(0).normal;
-            Vector3 collisionForce = collision.impulse;
-            if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
-            collisionForce /= Time.fixedDeltaTime;
-            collisionForce = transform.InverseTransformDirection(collisionForce);
-
-            VehicleHealthManager otherVehicleManager = collision.gameObject.GetComponent<VehicleHealthManager>();
-
-            Vector3 collisionPoint = Vector3.zero;
-            for (int i = 0; i < collision.contactCount; i++) {
-                collisionPoint += collision.GetContact(i).point;
-            }
-            collisionPoint /= collision.contactCount;
-
-            Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
-            float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-            
-            // instantiate damage sound over network
-            if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
-            
-            if (otherVehicleManager != null) {
-                Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
-                rammingDetails.damage = damage;
-                TakeDamage(rammingDetails);
-            }
-            else {
-                TakeDamage(damage);
-            }
-        }
-    }
-
-    private float CalculateCollisionDamage(Vector3 collisionForce, Vector3 collisionDirection, bool hitVehicle) {
-        float collisionResistance = 1;
-
-        foreach (CollisionArea collisionArea in collisionAreas) {
-            Vector3 verticalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.right).normalized;
-            Vector3 horizontalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.up).normalized;
-            Vector3 areaCentre = collisionArea.rotation * Vector3.forward;
-
-            if (Vector3.Dot(areaCentre, verticalComponent) > Mathf.Cos(collisionArea.height / 2) &&
-                Vector3.Dot(areaCentre, horizontalComponent) > Mathf.Cos(collisionArea.width / 2)) {
-
-                collisionResistance = collisionArea.collisionResistance;
-                break;
-            }
-        }
-
-        float reducedForce = collisionForce.magnitude / baseCollisionResistance;
-        if (!hitVehicle) reducedForce /= environmentCollisionResistance;
-        reducedForce /= collisionResistance;
-
-        return reducedForce;
-    }
-
-    [PunRPC]
     protected override void TakeDamage_RPC(string weaponDetailsJson)
     {
         Weapon.WeaponDamageDetails weaponDamageDetails =
@@ -214,7 +122,7 @@ public class VehicleHealthManager : CollidableHealthManager
                 // do death effects for all other players
                 
                 // TODO- update to take damage type parameter
-                myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+                myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All); 
                 
             }
         }
@@ -365,6 +273,12 @@ public class VehicleHealthManager : CollidableHealthManager
 
         
     }
+
+    // [PunRPC]
+    // protected new void PlayDamageSoundNetwork(float damage)
+    // {
+    //     base.PlayDamageSoundNetwork(damage);
+    // }
 
     [PunRPC]
     void SetGunnerHealth_RPC(float value) {
