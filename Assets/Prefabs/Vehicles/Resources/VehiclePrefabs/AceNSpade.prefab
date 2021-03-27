@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 6406057325838665789}
   m_Layer: 8
   m_Name: AceNSpade
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -340,6 +340,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  defaultCollisionResistance: 1
+  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
+    type: 3}
+  crashSoundsSmallDamageThreshold: 5
+  crashSoundsLargeDamageThreshold: 35
+  crashSoundsSmall:
+  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
+  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
+  crashSoundsLarge:
+  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
+  crashMasterVolume: 1
   environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
@@ -354,20 +365,9 @@ MonoBehaviour:
     width: 45
     height: 100
     collisionResistance: 0.25
-  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
-    type: 3}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 35
-  crashSoundsSmall:
-  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
-  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
-  crashSoundsLarge:
-  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
-  crashMasterVolume: 1
   tutorials: {fileID: 4258766399270976573}
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
-  defaultCollisionResistance: 1
 --- !u!114 &551059824757152105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -557,16 +557,17 @@ MonoBehaviour:
   crashAngleThreshold: 50
   playerSensorMultiplier: 3
   playerLayer: 8
+  drawDebugLines: 0
   sensorLayerMask:
     serializedVersion: 2
     m_Bits: 320
   slowRange:
     speed: 15
-    sensorLength: 10
+    sensorLength: 15
   fastRange:
     speed: 35
-    sensorLength: 20
-  frontSensorPosition: {x: 0, y: 0.2, z: 1}
+    sensorLength: 35
+  frontSensorPosition: {x: 0, y: 0.2, z: 3}
   frontSideSensorPosition: 0.2
   frontSensorAngle: 30
   currentSensorReport:

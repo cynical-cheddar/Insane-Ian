@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using System;
 
 public class CollidableHealthManager : HealthManager
@@ -18,12 +19,25 @@ public class CollidableHealthManager : HealthManager
         public float collisionResistance;
     }
 
+    public float defaultCollisionResistance = 1;
+    public GameObject audioSourcePrefab;
+    public float crashSoundsSmallDamageThreshold = 5f;
+    public float crashSoundsLargeDamageThreshold = 40f;
+    public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
+    public List<AudioClip> crashSoundsLarge = new List<AudioClip>();
+    public float crashMasterVolume = 1f;
+
     protected float deathForce = Mathf.Pow(10, 6.65f);
     protected float baseCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
 
     public List<CollisionArea> collisionAreas;
-    
+
+    protected new void Start(){
+        baseCollisionResistance = deathForce / maxHealth;
+        base.Start();
+    }
+
     protected void OnCollisionEnter(Collision collision) {
         if (PhotonNetwork.IsMasterClient) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
@@ -42,7 +56,10 @@ public class CollidableHealthManager : HealthManager
 
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-            Debug.Log(damage);
+            //Debug.Log(damage);
+
+            // instantiate damage sound over network
+            if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
             
             if (otherVehicleManager != null) {
                 Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
@@ -56,7 +73,7 @@ public class CollidableHealthManager : HealthManager
     }
 
     protected float CalculateCollisionDamage(Vector3 collisionForce, Vector3 collisionDirection, bool hitVehicle) {
-        float collisionResistance = 1;
+        float collisionResistance = defaultCollisionResistance;
 
         foreach (CollisionArea collisionArea in collisionAreas) {
             Vector3 verticalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.right).normalized;
@@ -76,6 +93,35 @@ public class CollidableHealthManager : HealthManager
         reducedForce /= collisionResistance;
 
         return reducedForce;
+    }
+
+
+    [PunRPC]
+    protected void PlayDamageSoundNetwork(float damage)
+    {
+        GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
+        AudioSource a = crashSound.GetComponent<AudioSource>();
+        if (damage > crashSoundsLargeDamageThreshold && crashSoundsLarge.Count > 0)
+        {
+            int randInt = Random.Range(0, crashSoundsLarge.Count - 1);
+            a.clip = crashSoundsLarge[randInt];
+        }
+        else if(crashSoundsSmall.Count > 0)
+        {
+            int randInt = Random.Range(0, crashSoundsSmall.Count - 1);
+            a.clip = crashSoundsLarge[randInt];
+        }
+
+        if (a.clip != null)
+        {
+            a.Play();
+            Destroy(crashSound, a.clip.length);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
     }
 
 }
