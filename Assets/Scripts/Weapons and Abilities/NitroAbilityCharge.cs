@@ -12,6 +12,9 @@ public class NitroAbilityCharge : DriverAbility
     private GameObject loopingNitroInstance;
 
     private InterfaceCarDrive4W interfaceCarDrive4W;
+
+    public float newMass = 1000f;
+    public float newCollisiionResistance = 4;
     
     public override void SetupAbility()
     {
@@ -31,7 +34,7 @@ public class NitroAbilityCharge : DriverAbility
     [PunRPC]
     void nitro_RPC(bool set)
     {
-        /*
+
         if (set)
         {
             if (loopingNitroPrefab != null)
@@ -42,8 +45,8 @@ public class NitroAbilityCharge : DriverAbility
         }
         else
         {
-        */
-          //  Destroy(loopingNitroInstance);
+
+            //  Destroy(loopingNitroInstance);
 
             {
                 foreach (Transform child in transform)
@@ -52,38 +55,45 @@ public class NitroAbilityCharge : DriverAbility
                 }
             }
 
+        }
     }
+    
 
 
     public override void ActivateAbility()
     {
-        if (!isSetup)
+        if (driverPhotonView.IsMine)
         {
-            SetupAbility();
+            if (!isSetup)
+            {
+                SetupAbility();
+            }
+
+            currentCharge = maxCharge;
+            abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, true);
+
+            abilityActivated = true;
+
+
+
+
+            abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
         }
-
-        currentCharge = maxCharge;
-        abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, true);
-
-        abilityActivated = true;
-
-
-        
-        
-        abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
     }
     public override void DeactivateAbility()
     {
-        abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, false);
-        abilityActivated = false;
-        Rigidbody rb = driverPhotonView.GetComponent<Rigidbody>();
-        if (rb.transform.InverseTransformDirection(rb.velocity).z > interfaceCarDrive4W.maxSpeed)
+        if (driverPhotonView.IsMine)
         {
-            Vector3 vel = rb.transform.InverseTransformDirection(rb.velocity);
-            vel.z = interfaceCarDrive4W.maxSpeed;
-            rb.velocity = rb.transform.TransformDirection(vel);
+            abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, false);
+            abilityActivated = false;
+            Rigidbody rb = driverPhotonView.GetComponent<Rigidbody>();
+            if (rb.transform.InverseTransformDirection(rb.velocity).z > interfaceCarDrive4W.maxSpeed)
+            {
+                Vector3 vel = rb.transform.InverseTransformDirection(rb.velocity);
+                vel.z = interfaceCarDrive4W.maxSpeed;
+                rb.velocity = rb.transform.TransformDirection(vel);
+            }
         }
-        
 
 
     }
