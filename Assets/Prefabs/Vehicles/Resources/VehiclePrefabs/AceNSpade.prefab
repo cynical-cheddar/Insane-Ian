@@ -42,11 +42,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.6
   m_SuspensionSpring:
-    spring: 15694.725
-    damper: 3766.734
+    spring: 15694.722
+    damper: 3766.7334
     targetPosition: 0.7
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0.9136011
+  m_ForceAppPointDistance: 0.9136001
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -118,11 +118,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.53
   m_SuspensionSpring:
-    spring: 9306.434
-    damper: 2233.5444
+    spring: 9306.481
+    damper: 2233.5557
     targetPosition: 0.7
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0.84360105
+  m_ForceAppPointDistance: 0.84360003
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -542,6 +542,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamName: {fileID: 3709679780837674320}
+  white:
+    serializedVersion: 2
+    rgba: 4294967295
+  red:
+    serializedVersion: 2
+    rgba: 4278190335
 --- !u!114 &6406057325838665789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,7 +632,7 @@ WheelCollider:
     damper: 2233.2668
     targetPosition: 0.7
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0.84360105
+  m_ForceAppPointDistance: 0.84360003
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -698,11 +704,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.6
   m_SuspensionSpring:
-    spring: 15693.563
-    damper: 3766.4556
+    spring: 15693.5205
+    damper: 3766.445
     targetPosition: 0.7
   m_SuspensionDistance: 0.3
-  m_ForceAppPointDistance: 0.9136011
+  m_ForceAppPointDistance: 0.9136001
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1190,6 +1196,8 @@ MonoBehaviour:
   activationVelocityChange: 15
   loopingNitroPrefab: {fileID: 9188047499362097863, guid: 73b02fbdeb1805444b26b3e6009a6c48,
     type: 3}
+  newMass: 1000
+  newCollisiionResistance: 4
 --- !u!1 &2356719329069547794
 GameObject:
   m_ObjectHideFlags: 0
@@ -1914,7 +1922,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: 19fb4970cb2107c40b54b8f3c91c6a72, type: 2}
   - {fileID: 2100000, guid: 6ef927547f5291a458c8e0e635db201f, type: 2}
   - {fileID: 2100000, guid: 19fb4970cb2107c40b54b8f3c91c6a72, type: 2}
-  - {fileID: 2100000, guid: acf484e8f2f140a4ead55329d2c7a7e5, type: 2}
+  - {fileID: 2100000, guid: 2035e18fb2e73f04f9456ecd60e08f60, type: 2}
   - {fileID: 2100000, guid: 6d6bef8f86011474fbda0de70ac1ab99, type: 2}
   - {fileID: 2100000, guid: 50a63db914b3ccc44ad1a593d545c71e, type: 2}
   m_StaticBatchInfo:
