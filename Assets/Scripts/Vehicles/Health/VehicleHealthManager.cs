@@ -10,8 +10,10 @@ using Photon.Realtime;
 
 public class VehicleHealthManager : CollidableHealthManager
 {
+    public ParticleSystem smokeL;
+    public ParticleSystem smokeM;
+    public ParticleSystem smokeH;
 
-    
     // car stuff
     protected Weapon.WeaponDamageDetails _rammingDetails;
 
@@ -114,7 +116,23 @@ public class VehicleHealthManager : CollidableHealthManager
         float amount = weaponDamageDetails.damage;
         if (health > 0) {
             health -= amount;
-            if (health <= 0&&!isDead && myPhotonView.IsMine)
+            if (health < 60) {
+                smokeL.Play();
+                smokeM.Stop();
+                smokeH.Stop();
+            }
+            if (health < 40) {
+                smokeL.Stop();
+                smokeM.Play();
+                smokeH.Stop();
+
+            }
+            if (health < 20) {
+                smokeL.Stop();
+                smokeM.Play();
+                smokeH.Play();
+            }
+            if (health <= 0 && !isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
                 isDead = true;
@@ -133,6 +151,22 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         if (health > 0) {
             health -= amount;
+            if (health < 60) {
+                smokeL.Play();
+                smokeM.Stop();
+                smokeH.Stop();
+            }
+            if (health < 40) {
+                smokeL.Stop();
+                smokeM.Play();
+                smokeH.Stop();
+
+            }
+            if (health < 20) {
+                smokeL.Stop();
+                smokeM.Play();
+                smokeH.Play();
+            }
             if (health <= 0&&!isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
@@ -243,7 +277,9 @@ public class VehicleHealthManager : CollidableHealthManager
         }
         y = 0.9f;
         z = Random.Range(0, 2f);
-        
+        smokeM.Play();
+        smokeH.Play();
+
         Vector3 explodePos = new Vector3(x, y, z);
         Vector3 newCom = new Vector3(0, 1.3f, 0);
         rb.centerOfMass = newCom;
@@ -301,6 +337,10 @@ public class VehicleHealthManager : CollidableHealthManager
 
         DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
         driverAbilityManager.Reset();
+
+        smokeL.Stop();
+        smokeM.Stop();
+        smokeH.Stop();
 
         rb.drag = defaultDrag;
         rb.angularDrag = defaultAngularDrag;
