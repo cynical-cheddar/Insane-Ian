@@ -340,7 +340,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 75
-  maxHealth: 75
+  defaultCollisionResistance: 1
+  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
+    type: 3}
+  crashSoundsSmallDamageThreshold: 5
+  crashSoundsLargeDamageThreshold: 35
+  crashSoundsSmall:
+  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
+  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
+  crashSoundsLarge:
+  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
+  crashMasterVolume: 1
+  environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
     rotationEuler: {x: 30, y: 0, z: 0}
@@ -354,21 +365,9 @@ MonoBehaviour:
     width: 45
     height: 100
     collisionResistance: 0.25
-  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
-    type: 3}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 35
-  crashSoundsSmall:
-  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
-  - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
-  crashSoundsLarge:
-  - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
-  crashMasterVolume: 1
   tutorials: {fileID: 4036733053461866557}
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
-  defaultCollisionResistance: 1
-  environmentCollisionResistance: 2
 --- !u!114 &551059824757152105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -401,7 +400,8 @@ MonoBehaviour:
   baseExtremiumSlip: 0.3
   addedDownforce: {x: 0, y: 5, z: 0}
   antiRollStiffness: 10000
-  baseStiffness: 5
+  baseStiffness: 1
+  driftStiffness: 0.4
   EngineIdle: {fileID: 8129776033949159376}
   EngineLow: {fileID: 4979435539793011968}
   EngineHigh: {fileID: 6567186082044929194}
@@ -525,6 +525,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamName: {fileID: 1262134427360739356}
+  white:
+    serializedVersion: 2
+    rgba: 4294967295
+  red:
+    serializedVersion: 2
+    rgba: 4278190335
 --- !u!114 &6542926925190450714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -540,6 +546,7 @@ MonoBehaviour:
   crashAngleThreshold: 50
   playerSensorMultiplier: 3
   playerLayer: 8
+  drawDebugLines: 0
   sensorLayerMask:
     serializedVersion: 2
     m_Bits: 320
@@ -2136,6 +2143,8 @@ MonoBehaviour:
   activationVelocityChange: 15
   loopingNitroPrefab: {fileID: 9188047499362097863, guid: 73b02fbdeb1805444b26b3e6009a6c48,
     type: 3}
+  newMass: 1000
+  newCollisiionResistance: 4
 --- !u!1 &7628235132963532594
 GameObject:
   m_ObjectHideFlags: 0
