@@ -151,6 +151,10 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         if (health > 0) {
             health -= amount;
+            if (health > maxHealth) health = maxHealth;
+            smokeL.Stop();
+            smokeM.Stop();
+            smokeH.Stop();
             if (health < 60) {
                 smokeL.Play();
                 smokeM.Stop();
