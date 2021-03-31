@@ -6,34 +6,31 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.LowLevel;
 
+using PhysX;
+
 public class PhysicsToggle : MonoBehaviour
 {
     private bool doingPhysics = false;
     private IntPtr physicsFunction = IntPtr.Zero;
 
-    #if UNITY_WEBGL
-    [DllImport("__Internal")]
-    #else
-    [DllImport("CppTest")]
-    #endif
-    public static extern int AddNumbers(int x, int y);
-
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (Application.IsPlaying(gameObject)) {
+            DontDestroyOnLoad(gameObject);
 
-        PlayerLoopSystem loopSystemRoot = PlayerLoop.GetCurrentPlayerLoop();
-        
-        EditPhysics(ref loopSystemRoot, false);
+            PlayerLoopSystem loopSystemRoot = PlayerLoop.GetCurrentPlayerLoop();
 
-        //physicsLoopSystem.
+            EditPhysics(ref loopSystemRoot, false);
 
-        //physicsLoopSystem.updateDelegate
+            //physicsLoopSystem.
 
-        PlayerLoop.SetPlayerLoop(loopSystemRoot);
+            //physicsLoopSystem.updateDelegate
 
-        Debug.Log(AddNumbers(7, 12));
+            PlayerLoop.SetPlayerLoop(loopSystemRoot);
+
+            //Debug.Log(PhysXLib.AddNumberses(12, 7));
+        }
     }
 
     private bool EditPhysics(ref PlayerLoopSystem loopSystem, bool doPhysics) {
@@ -47,7 +44,7 @@ public class PhysicsToggle : MonoBehaviour
             else {
                 loopSystem.updateFunction = IntPtr.Zero;
                 loopSystem.updateDelegate = () => {
-                    //Debug.Log("YEET!");
+                    PhysXSceneSimulator.Simulate();
                 };
             }
 
@@ -67,12 +64,14 @@ public class PhysicsToggle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P)) {
-            doingPhysics = !doingPhysics;
+        if (Application.IsPlaying(gameObject)) {
+            if (Input.GetKeyDown(KeyCode.P)) {
+                doingPhysics = !doingPhysics;
 
-            PlayerLoopSystem loopSystemRoot = PlayerLoop.GetCurrentPlayerLoop();
-            EditPhysics(ref loopSystemRoot, doingPhysics);
-            PlayerLoop.SetPlayerLoop(loopSystemRoot);
+                PlayerLoopSystem loopSystemRoot = PlayerLoop.GetCurrentPlayerLoop();
+                EditPhysics(ref loopSystemRoot, doingPhysics);
+                PlayerLoop.SetPlayerLoop(loopSystemRoot);
+            }
         }
     }
 }
