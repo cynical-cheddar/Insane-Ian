@@ -27,7 +27,6 @@ void debugLog(const std::string str) {
 	}
 }
 
-
 MyErrorCallback::MyErrorCallback()
 {
 }
@@ -89,73 +88,25 @@ void MyErrorCallback::reportError(physx::PxErrorCode::Enum e, const char* messag
 
 MyErrorCallback gErrorCallback;
 
-physx::PxRigidDynamic* createDynamic(const physx::PxTransform& t, const physx::PxGeometry& geometry, const physx::PxVec3& velocity = physx::PxVec3(0))
-{
-	physx::PxRigidDynamic* dynamic = physx::PxCreateDynamic(*gPhysics, t, geometry, *gMaterial, 10.0f);
-	dynamic->setAngularDamping(0.5f);
-	dynamic->setLinearVelocity(velocity);
-	gScene->addActor(*dynamic);
-	return dynamic;
-}
-
-void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent)
-{
-	physx::PxShape* shape = gPhysics->createShape(physx::PxBoxGeometry(halfExtent, halfExtent, halfExtent), *gMaterial);
-
-	for(physx::PxU32 i = 0; i < size; i++)
-	{
-		for(physx::PxU32 j = 0; j < size - i; j++)
-		{
-			physx::PxTransform localTm(physx::PxVec3(physx::PxReal(j*2) - physx::PxReal(size-i), physx::PxReal(i*2+1), 0) * halfExtent);
-			physx::PxRigidDynamic* body = gPhysics->createRigidDynamic(t.transform(localTm));
-			body->attachShape(*shape);
-			physx::PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-			gScene->addActor(*body);
-		}
+physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, physx::PxFilterData dataA,
+								  physx::PxFilterObjectAttributes attributesB, physx::PxFilterData dataB,
+								  physx::PxPairFlags& pairFlags, const void* filterShaderData, physx::PxU32 shaderDataSize) {
+							
+	if (physx::PxFilterObjectIsTrigger(attributesA) || physx::PxFilterObjectIsTrigger(attributesB)) {
+		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
+		return physx::PxFilterFlag::eDEFAULT;
 	}
-	shape->release();
+
+
+	if ((dataA.word0 & dataB.word1) && (dataB.word0 & dataA.word1)) {
+		pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+	}
+
+	return physx::PxFilterFlag::eDEFAULT;
 }
 
-void initPhysics(bool interactive)
-{
-	
-
-	//gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-
-	//physx::PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, physx::PxPlane(0,1,0,0), *gMaterial);
-	//gScene->addActor(*groundPlane);
-
-	for(physx::PxU32 i=0; i<5; i++) {
-		createStack(physx::PxTransform(physx::PxVec3(0,0,stackZ-=10.0f)), 10, 2.0f);
-    }
-
-	if (!interactive) {
-		createDynamic(physx::PxTransform(physx::PxVec3(0,40,100)), physx::PxSphereGeometry(10), physx::PxVec3(0,-50,-100));
-    }
-}
-	
-void cleanupPhysics()
-{
-	PX_RELEASE(gScene);
-	PX_RELEASE(gDispatcher);
-	PX_RELEASE(gPhysics);
-	//PX_RELEASE(gFoundation);
-}
 
 extern "C" {
-	int AddNumberses(int x, int y) {
-		static const physx::PxU32 frameCount = 100;
-		initPhysics(false);
-
-		for(physx::PxU32 i=0; i<frameCount; i++) {
-			//StepPhysics();
-		}
-
-		cleanupPhysics();
-		
-		return x + y + 1;
-	}
-
 	void RegisterDebugLog(DebugLog debl) {
 		dl = debl;
 	}
@@ -177,7 +128,7 @@ extern "C" {
 		sceneDesc.gravity = *gravity;
 		gDispatcher = physx::PxDefaultCpuDispatcherCreate(0);
 		sceneDesc.cpuDispatcher	= gDispatcher;
-		sceneDesc.filterShader	= physx::PxDefaultSimulationFilterShader;
+		sceneDesc.filterShader	= FilterShader;
 
 		return gPhysics->createScene(sceneDesc);
 	}
@@ -208,6 +159,10 @@ extern "C" {
 
 	physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose) {
 		return gPhysics->createRigidDynamic(*pose);
+	}
+
+	void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3) {
+		shape->setSimulationFilterData(physx::PxFilterData(w0, w1, w2, w3));
 	}
 
 	void AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body) {

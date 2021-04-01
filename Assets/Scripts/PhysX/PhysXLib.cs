@@ -66,6 +66,9 @@ namespace PhysX {
         public static extern IntPtr CreateDynamicRigidBody(IntPtr pose);
 
         [DllImport(dllName)]
+        public static extern IntPtr SetCollisionFilterData(IntPtr shape, UInt32 w0, UInt32 w1, UInt32 w2, UInt32 w3);
+
+        [DllImport(dllName)]
         public static extern IntPtr AttachShapeToRigidBody(IntPtr shape, IntPtr body);
 
         [DllImport(dllName)]

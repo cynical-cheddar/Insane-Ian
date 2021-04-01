@@ -19,6 +19,8 @@ public class PhysXCollider : MonoBehaviour
     protected IntPtr physXMaterial {
         get {
             if (_physXMaterial == IntPtr.Zero) {
+                if (material == null) material = Instantiate(FindObjectOfType<PhysXSceneManager>().defaultMaterial);
+
                 _physXMaterial = PhysXLib.CreateMaterial(material.staticFriction, material.dynamicFriction, material.bounciness);
             }
 
@@ -32,6 +34,7 @@ public class PhysXCollider : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Setup()
     {
+        PhysXLib.SetCollisionFilterData(shape, 1, 1, 0, 0);
         attachedRigidbody = GetComponentInParent<PhysXRigidBody>();
         attachedRigidbody.AddCollider(this);
     }

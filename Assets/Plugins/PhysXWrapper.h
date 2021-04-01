@@ -17,8 +17,6 @@ extern "C" {
 		virtual void reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line);
 	};
 
-    int AddNumberses(int x, int y);
-
     void RegisterDebugLog(DebugLog dl);
 
     void SetupFoundation();
@@ -39,6 +37,8 @@ extern "C" {
     physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot);
 
     physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose);
+
+    void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
 
     void AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body);
 

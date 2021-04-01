@@ -11,6 +11,8 @@ public class PhysXSceneManager : MonoBehaviour
     private List<PhysXRigidBody> rigidBodies = new List<PhysXRigidBody>();
     private List<PhysXRigidBody> preRegisteredRigidBodies = new List<PhysXRigidBody>();
 
+    public PhysicMaterial defaultMaterial;
+
     void Awake() {
         PhysXLib.SetupPhysX();
         DontDestroyOnLoad(gameObject);
@@ -25,7 +27,7 @@ public class PhysXSceneManager : MonoBehaviour
     }
 
     void OnSceneUnloaded(Scene s) {
-        Debug.Log("unloaded");
+        Debug.LogWarning("unloaded     TODO: cleanup physx on unload");
         scene = IntPtr.Zero;
         rigidBodies.Clear();
     }
