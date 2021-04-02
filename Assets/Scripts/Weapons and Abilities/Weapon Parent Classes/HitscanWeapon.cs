@@ -6,18 +6,16 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HitscanWeapon : Weapon
-{
-    public struct RaycastHitDetails
-    {
+public class HitscanWeapon : Weapon {
+    public struct RaycastHitDetails {
         public Vector3 worldHitPoint;
         public Vector3 localHitPoint;
         public Transform hitTransform;
         public bool hasHealth;
         public bool validTarget;
 
-        public RaycastHitDetails(Vector3 worldHit, Vector3 localHit, Transform hitT, bool healthExists, bool valid)
-        {
+
+        public RaycastHitDetails(Vector3 worldHit, Vector3 localHit, Transform hitT, bool healthExists, bool valid) {
             worldHitPoint = worldHit;
             localHitPoint = localHit;
             hitTransform = hitT;
@@ -31,25 +29,28 @@ public class HitscanWeapon : Weapon
     public GameObject dummyProjectile;
     public float dummyProjectileSpeed = 200f;
     public bool muzzleflashChildOfBarrel = false;
-    
-    [Header("Hitscan Settings")]
 
-    
+    [Header("Hitscan Settings")]
     public bool useTracerHitCorrection = true;
     public float hitscanRange = 10000f;
     protected Rigidbody parentRigidbody;
     // we should serialize this bool on change. when it is active and the photon view is not ours and optimisations are enabled, then do fire effects
     protected bool isFiring = false;
-    
+
     [Header(("Hitscan Rapid Fire Optimisation Settings"))]
     public bool useRapidFireOptimisation = false;
     public float stopFireFxLoopThreshold = 0.2f;
-    
+
+    [Header(("Bullet holes"))]
+    public GameObject[] bulletHoles;
+
+
     protected bool isRemotelyFiring = false;
     protected bool lastIsRemotelyFiring = false;
 
     
     private Collider[] colliders;
+
     
     
     
@@ -195,13 +196,14 @@ public class HitscanWeapon : Weapon
             {
                 WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier, raycastTracerDetails.localHitPoint);
                 raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleHealthManager>().TakeDamage(weaponDamageDetails);
+                Instantiate(bulletHoles[0],weaponDamageDetails.localHitPoint,raycastTracerDetails.hitTransform.rotation,raycastTracerDetails.hitTransform.gameObject.transform);
             }
             // do the fire effect on our end
-            
-            
+
+
             // ------------ local firing procedure:
             // if we hit, then fire a ray effect playing hitsound on hit
-            if(raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)FireHitscanRoundEffect(raycastTracerDetails.worldHitPoint);
+            if (raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)FireHitscanRoundEffect(raycastTracerDetails.worldHitPoint);
             // if we miss, then fire a ray effect playing missound on hit
             else if(!raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget) FireHitscanRoundEffectMiss(raycastTracerDetails.worldHitPoint);
             // if valid target is null, then fire a ray effect with no impact
