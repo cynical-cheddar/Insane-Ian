@@ -120,18 +120,18 @@ public class VehicleHealthManager : CollidableHealthManager
             smokeL.Stop();
             smokeM.Stop();
             smokeH.Stop();
-            if (health < 60) {
+            if (health < maxHealth * 0.6) {
                 smokeL.Play();
                 smokeM.Stop();
                 smokeH.Stop();
             }
-            if (health < 40) {
+            if (health < maxHealth * 0.4) {
                 smokeL.Stop();
                 smokeM.Play();
                 smokeH.Stop();
 
             }
-            if (health < 20) {
+            if (health < maxHealth * 0.2) {
                 smokeL.Stop();
                 smokeM.Play();
                 smokeH.Play();
@@ -159,18 +159,18 @@ public class VehicleHealthManager : CollidableHealthManager
             smokeL.Stop();
             smokeM.Stop();
             smokeH.Stop();
-            if (health < 60) {
+            if (health < maxHealth * 0.6) {
                 smokeL.Play();
                 smokeM.Stop();
                 smokeH.Stop();
             }
-            if (health < 40) {
+            if (health < maxHealth * 0.4) {
                 smokeL.Stop();
                 smokeM.Play();
                 smokeH.Stop();
 
             }
-            if (health < 20) {
+            if (health < maxHealth * 0.2) {
                 smokeL.Stop();
                 smokeM.Play();
                 smokeH.Play();
