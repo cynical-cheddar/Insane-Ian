@@ -9,6 +9,10 @@ namespace PhysX {
 
         public float x, y, z, w;
 
+        public PhysXQuat() {
+            
+        }
+
         public PhysXQuat(float x, float y, float z, float w) {
             this.x = x;
             this.y = y;

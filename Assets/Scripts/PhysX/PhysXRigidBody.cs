@@ -5,6 +5,8 @@ using PhysX;
 
 public class PhysXRigidBody : MonoBehaviour
 {
+    private static Dictionary<IntPtr, PhysXRigidBody> rigidBodies = new Dictionary<IntPtr, PhysXRigidBody>();
+
     private bool isSetup = false;
 
     public IntPtr physXDynamicRigidBody { get; private set; }
@@ -46,7 +48,13 @@ public class PhysXRigidBody : MonoBehaviour
 
     public Vector3 centreOfMass = Vector3.zero;
 
+    private List<ICollisionEnterEvent> collisionEnterEvents;
+
     void Awake() {
+        collisionEnterEvents = new List<ICollisionEnterEvent>(GetComponentsInChildren<ICollisionEnterEvent>(true));
+
+        Debug.Log(collisionEnterEvents);
+
         sceneManager = FindObjectOfType<PhysXSceneManager>();
 
         sceneManager.AddActor(this);
@@ -55,6 +63,12 @@ public class PhysXRigidBody : MonoBehaviour
     public void Setup() {
         IntPtr physXTransform = PhysXLib.CreateTransform(new PhysXVec3(transform.position), new PhysXQuat(transform.rotation));
         physXDynamicRigidBody = PhysXLib.CreateDynamicRigidBody(physXTransform);
+
+        PhysXRigidBody.rigidBodies.Add(physXDynamicRigidBody, this);
+
+        PhysXLib.RegisterCollisionEnterCallback(ProcessCollisionEnterEvents, physXDynamicRigidBody);
+        PhysXLib.RegisterCollisionStayCallback(ProcessCollisionStayEvents, physXDynamicRigidBody);
+        PhysXLib.RegisterCollisionExitCallback(ProcessCollisionExitEvents, physXDynamicRigidBody);
 
         PhysXLib.SetRigidBodyFlag(physXDynamicRigidBody, PhysXLib.PhysXRigidBodyFlag.eKINEMATIC, kinematic);
 
@@ -102,7 +116,6 @@ public class PhysXRigidBody : MonoBehaviour
         PhysXLib.AddForce(physXDynamicRigidBody, new PhysXVec3(force), forceModeInt);
     }
 
-    //  TODO
     public void AddForceAtPosition(Vector3 force, Vector3 position, ForceMode forceMode) {
         int forceModeInt = (int)forceMode;
         if (forceMode == ForceMode.Acceleration) forceModeInt = 3;
@@ -110,7 +123,6 @@ public class PhysXRigidBody : MonoBehaviour
         PhysXLib.AddForceAtPosition(physXDynamicRigidBody, new PhysXVec3(force), new PhysXVec3(position), forceModeInt);
     }
 
-    //  TODO
     public void AddTorque(Vector3 force, ForceMode forceMode) {
         int forceModeInt = (int)forceMode;
         if (forceMode == ForceMode.Acceleration) forceModeInt = 3;
@@ -118,9 +130,31 @@ public class PhysXRigidBody : MonoBehaviour
         PhysXLib.AddTorque(physXDynamicRigidBody, new PhysXVec3(force), forceModeInt);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void ProcessCollisionEnterEvents() {
+        foreach (ICollisionEnterEvent collisionEnterEvent in collisionEnterEvents) {
+            collisionEnterEvent.OnCollisionEnter();
+        }
+    }
+
+    private void ProcessCollisionStayEvents() {
+        Debug.Log("therw was an attmp");
+    }
+
+    private void ProcessCollisionExitEvents() {
+        Debug.Log("therq was an apemt");
+    }
+
+    private static void ProcessCollisionEnterEvents(IntPtr physXActor) {
+        rigidBodies[physXActor].ProcessCollisionEnterEvents();
+    }
+
+    private static void ProcessCollisionStayEvents(IntPtr physXActor) {
+        rigidBodies[physXActor].ProcessCollisionStayEvents();
+
+    }
+
+    private static void ProcessCollisionExitEvents(IntPtr physXActor) {
+        rigidBodies[physXActor].ProcessCollisionExitEvents();
+
     }
 }

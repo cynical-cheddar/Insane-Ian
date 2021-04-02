@@ -33,6 +33,12 @@ public class PhysicsToggle : MonoBehaviour
         }
     }
 
+    void OnApplicationQuit() {
+        PlayerLoopSystem loopSystemRoot = PlayerLoop.GetCurrentPlayerLoop();
+        EditPhysics(ref loopSystemRoot, true);
+        PlayerLoop.SetPlayerLoop(loopSystemRoot);
+    }
+
     private bool EditPhysics(ref PlayerLoopSystem loopSystem, bool doPhysics) {
         if (loopSystem.type == typeof(FixedUpdate.PhysicsFixedUpdate)) {
             if (physicsFunction == IntPtr.Zero) physicsFunction = loopSystem.updateFunction;

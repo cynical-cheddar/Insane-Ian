@@ -7,6 +7,7 @@ using UnityEngine;
 namespace PhysX {
     public class PhysXLib {
         private delegate void PhysXDebugLog(IntPtr stringPtr, int length);
+        public delegate void CollisionCallback(IntPtr actor);
 
         public enum PhysXRigidBodyFlag {
             eKINEMATIC = (1<<0),
@@ -30,10 +31,7 @@ namespace PhysX {
         #endif
 
         [DllImport(dllName)]
-        public static extern int AddNumberses(int x, int y);
-
-        [DllImport(dllName)]
-        private static extern int RegisterDebugLog(PhysXDebugLog dl);
+        private static extern void RegisterDebugLog(PhysXDebugLog dl);
 
         [DllImport(dllName)]
         private static extern void SetupFoundation();
@@ -70,6 +68,15 @@ namespace PhysX {
 
         [DllImport(dllName)]
         public static extern IntPtr AttachShapeToRigidBody(IntPtr shape, IntPtr body);
+
+        [DllImport(dllName)]
+        public static extern void RegisterCollisionEnterCallback(CollisionCallback callback, IntPtr actor);
+
+        [DllImport(dllName)]
+        public static extern void RegisterCollisionStayCallback(CollisionCallback callback, IntPtr actor);
+
+        [DllImport(dllName)]
+        public static extern void RegisterCollisionExitCallback(CollisionCallback callback, IntPtr actor);
 
         [DllImport(dllName)]
         public static extern IntPtr SetRigidBodyMassAndInertia(IntPtr body, float density, [In] PhysXVec3 massLocalPose = null);

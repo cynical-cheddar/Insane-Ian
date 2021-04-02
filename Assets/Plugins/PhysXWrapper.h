@@ -5,17 +5,46 @@
 #include <iostream>
 #include <string>
 
+#define CONTACT_BEGIN   (1)
+#define CONTACT_SUSTAIN (1 << 1)
+#define CONTACT_END     (1 << 2)
+
 extern "C" {
     typedef void(*DebugLog)(const char* stringPtr, int length);
+    typedef void(*CollisionCallback)(const physx::PxActor* actor);
 
-	class MyErrorCallback : public physx::PxErrorCallback
-	{
+	class MyErrorCallback : public physx::PxErrorCallback {
 	public:
 		MyErrorCallback();
 		~MyErrorCallback();
 
 		virtual void reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line);
 	};
+
+	class CollisionHandler : public physx::PxSimulationEventCallback {
+	public:
+		CollisionHandler();
+		~CollisionHandler();
+
+        void onConstraintBreak(physx::PxConstraintInfo *constraints, physx::PxU32 count);
+        void onWake(physx::PxActor **actors, physx::PxU32 count);
+        void onSleep(physx::PxActor **actors, physx::PxU32 count);
+        void onContact(const physx::PxContactPairHeader &pairHeader, const physx::PxContactPair *pairs, physx::PxU32 nbPairs);
+        void onTrigger(physx::PxTriggerPair *pairs, physx::PxU32 count);
+        void onAdvance(const physx::PxRigidBody *const *bodyBuffer, const physx::PxTransform *poseBuffer, const physx::PxU32 count);
+	};
+
+    class ActorUserData {
+    public:
+        ActorUserData();
+        ~ActorUserData();
+
+        CollisionCallback onCollisionEnterCallback;
+        CollisionCallback onCollisionStayCallback;
+        CollisionCallback onCollisionExitCallback;
+
+        int q = 0;
+    };
 
     void RegisterDebugLog(DebugLog dl);
 
@@ -41,6 +70,10 @@ extern "C" {
     void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
 
     void AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body);
+
+    void RegisterCollisionEnterCallback(CollisionCallback collisionEnterCallback, physx::PxActor* actor);
+    void RegisterCollisionStayCallback(CollisionCallback collisionStayCallback, physx::PxActor* actor);
+    void RegisterCollisionExitCallback(CollisionCallback collisionExitCallback, physx::PxActor* actor);
 
     void SetRigidBodyMassAndInertia(physx::PxRigidBody* body, float density, const physx::PxVec3* massLocalPose = NULL);
     void SetRigidBodyDamping(physx::PxRigidBody* body, float linear, float angular);

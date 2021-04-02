@@ -88,6 +88,104 @@ void MyErrorCallback::reportError(physx::PxErrorCode::Enum e, const char* messag
 
 MyErrorCallback gErrorCallback;
 
+CollisionHandler::CollisionHandler() {
+
+}
+
+CollisionHandler::~CollisionHandler() {
+
+}
+
+void CollisionHandler::onConstraintBreak(physx::PxConstraintInfo *constraints, physx::PxU32 count) {
+
+}
+
+void CollisionHandler::onWake(physx::PxActor **actors, physx::PxU32 count) {
+
+}
+
+void CollisionHandler::onSleep(physx::PxActor **actors, physx::PxU32 count) {
+
+}
+
+void CollisionHandler::onContact(const physx::PxContactPairHeader &pairHeader, const physx::PxContactPair *pairs, physx::PxU32 nbPairs) {
+	bool fireBeginA = false;
+	bool fireSustainA = false;
+	bool fireEndA = false;
+
+	bool fireBeginB = false;
+	bool fireSustainB = false;
+	bool fireEndB = false;
+
+	for (int i = 0; i < nbPairs; i++) {
+		physx::PxU32 contactTriggerFlagsA = 0;
+		physx::PxU32 contactTriggerFlagsB = 0;
+
+		if (!(pairs[i].flags & physx::PxContactPairFlag::eREMOVED_SHAPE_0)) contactTriggerFlagsA = pairs[i].shapes[0]->getSimulationFilterData().word2;
+		if (!(pairs[i].flags & physx::PxContactPairFlag::eREMOVED_SHAPE_1)) contactTriggerFlagsB = pairs[i].shapes[1]->getSimulationFilterData().word2;
+
+		if (pairs[i].flags & physx::PxContactPairFlag::eACTOR_PAIR_HAS_FIRST_TOUCH) {
+			if (contactTriggerFlagsA & CONTACT_BEGIN) fireBeginA = true;
+			if (contactTriggerFlagsB & CONTACT_BEGIN) fireBeginB = true;
+		}
+
+		if (contactTriggerFlagsA & CONTACT_SUSTAIN) fireSustainA = true;
+		if (contactTriggerFlagsB & CONTACT_SUSTAIN) fireSustainB = true;
+
+		if (pairs[i].flags & physx::PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH) {
+			if (contactTriggerFlagsA & CONTACT_END) fireEndA = true;
+			if (contactTriggerFlagsB & CONTACT_END) fireEndB = true;
+		}
+	}
+
+	ActorUserData* userDataA = (ActorUserData *)(pairHeader.actors[0]->userData);
+	ActorUserData* userDataB = (ActorUserData *)(pairHeader.actors[1]->userData);
+
+	if (fireBeginA) {
+		debugLog(std::to_string(userDataA->q));
+		userDataA->onCollisionEnterCallback(pairHeader.actors[0]);
+	}
+	if (fireSustainA) {
+		userDataA->q++;
+		userDataA->onCollisionStayCallback(pairHeader.actors[0]);
+	}
+	if (fireEndA) {
+		debugLog(std::to_string(userDataA->q));
+		userDataA->onCollisionExitCallback(pairHeader.actors[0]);
+	}
+
+	if (fireBeginB) {
+		debugLog(std::to_string(userDataB->q));
+		userDataB->onCollisionEnterCallback(pairHeader.actors[1]);
+	}
+	if (fireSustainB) {
+		userDataB->q++;
+		userDataB->onCollisionStayCallback(pairHeader.actors[1]);
+	}
+	if (fireEndB) {
+		debugLog(std::to_string(userDataB->q));
+		userDataB->onCollisionExitCallback(pairHeader.actors[1]);
+	}
+}
+
+void CollisionHandler::onTrigger(physx::PxTriggerPair *pairs, physx::PxU32 count) {
+
+}
+
+void CollisionHandler::onAdvance(const physx::PxRigidBody *const *bodyBuffer, const physx::PxTransform *poseBuffer, const physx::PxU32 count) {
+
+}
+
+ActorUserData::ActorUserData() {
+
+}
+
+ActorUserData::~ActorUserData() {
+
+}
+
+CollisionHandler collisionHandler;
+
 physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, physx::PxFilterData dataA,
 								  physx::PxFilterObjectAttributes attributesB, physx::PxFilterData dataB,
 								  physx::PxPairFlags& pairFlags, const void* filterShaderData, physx::PxU32 shaderDataSize) {
@@ -97,9 +195,20 @@ physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, p
 		return physx::PxFilterFlag::eDEFAULT;
 	}
 
-
 	if ((dataA.word0 & dataB.word1) && (dataB.word0 & dataA.word1)) {
 		pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+	}
+
+	if ((dataA.word2 & CONTACT_BEGIN) || (dataB.word2 & CONTACT_BEGIN)) {
+		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+	}
+
+	if ((dataA.word2 & CONTACT_SUSTAIN) || (dataB.word2 & CONTACT_SUSTAIN)) {
+		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
+	}
+
+	if ((dataA.word2 & CONTACT_END) || (dataB.word2 & CONTACT_END)) {
+		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
 	}
 
 	return physx::PxFilterFlag::eDEFAULT;
@@ -129,6 +238,7 @@ extern "C" {
 		gDispatcher = physx::PxDefaultCpuDispatcherCreate(0);
 		sceneDesc.cpuDispatcher	= gDispatcher;
 		sceneDesc.filterShader	= FilterShader;
+		sceneDesc.simulationEventCallback = &collisionHandler;
 
 		return gPhysics->createScene(sceneDesc);
 	}
@@ -158,7 +268,9 @@ extern "C" {
 	}
 
 	physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose) {
-		return gPhysics->createRigidDynamic(*pose);
+		physx::PxRigidDynamic* actor = gPhysics->createRigidDynamic(*pose);
+		actor->userData = (void *)(new ActorUserData());
+		return actor;
 	}
 
 	void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3) {
@@ -167,6 +279,21 @@ extern "C" {
 
 	void AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body) {
 		body->attachShape(*shape);
+	}
+
+    void RegisterCollisionEnterCallback(CollisionCallback collisionEnterCallback, physx::PxActor* actor) {
+		debugLog("a");
+		((ActorUserData *)(actor->userData))->onCollisionEnterCallback = collisionEnterCallback;
+	}
+
+    void RegisterCollisionStayCallback(CollisionCallback collisionStayCallback, physx::PxActor* actor) {
+		debugLog("b");
+		((ActorUserData *)(actor->userData))->onCollisionStayCallback = collisionStayCallback;
+	}
+
+    void RegisterCollisionExitCallback(CollisionCallback collisionExitCallback, physx::PxActor* actor) {
+		debugLog("c");
+		((ActorUserData *)(actor->userData))->onCollisionExitCallback = collisionExitCallback;
 	}
 
 	void SetRigidBodyMassAndInertia(physx::PxRigidBody* body, float density, const physx::PxVec3* massLocalPose) {

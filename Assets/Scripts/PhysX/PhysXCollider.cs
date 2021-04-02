@@ -31,10 +31,14 @@ public class PhysXCollider : MonoBehaviour
     [HideInInspector]
     public IntPtr shape = IntPtr.Zero;
 
+    public bool hasOnCollisionEnterEvent = false;
+
     // Start is called before the first frame update
     public virtual void Setup()
     {
-        PhysXLib.SetCollisionFilterData(shape, 1, 1, 0, 0);
+        UInt32 collisionEventFlags = 0;
+        if (hasOnCollisionEnterEvent) collisionEventFlags = 7;
+        PhysXLib.SetCollisionFilterData(shape, 1, 1, collisionEventFlags, 0);
         attachedRigidbody = GetComponentInParent<PhysXRigidBody>();
         attachedRigidbody.AddCollider(this);
     }

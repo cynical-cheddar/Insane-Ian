@@ -9,6 +9,10 @@ namespace PhysX {
 
         public float x, y, z;
 
+        public PhysXVec3() {
+            
+        }
+
         public PhysXVec3(float x, float y, float z) {
             this.x = x;
             this.y = y;
