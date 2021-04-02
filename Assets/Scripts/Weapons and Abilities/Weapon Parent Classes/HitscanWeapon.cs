@@ -196,10 +196,10 @@ public class HitscanWeapon : Weapon {
             {
                 WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier, raycastTracerDetails.localHitPoint);
                 raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleHealthManager>().TakeDamage(weaponDamageDetails);
-                var bh = Instantiate(bulletHoles[0],weaponDamageDetails.localHitPoint + raycastTracerDetails.hitTransform.gameObject.transform.position, raycastTracerDetails.hitTransform.rotation,raycastTracerDetails.hitTransform.gameObject.transform);
-                bh.transform.rotation = raycastTracerDetails.hitTransform.rotation;
-                Debug.Log(raycastTracerDetails.hitTransform.rotation);
-                Debug.Log(bh.transform.rotation);
+                //var bh = Instantiate(bulletHoles[0],weaponDamageDetails.localHitPoint + raycastTracerDetails.hitTransform.gameObject.transform.position, raycastTracerDetails.hitTransform.rotation,raycastTracerDetails.hitTransform.gameObject.transform);
+                //bh.transform.rotation.SetEulerAngles(raycastTracerDetails.hitTransform.rotation.eulerAngles);
+                //Debug.Log(raycastTracerDetails.hitTransform.rotation.eulerAngles) ;
+                //Debug.Log(bh.transform.rotation.eulerAngles);
 
             }
             // do the fire effect on our end
