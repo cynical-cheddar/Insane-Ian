@@ -117,25 +117,7 @@ public class VehicleHealthManager : CollidableHealthManager
         if (health > 0) {
             health -= amount;
             if (health > maxHealth) health = maxHealth;
-            smokeL.Stop();
-            smokeM.Stop();
-            smokeH.Stop();
-            if (health < maxHealth * 0.6) {
-                smokeL.Play();
-                smokeM.Stop();
-                smokeH.Stop();
-            }
-            if (health < maxHealth * 0.4) {
-                smokeL.Stop();
-                smokeM.Play();
-                smokeH.Stop();
-
-            }
-            if (health < maxHealth * 0.2) {
-                smokeL.Stop();
-                smokeM.Play();
-                smokeH.Play();
-            }
+            SetSmoke();
             if (health <= 0 && !isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
@@ -156,25 +138,7 @@ public class VehicleHealthManager : CollidableHealthManager
         if (health > 0) {
             health -= amount;
             if (health > maxHealth) health = maxHealth;
-            smokeL.Stop();
-            smokeM.Stop();
-            smokeH.Stop();
-            if (health < maxHealth * 0.6) {
-                smokeL.Play();
-                smokeM.Stop();
-                smokeH.Stop();
-            }
-            if (health < maxHealth * 0.4) {
-                smokeL.Stop();
-                smokeM.Play();
-                smokeH.Stop();
-
-            }
-            if (health < maxHealth * 0.2) {
-                smokeL.Stop();
-                smokeM.Play();
-                smokeH.Play();
-            }
+            SetSmoke();
             if (health <= 0&&!isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
@@ -224,6 +188,29 @@ public class VehicleHealthManager : CollidableHealthManager
         {
             GameObject temporaryDeathExplosionInstance = Instantiate(temporaryDeathExplosion, transform.position, transform.rotation);
             if(childExplosion) temporaryDeathExplosionInstance.transform.SetParent(transform);
+        }
+    }
+
+    // Helper function just to avoid repeating code. Sets smoke to correct level
+    private void SetSmoke() {
+        smokeL.Stop();
+        smokeM.Stop();
+        smokeH.Stop();
+        if (health < maxHealth * 0.6) {
+            smokeL.Play();
+            smokeM.Stop();
+            smokeH.Stop();
+        }
+        if (health < maxHealth * 0.4) {
+            smokeL.Stop();
+            smokeM.Play();
+            smokeH.Stop();
+
+        }
+        if (health < maxHealth * 0.2) {
+            smokeL.Stop();
+            smokeM.Play();
+            smokeH.Play();
         }
     }
 
