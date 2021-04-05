@@ -10,17 +10,20 @@ public class HitscanWeapon : Weapon {
     public struct RaycastHitDetails {
         public Vector3 worldHitPoint;
         public Vector3 localHitPoint;
+        public Vector3 normalAngle;
         public Transform hitTransform;
         public bool hasHealth;
         public bool validTarget;
+        
 
 
-        public RaycastHitDetails(Vector3 worldHit, Vector3 localHit, Transform hitT, bool healthExists, bool valid) {
+        public RaycastHitDetails(Vector3 worldHit, Vector3 localHit, Vector3 normal, Transform hitT, bool healthExists, bool valid) {
             worldHitPoint = worldHit;
             localHitPoint = localHit;
             hitTransform = hitT;
             hasHealth = healthExists;
             validTarget = valid;
+            normalAngle = normal;
         }
     }
 
@@ -196,10 +199,11 @@ public class HitscanWeapon : Weapon {
             {
                 WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier, raycastTracerDetails.localHitPoint);
                 raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleHealthManager>().TakeDamage(weaponDamageDetails);
-                //var bh = Instantiate(bulletHoles[0],weaponDamageDetails.localHitPoint + raycastTracerDetails.hitTransform.gameObject.transform.position, raycastTracerDetails.hitTransform.rotation,raycastTracerDetails.hitTransform.gameObject.transform);
+                var bh = Instantiate(bulletHoles[0],raycastTracerDetails.worldHitPoint, Quaternion.Euler(raycastTracerDetails.normalAngle * 360));
                 //bh.transform.rotation.SetEulerAngles(raycastTracerDetails.hitTransform.rotation.eulerAngles);
-                //Debug.Log(raycastTracerDetails.hitTransform.rotation.eulerAngles) ;
-                //Debug.Log(bh.transform.rotation.eulerAngles);
+                bh.transform.SetParent(raycastTracerDetails.hitTransform.gameObject.transform, true);
+                Debug.Log("aaaaaaaaaaa" + raycastTracerDetails.normalAngle * 360) ;
+                Debug.Log(bh.transform.rotation.eulerAngles);
 
             }
             // do the fire effect on our end
@@ -312,6 +316,7 @@ public class HitscanWeapon : Weapon {
         InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
         // instantiate tracer (if exists)
         FireDummyProjectile(targetPoint);
+        // instantiate bullet holes
     }
     [PunRPC]
     protected void FireHitscanRoundEffectCorrected(Vector3 localTargetPoint, int hitTeamId)
@@ -367,7 +372,7 @@ public class HitscanWeapon : Weapon {
 
     protected RaycastHitDetails FindClosestRaycastHitDetails(Ray ray, Vector3 targetPoint)
     {
-        RaycastHitDetails raycastHitDetails = new RaycastHitDetails(targetPoint, Vector3.zero, null, false, false);;
+        RaycastHitDetails raycastHitDetails = new RaycastHitDetails(targetPoint, Vector3.zero, Vector3.zero, null, false, false);;
         
         RaycastHit[] hits = Physics.RaycastAll(ray);
         
@@ -393,11 +398,11 @@ public class HitscanWeapon : Weapon {
                 // the health script exists
                 if (hit.transform.root.GetComponent<VehicleHealthManager>() != null)
                 {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,true,true );
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, hit.normal,closestHit,true,true );
                 }
                 else
                 {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,false,true );
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, hit.normal, closestHit,false,true );
                 }
 
             }
