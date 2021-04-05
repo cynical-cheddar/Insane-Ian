@@ -19,7 +19,7 @@ public class CollidableHealthManager : HealthManager
         public float collisionResistance;
     }
 
-
+    public float defaultCollisionResistance = 1;
     public GameObject audioSourcePrefab;
     public float crashSoundsSmallDamageThreshold = 5f;
     public float crashSoundsLargeDamageThreshold = 40f;
@@ -32,7 +32,12 @@ public class CollidableHealthManager : HealthManager
     public float environmentCollisionResistance = 1;
 
     public List<CollisionArea> collisionAreas;
-    
+
+    protected new void Start(){
+        baseCollisionResistance = deathForce / maxHealth;
+        base.Start();
+    }
+
     protected void OnCollisionEnter(Collision collision) {
         if (PhotonNetwork.IsMasterClient) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
@@ -51,7 +56,7 @@ public class CollidableHealthManager : HealthManager
 
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-            Debug.Log(damage);
+            //Debug.Log(damage);
 
             // instantiate damage sound over network
             if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
@@ -68,7 +73,7 @@ public class CollidableHealthManager : HealthManager
     }
 
     protected float CalculateCollisionDamage(Vector3 collisionForce, Vector3 collisionDirection, bool hitVehicle) {
-        float collisionResistance = 1;
+        float collisionResistance = defaultCollisionResistance;
 
         foreach (CollisionArea collisionArea in collisionAreas) {
             Vector3 verticalComponent = Vector3.ProjectOnPlane(collisionDirection, collisionArea.rotation * Vector3.right).normalized;
@@ -92,7 +97,7 @@ public class CollidableHealthManager : HealthManager
 
 
     [PunRPC]
-    void PlayDamageSoundNetwork(float damage)
+    protected void PlayDamageSoundNetwork(float damage)
     {
         GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
         AudioSource a = crashSound.GetComponent<AudioSource>();

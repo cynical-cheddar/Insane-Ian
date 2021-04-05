@@ -10,8 +10,10 @@ using Photon.Realtime;
 
 public class VehicleHealthManager : CollidableHealthManager
 {
+    public ParticleSystem smokeL;
+    public ParticleSystem smokeM;
+    public ParticleSystem smokeH;
 
-    
     // car stuff
     protected Weapon.WeaponDamageDetails _rammingDetails;
 
@@ -50,7 +52,6 @@ public class VehicleHealthManager : CollidableHealthManager
             return _rammingDetails;
         }
     }
-    public float defaultCollisionResistance = 1;
     
     public void SetupVehicleManager() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -64,7 +65,7 @@ public class VehicleHealthManager : CollidableHealthManager
         myPhotonView = GetComponent<PhotonView>();
         npv = GetComponent<NetworkPlayerVehicle>();
 
-        baseCollisionResistance = deathForce / maxHealth;
+        
 
         _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
@@ -115,7 +116,9 @@ public class VehicleHealthManager : CollidableHealthManager
         float amount = weaponDamageDetails.damage;
         if (health > 0) {
             health -= amount;
-            if (health <= 0&&!isDead && myPhotonView.IsMine)
+            if (health > maxHealth) health = maxHealth;
+            SetSmoke();
+            if (health <= 0 && !isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
                 isDead = true;
@@ -123,7 +126,7 @@ public class VehicleHealthManager : CollidableHealthManager
                 // do death effects for all other players
                 
                 // TODO- update to take damage type parameter
-                myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+                myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All); 
                 
             }
         }
@@ -134,6 +137,8 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         if (health > 0) {
             health -= amount;
+            if (health > maxHealth) health = maxHealth;
+            SetSmoke();
             if (health <= 0&&!isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
@@ -183,6 +188,29 @@ public class VehicleHealthManager : CollidableHealthManager
         {
             GameObject temporaryDeathExplosionInstance = Instantiate(temporaryDeathExplosion, transform.position, transform.rotation);
             if(childExplosion) temporaryDeathExplosionInstance.transform.SetParent(transform);
+        }
+    }
+
+    // Helper function just to avoid repeating code. Sets smoke to correct level
+    private void SetSmoke() {
+        smokeL.Stop();
+        smokeM.Stop();
+        smokeH.Stop();
+        if (health < maxHealth * 0.6) {
+            smokeL.Play();
+            smokeM.Stop();
+            smokeH.Stop();
+        }
+        if (health < maxHealth * 0.4) {
+            smokeL.Stop();
+            smokeM.Play();
+            smokeH.Stop();
+
+        }
+        if (health < maxHealth * 0.2) {
+            smokeL.Stop();
+            smokeM.Play();
+            smokeH.Play();
         }
     }
 
@@ -244,7 +272,9 @@ public class VehicleHealthManager : CollidableHealthManager
         }
         y = 0.9f;
         z = Random.Range(0, 2f);
-        
+        smokeM.Play();
+        smokeH.Play();
+
         Vector3 explodePos = new Vector3(x, y, z);
         Vector3 newCom = new Vector3(0, 1.3f, 0);
         rb.centerOfMass = newCom;
@@ -275,6 +305,12 @@ public class VehicleHealthManager : CollidableHealthManager
         
     }
 
+    // [PunRPC]
+    // protected new void PlayDamageSoundNetwork(float damage)
+    // {
+    //     base.PlayDamageSoundNetwork(damage);
+    // }
+
     [PunRPC]
     void SetGunnerHealth_RPC(float value) {
         health = value;
@@ -296,6 +332,10 @@ public class VehicleHealthManager : CollidableHealthManager
 
         DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
         driverAbilityManager.Reset();
+
+        smokeL.Stop();
+        smokeM.Stop();
+        smokeH.Stop();
 
         rb.drag = defaultDrag;
         rb.angularDrag = defaultAngularDrag;

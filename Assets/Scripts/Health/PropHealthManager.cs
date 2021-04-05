@@ -9,7 +9,7 @@ public class PropHealthManager : CollidableHealthManager
     public GameObject wreckPrefab;
     
     protected override void Die() {
-        Debug.Log("Dead prop");
+        //Debug.Log("Dead prop");
         health = 0;
         isDead = true;
         myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
@@ -20,7 +20,7 @@ public class PropHealthManager : CollidableHealthManager
     protected override void PlayDeathEffects_RPC()
     {
         if(wreckPrefab!=null){
-            Instantiate(wreckPrefab, transform.position, transform.rotation);
+            Instantiate(wreckPrefab, transform.position, transform.rotation);  
         }
         PhotonNetwork.Destroy(gameObject);
     }

@@ -58,6 +58,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         //SynchroniseSchemaBeforeSpawn();
+        // change back
         Invoke(nameof(SpawnPlayers), 2f);
         timer = FindObjectOfType<TimerBehaviour>();
         GlobalsEntry globals = gamestateTracker.globals;

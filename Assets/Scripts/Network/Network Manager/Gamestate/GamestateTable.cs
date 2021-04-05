@@ -27,10 +27,13 @@ namespace Gamestate {
 
         private GamestateTracker.Table _tableType;
 
-        //public delegate void TableCallback(GamestateTable<T> table);
+        public delegate void CreationListener(T newEntry);
+        public delegate void DeletionListener(int entryId);
+        private List<CreationListener> creationListeners;
+        private List<DeletionListener> deletionListeners;
+
         public delegate bool TableSearcher(T entry);
         [SerializeField] private List<T> entries;
-        //private List<TableCallback> tableCallbacks;
         //private List<List<EntryCallback>> entryCallbacks;
         private IGamestateCommitHandler gamestateTracker;
 
@@ -143,13 +146,14 @@ namespace Gamestate {
 
             lock (entries) {
                 foreach (T entry in entries) {
+                    entry.Lock();
                     if (searcher(entry)) {
                         foundEntry = entry;
                         break;
                     }
+                    else entry.Release();
                 }
             }
-            foundEntry.Lock();
 
             return foundEntry;
         }
@@ -179,6 +183,9 @@ namespace Gamestate {
                     for (int i = 0; i < entries.Count; i++) {
                         if (entries[i].id == packet.id) {
                             entries.RemoveAt(i);
+                            foreach (DeletionListener deletionListener in deletionListeners) {
+                                deletionListener(i);
+                            }
                             break;
                         }
                     }
@@ -199,7 +206,14 @@ namespace Gamestate {
             }
             
             if (foundEntry != null) foundEntry.Apply(packet);
-            if (created) foundEntry.Release();
+            if (created) {
+                foreach (CreationListener creationListener in creationListeners) {
+                    foundEntry.Lock();
+                    creationListener(foundEntry);
+                }
+
+                foundEntry.Release();
+            }
         }
 
         internal bool AttemptApply(GamestatePacket packet) {
@@ -238,6 +252,14 @@ namespace Gamestate {
             }
             if (created) foundEntry.Release();
             return succeeded;
+        }
+
+        public void AddCreationListener(CreationListener creationListener) {
+            creationListeners.Add(creationListener);
+        }
+
+        public void AddDeletionListener(DeletionListener deletionListener) {
+            deletionListeners.Add(deletionListener);
         }
 
         void IGamestateCommitHandler.CommitPacket(GamestatePacket packet) {

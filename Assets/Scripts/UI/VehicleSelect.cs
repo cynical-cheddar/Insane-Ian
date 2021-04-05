@@ -87,7 +87,7 @@ public class VehicleSelect : MonoBehaviour
             //Debug.Log("AAA");
             teamDetails.vehiclePrefabName = "VehiclePrefabs/" + selectedVehicle.name;
             if (PhotonNetwork.IsMasterClient) gamestateTracker.UpdateTeamWithNewRecord(me.teamId, teamDetails);
-            else gamestateTracker.gameObject.GetComponent<PhotonView>().RPC("UpdateTeamWithNewRecord", RpcTarget.All, me.teamId, JsonUtility.ToJson(teamDetails));
+            else gamestateTracker.gameObject.GetComponent<PhotonView>().RPC(nameof(UpdateTeamWithNewRecord), RpcTarget.All, me.teamId, JsonUtility.ToJson(teamDetails));
         }
 
         if (teamDetails.vehiclePrefabName != "VehiclePrefabs/" + selectedVehicle.name) {

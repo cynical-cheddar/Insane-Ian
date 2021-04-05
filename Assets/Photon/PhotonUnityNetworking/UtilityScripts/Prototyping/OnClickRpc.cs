@@ -34,7 +34,7 @@ namespace Photon.Pun.UtilityScripts
                 return;
             }
             
-            this.photonView.RPC("ClickRpc", this.Target);
+            this.photonView.RPC(nameof(ClickRpc), this.Target);
         }
 
 
