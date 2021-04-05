@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #define CONTACT_BEGIN   (1)
 #define CONTACT_SUSTAIN (1 << 1)
@@ -11,7 +12,7 @@
 
 extern "C" {
     typedef void(*DebugLog)(const char* stringPtr, int length);
-    typedef void(*CollisionCallback)(const physx::PxActor* actor);
+    typedef void(*CollisionCallback)(const physx::PxContactPairHeader* pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs, const physx::PxActor* self, bool isEnter, bool isStay, bool isExit);
 
 	class MyErrorCallback : public physx::PxErrorCallback {
 	public:
@@ -38,12 +39,6 @@ extern "C" {
     public:
         ActorUserData();
         ~ActorUserData();
-
-        CollisionCallback onCollisionEnterCallback;
-        CollisionCallback onCollisionStayCallback;
-        CollisionCallback onCollisionExitCallback;
-
-        int q = 0;
     };
 
     void RegisterDebugLog(DebugLog dl);
@@ -71,9 +66,7 @@ extern "C" {
 
     void AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body);
 
-    void RegisterCollisionEnterCallback(CollisionCallback collisionEnterCallback, physx::PxActor* actor);
-    void RegisterCollisionStayCallback(CollisionCallback collisionStayCallback, physx::PxActor* actor);
-    void RegisterCollisionExitCallback(CollisionCallback collisionExitCallback, physx::PxActor* actor);
+    void RegisterCollisionCallback(CollisionCallback collisionEnterCallback);
 
     void SetRigidBodyMassAndInertia(physx::PxRigidBody* body, float density, const physx::PxVec3* massLocalPose = NULL);
     void SetRigidBodyDamping(physx::PxRigidBody* body, float linear, float angular);
@@ -93,4 +86,13 @@ extern "C" {
 	void AddForce(physx::PxRigidBody* rigidBody, physx::PxVec3* force, physx::PxForceMode::Enum forceMode);
 	void AddForceAtPosition(physx::PxRigidBody* rigidBody, physx::PxVec3* force, physx::PxVec3* position, physx::PxForceMode::Enum forceMode);
 	void AddTorque(physx::PxRigidBody* rigidBody, physx::PxVec3* torque, physx::PxForceMode::Enum forceMode);
+
+    physx::PxActor* GetPairHeaderActor(physx::PxContactPairHeader* header, int actorNum);
+    physx::PxShape* GetContactPairShape(physx::PxContactPair* pairs, int i, int actor);
+    physx::PxContactStreamIterator* GetContactPointIterator(physx::PxContactPair* pairs, int i);
+    bool NextContactPatch(physx::PxContactStreamIterator* iter);
+    bool NextContactPoint(physx::PxContactStreamIterator* iter);
+    void GetContactPointData(physx::PxContactStreamIterator* iter, int j, physx::PxContactPair* pairs, int i, physx::PxVec3* point, physx::PxVec3* normal, physx::PxVec3* impulse);
+    void DestroyContactPointIterator(physx::PxContactStreamIterator* iter);
+
 }

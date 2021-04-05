@@ -18,12 +18,25 @@ physx::PxDefaultAllocator	  gAllocator;
 
 physx::PxReal stackZ = 10.0f;
 
+physx::PxContactStreamIterator iter(NULL, NULL, NULL, 0, 0);
+
+CollisionCallback collisionCallback = NULL;
+
 void debugLog(const std::string str) {
 	if (dl != nullptr) {
 		const char* stringPtr = str.c_str();
 		int length = strlen(stringPtr);
 
 		dl(stringPtr, length);
+	}
+}
+
+void collision(const physx::PxContactPairHeader* pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs, const physx::PxActor* self, bool isEnter, bool isStay, bool isExit) {
+	if (collisionCallback != NULL) {
+		collisionCallback(pairHeader, pairs, nbPairs, self, isEnter, isStay, isExit);
+	}
+	else {
+		debugLog("collision enter callback not set");
 	}
 }
 
@@ -138,33 +151,12 @@ void CollisionHandler::onContact(const physx::PxContactPairHeader &pairHeader, c
 		}
 	}
 
-	ActorUserData* userDataA = (ActorUserData *)(pairHeader.actors[0]->userData);
-	ActorUserData* userDataB = (ActorUserData *)(pairHeader.actors[1]->userData);
-
-	if (fireBeginA) {
-		debugLog(std::to_string(userDataA->q));
-		userDataA->onCollisionEnterCallback(pairHeader.actors[0]);
-	}
-	if (fireSustainA) {
-		userDataA->q++;
-		userDataA->onCollisionStayCallback(pairHeader.actors[0]);
-	}
-	if (fireEndA) {
-		debugLog(std::to_string(userDataA->q));
-		userDataA->onCollisionExitCallback(pairHeader.actors[0]);
+	if (fireBeginA || fireSustainA || fireEndA) {
+		collision(&pairHeader, pairs, nbPairs, pairHeader.actors[0], fireBeginA, fireSustainA, fireEndA);
 	}
 
-	if (fireBeginB) {
-		debugLog(std::to_string(userDataB->q));
-		userDataB->onCollisionEnterCallback(pairHeader.actors[1]);
-	}
-	if (fireSustainB) {
-		userDataB->q++;
-		userDataB->onCollisionStayCallback(pairHeader.actors[1]);
-	}
-	if (fireEndB) {
-		debugLog(std::to_string(userDataB->q));
-		userDataB->onCollisionExitCallback(pairHeader.actors[1]);
+	if (fireBeginB || fireSustainB || fireEndB) {
+		collision(&pairHeader, pairs, nbPairs, pairHeader.actors[1], fireBeginB, fireSustainB, fireEndB);
 	}
 }
 
@@ -197,6 +189,7 @@ physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, p
 
 	if ((dataA.word0 & dataB.word1) && (dataB.word0 & dataA.word1)) {
 		pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+		pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 	}
 
 	if ((dataA.word2 & CONTACT_BEGIN) || (dataB.word2 & CONTACT_BEGIN)) {
@@ -281,19 +274,8 @@ extern "C" {
 		body->attachShape(*shape);
 	}
 
-    void RegisterCollisionEnterCallback(CollisionCallback collisionEnterCallback, physx::PxActor* actor) {
-		debugLog("a");
-		((ActorUserData *)(actor->userData))->onCollisionEnterCallback = collisionEnterCallback;
-	}
-
-    void RegisterCollisionStayCallback(CollisionCallback collisionStayCallback, physx::PxActor* actor) {
-		debugLog("b");
-		((ActorUserData *)(actor->userData))->onCollisionStayCallback = collisionStayCallback;
-	}
-
-    void RegisterCollisionExitCallback(CollisionCallback collisionExitCallback, physx::PxActor* actor) {
-		debugLog("c");
-		((ActorUserData *)(actor->userData))->onCollisionExitCallback = collisionExitCallback;
+    void RegisterCollisionCallback(CollisionCallback collisionEnterCallback) {
+		collisionCallback = collisionEnterCallback;
 	}
 
 	void SetRigidBodyMassAndInertia(physx::PxRigidBody* body, float density, const physx::PxVec3* massLocalPose) {
@@ -344,6 +326,47 @@ extern "C" {
 
 	void AddTorque(physx::PxRigidBody* rigidBody, physx::PxVec3* torque, physx::PxForceMode::Enum forceMode) {
 		rigidBody->addTorque(*torque, forceMode);
+	}
+
+	physx::PxActor* GetPairHeaderActor(physx::PxContactPairHeader* header, int actorNum) {
+		return header->actors[actorNum];
+	}
+
+	physx::PxShape* GetContactPairShape(physx::PxContactPair* pairs, int i, int actor) {
+		return pairs[i].shapes[actor];
+	}
+
+	physx::PxContactStreamIterator* GetContactPointIterator(physx::PxContactPair* pairs, int i) {
+		iter = physx::PxContactStreamIterator(pairs[i].contactPatches, pairs[i].contactPoints, pairs[i].getInternalFaceIndices(), pairs[i].patchCount, pairs[i].contactCount);
+
+		return &iter;
+	}
+
+	bool NextContactPatch(physx::PxContactStreamIterator* iter) {
+		if (iter->hasNextPatch()) {
+			iter->nextPatch();
+			return true;
+		}
+
+		return false;
+	}
+
+	bool NextContactPoint(physx::PxContactStreamIterator* iter) {
+		if (iter->hasNextContact()) {
+			iter->nextContact();
+			return true;
+		}
+
+		return false;
+	}
+
+	void GetContactPointData(physx::PxContactStreamIterator* iter, int j, physx::PxContactPair* pairs, int i, physx::PxVec3* point, physx::PxVec3* normal, physx::PxVec3* impulse) {
+		*point = iter->getContactPoint();
+		*normal = iter->getContactNormal();
+
+		if (pairs[i].flags & physx::PxContactPairFlag::eINTERNAL_HAS_IMPULSES) {
+			*impulse = *normal * pairs[i].contactImpulses[j];
+		}
 	}
 }
 

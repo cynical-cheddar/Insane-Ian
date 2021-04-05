@@ -7,7 +7,7 @@ using UnityEngine;
 namespace PhysX {
     public class PhysXLib {
         private delegate void PhysXDebugLog(IntPtr stringPtr, int length);
-        public delegate void CollisionCallback(IntPtr actor);
+        public delegate void CollisionCallback(IntPtr pairHeader, IntPtr pairs, int pairCount, IntPtr self, bool isEnter, bool isStay, bool isExit);
 
         public enum PhysXRigidBodyFlag {
             eKINEMATIC = (1<<0),
@@ -70,13 +70,7 @@ namespace PhysX {
         public static extern IntPtr AttachShapeToRigidBody(IntPtr shape, IntPtr body);
 
         [DllImport(dllName)]
-        public static extern void RegisterCollisionEnterCallback(CollisionCallback callback, IntPtr actor);
-
-        [DllImport(dllName)]
-        public static extern void RegisterCollisionStayCallback(CollisionCallback callback, IntPtr actor);
-
-        [DllImport(dllName)]
-        public static extern void RegisterCollisionExitCallback(CollisionCallback callback, IntPtr actor);
+        public static extern void RegisterCollisionCallback(CollisionCallback callback);
 
         [DllImport(dllName)]
         public static extern IntPtr SetRigidBodyMassAndInertia(IntPtr body, float density, [In] PhysXVec3 massLocalPose = null);
@@ -113,6 +107,27 @@ namespace PhysX {
 
         [DllImport(dllName)]
         public static extern void AddTorque(IntPtr rigidBody, [In] PhysXVec3 torque, int forceMode);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetPairHeaderActor(IntPtr header, int actorNum);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetContactPairShape(IntPtr pairs, int i, int actor);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetContactPointIterator(IntPtr pairs, int i);
+
+        [DllImport(dllName)]
+        public static extern bool NextContactPatch(IntPtr iter);
+
+        [DllImport(dllName)]
+        public static extern bool NextContactPoint(IntPtr iter);
+
+        [DllImport(dllName)]
+        public static extern void GetContactPointData(IntPtr iter, int j, IntPtr pairs, int i, [Out] PhysXVec3 point, [Out] PhysXVec3 normal, [Out] PhysXVec3 impulse);
+
+        [DllImport(dllName)]
+        public static extern void DestroyContactPointIterator(IntPtr iter);
 
         [MonoPInvokeCallback(typeof(PhysXDebugLog))]
         private static void HandleDebugLog(IntPtr stringPtr, int length) {

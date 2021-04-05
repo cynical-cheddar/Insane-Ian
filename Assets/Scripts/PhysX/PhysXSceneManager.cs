@@ -8,13 +8,16 @@ public class PhysXSceneManager : MonoBehaviour
 {
     private IntPtr scene = IntPtr.Zero;
 
-    private List<PhysXRigidBody> rigidBodies = new List<PhysXRigidBody>();
+    private Dictionary<IntPtr, PhysXRigidBody> rigidBodies = new Dictionary<IntPtr, PhysXRigidBody>();
     private List<PhysXRigidBody> preRegisteredRigidBodies = new List<PhysXRigidBody>();
+
+    private static List<PhysXCollision> ongoingCollisions = new List<PhysXCollision>();
 
     public PhysicMaterial defaultMaterial;
 
     void Awake() {
         PhysXLib.SetupPhysX();
+        PhysXLib.RegisterCollisionCallback(AddCollision);
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
@@ -22,7 +25,6 @@ public class PhysXSceneManager : MonoBehaviour
     }
 
     void OnSceneLoaded(Scene s, LoadSceneMode mode) {
-        Debug.Log("loaded");
         if (scene == IntPtr.Zero) Setup();
     }
 
@@ -46,7 +48,7 @@ public class PhysXSceneManager : MonoBehaviour
         }
         else {
             rigidBody.Setup();
-            rigidBodies.Add(rigidBody);
+            rigidBodies.Add(rigidBody.physXDynamicRigidBody, rigidBody);
             PhysXLib.AddActorToScene(scene, rigidBody.physXDynamicRigidBody);
         }
     }
@@ -54,8 +56,21 @@ public class PhysXSceneManager : MonoBehaviour
     public void Simulate() {
         PhysXLib.StepPhysics(scene, Time.fixedDeltaTime);
 
-        foreach (PhysXRigidBody rigidBody in rigidBodies) {
+        foreach (PhysXRigidBody rigidBody in rigidBodies.Values) {
             rigidBody.UpdatePositionAndVelocity();
         }
+
+        foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
+            collision.PopulateWithUnityObjects(rigidBodies);
+            rigidBodies[collision.self].FireCollisionEvents(collision);
+            PhysXCollision.ReleaseCollision(collision);
+        }
+        PhysXSceneManager.ongoingCollisions.Clear();
     }
+
+    public static void AddCollision(IntPtr pairHeader, IntPtr pairs, int pairCount, IntPtr self, bool isEnter, bool isStay, bool isExit) {
+        PhysXCollision collision = PhysXCollision.GetCollision();
+        collision.FromPhysXInternalCollision(pairHeader, pairs, pairCount, self, isEnter, isStay, isExit);
+        ongoingCollisions.Add(collision);
+    } 
 }

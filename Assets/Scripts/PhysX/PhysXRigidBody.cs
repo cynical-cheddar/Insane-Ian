@@ -5,7 +5,7 @@ using PhysX;
 
 public class PhysXRigidBody : MonoBehaviour
 {
-    private static Dictionary<IntPtr, PhysXRigidBody> rigidBodies = new Dictionary<IntPtr, PhysXRigidBody>();
+    private Dictionary<IntPtr, PhysXCollider> colliders = new Dictionary<IntPtr, PhysXCollider>();
 
     private bool isSetup = false;
 
@@ -53,8 +53,6 @@ public class PhysXRigidBody : MonoBehaviour
     void Awake() {
         collisionEnterEvents = new List<ICollisionEnterEvent>(GetComponentsInChildren<ICollisionEnterEvent>(true));
 
-        Debug.Log(collisionEnterEvents);
-
         sceneManager = FindObjectOfType<PhysXSceneManager>();
 
         sceneManager.AddActor(this);
@@ -64,11 +62,9 @@ public class PhysXRigidBody : MonoBehaviour
         IntPtr physXTransform = PhysXLib.CreateTransform(new PhysXVec3(transform.position), new PhysXQuat(transform.rotation));
         physXDynamicRigidBody = PhysXLib.CreateDynamicRigidBody(physXTransform);
 
-        PhysXRigidBody.rigidBodies.Add(physXDynamicRigidBody, this);
-
-        PhysXLib.RegisterCollisionEnterCallback(ProcessCollisionEnterEvents, physXDynamicRigidBody);
-        PhysXLib.RegisterCollisionStayCallback(ProcessCollisionStayEvents, physXDynamicRigidBody);
-        PhysXLib.RegisterCollisionExitCallback(ProcessCollisionExitEvents, physXDynamicRigidBody);
+        // PhysXLib.RegisterCollisionEnterCallback(ProcessCollisionEnterEvents, physXDynamicRigidBody);
+        // PhysXLib.RegisterCollisionStayCallback(ProcessCollisionStayEvents, physXDynamicRigidBody);
+        // PhysXLib.RegisterCollisionExitCallback(ProcessCollisionExitEvents, physXDynamicRigidBody);
 
         PhysXLib.SetRigidBodyFlag(physXDynamicRigidBody, PhysXLib.PhysXRigidBodyFlag.eKINEMATIC, kinematic);
 
@@ -80,12 +76,15 @@ public class PhysXRigidBody : MonoBehaviour
         foreach (PhysXCollider collider in colliders) {
             collider.Setup();
         }
-
-        Debug.Log("upset");
     }
 
     public void AddCollider(PhysXCollider collider) {
+        colliders.Add(collider.shape, collider);
         PhysXLib.AttachShapeToRigidBody(collider.shape, physXDynamicRigidBody);
+    }
+
+    public PhysXCollider GetColliderFromShape(IntPtr shape) {
+        return colliders[shape];
     }
 
     public void UpdatePositionAndVelocity() {
@@ -130,31 +129,12 @@ public class PhysXRigidBody : MonoBehaviour
         PhysXLib.AddTorque(physXDynamicRigidBody, new PhysXVec3(force), forceModeInt);
     }
 
-    private void ProcessCollisionEnterEvents() {
-        foreach (ICollisionEnterEvent collisionEnterEvent in collisionEnterEvents) {
-            collisionEnterEvent.OnCollisionEnter();
+    public void FireCollisionEvents(PhysXCollision collision) {
+        if (collision.isEnter) {
+            foreach (ICollisionEnterEvent collisionEnterEvent in collisionEnterEvents) {
+                if (collisionEnterEvent.requiresData) collisionEnterEvent.OnCollisionEnter(collision);
+                else collisionEnterEvent.OnCollisionEnter();
+            }
         }
-    }
-
-    private void ProcessCollisionStayEvents() {
-        Debug.Log("therw was an attmp");
-    }
-
-    private void ProcessCollisionExitEvents() {
-        Debug.Log("therq was an apemt");
-    }
-
-    private static void ProcessCollisionEnterEvents(IntPtr physXActor) {
-        rigidBodies[physXActor].ProcessCollisionEnterEvents();
-    }
-
-    private static void ProcessCollisionStayEvents(IntPtr physXActor) {
-        rigidBodies[physXActor].ProcessCollisionStayEvents();
-
-    }
-
-    private static void ProcessCollisionExitEvents(IntPtr physXActor) {
-        rigidBodies[physXActor].ProcessCollisionExitEvents();
-
     }
 }
