@@ -18,6 +18,7 @@ public class VehicleHealthManager : CollidableHealthManager
     protected Weapon.WeaponDamageDetails _rammingDetails;
 
     public GameObject tutorials;
+    public HotPotatoManager hpm;
 
     protected PlayerTransformTracker playerTransformTracker;
     
@@ -220,6 +221,7 @@ public class VehicleHealthManager : CollidableHealthManager
         // Update gamestate
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
+        hpm.removePotato();
         team.Release();
         // update my deaths
         if (updateDeath)
@@ -332,6 +334,7 @@ public class VehicleHealthManager : CollidableHealthManager
 
         DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
         driverAbilityManager.Reset();
+        hpm.canPickupPotato = true;
 
         smokeL.Stop();
         smokeM.Stop();
