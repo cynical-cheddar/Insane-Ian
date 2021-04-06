@@ -243,13 +243,17 @@ public class VehicleHealthManager : CollidableHealthManager
         }
         y = 0.9f;
         z = Random.Range(0, 2f);
-        
-        Vector3 explodePos = new Vector3(x, y, z);
-        Vector3 newCom = new Vector3(0, 1.3f, 0);
-        rb.centerOfMass = newCom;
-        rb.angularDrag = 0.1f;
-        rb.AddForce(explodePos*rb.mass * 10f, ForceMode.Impulse);
-        rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
+
+        if (lastHitDetails.damageType != Weapon.DamageType.ramming)
+        {
+            Vector3 explodePos = new Vector3(x, y, z);
+            Vector3 newCom = new Vector3(0, 1.3f, 0);
+            rb.centerOfMass = newCom;
+            rb.angularDrag = 0.1f;
+            rb.AddForce(explodePos * rb.mass * 10f, ForceMode.Impulse);
+            rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
+        }
+
         StartCoroutine(stopControls(1.7f));
     }
 

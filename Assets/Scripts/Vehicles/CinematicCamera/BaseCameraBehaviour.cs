@@ -26,6 +26,9 @@ public class BaseCameraBehaviour : StateMachineBehaviour
     public string crashTriggerEnvironmentDetectAhead = "environmentCrashAhead";
     public string crashTriggerEnvironmentDetectLeft = "environmentCrashLeft";
     public string crashTriggerEnvironmentDetectRight = "environmentCrashRight";
+
+    public string crashTriggerRightImmediate = "crashFrontRight";
+    public string crashTriggerLeftImmediate = "crashFrontLeft";
     // when we are gonna crash into someone
     public string crashTriggerPlayerDetectAhead = "playerCrashAhead";
     public string crashTriggerPlayerDetectLeft = "playerCrashLeft";
@@ -68,8 +71,27 @@ public class BaseCameraBehaviour : StateMachineBehaviour
         }
         
     }
-    
-    
+
+    protected virtual void Update_CheckForCrash()
+    {
+        if (!locked)
+        {
+            currentSensorReport = _driverCrashDetector.currentSensorReport;
+            if (currentSensorReport.crashed)
+            {
+                if (currentSensorReport.leftRightCoefficient <= 0)
+                {
+                    myAnimator.SetTrigger(crashTriggerLeftImmediate);
+                    
+                }
+                else if (currentSensorReport.leftRightCoefficient > 0)
+                {
+                    myAnimator.SetTrigger(crashTriggerRightImmediate);
+                    
+                }
+            }
+        }
+    }
     
     // returns true if we detect we are gonna crash with the environment
     protected virtual bool Update_EnvironmentCrashDetectSensorActions()

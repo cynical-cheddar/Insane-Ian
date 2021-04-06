@@ -107,7 +107,34 @@ public class DriverCrashDetector : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        currentSensorReport.crashed = true;
+        if (currentSpeed > slowRange.speed)
+        {
+            currentSensorReport.crashed = true;
+            // get left/right 
+            ContactPoint[] contactPoints = other.contacts;
+            Vector3 cpSum = Vector3.zero;
+            foreach (ContactPoint c in contactPoints)
+            {
+                cpSum += c.point;
+            }
+
+            cpSum /= contactPoints.Length;
+
+            // get dir
+            float signedDir = Vector3.SignedAngle(transform.forward, cpSum - transform.position, Vector3.up);
+            if (signedDir < 0) currentSensorReport.leftRightCoefficient = -1;
+            else currentSensorReport.leftRightCoefficient = 1;
+
+            StartCoroutine(SetCrashedFalse());
+        }
+    }
+
+    // was here TODO aaaaaaaaa
+    IEnumerator SetCrashedFalse()
+    {
+        yield return new WaitForSeconds(0.2f);
+        
+        currentSensorReport.crashed = false;
     }
 
     private Vector3 vel = Vector3.zero;

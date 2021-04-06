@@ -24,6 +24,7 @@ public class CrashCameraBehaviour : BaseCameraBehaviour
         
         Update_TimeoutTimer();
         Update_Lock();
+        Update_CheckForCrash();
         if (!Update_EnvironmentCrashDetectSensorActions())
         {
             Update_CrashDetectBack();

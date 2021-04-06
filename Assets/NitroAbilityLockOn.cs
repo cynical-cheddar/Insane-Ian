@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class NitroAbilityCharge : DriverAbility
+public class NitroAbilityLockOn : DriverAbility
 {
     // Start is called before the first frame update
-    public float activationVelocityChange = 5f;
-
+    public float rammingSpeed = 60f;
+    
+    
     public GameObject loopingNitroPrefab;
     private GameObject loopingNitroInstance;
 
     private InterfaceCarDrive4W interfaceCarDrive4W;
 
-    public float newMass = 10000f;
-    public float newRammingDamageMultiplier = 4f;
+    public float newMass = 4000f;
+    public float newRammingDamageMultiplier = 8f;
     public float newRammingResistance = 20;
 
     private float oldMass = 4000;
     private float oldRammingResistance = 1;
     private float oldRammingDamageMultiplier = 1f;
+
+
     public override void SetupAbility()
     {
         base.SetupAbility();
@@ -80,13 +83,14 @@ public class NitroAbilityCharge : DriverAbility
         }
     }
     
+    
 
 
     public override void ActivateAbility()
     {
         
         
-        
+        driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageResistance = newRammingResistance;
         
         if (driverPhotonView.IsMine)
         {
@@ -128,14 +132,97 @@ public class NitroAbilityCharge : DriverAbility
     {
         if (CanUseAbility())
         {
+          //  Debug.Log("fire ability");
             currentCooldown = cooldown;
             timeSinceLastFire = 0;
             UseCharge(chargeUsedPerFire);
-            Transform me = interfaceCarDrive4W.transform;
-            me.GetComponent<Rigidbody>().AddForce(me.forward * activationVelocityChange, ForceMode.VelocityChange);
+
+            if(target!=transform.root)StartCoroutine(CrashIntoTarget());
+            else GetComponentInParent<Rigidbody>().velocity = transform.forward * rammingSpeed;
+            
+            
             if (currentCharge == 0) Invoke(nameof(DeactivateAbility), cooldown);
             // abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
         }
+    }
+
+    private bool justCollided = false;
+    public override void JustCollided()
+    {
+        if(abilityActivated) justCollided = true;
+    }
+
+    IEnumerator CrashIntoTarget()
+    {
+        //Debug.Log("CrashIntoTarget");
+        Transform me = interfaceCarDrive4W.transform;
+        Rigidbody rb = me.GetComponentInParent<Rigidbody>();
+        Rigidbody targetRb = target.GetComponent<Rigidbody>();
+        
+        float elapsedTime = 0f;
+       // rb.AddForce(transform.root.forward * rammingSpeed, ForceMode.VelocityChange); 
+       float fractionMaxSpeed = transform.root.InverseTransformDirection(rb.velocity).z / interfaceCarDrive4W.maxSpeed;
+        while (elapsedTime <= cooldown && !justCollided)
+        {
+            float estimatedTime = Vector3.Magnitude(target.position - transform.root.position) / rammingSpeed;
+            Vector3 predictedPos = target.position + targetRb.velocity * (estimatedTime);
+            
+            
+
+            Vector3 movePos = Vector3.Lerp(target.position, predictedPos, elapsedTime/cooldown);
+
+            Vector3 moveDir = movePos - rb.position;
+            
+            // if the predicted pos is out of our sight, then break
+            if (Mathf.Abs(Vector3.Angle(transform.root.forward,
+                target.position - transform.root.position)) > 50)
+            {
+                break;
+            }
+           // direction.Normalize ();
+
+
+        /*
+            float angle = Vector3.SignedAngle(transform.root.forward, predictedPos - transform.root.forward,
+                transform.root.up);
+ 
+            Vector3 eulerAngleVelocity = new Vector3(0, angle, 0);
+            Quaternion deltaRotation = Quaternion.Euler(eulerAngleVelocity);
+            deltaRotation *= torque;*/
+        
+            
+
+            if (Vector3.Distance(transform.root.position, target.position) > 7)
+            {
+                Vector3 direction = movePos - transform.root.position;
+                Quaternion toRotation = Quaternion.LookRotation(direction, Vector3.up);
+                rb.rotation = Quaternion.RotateTowards(transform.root.rotation, toRotation, 10f * Time.deltaTime );
+                
+                
+                Vector3 vel = moveDir.normalized *
+                              (rammingSpeed * Mathf.Lerp(fractionMaxSpeed, 1, elapsedTime / cooldown));
+                Vector3 relativeVel = transform.root.InverseTransformDirection(vel);
+                relativeVel.y = -2;
+                vel = transform.root.TransformDirection(relativeVel);
+                rb.velocity = vel;
+            }
+
+            //  transform.root.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction),  Time.deltaTime * 3);
+           // transform.root.transform.LookAt(direction);
+            
+            
+
+
+
+                
+            
+            yield return new WaitForFixedUpdate();
+            elapsedTime += Time.deltaTime;
+        }
+
+        DeactivateAbility();
+        justCollided = false;
+
     }
 
     
