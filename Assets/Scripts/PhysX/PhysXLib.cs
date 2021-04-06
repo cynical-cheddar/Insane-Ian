@@ -126,9 +126,6 @@ namespace PhysX {
         [DllImport(dllName)]
         public static extern void GetContactPointData(IntPtr iter, int j, IntPtr pairs, int i, [Out] PhysXVec3 point, [Out] PhysXVec3 normal, [Out] PhysXVec3 impulse);
 
-        [DllImport(dllName)]
-        public static extern void DestroyContactPointIterator(IntPtr iter);
-
         [MonoPInvokeCallback(typeof(PhysXDebugLog))]
         private static void HandleDebugLog(IntPtr stringPtr, int length) {
             string str = Marshal.PtrToStringAnsi(stringPtr, length);

@@ -12,6 +12,8 @@ physx::PxDefaultCpuDispatcher* gDispatcher = NULL;
 
 physx::PxScene* gScene = NULL;
 
+physx::PxCooking* gCooking = NULL;
+
 physx::PxMaterial* gMaterial = NULL;
 
 physx::PxDefaultAllocator	  gAllocator;
@@ -219,6 +221,8 @@ extern "C" {
 		if (gFoundation == 0) {
 			gFoundation = &physx::shdfnd::Foundation::getInstance();
 		}
+
+		gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, physx::PxTolerancesScale());
 	}
 
 	void CreatePhysics(bool trackAllocations) {
@@ -250,6 +254,31 @@ extern "C" {
 
 	physx::PxGeometry* CreateSphereGeometry(float radius) {
 		return new physx::PxSphereGeometry(radius);
+	}
+
+	std::vector<physx::PxVec3>* CreateMeshVertexArray() {
+		return new std::vector<physx::PxVec3>();
+	}
+
+	physx::PxGeometry* CreateConvexMeshGeometry(physx::PxVec3* convexVerts, int count) {
+		physx::PxConvexMeshDesc convexDesc;
+		convexDesc.points.count = count;
+		convexDesc.points.stride = sizeof(physx::PxVec3);
+		convexDesc.points.data = convexVerts;
+		convexDesc.flags = physx::PxConvexFlag::eCOMPUTE_CONVEX;
+
+		physx::PxDefaultMemoryOutputStream buffer;
+		physx::PxConvexMeshCookingResult::Enum result;
+
+		if(!gCooking->cookConvexMesh(convexDesc, buffer, &result)) {
+			debugLog("Mesh cooking failed.");
+    		return NULL;
+		}
+
+		physx::PxDefaultMemoryInputData input(buffer.getData(), buffer.getSize());
+		
+		physx::PxConvexMesh* mesh = gPhysics->createConvexMesh(input);
+		return new physx::PxConvexMeshGeometry(mesh);
 	}
 
 	physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat) {

@@ -93,6 +93,4 @@ extern "C" {
     bool NextContactPatch(physx::PxContactStreamIterator* iter);
     bool NextContactPoint(physx::PxContactStreamIterator* iter);
     void GetContactPointData(physx::PxContactStreamIterator* iter, int j, physx::PxContactPair* pairs, int i, physx::PxVec3* point, physx::PxVec3* normal, physx::PxVec3* impulse);
-    void DestroyContactPointIterator(physx::PxContactStreamIterator* iter);
-
 }

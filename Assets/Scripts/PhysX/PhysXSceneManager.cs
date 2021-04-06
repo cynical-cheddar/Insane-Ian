@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using PhysX;
+using AOT;
 
 public class PhysXSceneManager : MonoBehaviour
 {
@@ -68,6 +69,7 @@ public class PhysXSceneManager : MonoBehaviour
         PhysXSceneManager.ongoingCollisions.Clear();
     }
 
+    [MonoPInvokeCallback(typeof(PhysXLib.CollisionCallback))]
     public static void AddCollision(IntPtr pairHeader, IntPtr pairs, int pairCount, IntPtr self, bool isEnter, bool isStay, bool isExit) {
         PhysXCollision collision = PhysXCollision.GetCollision();
         collision.FromPhysXInternalCollision(pairHeader, pairs, pairCount, self, isEnter, isStay, isExit);
