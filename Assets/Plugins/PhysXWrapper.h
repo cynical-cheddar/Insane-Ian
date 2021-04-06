@@ -58,10 +58,12 @@ extern "C" {
     std::vector<physx::PxVec3>* CreateMeshVertexArray();
 	void AddVertexToArray(std::vector<physx::PxVec3>* vertexArray, physx::PxVec3* vertex);
 	physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray);
-
-    physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat);
+    physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount);
 
     physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot);
+
+    physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat);
+    void SetShapeLocalTransform(physx::PxShape* shape, physx::PxTransform* transform);
 
     physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose);
 

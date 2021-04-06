@@ -285,12 +285,38 @@ extern "C" {
 		return new physx::PxConvexMeshGeometry(mesh);
 	}
 
-	physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat) {
-		return gPhysics->createShape(*geometry, *mat);
+	physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount) {
+		physx::PxTriangleMeshDesc meshDesc;
+		meshDesc.points.count = vertexArray->size();
+		meshDesc.points.stride = sizeof(physx::PxVec3);
+		meshDesc.points.data = vertexArray->data();
+
+		meshDesc.triangles.count = triCount;
+		meshDesc.triangles.stride = 3 * sizeof(physx::PxU32);
+		meshDesc.triangles.data = triIndices;
+
+		physx::PxDefaultMemoryOutputStream buffer;
+		physx::PxTriangleMeshCookingResult::Enum result;
+		bool status = gCooking->cookTriangleMesh(meshDesc, buffer, &result);
+		if(!status)
+			return NULL;
+
+		physx::PxDefaultMemoryInputData input(buffer.getData(), buffer.getSize());
+		
+		physx::PxTriangleMesh* mesh = gPhysics->createTriangleMesh(input);
+		return new physx::PxTriangleMeshGeometry(mesh);
 	}
 
 	physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot) {
 		return new physx::PxTransform(*pos, *rot);
+	}
+
+	physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat) {
+		return gPhysics->createShape(*geometry, *mat);
+	}
+
+	void SetShapeLocalTransform(physx::PxShape* shape, physx::PxTransform* transform) {
+		shape->setLocalPose(*transform);
 	}
 
 	physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose) {

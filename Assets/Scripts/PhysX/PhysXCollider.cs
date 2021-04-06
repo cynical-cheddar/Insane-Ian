@@ -36,6 +36,17 @@ public class PhysXCollider : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Setup()
     {
+        Transform grandestParent = transform;
+        while (grandestParent.parent != null) {
+            grandestParent = grandestParent.parent;
+        }
+
+        PhysXVec3 position = new PhysXVec3(grandestParent.InverseTransformPoint(transform.position));
+        PhysXQuat rotation = new PhysXQuat(transform.rotation * Quaternion.Inverse(grandestParent.rotation));
+
+        IntPtr localTransform = PhysXLib.CreateTransform(position, rotation);
+        PhysXLib.SetShapeLocalTransform(shape, localTransform);
+
         UInt32 collisionEventFlags = 0;
         if (hasOnCollisionEnterEvent) collisionEventFlags = 7;
         PhysXLib.SetCollisionFilterData(shape, 1, 1, collisionEventFlags, 0);

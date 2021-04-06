@@ -64,10 +64,18 @@ namespace PhysX {
 	    public static extern IntPtr CreateConvexMeshGeometry(IntPtr vertexArray);
 
         [DllImport(dllName)]
-        public static extern IntPtr CreateShape(IntPtr geometry, IntPtr mat);
+        public static extern IntPtr CreateMeshGeometry(IntPtr vertexArray, [In] int[] triIndices, int triCount);
 
         [DllImport(dllName)]
         public static extern IntPtr CreateTransform([In] PhysXVec3 pos, [In] PhysXQuat rot);
+
+        [DllImport(dllName)]
+        public static extern IntPtr CreateShape(IntPtr geometry, IntPtr mat);
+
+        [DllImport(dllName)]
+        public static extern void SetShapeLocalTransform(IntPtr shape, IntPtr transform);
+
+
 
         [DllImport(dllName)]
         public static extern IntPtr CreateDynamicRigidBody(IntPtr pose);

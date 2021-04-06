@@ -6,6 +6,7 @@ using PhysX;
 public class PhysXMeshCollider : PhysXCollider
 {
     public Mesh mesh;
+    public bool convex = true;
 
     // Start is called before the first frame update
     public override void Setup()
@@ -17,7 +18,14 @@ public class PhysXMeshCollider : PhysXCollider
             PhysXLib.AddVertexToArray(vertexArray, new PhysXVec3(vertex));
         }
 
-        IntPtr geom = PhysXLib.CreateConvexMeshGeometry(vertexArray);
+        IntPtr geom = IntPtr.Zero;
+        if (convex) {
+            geom = PhysXLib.CreateConvexMeshGeometry(vertexArray);
+        }
+        else {
+            geom = PhysXLib.CreateMeshGeometry(vertexArray, mesh.triangles, mesh.triangles.Length);
+        }
+
         shape = PhysXLib.CreateShape(geom, physXMaterial);
 
         base.Setup();
