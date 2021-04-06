@@ -260,11 +260,15 @@ extern "C" {
 		return new std::vector<physx::PxVec3>();
 	}
 
-	physx::PxGeometry* CreateConvexMeshGeometry(physx::PxVec3* convexVerts, int count) {
+	void AddVertexToArray(std::vector<physx::PxVec3>* vertexArray, physx::PxVec3* vertex) {
+		vertexArray->push_back(*vertex);
+	}
+
+	physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray) {
 		physx::PxConvexMeshDesc convexDesc;
-		convexDesc.points.count = count;
+		convexDesc.points.count = vertexArray->size();
 		convexDesc.points.stride = sizeof(physx::PxVec3);
-		convexDesc.points.data = convexVerts;
+		convexDesc.points.data = vertexArray->data();
 		convexDesc.flags = physx::PxConvexFlag::eCOMPUTE_CONVEX;
 
 		physx::PxDefaultMemoryOutputStream buffer;

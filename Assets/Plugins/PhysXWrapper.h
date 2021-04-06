@@ -55,6 +55,9 @@ extern "C" {
 
     physx::PxGeometry* CreateBoxGeometry(float halfX, float halfY, float halfZ);
     physx::PxGeometry* CreateSphereGeometry(float radius);
+    std::vector<physx::PxVec3>* CreateMeshVertexArray();
+	void AddVertexToArray(std::vector<physx::PxVec3>* vertexArray, physx::PxVec3* vertex);
+	physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray);
 
     physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat);
 

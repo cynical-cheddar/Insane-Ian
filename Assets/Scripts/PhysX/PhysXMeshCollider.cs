@@ -5,12 +5,19 @@ using PhysX;
 
 public class PhysXMeshCollider : PhysXCollider
 {
-    public float x = 1, y = 1, z = 1;
+    public Mesh mesh;
 
     // Start is called before the first frame update
     public override void Setup()
     {
-        IntPtr geom = PhysXLib.CreateBoxGeometry(x / 2, y / 2, z / 2);
+        IntPtr vertexArray = PhysXLib.CreateMeshVertexArray();
+
+        Vector3[] vertices = mesh.vertices;
+        foreach (Vector3 vertex in vertices) {
+            PhysXLib.AddVertexToArray(vertexArray, new PhysXVec3(vertex));
+        }
+
+        IntPtr geom = PhysXLib.CreateConvexMeshGeometry(vertexArray);
         shape = PhysXLib.CreateShape(geom, physXMaterial);
 
         base.Setup();

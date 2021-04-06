@@ -55,6 +55,15 @@ namespace PhysX {
         public static extern IntPtr CreateSphereGeometry(float radius);
 
         [DllImport(dllName)]
+        public static extern IntPtr CreateMeshVertexArray();
+
+        [DllImport(dllName)]
+	    public static extern void AddVertexToArray(IntPtr vertexArray, [In] PhysXVec3 vertex);
+
+        [DllImport(dllName)]
+	    public static extern IntPtr CreateConvexMeshGeometry(IntPtr vertexArray);
+
+        [DllImport(dllName)]
         public static extern IntPtr CreateShape(IntPtr geometry, IntPtr mat);
 
         [DllImport(dllName)]
