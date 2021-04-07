@@ -29,6 +29,9 @@ public class BaseCameraBehaviour : StateMachineBehaviour
 
     public string crashTriggerRightImmediate = "crashFrontRight";
     public string crashTriggerLeftImmediate = "crashFrontLeft";
+    
+    public string crashTriggerBackRightImmediate = "crashBackRight";
+    public string crashTriggerBackLeftImmediate = "crashBackLeft";
     // when we are gonna crash into someone
     public string crashTriggerPlayerDetectAhead = "playerCrashAhead";
     public string crashTriggerPlayerDetectLeft = "playerCrashLeft";

@@ -61,8 +61,9 @@ public class DriverCrashDetector : MonoBehaviour
         public float leftRightCoefficient;
         public float estimatedTimeToHit;
         public float estimatedDistanceToHit;
+        public float forwardBackValue;
         public CurrentSensorReportStruct(float speedLocal, float crashValueLocal, float telecastCrashValueLocal,
-            bool playerAheadLocal, bool crashedLocal, Transform lastCrashedPlayerLocal, float leftRightCoefficientLocal, float estimatedTimeToHitLocal, float estimatedDistanceToHitLocal)
+            bool playerAheadLocal, bool crashedLocal, Transform lastCrashedPlayerLocal, float leftRightCoefficientLocal, float estimatedTimeToHitLocal, float estimatedDistanceToHitLocal, float forwardBackValueLocal)
         {
             speed = speedLocal;
             crashValue = crashValueLocal;
@@ -73,6 +74,7 @@ public class DriverCrashDetector : MonoBehaviour
             leftRightCoefficient = leftRightCoefficientLocal;
             estimatedTimeToHit = estimatedTimeToHitLocal;
             estimatedDistanceToHit = estimatedDistanceToHitLocal;
+            forwardBackValue = forwardBackValueLocal;
         }
     }
 
@@ -101,7 +103,7 @@ public class DriverCrashDetector : MonoBehaviour
     {
         myRb = GetComponent<Rigidbody>();
         currentSensorReport = new CurrentSensorReportStruct();
-
+        currentSensorReport.lastCrashedPlayer = transform.root;
     }
 
 
@@ -109,6 +111,8 @@ public class DriverCrashDetector : MonoBehaviour
     {
         if (currentSpeed > slowRange.speed)
         {
+            if (other.transform.root.CompareTag("Player"))
+            {
             currentSensorReport.crashed = true;
             // get left/right 
             ContactPoint[] contactPoints = other.contacts;
@@ -125,16 +129,37 @@ public class DriverCrashDetector : MonoBehaviour
             if (signedDir < 0) currentSensorReport.leftRightCoefficient = -1;
             else currentSensorReport.leftRightCoefficient = 1;
 
+            float forwardBackValue = 0;
+            if (Mathf.Abs(signedDir) < 90) forwardBackValue = 1;
+            else forwardBackValue = -1;
+
+            currentSensorReport.forwardBackValue = forwardBackValue;
+            
+            
+            
+                //currentSensorReport.lastCrashedPlayer = other.transform.root;
+                if(lastTargetPoint!=null) Destroy(lastTargetPoint);
+                Vector3 point = contactPoints[0].point;
+                lastTargetPoint = Instantiate(new GameObject(), point, Quaternion.identity);
+                lastTargetPoint.transform.parent = transform.root;
+                currentSensorReport.lastCrashedPlayer = lastTargetPoint.transform;
+
+            }
+
             StartCoroutine(SetCrashedFalse());
         }
     }
 
-    // was here TODO aaaaaaaaa
+    private GameObject lastTargetPoint;
+    
+
+
     IEnumerator SetCrashedFalse()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
         
         currentSensorReport.crashed = false;
+        currentSensorReport.lastCrashedPlayer = transform.root;
     }
 
     private Vector3 vel = Vector3.zero;

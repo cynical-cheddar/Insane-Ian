@@ -223,11 +223,14 @@ MonoBehaviour:
   crashTriggerEnvironmentDetectRight: environmentCrashRight
   crashTriggerRightImmediate: crashFrontRight
   crashTriggerLeftImmediate: crashFrontLeft
+  crashTriggerBackRightImmediate: crashBackRight
+  crashTriggerBackLeftImmediate: crashBackLeft
   crashTriggerPlayerDetectAhead: playerCrashAhead
   crashTriggerPlayerDetectLeft: playerCrashLeft
   crashTriggerPlayerDetectRight: playerCrashRight
   crashTriggerIncomingPlayerDetect: playerIncomingCrash
   backTrigger: back
+  interruptOnRealCrash: 1
 --- !u!1102 &-6347932741579409805
 AnimatorState:
   serializedVersion: 6
@@ -482,11 +485,14 @@ MonoBehaviour:
   crashTriggerEnvironmentDetectRight: environmentCrashRight
   crashTriggerRightImmediate: crashFrontRight
   crashTriggerLeftImmediate: crashFrontLeft
+  crashTriggerBackRightImmediate: crashBackRight
+  crashTriggerBackLeftImmediate: crashBackLeft
   crashTriggerPlayerDetectAhead: playerCrashAhead
   crashTriggerPlayerDetectLeft: playerCrashLeft
   crashTriggerPlayerDetectRight: playerCrashRight
   crashTriggerIncomingPlayerDetect: playerIncomingCrash
   backTrigger: back
+  interruptOnRealCrash: 1
 --- !u!1101 &-2504131356572977444
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -527,7 +533,7 @@ MonoBehaviour:
   backTimeoutTime: 1
   minimumStateTime: 1
   setCam: 1
-  stateCam: 1
+  stateCam: 7
   timeToCrashThreshold: 0.2
   crashTriggerEnvironmentAhead: suddenEnvironmentCrashAhead
   crashTriggerEnvironmentLeft: suddenEnvironmentCrashLeft
@@ -537,11 +543,14 @@ MonoBehaviour:
   crashTriggerEnvironmentDetectRight: environmentCrashRight
   crashTriggerRightImmediate: crashFrontRight
   crashTriggerLeftImmediate: crashFrontLeft
+  crashTriggerBackRightImmediate: crashBackRight
+  crashTriggerBackLeftImmediate: crashBackLeft
   crashTriggerPlayerDetectAhead: playerCrashAhead
   crashTriggerPlayerDetectLeft: playerCrashLeft
   crashTriggerPlayerDetectRight: playerCrashRight
   crashTriggerIncomingPlayerDetect: playerIncomingCrash
   backTrigger: back
+  interruptOnRealCrash: 0
 --- !u!1101 &-2050003955863567243
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -686,6 +695,8 @@ MonoBehaviour:
   crashTriggerEnvironmentDetectRight: environmentCrashRight
   crashTriggerRightImmediate: crashFrontRight
   crashTriggerLeftImmediate: crashFrontLeft
+  crashTriggerBackRightImmediate: crashBackRight
+  crashTriggerBackLeftImmediate: crashBackLeft
   crashTriggerPlayerDetectAhead: playerCrashAhead
   crashTriggerPlayerDetectLeft: playerCrashLeft
   crashTriggerPlayerDetectRight: playerCrashRight
@@ -730,43 +741,43 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: environmentCrashAhead
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: environmentCrashLeft
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: environmentCrashRight
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: back
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: crashFrontLeft
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: crashFrontRight
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -835,11 +846,14 @@ MonoBehaviour:
   crashTriggerEnvironmentDetectRight: environmentCrashRight
   crashTriggerRightImmediate: crashFrontRight
   crashTriggerLeftImmediate: crashFrontLeft
+  crashTriggerBackRightImmediate: crashBackRight
+  crashTriggerBackLeftImmediate: crashBackLeft
   crashTriggerPlayerDetectAhead: playerCrashAhead
   crashTriggerPlayerDetectLeft: playerCrashLeft
   crashTriggerPlayerDetectRight: playerCrashRight
   crashTriggerIncomingPlayerDetect: playerIncomingCrash
   backTrigger: back
+  interruptOnRealCrash: 1
 --- !u!1101 &248499934325915339
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1386,11 +1400,14 @@ MonoBehaviour:
   crashTriggerEnvironmentDetectRight: environmentCrashRight
   crashTriggerRightImmediate: crashFrontRight
   crashTriggerLeftImmediate: crashFrontLeft
+  crashTriggerBackRightImmediate: crashBackRight
+  crashTriggerBackLeftImmediate: crashBackLeft
   crashTriggerPlayerDetectAhead: playerCrashAhead
   crashTriggerPlayerDetectLeft: playerCrashLeft
   crashTriggerPlayerDetectRight: playerCrashRight
   crashTriggerIncomingPlayerDetect: playerIncomingCrash
   backTrigger: back
+  interruptOnRealCrash: 1
 --- !u!1101 &5600301996240551712
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1441,11 +1458,14 @@ MonoBehaviour:
   crashTriggerEnvironmentDetectRight: environmentCrashRight
   crashTriggerRightImmediate: crashFrontRight
   crashTriggerLeftImmediate: crashFrontLeft
+  crashTriggerBackRightImmediate: crashBackRight
+  crashTriggerBackLeftImmediate: crashBackLeft
   crashTriggerPlayerDetectAhead: playerCrashAhead
   crashTriggerPlayerDetectLeft: playerCrashLeft
   crashTriggerPlayerDetectRight: playerCrashRight
   crashTriggerIncomingPlayerDetect: playerIncomingCrash
   backTrigger: back
+  interruptOnRealCrash: 1
 --- !u!114 &6044827972066094989
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1461,7 +1481,7 @@ MonoBehaviour:
   backTimeoutTime: 1
   minimumStateTime: 1
   setCam: 1
-  stateCam: 1
+  stateCam: 8
   timeToCrashThreshold: 0.2
   crashTriggerEnvironmentAhead: suddenEnvironmentCrashAhead
   crashTriggerEnvironmentLeft: suddenEnvironmentCrashLeft
@@ -1471,11 +1491,14 @@ MonoBehaviour:
   crashTriggerEnvironmentDetectRight: environmentCrashRight
   crashTriggerRightImmediate: crashFrontRight
   crashTriggerLeftImmediate: crashFrontLeft
+  crashTriggerBackRightImmediate: crashBackRight
+  crashTriggerBackLeftImmediate: crashBackLeft
   crashTriggerPlayerDetectAhead: playerCrashAhead
   crashTriggerPlayerDetectLeft: playerCrashLeft
   crashTriggerPlayerDetectRight: playerCrashRight
   crashTriggerIncomingPlayerDetect: playerIncomingCrash
   backTrigger: back
+  interruptOnRealCrash: 0
 --- !u!1101 &6586678235364130963
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
