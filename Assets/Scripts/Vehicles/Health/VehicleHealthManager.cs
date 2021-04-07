@@ -10,12 +10,15 @@ using Photon.Realtime;
 
 public class VehicleHealthManager : CollidableHealthManager
 {
+    public ParticleSystem smokeL;
+    public ParticleSystem smokeM;
+    public ParticleSystem smokeH;
 
-    
     // car stuff
     protected Weapon.WeaponDamageDetails _rammingDetails;
 
     public GameObject tutorials;
+    public HotPotatoManager hpm;
 
     protected PlayerTransformTracker playerTransformTracker;
     
@@ -114,7 +117,9 @@ public class VehicleHealthManager : CollidableHealthManager
         float amount = weaponDamageDetails.damage;
         if (health > 0) {
             health -= amount;
-            if (health <= 0&&!isDead && myPhotonView.IsMine)
+            if (health > maxHealth) health = maxHealth;
+            SetSmoke();
+            if (health <= 0 && !isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
                 isDead = true;
@@ -133,6 +138,8 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         if (health > 0) {
             health -= amount;
+            if (health > maxHealth) health = maxHealth;
+            SetSmoke();
             if (health <= 0&&!isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
@@ -185,12 +192,36 @@ public class VehicleHealthManager : CollidableHealthManager
         }
     }
 
+    // Helper function just to avoid repeating code. Sets smoke to correct level
+    private void SetSmoke() {
+        smokeL.Stop();
+        smokeM.Stop();
+        smokeH.Stop();
+        if (health < maxHealth * 0.6) {
+            smokeL.Play();
+            smokeM.Stop();
+            smokeH.Stop();
+        }
+        if (health < maxHealth * 0.4) {
+            smokeL.Stop();
+            smokeM.Play();
+            smokeH.Stop();
+
+        }
+        if (health < maxHealth * 0.2) {
+            smokeL.Stop();
+            smokeM.Play();
+            smokeH.Play();
+        }
+    }
+
     
     // Die is a LOCAL function that is only called by the driver when they get dead.
     protected void Die(bool updateDeath, bool updateKill) {
         // Update gamestate
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
+        hpm.removePotato();
         team.Release();
         // update my deaths
         if (updateDeath)
@@ -254,6 +285,8 @@ public class VehicleHealthManager : CollidableHealthManager
             rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
         }
 
+        smokeM.Play();
+        smokeH.Play();
         StartCoroutine(stopControls(1.7f));
     }
 
@@ -305,6 +338,11 @@ public class VehicleHealthManager : CollidableHealthManager
 
         DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
         driverAbilityManager.Reset();
+        hpm.canPickupPotato = true;
+
+        smokeL.Stop();
+        smokeM.Stop();
+        smokeH.Stop();
 
         rb.drag = defaultDrag;
         rb.angularDrag = defaultAngularDrag;

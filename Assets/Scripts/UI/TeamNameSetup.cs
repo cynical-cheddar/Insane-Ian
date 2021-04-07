@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 using TMPro;
 
 public class TeamNameSetup : MonoBehaviour
@@ -23,10 +24,17 @@ public class TeamNameSetup : MonoBehaviour
 
     public void ChangeColour(bool isPotato)
     {
-        if(isPotato)
+        this.GetComponent<PhotonView>().RPC(nameof(RPC_ChangeColour), RpcTarget.AllViaServer, isPotato);
+    }
+
+    [PunRPC]
+    private void RPC_ChangeColour(bool isPotato)
+    {
+        if (isPotato)
         {
             teamName.color = red;
-        } else
+        }
+        else
         {
             teamName.color = white;
         }
