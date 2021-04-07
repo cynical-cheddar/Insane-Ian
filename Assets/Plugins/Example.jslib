@@ -110,8 +110,8 @@ var ExampleLibraryPlugin = {
      */
     signal: function(sigName) {
         if (SharedData.conn && SharedData.conn.open) {
-            SharedData.conn.send(sigName);
-            console.log(sigName + " signal sent");
+            SharedData.conn.send(Pointer_stringify(sigName));
+            console.log(Pointer_stringify(sigName) + " signal sent");
         } else {
             console.log('Connection is closed');
         }
@@ -123,8 +123,8 @@ var ExampleLibraryPlugin = {
      */
     sendMessage: function(msg) {
         if (SharedData.conn && SharedData.conn.open) {
-            SharedData.conn.send(msg);
-            console.log("Sent: " + msg);
+            SharedData.conn.send(Pointer_stringify(msg));
+            console.log("Sent: " + Pointer_stringify(msg));
         } else {
             console.log('Connection is closed');
         }

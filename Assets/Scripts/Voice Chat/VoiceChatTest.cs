@@ -51,7 +51,7 @@ public class VoiceChatTest : MonoBehaviour
     public void Send() {
         string text = messageInputField.text;
         messages.text += $"\n{text}";
-        sendMessage(HttpUtility.JavaScriptStringEncode(text, false));
+        sendMessage(text);
     }
 
     public void Clear() {
