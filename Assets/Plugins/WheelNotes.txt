@@ -1,0 +1,34 @@
+
+Wheel Collider Properties:
+    mass                        PxVehicleWheelData::mMass
+    radius                      PxVehicleWheelData::mRadius
+    wheel damping rate          PxVehicleWheelData::mDampingRate
+    force app point distance    PxVehicleWheelsSimData::setTireForceAppPointOffset()
+    center                      PxVehicleWheelsSimData::setWheelCentreOffset(), PxVehicleWheelsSimData::setSuspForceAppPointOffset(), PxVehicleSuspensionData::mMaxDroop
+    suspension distance         PxVehicleSuspensionData::mMaxDroop
+    suspension spring           
+        spring                  PxVehicleSuspensionData::mSpringStrength
+        damper                  PxVehicleSuspensionData::mSpringDamperRate
+        target position         PxVehicleWheelsSimData::setWheelCentreOffset()
+    forward friction            PxVehicleTyreData::mFrictionVsSlipGraph
+        extremum slip
+        extremum value
+        asymptote slip
+        asymptote value
+        stiffness
+    sideways friction           PxVehicleTyreData::mLatStiffX
+        extremum slip           PxVehicleTyreData::mLatStiffY
+        extremum value
+        asymptote slip          not matching perfectly but i cant be bothered
+        asymptote value
+        stiffness
+
+    brake torque                PxVehicleNoDrive::setBrakeTorque()
+    is grounded                 PxWheelQueryResult::isInAir()
+    motor torque                PxVehicleNoDrive::setDriveTorque()
+    rpm                         PxVehicleWheelsDynData::getWheelRotationSpeed()     not sure about units, also not used, might not bother
+    steer angle                 PxVehicleNoDrive::setSteerAngle()
+
+    not bothering:
+        sprung mass
+        suspension expansion limited

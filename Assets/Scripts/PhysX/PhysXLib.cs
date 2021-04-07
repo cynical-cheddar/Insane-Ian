@@ -46,9 +46,6 @@ namespace PhysX {
         public static extern IntPtr CreateMaterial(float staticFriction, float dynamicFriction, float restitution);
 
         [DllImport(dllName)]
-        private static extern IntPtr CreateStaticPlane([In] PhysXVec3 point, [In] PhysXVec3 normal, IntPtr mat);
-
-        [DllImport(dllName)]
         public static extern IntPtr CreateBoxGeometry(float halfX, float halfY, float halfZ);
 
         [DllImport(dllName)]

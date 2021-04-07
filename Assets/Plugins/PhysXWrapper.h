@@ -35,10 +35,121 @@ extern "C" {
         void onAdvance(const physx::PxRigidBody *const *bodyBuffer, const physx::PxTransform *poseBuffer, const physx::PxU32 count);
 	};
 
-    class ActorUserData {
+    physx::PxQueryHitType::Enum WheelSceneQueryPreFilterBlocking(physx::PxFilterData filterData0, physx::PxFilterData filterData1,
+                                                                 const void* constantBlock, physx::PxU32 constantBlockSize,
+                                                                 physx::PxHitFlags& queryFlags);
+
+    struct ActorUserData
+    {
+        ActorUserData()
+            : vehicle(NULL),
+            actor(NULL)
+        {
+        }
+
+        const physx::PxVehicleWheels* vehicle;
+        const physx::PxActor* actor;
+    };
+
+    struct ShapeUserData
+    {
+        ShapeUserData()
+            : isWheel(false),
+            wheelId(0xffffffff)
+        {
+        }
+
+        bool isWheel;
+        physx::PxU32 wheelId;
+    };
+
+    //  This bit makes sense
+    struct VehicleDesc
+    {
+        VehicleDesc()
+            : chassisMass(0.0f),
+            chassisDims(physx::PxVec3(0.0f, 0.0f, 0.0f)),
+            chassisMOI(physx::PxVec3(0.0f, 0.0f, 0.0f)),
+            chassisCMOffset(physx::PxVec3(0.0f, 0.0f, 0.0f)),
+            chassisMaterial(NULL),
+            wheelMass(0.0f),
+            wheelWidth(0.0f),
+            wheelRadius(0.0f),
+            wheelMOI(0.0f),
+            wheelMaterial(NULL),
+            actorUserData(NULL),
+            shapeUserDatas(NULL)
+        {
+        }
+
+        physx::PxF32 chassisMass;
+        physx::PxVec3 chassisDims;
+        physx::PxVec3 chassisMOI;
+        physx::PxVec3 chassisCMOffset;
+        physx::PxMaterial* chassisMaterial;
+        physx::PxFilterData chassisSimFilterData;  //word0 = collide type, word1 = collide against types, word2 = PxPairFlags
+
+        physx::PxF32 wheelMass;
+        physx::PxF32 wheelWidth;
+        physx::PxF32 wheelRadius;
+        physx::PxF32 wheelMOI;
+        physx::PxMaterial* wheelMaterial;
+        physx::PxU32 numWheels;
+        physx::PxFilterData wheelSimFilterData;	//word0 = collide type, word1 = collide against types, word2 = PxPairFlags
+
+        ActorUserData* actorUserData;
+        ShapeUserData* shapeUserDatas;
+    };
+
+    //  WHAT IS GOING ON HERE
+    class VehicleSceneQueryData
+    {
     public:
-        ActorUserData();
-        ~ActorUserData();
+        VehicleSceneQueryData();
+        ~VehicleSceneQueryData();
+
+        //Allocate scene query data for up to maxNumVehicles and up to maxNumWheelsPerVehicle with numVehiclesInBatch per batch query.
+        static VehicleSceneQueryData* allocate(const physx::PxU32 maxNumVehicles, const physx::PxU32 maxNumWheelsPerVehicle, const physx::PxU32 maxNumHitPointsPerWheel, const physx::PxU32 numVehiclesInBatch,
+                                               physx::PxBatchQueryPreFilterShader preFilterShader, physx::PxBatchQueryPostFilterShader postFilterShader, 
+                                               physx::PxAllocatorCallback& allocator);
+
+        //Free allocated buffers.
+        void free(physx::PxAllocatorCallback& allocator);
+
+        //Create a PxBatchQuery instance that will be used for a single specified batch.
+        static physx::PxBatchQuery* setUpBatchedSceneQuery(const physx::PxU32 batchId, const VehicleSceneQueryData& vehicleSceneQueryData, physx::PxScene* scene);
+
+        //Return an array of scene query results for a single specified batch.
+        physx::PxRaycastQueryResult* getRaycastQueryResultBuffer(const physx::PxU32 batchId); 
+
+        //Return an array of scene query results for a single specified batch.
+        physx::PxSweepQueryResult* getSweepQueryResultBuffer(const physx::PxU32 batchId); 
+
+        //Get the number of scene query results that have been allocated for a single batch.
+        physx::PxU32 getQueryResultBufferSize() const; 
+
+    private:
+
+        //Number of queries per batch
+        physx::PxU32 mNumQueriesPerBatch;
+
+        //Number of hit results per query
+        physx::PxU32 mNumHitResultsPerQuery;
+
+        //One result for each wheel.
+        physx::PxRaycastQueryResult* mRaycastResults;
+        physx::PxSweepQueryResult* mSweepResults;
+
+        //One hit for each wheel.
+        physx::PxRaycastHit* mRaycastHitBuffer;
+        physx::PxSweepHit* mSweepHitBuffer;
+
+        //Filter shader used to filter drivable and non-drivable surfaces
+        physx::PxBatchQueryPreFilterShader mPreFilterShader;
+
+        //Filter shader used to reject hit shapes that initially overlap sweeps.
+        physx::PxBatchQueryPostFilterShader mPostFilterShader;
+
     };
 
     void RegisterDebugLog(DebugLog dl);
@@ -50,8 +161,6 @@ extern "C" {
     physx::PxScene* CreateScene(physx::PxVec3* gravity);
 
     physx::PxMaterial* CreateMaterial(float staticFriction, float dynamicFriction, float restitution);
-
-    physx::PxRigidStatic* CreateStaticPlane(physx::PxVec3* point, physx::PxVec3* normal, physx::PxMaterial* mat);
 
     physx::PxGeometry* CreateBoxGeometry(float halfX, float halfY, float halfZ);
     physx::PxGeometry* CreateSphereGeometry(float radius);

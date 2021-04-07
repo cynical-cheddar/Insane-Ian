@@ -5,7 +5,16 @@ using PhysX;
 
 public class PhysXCollider : MonoBehaviour
 {
-    //  TODO:   OnCollisionEnter stuff
+    [Flags]
+    public enum CollisionLayer {
+        None = 0,
+        Default = 0b_0000_0000_0000_0001,
+        Wheel   = 0b_0000_0000_0000_0010,
+    }
+
+    public CollisionLayer ownLayers = CollisionLayer.Default;
+
+    public CollisionLayer collisionLayers = CollisionLayer.Default | CollisionLayer.Wheel;
 
     //  TODO:   ClosestPoint (maybe)
 
@@ -47,9 +56,12 @@ public class PhysXCollider : MonoBehaviour
         IntPtr localTransform = PhysXLib.CreateTransform(position, rotation);
         PhysXLib.SetShapeLocalTransform(shape, localTransform);
 
+        //CollisionLayer ownCollisionLayers = CollisionLayer.None;
+        //foreach (CollisionLayer collisionLayer in ownLayers)
+
         UInt32 collisionEventFlags = 0;
         if (hasOnCollisionEnterEvent) collisionEventFlags = 7;
-        PhysXLib.SetCollisionFilterData(shape, 1, 1, collisionEventFlags, 0);
+        PhysXLib.SetCollisionFilterData(shape, (UInt32)ownLayers, (UInt32)collisionLayers, collisionEventFlags, 0);
         attachedRigidbody = GetComponentInParent<PhysXRigidBody>();
         attachedRigidbody.AddCollider(this);
     }
