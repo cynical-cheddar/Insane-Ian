@@ -50,11 +50,15 @@ public class VoiceChatTest : MonoBehaviour
 
     public void Send() {
         string text = messageInputField.text;
-        messages.text += $"\n{text}";
+        messages.text += $"\nYou: {text}";
         sendMessage(text);
     }
 
     public void Clear() {
         messages.text = "Messages:\nMessages cleared";
+    }
+
+    public void RecieveMessage(string msg) {
+        messages.text += $"\nPeer: {msg}";
     }
 }

@@ -76,7 +76,7 @@ var ExampleLibraryPlugin = {
         }
 
         // Create connection to destination peer specified in the input field
-        SharedData.conn = SharedData.peer.connect('reciever', {
+        SharedData.conn = SharedData.peer.connect(Pointer_stringify(recvID), {
             reliable: true
         });
 
@@ -97,9 +97,10 @@ var ExampleLibraryPlugin = {
         });
 
         // Handle incoming data (messages only since this is the signal sender)
-        //SharedData.conn.on('data', function (data) {
-        //    unityInstance.SendMessage('VoiceChatTest', 'SendMessage', data);
-        //});
+        SharedData.conn.on('data', function (data) {
+            window.unityInstance.SendMessage('VoiceChatGameObject', 'RecieveMessage', data);
+            console.log("This is where we would send a message to Unity, if that worked like the docs said it would...");
+        });
 
         console.log("Join finished");
     },
