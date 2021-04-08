@@ -5,53 +5,53 @@ using System.Runtime.InteropServices;
 using UnityEngine.UI;
 using System.Web;
 
-public class VoiceChatTest : MonoBehaviour
+public class VoiceChatTestSender : MonoBehaviour
 {
     public InputField idInputField;
     public InputField messageInputField;
     public Text messages;
 
     [DllImport("__Internal")]
-    private static extern void initialize();
+    private static extern void initializeVCTestSender();
 
     [DllImport("__Internal")]
-    private static extern void join(string recvID);
+    private static extern void joinVCTestSender(string recvID);
 
     [DllImport("__Internal")]
-    private static extern void signal(string sigName);
+    private static extern void signalVCTestSender(string sigName);
 
     [DllImport("__Internal")]
-    private static extern void sendMessage(string msg);
+    private static extern void sendMessageVCTestSender(string msg);
 
     void Start() {
-        initialize();
+        initializeVCTestSender();
     }
 
     public void Connect() {
         string id = idInputField.text;
         Debug.Log($"ID: {id}");
-        join(id);
+        joinVCTestSender(id);
     }
 
     public void Reset() {
-        signal("Reset");
+        signalVCTestSender("Reset");
     }
     public void Go() {
-        signal("Go");
+        signalVCTestSender("Go");
     }
 
     public void Fade() {
-        signal("Fade");
+        signalVCTestSender("Fade");
     }
 
     public void Off() {
-        signal("Off");
+        signalVCTestSender("Off");
     }
 
     public void Send() {
         string text = messageInputField.text;
         messages.text += $"\nYou: {text}";
-        sendMessage(text);
+        sendMessageVCTestSender(text);
     }
 
     public void Clear() {
