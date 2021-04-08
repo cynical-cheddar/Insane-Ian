@@ -368,7 +368,7 @@ namespace Gamestate {
 
         //  Max 15 bool fields
         
-        public enum BoolFields { IsBot, Ready }
+        public enum BoolFields { IsBot, Ready, IsInVC }
 
         public bool isBot {
             get { return boolValues[ (int)BoolFields.IsBot ]; }
@@ -377,6 +377,10 @@ namespace Gamestate {
         public bool ready {
             get { return boolValues[ (int)BoolFields.Ready ]; }
             set { ChangeBoolValue( (int)BoolFields.Ready, value ); }
+        }
+        public bool isInVC {
+            get { return boolValues[(int)BoolFields.IsInVC]; }
+            set { ChangeBoolValue((int)BoolFields.IsInVC, value); }
         }
 
         public delegate void PlayerListener(PlayerEntry entry);

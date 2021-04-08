@@ -27,10 +27,15 @@ public class VoiceCallBehaviour : MonoBehaviour
     }
 
     public void JoinPeerJSSession() {
+        gameObject.GetComponent<Button>().interactable = false;
+        gameObject.GetComponentInChildren<Text>().text = "Joined Call";
         for (int i = 0; i < gamestateTracker.players.count; i++) {
             PlayerEntry player = gamestateTracker.players.GetAtIndex(i);
-            if (player.id != PhotonNetwork.LocalPlayer.ActorNumber) { // Don't want to call yourself
+            if (player.id != PhotonNetwork.LocalPlayer.ActorNumber && player.isInVC) {
                 join($"{PhotonNetwork.CurrentRoom.Name}{player.id}");
+                PlayerEntry self = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+                self.isInVC = true;
+                self.Increment();
                 callerIDs.Add($"{PhotonNetwork.CurrentRoom.Name}{player.id}");
             }
             player.Release();
@@ -41,6 +46,7 @@ public class VoiceCallBehaviour : MonoBehaviour
     void JoinVoiceCall() {
         foreach (string callerID in callerIDs) {
             call(callerID);
+            Debug.Log($"Trying to join call with ID: {callerID}");
         }
     }
 }
