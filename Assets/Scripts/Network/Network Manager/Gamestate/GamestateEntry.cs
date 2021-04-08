@@ -341,7 +341,6 @@ namespace Gamestate {
     [Serializable]
     public class PlayerEntry : GamestateEntry {
         //  Max 16 short fields
- 
         [SerializeField]
         public enum ShortFields { ActorNumber, Role, Character, TeamId }
         [SerializeField]

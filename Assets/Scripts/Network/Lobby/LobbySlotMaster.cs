@@ -36,31 +36,6 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     public GameObject teamSelectCanvas;
     public GameObject vehicleSelectCanvas;
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     // DEPRECATED STUFF
     
     [PunRPC]
