@@ -52,10 +52,10 @@ namespace PhysX {
         public static extern IntPtr CreateSphereGeometry(float radius);
 
         [DllImport(dllName)]
-        public static extern IntPtr CreateMeshVertexArray();
+        public static extern IntPtr CreateVectorArray();
 
         [DllImport(dllName)]
-	    public static extern void AddVertexToArray(IntPtr vertexArray, [In] PhysXVec3 vertex);
+	    public static extern void AddVectorToArray(IntPtr vectorArray, [In] PhysXVec3 vector);
 
         [DllImport(dllName)]
 	    public static extern IntPtr CreateConvexMeshGeometry(IntPtr vertexArray);
@@ -87,7 +87,7 @@ namespace PhysX {
         public static extern void RegisterCollisionCallback(CollisionCallback callback);
 
         [DllImport(dllName)]
-        public static extern IntPtr SetRigidBodyMassAndInertia(IntPtr body, float density, [In] PhysXVec3 massLocalPose = null);
+        public static extern IntPtr SetRigidBodyMassAndInertia(IntPtr body, float mass, [In] PhysXVec3 massLocalPose = null);
 
         [DllImport(dllName)]
         public static extern IntPtr SetRigidBodyDamping(IntPtr body, float linear, float angular);

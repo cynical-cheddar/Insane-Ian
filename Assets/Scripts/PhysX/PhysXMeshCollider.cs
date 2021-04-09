@@ -11,11 +11,11 @@ public class PhysXMeshCollider : PhysXCollider
     // Start is called before the first frame update
     public override void Setup()
     {
-        IntPtr vertexArray = PhysXLib.CreateMeshVertexArray();
+        IntPtr vertexArray = PhysXLib.CreateVectorArray();
 
         Vector3[] vertices = mesh.vertices;
         foreach (Vector3 vertex in vertices) {
-            PhysXLib.AddVertexToArray(vertexArray, new PhysXVec3(vertex));
+            PhysXLib.AddVectorToArray(vertexArray, new PhysXVec3(vertex));
         }
 
         IntPtr geom = IntPtr.Zero;

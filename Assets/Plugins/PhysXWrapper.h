@@ -164,8 +164,8 @@ extern "C" {
 
     physx::PxGeometry* CreateBoxGeometry(float halfX, float halfY, float halfZ);
     physx::PxGeometry* CreateSphereGeometry(float radius);
-    std::vector<physx::PxVec3>* CreateMeshVertexArray();
-	void AddVertexToArray(std::vector<physx::PxVec3>* vertexArray, physx::PxVec3* vertex);
+    std::vector<physx::PxVec3>* CreateVectorArray();
+	void AddVectorToArray(std::vector<physx::PxVec3>* vectorArray, physx::PxVec3* vector);
 	physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray);
     physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount);
 
