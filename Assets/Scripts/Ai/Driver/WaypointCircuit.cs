@@ -386,7 +386,7 @@ namespace UnityStandardAssets.Utility.Inspector
             }
         }
     }
-}
 #endif
+}
 
 
