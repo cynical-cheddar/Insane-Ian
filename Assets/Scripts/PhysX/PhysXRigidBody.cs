@@ -10,6 +10,7 @@ public class PhysXRigidBody : MonoBehaviour
     private bool isSetup = false;
 
     public IntPtr physXDynamicRigidBody { get; private set; }
+    private IntPtr vehicle = IntPtr.Zero;
 
     private PhysXSceneManager sceneManager;
 
@@ -68,14 +69,40 @@ public class PhysXRigidBody : MonoBehaviour
 
         PhysXLib.SetRigidBodyFlag(physXDynamicRigidBody, PhysXLib.PhysXRigidBodyFlag.eKINEMATIC, kinematic);
 
-        PhysXLib.SetRigidBodyMassAndInertia(physXDynamicRigidBody, mass, new PhysXVec3(centreOfMass));
+        PhysXLib.SetRigidBodyMassAndInertia(physXDynamicRigidBody, mass, new PhysXVec3(Vector3.zero));
         PhysXLib.SetRigidBodyDamping(physXDynamicRigidBody, linearDamping, angularDamping);
 
         PhysXCollider[] colliders = GetComponentsInChildren<PhysXCollider>(true);
 
         foreach (PhysXCollider collider in colliders) {
-            collider.Setup();
+            collider.Setup(this);
         }
+
+        PhysXWheelCollider[] wheels = GetComponentsInChildren<PhysXWheelCollider>(true);
+
+        if (wheels.Length > 0) {
+            IntPtr wheelSimData = PhysXLib.CreateWheelSimData(wheels.Length);
+            IntPtr[] suspensions = new IntPtr[wheels.Length];
+            IntPtr wheelPositions = PhysXLib.CreateVectorArray();
+
+            for (int i = 0; i < wheels.Length; i++) {
+                suspensions[i] = wheels[i].SetupInitialProperties();
+                PhysXLib.AddVectorToArray(wheelPositions, new PhysXVec3(wheels[i].wheelCentre));
+            }
+
+            PhysXLib.SetSuspensionSprungMasses(suspensions, wheels.Length, wheelPositions, new PhysXVec3(Vector3.zero), mass);
+
+            for (int i = 0; i < wheels.Length; i++) {
+                wheels[i].SetupSimData(wheelSimData, i);
+            }
+
+            vehicle = PhysXLib.CreateVehicleFromRigidBody(physXDynamicRigidBody, wheelSimData);
+
+            for (int i = 0; i < wheels.Length; i++) {
+                wheels[i].SetVehicle(vehicle);
+            }
+        }
+
     }
 
     public int AddCollider(PhysXCollider collider) {

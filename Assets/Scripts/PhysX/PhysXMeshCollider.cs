@@ -9,7 +9,7 @@ public class PhysXMeshCollider : PhysXCollider
     public bool convex = true;
 
     // Start is called before the first frame update
-    public override void Setup()
+    public override void Setup(PhysXRigidBody attachedRigidBody)
     {
         IntPtr vertexArray = PhysXLib.CreateVectorArray();
 
@@ -28,6 +28,6 @@ public class PhysXMeshCollider : PhysXCollider
 
         shape = PhysXLib.CreateShape(geom, physXMaterial);
 
-        base.Setup();
+        base.Setup(attachedRigidBody);
     }
 }

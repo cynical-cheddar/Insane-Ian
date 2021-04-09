@@ -45,7 +45,7 @@ public class PhysXCollider : MonoBehaviour
     public int shapeNum { get; private set; }
 
     // Start is called before the first frame update
-    public virtual void Setup()
+    public virtual void Setup(PhysXRigidBody attachedRigidBody)
     {
         Transform grandestParent = transform;
         while (grandestParent.parent != null) {
@@ -61,7 +61,6 @@ public class PhysXCollider : MonoBehaviour
         UInt32 collisionEventFlags = 0;
         if (hasOnCollisionEnterEvent) collisionEventFlags = 7;
         PhysXLib.SetCollisionFilterData(shape, (UInt32)ownLayers, (UInt32)collisionLayers, collisionEventFlags, 0);
-        attachedRigidbody = GetComponentInParent<PhysXRigidBody>();
-        shapeNum = attachedRigidbody.AddCollider(this);
+        shapeNum = attachedRigidBody.AddCollider(this);
     }
 }

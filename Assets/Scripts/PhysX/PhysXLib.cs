@@ -172,6 +172,18 @@ namespace PhysX {
         public static extern void SetWheelSimWheelShape(IntPtr wheelSimData, int wheelNum, int shapeNum);
 
         [DllImport(dllName)]
+        public static extern IntPtr CreateVehicleFromRigidBody(IntPtr body, IntPtr wheelSimData);
+
+        [DllImport(dllName)]
+	    public static extern IntPtr GetWheelSimData(IntPtr vehicle);
+
+        [DllImport(dllName)]
+	    public static extern IntPtr GetWheelDynData(IntPtr vehicle);
+
+        [DllImport(dllName)]
+	    public static extern void SetWheelDynTireData(IntPtr wheelDynData, int wheelNum, IntPtr tire);
+
+        [DllImport(dllName)]
         public static extern void RegisterCollisionCallback(CollisionCallback callback);
 
         [DllImport(dllName)]
