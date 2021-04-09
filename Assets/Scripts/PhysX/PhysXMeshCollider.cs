@@ -30,10 +30,4 @@ public class PhysXMeshCollider : PhysXCollider
 
         base.Setup();
     }
-
-    // Update is called once per frame
-    protected override void Update()
-    {
-        
-    }
 }

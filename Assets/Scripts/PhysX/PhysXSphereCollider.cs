@@ -15,10 +15,4 @@ public class PhysXSphereCollider : PhysXCollider
 
         base.Setup();
     }
-
-    // Update is called once per frame
-    protected override void Update()
-    {
-        
-    }
 }

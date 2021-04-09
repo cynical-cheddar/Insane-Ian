@@ -158,6 +158,8 @@ extern "C" {
 
     void CreatePhysics(bool trackAllocations);
 
+    void CreateVehicleEnvironment(physx::PxVec3* up, physx::PxVec3* forward);
+
     physx::PxScene* CreateScene(physx::PxVec3* gravity);
 
     physx::PxMaterial* CreateMaterial(float staticFriction, float dynamicFriction, float restitution);
@@ -178,12 +180,53 @@ extern "C" {
 
     void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
 
-    void AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body);
+    int AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body);
+
+    physx::PxVehicleWheelData* CreateWheelData();
+	void SetWheelRadius(physx::PxVehicleWheelData* wheel, physx::PxReal radius);
+	void SetWheelWidth(physx::PxVehicleWheelData* wheel, physx::PxReal width);
+	void SetWheelMass(physx::PxVehicleWheelData* wheel, physx::PxReal mass);
+	void SetWheelMomentOfInertia(physx::PxVehicleWheelData* wheel, physx::PxReal momentOfInertia);
+	void SetWheelDampingRate(physx::PxVehicleWheelData* wheel, physx::PxReal dampingRate);
+
+	physx::PxVehicleTireData* CreateTireData();
+	void SetTireLateralStiffnessMaxLoad(physx::PxVehicleTireData* tire, physx::PxReal maxLoad);
+	void SetTireMaxLateralStiffness(physx::PxVehicleTireData* tire, physx::PxReal maxStiffness);
+	void SetTireLongitudinalStiffnessScale(physx::PxVehicleTireData* tire, physx::PxReal stiffnessScale);
+	void SetTireBaseFriction(physx::PxVehicleTireData* tire, physx::PxReal friction);
+	void SetTireMaxFrictionSlipPoint(physx::PxVehicleTireData* tire, physx::PxReal slipPoint);
+	void SetTireMaxFriction(physx::PxVehicleTireData* tire, physx::PxReal friction);
+	void SetTirePlateuxSlipPoint(physx::PxVehicleTireData* tire, physx::PxReal slipPoint);
+	void SetTirePlateuxFriction(physx::PxVehicleTireData* tire, physx::PxReal friction);
+
+	physx::PxVehicleSuspensionData* CreateSuspensionData();
+	void SetSuspensionSpringStrength(physx::PxVehicleSuspensionData* suspension, physx::PxReal strength);
+	void SetSuspensionSpringDamper(physx::PxVehicleSuspensionData* suspension, physx::PxReal damper);
+	void SetSuspensionMaxCompression(physx::PxVehicleSuspensionData* suspension, physx::PxReal maxCompression);
+	void SetSuspensionMaxDroop(physx::PxVehicleSuspensionData* suspension, physx::PxReal maxDroop);
+	void SetSuspensionSprungMasses(physx::PxVehicleSuspensionData** suspensions, physx::PxU32 wheelCount, std::vector<physx::PxVec3>* wheelPositions, physx::PxVec3* centreOfMass, physx::PxReal mass);
+
+	physx::PxVehicleWheelsSimData* CreateWheelSimData(physx::PxU32 wheelCount);
+	void SetWheelSimWheelData(physx::PxVehicleWheelsSimData* wheelSimData, physx::PxU32 wheelNum, physx::PxVehicleWheelData* wheel);
+	void SetWheelSimTireData(physx::PxVehicleWheelsSimData* wheelSimData, physx::PxU32 wheelNum, physx::PxVehicleTireData* tire);
+	void SetWheelSimSuspensionData(physx::PxVehicleWheelsSimData* wheelSimData, physx::PxU32 wheelNum, physx::PxVehicleSuspensionData* suspension, physx::PxVec3* down);
+	void SetWheelSimWheelCentre(physx::PxVehicleWheelsSimData* wheelSimData, physx::PxU32 wheelNum, physx::PxVec3* centre);
+	void SetWheelSimForceAppPoint(physx::PxVehicleWheelsSimData* wheelSimData, physx::PxU32 wheelNum, physx::PxVec3* point);
+	void SetWheelSimQueryFilterData(physx::PxVehicleWheelsSimData* wheelSimData, physx::PxU32 wheelNum, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
+	void SetWheelSimWheelShape(physx::PxVehicleWheelsSimData* wheelSimData, physx::PxU32 wheelNum, physx::PxU32 shapeNum);
+
+	physx::PxVehicleNoDrive* CreateVehicleFromRigidBody(physx::PxRigidDynamic* body, physx::PxVehicleWheelsSimData* wheelSimData);
+
+	physx::PxVehicleWheelsSimData* GetWheelSimData(physx::PxVehicleWheels* vehicle);
+	physx::PxVehicleWheelsDynData* GetWheelDynData(physx::PxVehicleWheels* vehicle);
+	void SetWheelDynTireData(physx::PxVehicleWheelsDynData* wheelDynData, physx::PxU32 wheelNum, physx::PxVehicleTireData* tire);
 
     void RegisterCollisionCallback(CollisionCallback collisionEnterCallback);
 
     void SetRigidBodyMassAndInertia(physx::PxRigidBody* body, float density, const physx::PxVec3* massLocalPose = NULL);
     void SetRigidBodyDamping(physx::PxRigidBody* body, float linear, float angular);
+
+	void UpdateVehicleCentreOfMass(physx::PxTransform* oldCentre, physx::PxTransform* newCentre, physx::PxVehicleWheels* vehicle);
 
     void SetRigidBodyFlag(physx::PxRigidBody* body, physx::PxRigidBodyFlag::Enum flag, bool value);
 

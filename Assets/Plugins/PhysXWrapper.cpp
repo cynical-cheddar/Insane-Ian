@@ -745,19 +745,19 @@ extern "C" {
 		//gScene->addActor(*gGroundPlane);
 
 		//Create a vehicle that will drive on the plane.
-		VehicleDesc vehicleDesc = initVehicleDesc();
-		physx::PxVehicleNoDrive* gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCooking);
-		physx::PxTransform startTransform(physx::PxVec3(0, (vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), 0), physx::PxQuat(physx::PxIdentity));
-		gVehicleNoDrive->getRigidDynamicActor()->setGlobalPose(startTransform);
-		gScene->addActor(*gVehicleNoDrive->getRigidDynamicActor());
+		// VehicleDesc vehicleDesc = initVehicleDesc();
+		// physx::PxVehicleNoDrive* gVehicleNoDrive = createVehicleNoDrive(vehicleDesc, gPhysics, gCooking);
+		// physx::PxTransform startTransform(physx::PxVec3(0, (vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), 0), physx::PxQuat(physx::PxIdentity));
+		// gVehicleNoDrive->getRigidDynamicActor()->setGlobalPose(startTransform);
+		// gScene->addActor(*gVehicleNoDrive->getRigidDynamicActor());
 
 		//Set the vehicle to rest in first gear.
 		//Set the vehicle to use auto-gears.
-		gVehicleNoDrive->setToRestState();
+		// gVehicleNoDrive->setToRestState();
 
-		gVehicleModeTimer = 0.0f;
-		gVehicleOrderProgress = 0;
-		gVehicleInputData.setDigitalBrake(true);
+		// gVehicleModeTimer = 0.0f;
+		// gVehicleOrderProgress = 0;
+		// gVehicleInputData.setDigitalBrake(true);
 	}
 
 	physx::PxScene* CreateScene(physx::PxVec3* gravity) {
@@ -856,12 +856,43 @@ extern "C" {
 		shape->setSimulationFilterData(physx::PxFilterData(w0, w1, w2, w3));
 	}
 
-	void AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body) {
+	int AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body) {
 		body->attachShape(*shape);
+		return body->getNbShapes() - 1;
+	}
+
+	physx::PxVehicleWheelData* CreateWheelData() {
+		physx::PxVehicleWheelData* wheel = new physx::PxVehicleWheelData();
+		wheel->mMaxBrakeTorque = PX_MAX_F32 - 1;
+		wheel->mMaxHandBrakeTorque = PX_MAX_F32 - 1;
+		wheel->mMaxSteer = physx::PxPi * 2;
+		return wheel;
+	}
+
+	void SetWheelRadius(physx::PxVehicleWheelData* wheel, physx::PxReal radius) {
+		wheel->mRadius = radius;
+	}
+
+	void SetWheelWidth(physx::PxVehicleWheelData* wheel, physx::PxReal width) {
+		wheel->mWidth = width;
+	}
+
+	void SetWheelMass(physx::PxVehicleWheelData* wheel, physx::PxReal mass) {
+		wheel->mMass = mass;
+	}
+
+	void SetWheelMomentOfInertia(physx::PxVehicleWheelData* wheel, physx::PxReal momentOfInertia) {
+		wheel->mMOI = momentOfInertia;
+	}
+
+	void SetWheelDampingRate(physx::PxVehicleWheelData* wheel, physx::PxReal dampingRate) {
+		wheel->mDampingRate = dampingRate;
 	}
 
 	physx::PxVehicleTireData* CreateTireData() {
-		return new physx::PxVehicleTireData();
+		physx::PxVehicleTireData* tire = new physx::PxVehicleTireData();
+		tire->mFrictionVsSlipGraph[0][1] = 0;
+		return tire;
 	}
 
 	void SetTireLateralStiffnessMaxLoad(physx::PxVehicleTireData* tire, physx::PxReal maxLoad) {
@@ -876,7 +907,25 @@ extern "C" {
 		tire->mLongitudinalStiffnessPerUnitGravity = stiffnessScale;
 	}
 
-	void SetTire
+	void SetTireBaseFriction(physx::PxVehicleTireData* tire, physx::PxReal friction) {
+		tire->mFrictionVsSlipGraph[0][1] = friction;
+	}
+
+	void SetTireMaxFrictionSlipPoint(physx::PxVehicleTireData* tire, physx::PxReal slipPoint) {
+		tire->mFrictionVsSlipGraph[1][0] = slipPoint;
+	}
+
+	void SetTireMaxFriction(physx::PxVehicleTireData* tire, physx::PxReal friction) {
+		tire->mFrictionVsSlipGraph[1][1] = friction;
+	}
+
+	void SetTirePlateuxSlipPoint(physx::PxVehicleTireData* tire, physx::PxReal slipPoint) {
+		tire->mFrictionVsSlipGraph[2][0] = slipPoint;
+	}
+
+	void SetTirePlateuxFriction(physx::PxVehicleTireData* tire, physx::PxReal friction) {
+		tire->mFrictionVsSlipGraph[2][1] = friction;
+	}
 
 	physx::PxVehicleSuspensionData* CreateSuspensionData() {
 		return new physx::PxVehicleSuspensionData();
@@ -944,6 +993,10 @@ extern "C" {
 		physx::PxVehicleNoDrive* vehicle = physx::PxVehicleNoDrive::allocate(wheelSimData->getNbWheels());
 		vehicle->setup(gPhysics, body, *wheelSimData);
 		return vehicle;
+	}
+
+	physx::PxVehicleWheelsSimData* GetWheelSimData(physx::PxVehicleWheels* vehicle) {
+		return &vehicle->mWheelsSimData;
 	}
 
 	physx::PxVehicleWheelsDynData* GetWheelDynData(physx::PxVehicleWheels* vehicle) {

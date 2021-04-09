@@ -78,9 +78,9 @@ public class PhysXRigidBody : MonoBehaviour
         }
     }
 
-    public void AddCollider(PhysXCollider collider) {
+    public int AddCollider(PhysXCollider collider) {
         colliders.Add(collider.shape, collider);
-        PhysXLib.AttachShapeToRigidBody(collider.shape, physXDynamicRigidBody);
+        return PhysXLib.AttachShapeToRigidBody(collider.shape, physXDynamicRigidBody);
     }
 
     public PhysXCollider GetColliderFromShape(IntPtr shape) {

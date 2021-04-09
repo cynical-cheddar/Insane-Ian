@@ -40,6 +40,9 @@ namespace PhysX {
         private static extern void CreatePhysics(bool trackAllocations);
 
         [DllImport(dllName)]
+        private static extern void CreateVehicleEnvironment([In] PhysXVec3 up, [In] PhysXVec3 forward);
+
+        [DllImport(dllName)]
         public static extern IntPtr CreateScene([In] PhysXVec3 gravity);
 
         [DllImport(dllName)]
@@ -72,8 +75,6 @@ namespace PhysX {
         [DllImport(dllName)]
         public static extern void SetShapeLocalTransform(IntPtr shape, IntPtr transform);
 
-
-
         [DllImport(dllName)]
         public static extern IntPtr CreateDynamicRigidBody(IntPtr pose);
 
@@ -81,7 +82,94 @@ namespace PhysX {
         public static extern IntPtr SetCollisionFilterData(IntPtr shape, UInt32 w0, UInt32 w1, UInt32 w2, UInt32 w3);
 
         [DllImport(dllName)]
-        public static extern IntPtr AttachShapeToRigidBody(IntPtr shape, IntPtr body);
+        public static extern int AttachShapeToRigidBody(IntPtr shape, IntPtr body);
+
+        [DllImport(dllName)]
+        public static extern IntPtr CreateWheelData();
+
+        [DllImport(dllName)]
+        public static extern void SetWheelRadius(IntPtr wheel, float radius);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelWidth(IntPtr wheel, float width);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelMass(IntPtr wheel, float mass);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelMomentOfInertia(IntPtr wheel, float momentOfInertia);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelDampingRate(IntPtr wheel, float dampingRate);
+
+        [DllImport(dllName)]
+        public static extern IntPtr CreateTireData();
+
+        [DllImport(dllName)]
+        public static extern void SetTireLateralStiffnessMaxLoad(IntPtr tire, float maxLoad);
+
+        [DllImport(dllName)]
+        public static extern void SetTireMaxLateralStiffness(IntPtr tire, float maxStiffness);
+
+        [DllImport(dllName)]
+        public static extern void SetTireLongitudinalStiffnessScale(IntPtr tire, float stiffnessScale);
+
+        [DllImport(dllName)]
+        public static extern void SetTireBaseFriction(IntPtr tire, float friction);
+
+        [DllImport(dllName)]
+        public static extern void SetTireMaxFrictionSlipPoint(IntPtr tire, float slipPoint);
+
+        [DllImport(dllName)]
+        public static extern void SetTireMaxFriction(IntPtr tire, float friction);
+
+        [DllImport(dllName)]
+        public static extern void SetTirePlateuxSlipPoint(IntPtr tire, float slipPoint);
+
+        [DllImport(dllName)]
+        public static extern void SetTirePlateuxFriction(IntPtr tire, float friction);
+
+        [DllImport(dllName)]
+        public static extern IntPtr CreateSuspensionData();
+
+        [DllImport(dllName)]
+        public static extern void SetSuspensionSpringStrength(IntPtr suspension, float strength);
+
+        [DllImport(dllName)]
+        public static extern void SetSuspensionSpringDamper(IntPtr suspension, float damper);
+
+        [DllImport(dllName)]
+        public static extern void SetSuspensionMaxCompression(IntPtr suspension, float maxCompression);
+
+        [DllImport(dllName)]
+        public static extern void SetSuspensionMaxDroop(IntPtr suspension, float maxDroop);
+
+        [DllImport(dllName)]
+        public static extern void SetSuspensionSprungMasses(IntPtr[] suspensions, int wheelCount, IntPtr wheelPositions, [In] PhysXVec3 centreOfMass, float mass);
+
+        [DllImport(dllName)]
+        public static extern IntPtr CreateWheelSimData(int wheelCount);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelSimWheelData(IntPtr wheelSimData, int wheelNum, IntPtr wheel);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelSimTireData(IntPtr wheelSimData, int wheelNum, IntPtr tire);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelSimSuspensionData(IntPtr wheelSimData, int wheelNum, IntPtr suspension, [In] PhysXVec3 down);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelSimWheelCentre(IntPtr wheelSimData, int wheelNum, [In] PhysXVec3 centre);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelSimForceAppPoint(IntPtr wheelSimData, int wheelNum, [In] PhysXVec3 point);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelSimQueryFilterData(IntPtr wheelSimData, int wheelNum, int w0, int w1, int w2, int w3);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelSimWheelShape(IntPtr wheelSimData, int wheelNum, int shapeNum);
 
         [DllImport(dllName)]
         public static extern void RegisterCollisionCallback(CollisionCallback callback);
@@ -150,6 +238,7 @@ namespace PhysX {
             RegisterDebugLog(HandleDebugLog);
             SetupFoundation();
             CreatePhysics(true);
+            CreateVehicleEnvironment(new PhysXVec3(Vector3.up), new PhysXVec3(Vector3.forward));
             // IntPtr mat = CreateMaterial(0.5f, 0.5f, 0.6f);
             // IntPtr plane = CreateStaticPlane(new PhysXVec3(Vector3.zero), new PhysXVec3(Vector3.up), mat);
             // AddActorToScene(scene, plane);
