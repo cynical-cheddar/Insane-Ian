@@ -30,6 +30,8 @@ void Start()
 
 void FixedUpdate () //This has to be in fixed update or it wont get time to make skidmesh fully.
 	{
+		//	sideways slip will be an angle now, sorry Alex
+
 	WheelHit GroundHit; //variable to store hit data
 	wheel_col.GetGroundHit(out GroundHit );//store hit data into GroundHit
     var wheelSlipAmount = Mathf.Abs(GroundHit.sidewaysSlip);

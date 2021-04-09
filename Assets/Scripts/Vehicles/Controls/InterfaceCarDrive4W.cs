@@ -242,6 +242,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         bool lGrounded = left.GetGroundHit(out lHit);
         bool rGrounded = right.GetGroundHit(out rHit);
 
+        //  Can get suspension compression if tht's useful
+
         if (lGrounded) {
             lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
         }
