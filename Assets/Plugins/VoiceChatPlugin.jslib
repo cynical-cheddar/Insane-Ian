@@ -2,7 +2,8 @@ var ExampleLibraryPlugin = {
     $VCSharedData: {
         lastPeerId: null,
         peer: null, // own peer object
-        conns: []
+        conns: [],
+        mediaStream: null
     },
 
     initialize: function(id) {
@@ -33,7 +34,7 @@ var ExampleLibraryPlugin = {
         VCSharedData.peer.on('connection', function(conn) {
             // Connect to the other peer
             VCSharedData.conns.push(conn);
-            console.log("Connected to: " + conn.peer)
+            console.log("Connected from: " + conn.peer)
         });
 
         VCSharedData.peer.on('disconnected', function() {
@@ -52,7 +53,10 @@ var ExampleLibraryPlugin = {
 
         // Handle incoming call
         VCSharedData.peer.on('call', function(call) {
-            call.answer(navigator.mediaDevices.getUserMedia({audio: true, video: false}))
+            console.log("Recieved call.");
+            call.answer(VCSharedData.mediaStream);
+
+            console.log("Answered call.");
 
             call.on('stream', function(stream) {
                 // `stream` is the MediaStream of the remote peer.
@@ -71,10 +75,15 @@ var ExampleLibraryPlugin = {
         conn.on('open', function() {
             console.log("Connected to: " + conn.peer);  
         });
+
+        VCSharedData.mediaStream = navigator.mediaDevices.getUserMedia({audio: true, video: false});
     },
 
     call: function(recvID) {
-        var call = VCSharedData.peer.call(recvID, navigator.mediaDevices.getUserMedia({audio: true, video: false}));
+        console.log("Attempting to call: " + recvID);
+        var call = VCSharedData.peer.call(recvID, VCSharedData.mediaStream);
+
+        console.log("Called: " + recvID);
 
         call.on('stream', function(stream) {
             // `stream` is the MediaStream of the remote peer.
