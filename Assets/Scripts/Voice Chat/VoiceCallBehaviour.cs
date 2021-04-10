@@ -12,17 +12,12 @@ public class VoiceCallBehaviour : MonoBehaviour
     private static extern void initialize(string id);
 
     [DllImport("__Internal")]
-    private static extern void join(string id);
-
-    [DllImport("__Internal")]
     private static extern void call(string id);
 
     GamestateTracker gamestateTracker;
-    List<string> callerIDs;
 
     private void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
-        callerIDs = new List<string>();
         initialize($"{PhotonNetwork.CurrentRoom.Name}{PhotonNetwork.LocalPlayer.ActorNumber}");
     }
 
@@ -36,22 +31,10 @@ public class VoiceCallBehaviour : MonoBehaviour
             PlayerEntry player = gamestateTracker.players.GetAtIndex(i);
             if (player.id != PhotonNetwork.LocalPlayer.ActorNumber && player.isInVC) {
                 string callerID = PhotonNetwork.CurrentRoom.Name + player.id.ToString();
-                Debug.Log($"Attempting to call from Unity: {callerID}");
                 call(callerID);
-                //callerIDs.Add($"{PhotonNetwork.CurrentRoom.Name}{player.id}");
-                Debug.Log($"Called from Unity: {callerID}");
             }
             player.Release();
         }
-        //JoinVoiceCall();
     }
 
-    
-
-    /*void JoinVoiceCall() {
-        foreach (string callerID in callerIDs) {
-            call(callerID);
-            Debug.Log($"Trying to join call with ID: {callerID}");
-        }
-    }*/
 }
