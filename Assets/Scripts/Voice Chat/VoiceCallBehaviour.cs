@@ -35,18 +35,23 @@ public class VoiceCallBehaviour : MonoBehaviour
         for (int i = 0; i < gamestateTracker.players.count; i++) {
             PlayerEntry player = gamestateTracker.players.GetAtIndex(i);
             if (player.id != PhotonNetwork.LocalPlayer.ActorNumber && player.isInVC) {
-                join($"{PhotonNetwork.CurrentRoom.Name}{player.id}");
-                callerIDs.Add($"{PhotonNetwork.CurrentRoom.Name}{player.id}");
+                string callerID = PhotonNetwork.CurrentRoom.Name + player.id.ToString();
+                Debug.Log($"Attempting to call from Unity: {callerID}");
+                call(callerID);
+                //callerIDs.Add($"{PhotonNetwork.CurrentRoom.Name}{player.id}");
+                Debug.Log($"Called from Unity: {callerID}");
             }
             player.Release();
         }
-        JoinVoiceCall();
+        //JoinVoiceCall();
     }
 
-    void JoinVoiceCall() {
+    
+
+    /*void JoinVoiceCall() {
         foreach (string callerID in callerIDs) {
             call(callerID);
             Debug.Log($"Trying to join call with ID: {callerID}");
         }
-    }
+    }*/
 }

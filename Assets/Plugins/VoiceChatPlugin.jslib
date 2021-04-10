@@ -2,8 +2,7 @@ var ExampleLibraryPlugin = {
     $VCSharedData: {
         lastPeerId: null,
         peer: null, // own peer object
-        conns: [],
-        mediaStream: null
+        conns: []
     },
 
     initialize: function(id) {
@@ -53,15 +52,18 @@ var ExampleLibraryPlugin = {
 
         // Handle incoming call
         VCSharedData.peer.on('call', function(call) {
-            console.log("Recieved call.");
-            call.answer(VCSharedData.mediaStream);
-
-            console.log("Answered call.");
-
-            call.on('stream', function(stream) {
-                // `stream` is the MediaStream of the remote peer.
-                // Here you'd add it to an HTML video/canvas element.
-            });
+            console.log("Attempting to recieve call from: " + call.peer);
+            navigator.mediaDevices.getUserMedia({audio: true, video: false})
+                .then(function(stream) {
+                    call.answer(stream);
+                    console.log("Answered call from: " + call.peer);
+                    call.on('stream', function(remoteStream) {
+                        console.log('Recieved remote stream: ' + remoteStream);
+                    });
+                })
+                .catch(function(err) {
+                    console.error('Failed to get local stream', err);
+                });
         });
     },
 
@@ -80,20 +82,24 @@ var ExampleLibraryPlugin = {
     },
 
     call: function(recvID) {
-        console.log("Attempting to call: " + recvID);
-        var call = VCSharedData.peer.call(recvID, VCSharedData.mediaStream);
-
-        console.log("Called: " + recvID);
-
-        call.on('stream', function(stream) {
-            // `stream` is the MediaStream of the remote peer.
-            // Here you'd add it to an HTML video/canvas element.
-        });
+        console.log("Attempting to get mediaStream");
+        var callerID = Pointer_stringify(recvID);
+        navigator.mediaDevices.getUserMedia({audio: true, video: false})
+            .then(function(stream) {
+                console.log("Attempting to call: " + callerID);
+                const call = VCSharedData.peer.call(callerID, stream);
+                call.on('stream', function(remoteStream) {
+                    console.log("Called: " + callerID);
+                });
+            })
+            .catch(function(err) {
+                console.error('Failed to get local stream', err);
+            });
     },
 
     sendData: function(recvID, data) {
         for (i = 0; i < VCSharedData.conns.length; i++) {
-            if (VCSharedData.conns[i].peer == recvID) {
+            if (VCSharedData.conns[i].peer == Pointer_stringify(recvID)) {
                 if (VCSharedData.conns[i] && VCSharedData.conns[i].open) {
                     VCSharedData.conns[i].send(Pointer_stringify(data));
                     console.log("Sent: " + Pointer_stringify(data));
