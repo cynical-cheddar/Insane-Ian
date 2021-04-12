@@ -418,7 +418,7 @@ public class Weapon : Equipment
     {
         if (reloadType == ReloadType.byClip && reserveAmmo > 0)
         {
-            Debug.Log("reload salvo");
+
             currentCooldown = reloadTime;
 
             ReloadBehaviour reloadIcon = FindObjectOfType<ReloadBehaviour>();

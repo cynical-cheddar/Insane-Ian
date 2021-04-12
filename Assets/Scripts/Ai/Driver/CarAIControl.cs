@@ -87,6 +87,7 @@ using Random = UnityEngine.Random;
 
         IEnumerator ThreePointTurn()
         {
+            Debug.Log("ThreePointTurn");
             inThreePointTurn = true;
             float elapsedTime = 0;
             float maxTime = 1.5f;
@@ -107,8 +108,10 @@ using Random = UnityEngine.Random;
             while (elapsedTime<=maxTime)
             {
                 elapsedTime += Time.deltaTime;
+                CarDriver.StopAccellerate();
+                CarDriver.StopBrake();
                 CarDriver.Reverse();
-                CarDriver.Steer(-turnDir);
+                CarDriver.Steer(turnDir);
                 yield return new WaitForFixedUpdate();
             }
 
@@ -136,6 +139,8 @@ using Random = UnityEngine.Random;
             while (elapsedTime<=maxTime)
             {
                 elapsedTime += Time.deltaTime;
+  
+                CarDriver.StopBrake();
                 CarDriver.Accellerate();
                 CarDriver.Steer(turnDir);
                 yield return new WaitForFixedUpdate();
@@ -150,7 +155,7 @@ using Random = UnityEngine.Random;
         {
             if (circuitFound)
             {
-                if (m_Rigidbody.velocity.magnitude < 0.5)
+                if (m_Rigidbody.velocity.magnitude < 1)
                 {
                     stuckTimer += Time.deltaTime;
                 }
@@ -162,9 +167,9 @@ using Random = UnityEngine.Random;
                 if (stuckTimer > 1 && !inThreePointTurn)
                 {
                     int rand = Random.Range(0, 1);
-                    if(rand == 1)StartCoroutine(ThreePointTurn());
+                    StartCoroutine(ThreePointTurn());
                     
-                    else if(rand==2)StartCoroutine(ThreePointTurn2());
+                   // else if(rand==2)StartCoroutine(ThreePointTurn2());
                 }
 
                
