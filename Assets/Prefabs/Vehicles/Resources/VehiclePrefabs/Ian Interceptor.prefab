@@ -1219,9 +1219,9 @@ GameObject:
   - component: {fileID: 1428768756823611033}
   - component: {fileID: 7955468058547585520}
   - component: {fileID: 1178013403465005438}
-  - component: {fileID: 2637878302665447605}
+  - component: {fileID: 6601649729191596051}
   m_Layer: 8
-  m_Name: NitroAbility
+  m_Name: RammingAbility
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1276,7 +1276,7 @@ AudioSource:
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.3
+  m_Volume: 0.832
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1360,7 +1360,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2637878302665447605
+--- !u!114 &6601649729191596051
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1369,19 +1369,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 7582350633911034932}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a88c78cd34484e641a340756614bdfe3, type: 3}
+  m_Script: {fileID: 11500000, guid: 286a291bdbaddcc448363a263434bf78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 1
+  isLockOnAbility: 1
   activateAudioClip: {fileID: 8300000, guid: 4e319d28d05e3f04780b6cfc108ff96a, type: 3}
   maxCharge: 100
   currentCharge: 0
-  chargeUsedPerFire: 50
-  activationVelocityChange: 15
+  chargeUsedPerFire: 100
+  targetOverlayPrefab: {fileID: 2064778853600372251, guid: ca9aa98e9d8cccd44afd7b4878e8cff6,
+    type: 3}
+  maxTargetAngle: 25
+  maxDist: 40
+  targetChangeAudioclip: {fileID: 8300000, guid: d532aedb2df08cc48ac794e2af085d91,
+    type: 3}
+  rammingSpeed: 40
   loopingNitroPrefab: {fileID: 9188047499362097863, guid: 73b02fbdeb1805444b26b3e6009a6c48,
     type: 3}
-  newMass: 1000
-  newCollisiionResistance: 4
+  newMass: 4000
+  newRammingDamageMultiplier: 3
+  newRammingResistance: 20
 --- !u!1 &8105189967585025378
 GameObject:
   m_ObjectHideFlags: 0
@@ -1424,11 +1432,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22236.73
-    damper: 5336.8154
+    spring: 22236.885
+    damper: 5336.8525
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060288
+  m_ForceAppPointDistance: 1.2060269
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1500,11 +1508,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27829.076
-    damper: 6678.978
+    spring: 27829.234
+    damper: 6679.016
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560288
+  m_ForceAppPointDistance: 1.256027
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1722,6 +1730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 125
+  rammingDamageResistance: 1
   defaultCollisionResistance: 1
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
@@ -1747,10 +1756,12 @@ MonoBehaviour:
     width: 45
     height: 100
     collisionResistance: 0.25
+  rammingDamageMultiplier: 1
   smokeL: {fileID: 7980490870927354312}
   smokeM: {fileID: 999066652688031655}
   smokeH: {fileID: 7727078123409898187}
   tutorials: {fileID: 7724176753103133533}
+  hpm: {fileID: -3668055087405952436}
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
     type: 3}
 --- !u!114 &8173052085500956509
@@ -1896,7 +1907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99e279bd94652e64c95488893152f32e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityPrimary: {fileID: 2637878302665447605}
+  abilityPrimary: {fileID: 6601649729191596051}
   driverUltimateProgress: 0
   maxDriverUltimateProgress: 100
   usingUltimate: 0
@@ -1972,6 +1983,7 @@ MonoBehaviour:
     leftRightCoefficient: 0
     estimatedTimeToHit: 0
     estimatedDistanceToHit: 0
+    forwardBackValue: 0
 --- !u!114 &-3668055087405952436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2031,11 +2043,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22170.928
-    damper: 5321.023
+    spring: 22170.766
+    damper: 5320.9834
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060288
+  m_ForceAppPointDistance: 1.2060269
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2107,11 +2119,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27763.275
-    damper: 6663.1865
+    spring: 27763.11
+    damper: 6663.146
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2560288
+  m_ForceAppPointDistance: 1.256027
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2857,11 +2869,61 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 8103896753619876248}
+    - target: {fileID: 6491060584344204206, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446609921891927655, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 14.0000305
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446609921891927655, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.6900024
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446609921891927655, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.319992
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446609921891927655, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8691556
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446609921891927655, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.0027604334
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446609921891927655, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.49452862
+      objectReference: {fileID: 0}
+    - target: {fileID: 7446609921891927655, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0015706201
+      objectReference: {fileID: 0}
     - target: {fileID: 7608381510351402660, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 8103896753619876248}
+    - target: {fileID: 7717305851360221061, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.00082442083
+      objectReference: {fileID: 0}
+    - target: {fileID: 7717305851360221061, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.00034182507
+      objectReference: {fileID: 0}
     - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalPosition.y

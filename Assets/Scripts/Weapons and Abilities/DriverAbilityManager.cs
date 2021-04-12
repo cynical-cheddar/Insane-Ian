@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gamestate;
@@ -128,6 +129,15 @@ public class DriverAbilityManager : MonoBehaviour, IPunObservable
         driverPhotonView.RPC(nameof(ResetDriverAbilityManager_RPC), RpcTarget.All);
     }
 
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.GetComponent<VehicleHealthManager>() != null)
+        {
+            abilityPrimary.JustCollided();
+        }
+        else if(other.gameObject.layer == 6)abilityPrimary.JustCollided();
+    }
+
     [PunRPC]
     void ResetDriverAbilityManager_RPC()
     {
@@ -143,23 +153,33 @@ public class DriverAbilityManager : MonoBehaviour, IPunObservable
             driverUltimateProgress >= maxDriverUltimateProgress)
         {
             SetUsingDriverUltimate(true);
+            abilityPrimary.SetLockOn(false);
         }
 
         // if the ability is sustained, just burn it out
         if (isDriver && usingUltimate && !pauseableAbility)
         {
             FirePrimaryAbility();
+            abilityPrimary.SetLockOn(false);
         }
         
         // if we can pause the ability (ie hold down space)
         else if (isDriver && Input.GetButtonDown("Ultimate") && usingUltimate && pauseableAbility)
         {
             FirePrimaryAbility();
+            abilityPrimary.SetLockOn(false);
         }
 
         if (isDriver && Input.GetButtonUp("Ultimate") && usingUltimate && pauseableAbility)
         {
             CeasePrimaryAbility();
+            abilityPrimary.SetLockOn(false);
+        }
+
+        if (!usingUltimate &&
+            driverUltimateProgress >= maxDriverUltimateProgress && isDriver && abilityPrimary.isLockOnAbility)
+        {
+            abilityPrimary.SetLockOn(true);
         }
 
         

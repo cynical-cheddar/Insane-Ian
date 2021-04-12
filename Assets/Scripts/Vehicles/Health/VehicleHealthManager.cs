@@ -18,6 +18,7 @@ public class VehicleHealthManager : CollidableHealthManager
     protected Weapon.WeaponDamageDetails _rammingDetails;
 
     public GameObject tutorials;
+    public HotPotatoManager hpm;
 
     protected PlayerTransformTracker playerTransformTracker;
     
@@ -220,6 +221,7 @@ public class VehicleHealthManager : CollidableHealthManager
         // Update gamestate
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
+        hpm.removePotato();
         team.Release();
         // update my deaths
         if (updateDeath)
@@ -272,15 +274,19 @@ public class VehicleHealthManager : CollidableHealthManager
         }
         y = 0.9f;
         z = Random.Range(0, 2f);
+
+        if (lastHitDetails.damageType != Weapon.DamageType.ramming)
+        {
+            Vector3 explodePos = new Vector3(x, y, z);
+            Vector3 newCom = new Vector3(0, 1.3f, 0);
+            rb.centerOfMass = newCom;
+            rb.angularDrag = 0.1f;
+            rb.AddForce(explodePos * rb.mass * 10f, ForceMode.Impulse);
+            rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
+        }
+
         smokeM.Play();
         smokeH.Play();
-
-        Vector3 explodePos = new Vector3(x, y, z);
-        Vector3 newCom = new Vector3(0, 1.3f, 0);
-        rb.centerOfMass = newCom;
-        rb.angularDrag = 0.1f;
-        rb.AddForce(explodePos*rb.mass * 10f, ForceMode.Impulse);
-        rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
         StartCoroutine(stopControls(1.7f));
     }
 
@@ -332,6 +338,7 @@ public class VehicleHealthManager : CollidableHealthManager
 
         DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
         driverAbilityManager.Reset();
+        hpm.canPickupPotato = true;
 
         smokeL.Stop();
         smokeM.Stop();

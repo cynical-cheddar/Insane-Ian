@@ -23,7 +23,8 @@ public class HotPotatoManager : MonoBehaviour
     {
         isPotato = false;
         CancelInvoke("buffs");
-        PhotonNetwork.Instantiate("HotPotatoGO", gameObject.transform.position, Quaternion.identity, 0);
+        Vector3 pos = gameObject.transform.position + new Vector3(0.0f, 1.5f, 0.0f);
+        PhotonNetwork.Instantiate("HotPotatoGO", pos, Quaternion.identity, 0);
 
 
     }

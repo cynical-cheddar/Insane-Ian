@@ -37,6 +37,7 @@ public class Weapon : Equipment
         public DamageType damageType;
         public float damage;
         public Vector3 localHitPoint;
+        
         public WeaponDamageDetails(string nickName, int id, int teamId ,DamageType dt, float d, Vector3 localHp)
         {
             sourcePlayerId = id;
