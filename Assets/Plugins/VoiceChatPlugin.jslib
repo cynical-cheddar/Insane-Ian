@@ -13,8 +13,8 @@ var ExampleLibraryPlugin = {
             key: 'peerjs',
             debug: 3,
             config: {'iceServers': [
-                {url: 'stun:34.105.198.244', username: 'ubuntu', credential: 'admin'},
-                {url: 'turn:34.105.198.244', username: 'ubuntu', credential: 'admin'}
+                {urls: 'stun:34.105.169.58'},
+                {urls: 'turn:34.105.169.58', username: 'turnusername', credential: 'turnpassword'}
             ]}
         });
 
