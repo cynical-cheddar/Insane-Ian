@@ -27,7 +27,7 @@
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
-#include "windows/PsWindowsInclude.h"
+#include "../../include/windows/PsWindowsInclude.h"
 #include "../../include/PsFoundation.h"
 #include "../../include/PsUserAllocated.h"
 #include "../../include/PsMutex.h"

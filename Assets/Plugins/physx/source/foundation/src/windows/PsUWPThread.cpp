@@ -33,7 +33,7 @@
 
 #include "../../../../include/foundation/PxAssert.h"
 
-#include "windows/PsWindowsInclude.h"
+#include "../../include/windows/PsWindowsInclude.h"
 #include "../../include/PsThread.h"
 
 using namespace Platform;

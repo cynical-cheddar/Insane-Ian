@@ -28,7 +28,7 @@
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
 #include "../../include/PsTime.h"
-#include "windows/PsWindowsInclude.h"
+#include "../../include/windows/PsWindowsInclude.h"
 
 namespace
 {

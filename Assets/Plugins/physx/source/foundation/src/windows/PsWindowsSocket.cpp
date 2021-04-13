@@ -29,7 +29,7 @@
 
 #include "../../../../include/foundation/PxIntrinsics.h"
 
-#include "windows/PsWindowsInclude.h"
+#include "../../include/windows/PsWindowsInclude.h"
 #include "../../include/PsSocket.h"
 #include "../../include/PsThread.h"
 #include "../../include/PsArray.h"
