@@ -89,7 +89,8 @@ https://developercommunity.visualstudio.com/content/problem/66047/possible-compi
 		#if defined PX_PHYSX_COMMON_EXPORTS
 			#define PX_PHYSX_COMMON_API __declspec(dllexport)
 		#else
-			#define PX_PHYSX_COMMON_API __declspec(dllimport)
+			//#define PX_PHYSX_COMMON_API __declspec(dllimport)
+			#define PX_PHYSX_COMMON_API
 		#endif
 	#elif PX_UNIX_FAMILY
 		#define PX_PHYSX_COMMON_API PX_UNIX_EXPORT

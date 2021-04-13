@@ -81,7 +81,7 @@ EXT_SOURCE := $(filter-out $(USED_EXT_SOURCE), $(EXT_SOURCE))
 CHAR_SOURCE +=  $(shell find $(PHYSX_SOURCE) -type f -path '*/physxcharacterkinematic/*' -name '*.cpp')
 SOURCE := $(filter-out $(CHAR_SOURCE), $(SOURCE))
 
-PHYSX_DEFS := -D NO_AUTO_DEFS -D _DEBUG
+PHYSX_DEFS := -D NO_AUTO_DEFS -D _DEBUG -D __STDC_LIMIT_MACROS
 #PHYSX_DEFS := -D _DEBUG
 
 ifeq ($(OS), Windows_NT)
