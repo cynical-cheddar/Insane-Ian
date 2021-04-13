@@ -44,9 +44,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // called on the master client when the game is fully set up
     void GameFullySetupMaster()
     {
+        
         // remove overlay
         GetComponent<PhotonView>().RPC(nameof(RemoveSpawningPlayersCanvas), RpcTarget.AllBuffered);
         GetComponent<PhotonView>().RPC(nameof(StartCountdown), RpcTarget.AllBuffered);
+        // start scoreboard stuff
+        
         // activate all cars in time
         Invoke(nameof(ActivateVehicles), 4f);
         
@@ -176,7 +179,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void RemoveSpawningPlayersCanvas()
     {
+        ScoreboardBehaviour sb = FindObjectOfType<ScoreboardBehaviour>();
+        sb.StartScoreboard();
         if(spawningPlayersScreenInstance!=null) Destroy(spawningPlayersScreenInstance);
+        
+        
     }
 
     public void CallRespawnVehicle(float time, int teamId)
