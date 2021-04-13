@@ -10,6 +10,9 @@ public class PhysXCollider : MonoBehaviour
         None = 0,
         Default = 1,
         Wheel   = (1 << 1),
+        Obstacle   = (1 << 2),
+        Player   = (1 << 3),
+        Projectile   = (1 << 4),
     }
 
     public CollisionLayer ownLayers = CollisionLayer.Default;
