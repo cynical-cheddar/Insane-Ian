@@ -31,8 +31,13 @@ public class CollidableHealthManager : HealthManager
     protected float baseCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
 
-    public List<CollisionArea> collisionAreas;
+    [Header("Collision area 0 should be front")]
+    public List<CollisionArea> collisionAreas = new List<CollisionArea>();
 
+    protected bool resetting = false;
+    
+    public float rammingDamageMultiplier = 1f;
+    
     protected new void Start(){
         baseCollisionResistance = deathForce / maxHealth;
         base.Start();
@@ -56,20 +61,39 @@ public class CollidableHealthManager : HealthManager
 
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
+            if(otherVehicleManager!=null)damage  *= otherVehicleManager.rammingDamageMultiplier;
             //Debug.Log(damage);
-
+    
             // instantiate damage sound over network
             if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+
+            damage = damage / rammingDamageResistance;
+            
+            if (GetComponent<COMDropper>() != null && !resetting)
+            {
+                resetting = true;
+                Rigidbody rb = GetComponent<Rigidbody>();
+                StartCoroutine(ResetPreviousCOM(rb.centerOfMass, 1f));
+                rb.centerOfMass = Vector3.zero;
+            }
             
             if (otherVehicleManager != null) {
                 Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
                 rammingDetails.damage = damage;
+                
                 TakeDamage(rammingDetails);
             }
             else {
                 TakeDamage(damage);
             }
         }
+    }
+
+    protected IEnumerator ResetPreviousCOM(Vector3 com, float t)
+    {
+        yield return new WaitForSeconds(t);
+        GetComponent<Rigidbody>().centerOfMass = com;
+        resetting = false;
     }
 
     protected float CalculateCollisionDamage(Vector3 collisionForce, Vector3 collisionDirection, bool hitVehicle) {

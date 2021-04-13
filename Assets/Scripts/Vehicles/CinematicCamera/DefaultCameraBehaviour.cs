@@ -21,6 +21,7 @@ public class DefaultCameraBehaviour : BaseCameraBehaviour
         Update_TimeoutTimer();
         Update_Lock();
         // do environmental crash trigger
+        Update_CheckForCrash();
         Update_EnvironmentCrashDetectSensorActions();
     }
 

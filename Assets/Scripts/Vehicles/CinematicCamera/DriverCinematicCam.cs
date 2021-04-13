@@ -25,7 +25,13 @@ public class DriverCinematicCam : MonoBehaviour
     public CinemachineVirtualCamera environmentWarning1Right;
     
     
-    public enum Cams {defaultCamEnum, environmentCrashLeftEnum, environmentCrashCentreEnum, environmentCrashRightEnum,environmentWarning1LeftEnum, environmentWarning1CentreEnum, environmentWarning1RightEnum }
+    public CinemachineVirtualCamera carCrashFrontLeft;
+    public CinemachineVirtualCamera carCrashFrontRight;
+    
+    public CinemachineVirtualCamera carCrashBackLeft;
+    public CinemachineVirtualCamera carCrashBackRight;
+    
+    public enum Cams {defaultCamEnum, environmentCrashLeftEnum, environmentCrashCentreEnum, environmentCrashRightEnum,environmentWarning1LeftEnum, environmentWarning1CentreEnum, environmentWarning1RightEnum, carCrashFrontLeftEnum, carCrashFrontRightEnum, carCrashBackLeftEnum, carCrashBackRightEnum }
 
     [Serializable]
     public struct FovSpeedState
@@ -73,8 +79,12 @@ public class DriverCinematicCam : MonoBehaviour
         if(cam == Cams.environmentWarning1LeftEnum) SetCam(environmentWarning1Left);
         if(cam == Cams.environmentWarning1CentreEnum) SetCam(environmentWarning1Centre);
         if(cam == Cams.environmentWarning1RightEnum) SetCam(environmentWarning1Right);
-
+        if(cam == Cams.carCrashBackLeftEnum) SetCam(carCrashBackLeft);
+        if(cam == Cams.carCrashBackRightEnum) SetCam(carCrashBackRight);
+        if(cam == Cams.carCrashFrontLeftEnum) SetCam(carCrashFrontLeft);
+        if(cam == Cams.carCrashFrontRightEnum) SetCam(carCrashFrontRight);
     }
+
 
     void SetCamFovs()
     {
@@ -93,6 +103,12 @@ public class DriverCinematicCam : MonoBehaviour
 
     }
 
+    Transform GetCrashTarget()
+    {
+       Transform t = _driverCrashDetector.currentSensorReport.lastCrashedPlayer;
+        return t;
+    }
+
     public void SetCam(CinemachineVirtualCamera cam)
     {
         defaultCam.enabled = false;
@@ -104,6 +120,16 @@ public class DriverCinematicCam : MonoBehaviour
         environmentWarning1Centre.enabled = false;
         environmentWarning1Right.enabled = false;
 
+        carCrashBackLeft.enabled = false;
+        carCrashBackRight.enabled = false;
+        carCrashFrontLeft.enabled = false;
+        carCrashFrontRight.enabled = false;
+
+        if (cam == carCrashBackLeft) carCrashBackLeft.m_LookAt = GetCrashTarget();
+        if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = GetCrashTarget();
+        if (cam == carCrashFrontLeft) carCrashFrontLeft.m_LookAt = GetCrashTarget();
+        if (cam == carCrashFrontRight) carCrashFrontRight.m_LookAt = GetCrashTarget();
+        
         cam.enabled = true;
     }
 
