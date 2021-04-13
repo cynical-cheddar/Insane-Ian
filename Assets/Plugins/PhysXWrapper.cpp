@@ -2,7 +2,7 @@
 
 #define PX_RELEASE(x)	if(x) {x->release(); x = NULL;}
 
-DebugLog dl = nullptr;
+DebugLog dl = NULL;
 
 physx::PxFoundation* gFoundation = NULL;
 
@@ -30,7 +30,7 @@ CollisionCallback collisionCallback = NULL;
 TriggerCallback triggerCallback = NULL;
 
 void debugLog(const std::string str) {
-	if (dl != nullptr) {
+	if (dl != NULL) {
 		const char* stringPtr = str.c_str();
 		int length = strlen(stringPtr);
 
