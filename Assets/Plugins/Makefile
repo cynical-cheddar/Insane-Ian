@@ -489,6 +489,15 @@ SOURCE := $(filter-out $(LINUX_SOURCE), $(SOURCE))
 SHARED_FLAG := -shared
 LIBEXT := .dylib
 LIBPREF := 
+LIBS := macLibs/libPhysXExtensions_static_64.a
+LIBS += macLibs/libPhysXFoundation_static_64.a
+LIBS += macLibs/libPhysXCooking_static_64.a
+LIBS += macLibs/libPhysXCharacterKinematic_static_64.a
+LIBS += macLibs/libPhysX_static_64.a
+LIBS += macLibs/libPhysXPvdSDK_static_64.a
+LIBS += macLibs/libPhysXVehicle_static_64.a
+LIBS += macLibs/libPhysXCommon_static_64.a
+#LIBS := -LmacLibs
 endif
 
 
@@ -496,9 +505,11 @@ OBJECT := $(patsubst $(PHYSX_SOURCE)/%.cpp, $(PHYSX_BUILD)/%.o, $(SOURCE))
 
 default: buildLibrary
 
-buildLibrary: $(OBJECT)
+#buildLibrary: $(OBJECT)
+buildLibrary:
 	$(CXX) $(PHYSX_DEFS) -ggdb -g3 -c -o $(NAME).o $(NAME).cpp $(IMPORT_FLAGS)
-	$(CXX) $(SHARED_FLAG) -ggdb -g3 -o $(LIBPREF)$(NAME)$(LIBEXT) $(NAME).o $(OBJECT)
+#	$(CXX) $(SHARED_FLAG) -ggdb -g3 -o $(LIBPREF)$(NAME)$(LIBEXT) $(NAME).o $(OBJECT)
+	$(CXX) $(SHARED_FLAG) -ggdb -g3 -o $(LIBPREF)$(NAME)$(LIBEXT) $(NAME).o $(LIBS)
 	rm $(NAME).o
 
 clean:
