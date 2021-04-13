@@ -56,10 +56,11 @@ public class WeaponTestFireController : MonoBehaviour
             if (gunnerPhotonView.IsMine)
             {
                 Ray ray = new Ray(cam.position, cam.forward); 
+                RaycastHit hit; //From camera to hitpoint, not as curent
                 Transform hitTransform;
                 Vector3 hitVector;
                 hitTransform = FindClosestHitObject(ray, out hitVector);
-                Physics.Raycast(ray.origin, ray.direction, 999);
+                Physics.Raycast(ray.origin, ray.direction, out hit, 999);
                 Vector3 hp;
                 
                 if (hitTransform == null)
