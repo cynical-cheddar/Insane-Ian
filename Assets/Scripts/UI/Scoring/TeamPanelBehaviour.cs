@@ -17,7 +17,6 @@ public class TeamPanelBehaviour : MonoBehaviour
     public bool isCurrentTeam = false;
 
     Vector3 initialPosition;
-    public RectTransform rectTransform;
 
     private void Start() {
         Debug.Log(" scoreboard team panel start called");
