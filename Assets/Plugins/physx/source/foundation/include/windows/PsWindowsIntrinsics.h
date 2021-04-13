@@ -30,7 +30,7 @@
 #ifndef PSFOUNDATION_PSWINDOWSINTRINSICS_H
 #define PSFOUNDATION_PSWINDOWSINTRINSICS_H
 
-#include "Ps.h"
+#include "../Ps.h"
 #include "../../../include/foundation/PxAssert.h"
 
 // this file is for internal intrinsics - that is, intrinsics that are used in
