@@ -29,6 +29,9 @@ public class TeamPanelBehaviour : MonoBehaviour
 
     public void UpdateTransform(bool isCurrentTeam) {
         Debug.Log(" scoreboard team panel update transform called");
+        Debug.Log(" parentPanel: " + parentPanel);
+        Debug.Log(" parentPanel.transform: " + parentPanel.transform);
+        Debug.Log(" parentTeamPanelBehaviour: " + parentTeamPanelBehaviour);
         this.isCurrentTeam = isCurrentTeam;
         if (isFirstPanel) {
             if (isCurrentTeam) {
