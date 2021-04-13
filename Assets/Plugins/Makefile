@@ -500,6 +500,9 @@ LIBS += macLibs/libPhysXCommon_static_64.a
 #LIBS := -LmacLibs
 endif
 
+ifeq ($(WINDOWS_BUILD), yes)
+CXX := x86_64-w64-mingw32-g++
+endif
 
 OBJECT := $(patsubst $(PHYSX_SOURCE)/%.cpp, $(PHYSX_BUILD)/%.o, $(SOURCE))
 
