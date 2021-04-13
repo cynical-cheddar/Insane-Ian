@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Cinemachine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -150,7 +151,14 @@ public class Weapon : Equipment
 
     [SerializeField] protected GameObject missImpactParticle;
 
-    
+    [SerializeField] protected float cameraShakeAmplitude = 2f;
+    [SerializeField] protected float cameraShakeDuration = 0.1f;
+
+    protected CinemachineVirtualCamera turretCam;
+    private CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin;
+    protected DriverCinematicCam driverCamScript;
+    protected float shakeTimerMax = 0;
+    protected float shakeTimerCur= 0;
     protected void Awake()
     {
         defaultSalvoSize = salvoSize;
@@ -160,6 +168,24 @@ public class Weapon : Equipment
         defaultAmmoPerShot = ammoPerShot;
         defaultUnlimitedAmmo = unlimitedAmmo;
         defaultReserveAmmo = reserveAmmo;
+
+        turretCam = transform.root.GetComponentInChildren<PlayerGunnerController>().camera;
+        cinemachineBasicMultiChannelPerlin = turretCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        driverCamScript = transform.root.GetComponentInChildren<DriverCinematicCam>();
+
+    }
+
+
+
+
+
+    protected void ShakeCameras(float intensity, float time)
+    {
+
+        shakeTimerMax = time;
+        shakeTimerCur = 0;
+        cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
+        
     }
 
     public virtual void ResetWeaponToDefaults()
@@ -380,6 +406,18 @@ public class Weapon : Equipment
     {
         timeSinceLastFire += Time.deltaTime;
         
+        shakeTimerCur += Time.deltaTime;
+        if (isSetup && shakeTimerCur <= shakeTimerMax)
+        {
+            if (gunnerWeaponManager.currentWeaponControlGroup.weapons.Contains(this))
+            {
+                cinemachineBasicMultiChannelPerlin.m_AmplitudeGain =
+                    Mathf.Lerp(cameraShakeAmplitude, 0f, (shakeTimerCur / shakeTimerMax));
+            }
+        }
+
+
+
         if (currentCooldown >= 0)
         {
             currentCooldown -= Time.deltaTime;
