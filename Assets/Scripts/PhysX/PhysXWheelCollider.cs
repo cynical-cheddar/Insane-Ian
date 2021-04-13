@@ -12,25 +12,72 @@ public class PhysXWheelCollider : MonoBehaviour
     public Vector3 forceAppPoint = Vector3.up * 0.1f;
     public Vector3 center = Vector3.zero;
     public float suspensionDistance = 0.2f;
-    public float suspensionSpringStrength = 10000f;
-    public float suspensionSpringDamper = 5000f;
+    public float suspensionSpringStrength = 10000;
+    public float suspensionSpringDamper = 5000;
     public float suspensionSpringTargetPosition = 0.5f;
+    public float baseForwardFriction = 5;
     public float extremumForwardSlip = 1;
-    public float extremumForwardFriction = 1;
+    public float extremumForwardFriction = 10;
     public float asymptoteForwardSlip = 2;
-    public float asymptoteForwardFriction = 0.5f;
-    public float forwardStiffness = 1;
+    public float asymptoteForwardFriction = 5;
+    public float forwardStiffness = 1000;
     public float asymptoteSidewaysTireLoad = 2;
-    public float asymptoteSidewaysStiffness = 1;
+
+    [SerializeField]
+    private float _asymptoteSidewaysStiffness = 10;
+    public float asymptoteSidewaysStiffness {
+        get {
+            return _asymptoteSidewaysStiffness;
+        }
+        set {
+            _asymptoteSidewaysStiffness = value;
+
+            PhysXLib.SetTireMaxLateralStiffness(tire, _asymptoteSidewaysStiffness);
+            PhysXLib.SetWheelSimTireData(wheelSimData, wheelNum, tire);
+        }
+    }
+
+    private float _brakeTorque = 0;
+    [HideInInspector]
+    public float brakeTorque {
+        get {
+            return _brakeTorque;
+        }
+        set {
+            _brakeTorque = value;
+
+            PhysXLib.SetWheelBrake(vehicle, wheelNum, _brakeTorque);
+        }
+    }
 
     [HideInInspector]
-    public float brakeTorque = 0;
-    [HideInInspector]
     public bool isGrounded = true;
+
+    private float _motorTorque = 0;
     [HideInInspector]
-    public float motorTorque = 0;
+    public float motorTorque {
+        get {
+            return _motorTorque;
+        }
+        set {
+            _motorTorque = value;
+
+            PhysXLib.SetWheelDrive(vehicle, wheelNum, _motorTorque);
+        }
+    }
+
+    private float _steerAngle = 0;
     [HideInInspector]
-    public float steerAngle = 0;
+    public float steerAngle {
+        get {
+            return _steerAngle;
+        }
+        set {
+            _steerAngle = value;
+
+            PhysXLib.SetWheelSteer(vehicle, wheelNum, _steerAngle);
+        }
+    }
 
     public Vector3 wheelCentre { get; private set; }
 
@@ -39,9 +86,11 @@ public class PhysXWheelCollider : MonoBehaviour
     private IntPtr suspension = IntPtr.Zero;
 
     private IntPtr vehicle = IntPtr.Zero;
+    private IntPtr wheelSimData = IntPtr.Zero;
+    private int wheelNum = 0;
 
     public IntPtr SetupInitialProperties() {
-        wheelCentre = transform.position + transform.up * -suspensionDistance * suspensionSpringTargetPosition;
+        wheelCentre = Vector3.up * -suspensionDistance * suspensionSpringTargetPosition;
 
         wheel = PhysXLib.CreateWheelData();
         PhysXLib.SetWheelMass(wheel, mass);
@@ -51,14 +100,14 @@ public class PhysXWheelCollider : MonoBehaviour
         PhysXLib.SetWheelWidth(wheel, width);
 
         tire = PhysXLib.CreateTireData();
-        PhysXLib.SetTireBaseFriction(tire, 0);
+        PhysXLib.SetTireBaseFriction(tire, 5);
         PhysXLib.SetTireMaxFrictionSlipPoint(tire, extremumForwardSlip);
         PhysXLib.SetTireMaxFriction(tire, extremumForwardFriction);
         PhysXLib.SetTirePlateuxSlipPoint(tire, asymptoteForwardSlip);
         PhysXLib.SetTirePlateuxFriction(tire, asymptoteForwardFriction);
         PhysXLib.SetTireLongitudinalStiffnessScale(tire, forwardStiffness);
         PhysXLib.SetTireLateralStiffnessMaxLoad(tire, asymptoteSidewaysTireLoad);
-        PhysXLib.SetTireMaxLateralStiffness(tire, asymptoteSidewaysStiffness);
+        PhysXLib.SetTireMaxLateralStiffness(tire, _asymptoteSidewaysStiffness);
 
         suspension = PhysXLib.CreateSuspensionData();
         PhysXLib.SetSuspensionMaxCompression(suspension, suspensionDistance * suspensionSpringTargetPosition);
@@ -70,8 +119,19 @@ public class PhysXWheelCollider : MonoBehaviour
     }
 
     public void SetupSimData(IntPtr wheelSimData, int wheelNum) {
-        PhysXLib.SetWheelSimForceAppPoint(wheelSimData, wheelNum, new PhysXVec3(wheelCentre + forceAppPoint));
-        PhysXLib.SetWheelSimWheelCentre(wheelSimData, wheelNum, new PhysXVec3(wheelCentre));
+        this.wheelNum = wheelNum;
+
+        Transform grandestParent = transform;
+        while (grandestParent.parent != null) {
+            grandestParent = grandestParent.parent;
+        }
+
+        PhysXVec3 wheelCentrePos = new PhysXVec3(grandestParent.InverseTransformPoint(transform.TransformPoint(wheelCentre)));
+        PhysXVec3 forceAppPos = new PhysXVec3(grandestParent.InverseTransformPoint(transform.TransformPoint(wheelCentre + forceAppPoint)));
+        //PhysXQuat rotation = new PhysXQuat(transform.rotation * Quaternion.Inverse(grandestParent.rotation));
+
+        PhysXLib.SetWheelSimForceAppPoint(wheelSimData, wheelNum, forceAppPos);
+        PhysXLib.SetWheelSimWheelCentre(wheelSimData, wheelNum, wheelCentrePos);
         PhysXLib.SetWheelSimWheelData(wheelSimData, wheelNum, wheel);
         PhysXLib.SetWheelSimTireData(wheelSimData, wheelNum, tire);
         PhysXLib.SetWheelSimSuspensionData(wheelSimData, wheelNum, suspension, new PhysXVec3(-transform.up));
@@ -80,5 +140,64 @@ public class PhysXWheelCollider : MonoBehaviour
 
     public void SetVehicle(IntPtr vehicle) {
         this.vehicle = vehicle;
+
+        wheelSimData = PhysXLib.GetWheelSimData(vehicle);
+    }
+
+    public void UpdateData() {
+        wheelCentre = Vector3.up * (PhysXLib.GetSuspensionCompression(vehicle, wheelNum) - suspensionDistance * suspensionSpringTargetPosition);
+    }
+
+    void OnDrawGizmos() {
+        if (Application.isPlaying) {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.TransformPoint(wheelCentre), radius);
+
+            Transform grandestParent = transform;
+            while (grandestParent.parent != null) {
+                grandestParent = grandestParent.parent;
+            }
+            PhysXVec3 position = new PhysXVec3(Vector3.zero);
+            PhysXQuat rotation = new PhysXQuat(Quaternion.identity);
+            PhysXLib.GetWheelTransform(vehicle, wheelNum, position, rotation);
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(grandestParent.TransformPoint(position.ToVector()), radius);
+        }
+    }
+
+    public bool doSteer = false;
+    public float oldAsymptoteSidewaysStiffness;
+
+    void Update() {
+        if (Input.GetKey(KeyCode.Space)) {
+            asymptoteSidewaysStiffness = 5;
+        }
+        else {
+            asymptoteSidewaysStiffness = oldAsymptoteSidewaysStiffness;
+        }
+
+        if (doSteer) {
+
+            if (Input.GetKey(KeyCode.A)) {
+                steerAngle = -0.35f;
+            }
+            else if (Input.GetKey(KeyCode.D)) {
+                steerAngle = 0.35f;
+            }
+            else {
+                steerAngle = 0;
+            }
+        }
+        else {
+            if (Input.GetKey(KeyCode.W)) {
+                motorTorque = 2000;
+            }
+            else if (Input.GetKey(KeyCode.S)) {
+                motorTorque = -2000;
+            }
+            else {
+                motorTorque = 0;
+            }
+        }
     }
 }

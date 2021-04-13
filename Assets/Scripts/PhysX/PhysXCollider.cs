@@ -8,8 +8,8 @@ public class PhysXCollider : MonoBehaviour
     [Flags]
     public enum CollisionLayer {
         None = 0,
-        Default = 0b_0000_0000_0000_0001,
-        Wheel   = 0b_0000_0000_0000_0010,
+        Default = 1,
+        Wheel   = (1 << 1),
     }
 
     public CollisionLayer ownLayers = CollisionLayer.Default;
@@ -40,27 +40,41 @@ public class PhysXCollider : MonoBehaviour
     [HideInInspector]
     public IntPtr shape = IntPtr.Zero;
 
-    public bool hasOnCollisionEnterEvent = false;
+    [SerializeField]
+    private bool _trigger = false;
+    public bool trigger {
+        get {
+            return _trigger;
+        }
+        set {
+            _trigger = value;
+        }
+    }
 
     public int shapeNum { get; private set; }
 
+    public Vector3 offset = Vector3.zero;
+
     // Start is called before the first frame update
-    public virtual void Setup(PhysXRigidBody attachedRigidBody)
+    public virtual void Setup(PhysXBody attachedRigidBody)
     {
         Transform grandestParent = transform;
         while (grandestParent.parent != null) {
             grandestParent = grandestParent.parent;
         }
 
-        PhysXVec3 position = new PhysXVec3(grandestParent.InverseTransformPoint(transform.position));
+        PhysXVec3 position = new PhysXVec3(grandestParent.InverseTransformPoint(transform.TransformPoint(offset)));
         PhysXQuat rotation = new PhysXQuat(transform.rotation * Quaternion.Inverse(grandestParent.rotation));
 
         IntPtr localTransform = PhysXLib.CreateTransform(position, rotation);
         PhysXLib.SetShapeLocalTransform(shape, localTransform);
 
-        UInt32 collisionEventFlags = 0;
-        if (hasOnCollisionEnterEvent) collisionEventFlags = 7;
-        PhysXLib.SetCollisionFilterData(shape, (UInt32)ownLayers, (UInt32)collisionLayers, collisionEventFlags, 0);
+        PhysXLib.SetShapeSimulationFlag(shape, !trigger);
+        PhysXLib.SetShapeSceneQueryFlag(shape, !trigger);
+        PhysXLib.SetShapeTriggerFlag(shape, trigger);
+
+        PhysXLib.CollisionEvent collisionEventFlags = attachedRigidBody.collisionEventFlags;
+        PhysXLib.SetCollisionFilterData(shape, (UInt32)ownLayers, (UInt32)collisionLayers, (UInt32)collisionEventFlags, 0);
         shapeNum = attachedRigidBody.AddCollider(this);
     }
 }

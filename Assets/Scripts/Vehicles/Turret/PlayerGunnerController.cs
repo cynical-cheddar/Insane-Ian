@@ -98,11 +98,10 @@ public class PlayerGunnerController : MonoBehaviour {
 
     Vector3 CalculateTargetingHitpoint(Transform sourceTransform) {
         Ray ray = new Ray(sourceTransform.position, sourceTransform.forward);
-        RaycastHit hit; //From camera to hitpoint, not as curent
         Transform hitTransform;
         Vector3 hitVector;
         hitTransform = FindClosestHitObject(ray, out hitVector);
-        Physics.Raycast(ray.origin, ray.direction, out hit, 999);
+        Physics.Raycast(ray.origin, ray.direction, 999);
         Vector3 hp;
 
         if (hitTransform == null) {

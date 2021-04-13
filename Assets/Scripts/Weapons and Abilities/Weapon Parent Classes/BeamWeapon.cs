@@ -527,7 +527,6 @@ public class BeamWeapon : Weapon
         Vector3 startPos = barrelTransform.position;
         
         Ray ray = new Ray(startPos, targetPoint - startPos); 
-        RaycastHit hit;
         RaycastHitDetails raycastHitDetails = FindClosestRaycastHitDetails(ray, targetPoint);
         // we now have our hit details, return themmuzzleFlashChildOfBarrel
         return raycastHitDetails;

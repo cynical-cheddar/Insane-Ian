@@ -9,10 +9,14 @@
 #define CONTACT_BEGIN   (1)
 #define CONTACT_SUSTAIN (1 << 1)
 #define CONTACT_END     (1 << 2)
+#define TRIGGER_BEGIN   (1 << 3)
+#define TRIGGER_SUSTAIN (1 << 4)
+#define TRIGGER_END     (1 << 5)
 
 extern "C" {
     typedef void(*DebugLog)(const char* stringPtr, int length);
     typedef void(*CollisionCallback)(const physx::PxContactPairHeader* pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs, const physx::PxActor* self, bool isEnter, bool isStay, bool isExit);
+    typedef void(*TriggerCallback)(const physx::PxActor* other, const physx::PxShape* otherShape, const physx::PxActor* self, bool isEnter, bool isExit);
 
 	class MyErrorCallback : public physx::PxErrorCallback {
 	public:
@@ -39,16 +43,36 @@ extern "C" {
                                                                  const void* constantBlock, physx::PxU32 constantBlockSize,
                                                                  physx::PxHitFlags& queryFlags);
 
-    struct ActorUserData
+    class RaycastHitHandler : public physx::PxRaycastCallback {
+    public:
+        RaycastHitHandler(physx::PxRaycastHit* hitBuffer, physx::PxU32 bufferSize);
+
+        physx::PxAgain processTouches(const physx::PxRaycastHit* hits, physx::PxU32 hitCount);
+    };
+
+    struct SceneUserData
     {
-        ActorUserData()
-            : vehicle(NULL),
-            actor(NULL)
-        {
+        SceneUserData() : wheelCount(0),
+                          suspensionBatchQuery(NULL) {
+
         }
 
-        const physx::PxVehicleWheels* vehicle;
-        const physx::PxActor* actor;
+        std::vector<physx::PxVehicleWheels*> vehicles;
+        physx::PxU32 wheelCount;
+        physx::PxBatchQuery* suspensionBatchQuery;
+        std::vector<physx::PxVehicleWheelQueryResult> queryResults;
+        std::vector<physx::PxRaycastQueryResult> raycastResults;
+        std::vector<physx::PxRaycastHit> raycastHits;
+    };
+
+    struct ActorUserData
+    {
+        ActorUserData() : scene(NULL) {
+            
+        }
+
+        physx::PxScene* scene;
+        std::vector<physx::PxWheelQueryResult> queryResults;
     };
 
     struct ShapeUserData
@@ -61,95 +85,6 @@ extern "C" {
 
         bool isWheel;
         physx::PxU32 wheelId;
-    };
-
-    //  This bit makes sense
-    struct VehicleDesc
-    {
-        VehicleDesc()
-            : chassisMass(0.0f),
-            chassisDims(physx::PxVec3(0.0f, 0.0f, 0.0f)),
-            chassisMOI(physx::PxVec3(0.0f, 0.0f, 0.0f)),
-            chassisCMOffset(physx::PxVec3(0.0f, 0.0f, 0.0f)),
-            chassisMaterial(NULL),
-            wheelMass(0.0f),
-            wheelWidth(0.0f),
-            wheelRadius(0.0f),
-            wheelMOI(0.0f),
-            wheelMaterial(NULL),
-            actorUserData(NULL),
-            shapeUserDatas(NULL)
-        {
-        }
-
-        physx::PxF32 chassisMass;
-        physx::PxVec3 chassisDims;
-        physx::PxVec3 chassisMOI;
-        physx::PxVec3 chassisCMOffset;
-        physx::PxMaterial* chassisMaterial;
-        physx::PxFilterData chassisSimFilterData;  //word0 = collide type, word1 = collide against types, word2 = PxPairFlags
-
-        physx::PxF32 wheelMass;
-        physx::PxF32 wheelWidth;
-        physx::PxF32 wheelRadius;
-        physx::PxF32 wheelMOI;
-        physx::PxMaterial* wheelMaterial;
-        physx::PxU32 numWheels;
-        physx::PxFilterData wheelSimFilterData;	//word0 = collide type, word1 = collide against types, word2 = PxPairFlags
-
-        ActorUserData* actorUserData;
-        ShapeUserData* shapeUserDatas;
-    };
-
-    //  WHAT IS GOING ON HERE
-    class VehicleSceneQueryData
-    {
-    public:
-        VehicleSceneQueryData();
-        ~VehicleSceneQueryData();
-
-        //Allocate scene query data for up to maxNumVehicles and up to maxNumWheelsPerVehicle with numVehiclesInBatch per batch query.
-        static VehicleSceneQueryData* allocate(const physx::PxU32 maxNumVehicles, const physx::PxU32 maxNumWheelsPerVehicle, const physx::PxU32 maxNumHitPointsPerWheel, const physx::PxU32 numVehiclesInBatch,
-                                               physx::PxBatchQueryPreFilterShader preFilterShader, physx::PxBatchQueryPostFilterShader postFilterShader, 
-                                               physx::PxAllocatorCallback& allocator);
-
-        //Free allocated buffers.
-        void free(physx::PxAllocatorCallback& allocator);
-
-        //Create a PxBatchQuery instance that will be used for a single specified batch.
-        static physx::PxBatchQuery* setUpBatchedSceneQuery(const physx::PxU32 batchId, const VehicleSceneQueryData& vehicleSceneQueryData, physx::PxScene* scene);
-
-        //Return an array of scene query results for a single specified batch.
-        physx::PxRaycastQueryResult* getRaycastQueryResultBuffer(const physx::PxU32 batchId); 
-
-        //Return an array of scene query results for a single specified batch.
-        physx::PxSweepQueryResult* getSweepQueryResultBuffer(const physx::PxU32 batchId); 
-
-        //Get the number of scene query results that have been allocated for a single batch.
-        physx::PxU32 getQueryResultBufferSize() const; 
-
-    private:
-
-        //Number of queries per batch
-        physx::PxU32 mNumQueriesPerBatch;
-
-        //Number of hit results per query
-        physx::PxU32 mNumHitResultsPerQuery;
-
-        //One result for each wheel.
-        physx::PxRaycastQueryResult* mRaycastResults;
-        physx::PxSweepQueryResult* mSweepResults;
-
-        //One hit for each wheel.
-        physx::PxRaycastHit* mRaycastHitBuffer;
-        physx::PxSweepHit* mSweepHitBuffer;
-
-        //Filter shader used to filter drivable and non-drivable surfaces
-        physx::PxBatchQueryPreFilterShader mPreFilterShader;
-
-        //Filter shader used to reject hit shapes that initially overlap sweeps.
-        physx::PxBatchQueryPostFilterShader mPostFilterShader;
-
     };
 
     void RegisterDebugLog(DebugLog dl);
@@ -173,10 +108,14 @@ extern "C" {
 
     physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot);
 
-    physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat);
+    physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat, physx::PxReal contactOffset);
     void SetShapeLocalTransform(physx::PxShape* shape, physx::PxTransform* transform);
+	void SetShapeSimulationFlag(physx::PxShape* shape, bool value);
+	void SetShapeTriggerFlag(physx::PxShape* shape, bool value);
+	void SetShapeSceneQueryFlag(physx::PxShape* shape, bool value);
 
     physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose);
+    physx::PxRigidStatic* CreateStaticRigidBody(physx::PxTransform* pose);
 
     void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
 
@@ -221,18 +160,28 @@ extern "C" {
 	physx::PxVehicleWheelsDynData* GetWheelDynData(physx::PxVehicleWheels* vehicle);
 	void SetWheelDynTireData(physx::PxVehicleWheelsDynData* wheelDynData, physx::PxU32 wheelNum, physx::PxVehicleTireData* tire);
 
-    void RegisterCollisionCallback(CollisionCallback collisionEnterCallback);
+	void SetWheelSteer(physx::PxVehicleNoDrive* vehicle, physx::PxU32 wheelNum, physx::PxReal steerAngle);
+	void SetWheelDrive(physx::PxVehicleNoDrive* vehicle, physx::PxU32 wheelNum, physx::PxReal driveTorque);
+	void SetWheelBrake(physx::PxVehicleNoDrive* vehicle, physx::PxU32 wheelNum, physx::PxReal brakeTorque);
+
+    void RegisterCollisionCallback(CollisionCallback onCollisionCallback);
+    void RegisterTriggerCallback(TriggerCallback onTriggerCallback);
 
     void SetRigidBodyMassAndInertia(physx::PxRigidBody* body, float density, const physx::PxVec3* massLocalPose = NULL);
+    void SetRigidBodyMassPose(physx::PxRigidBody* body, physx::PxTransform* pose);
     void SetRigidBodyDamping(physx::PxRigidBody* body, float linear, float angular);
 
 	void UpdateVehicleCentreOfMass(physx::PxTransform* oldCentre, physx::PxTransform* newCentre, physx::PxVehicleWheels* vehicle);
 
     void SetRigidBodyFlag(physx::PxRigidBody* body, physx::PxRigidBodyFlag::Enum flag, bool value);
+    void SetRigidBodyDominanceGroup(physx::PxRigidBody* body, physx::PxDominanceGroup group);
+    void SetRigidBodyMaxDepenetrationVelocity(physx::PxRigidBody* body, physx::PxReal velocity);
 
     void AddActorToScene(physx::PxScene* scene, physx::PxActor* actor);
 
     void StepPhysics(physx::PxScene* scene, float time);
+
+    physx::PxTransform* GetCentreOfMass(physx::PxRigidBody* body);
 
     void GetPosition(physx::PxRigidActor* actor, physx::PxVec3* position);
     void GetRotation(physx::PxRigidActor* actor, physx::PxQuat* rotation);
@@ -250,4 +199,18 @@ extern "C" {
     bool NextContactPatch(physx::PxContactStreamIterator* iter);
     bool NextContactPoint(physx::PxContactStreamIterator* iter);
     void GetContactPointData(physx::PxContactStreamIterator* iter, int j, physx::PxContactPair* pairs, int i, physx::PxVec3* point, physx::PxVec3* normal, physx::PxVec3* impulse);
+
+    physx::PxReal GetSuspensionCompression(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    void GetWheelTransform(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position, physx::PxQuat* rotation);
+
+    void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation);
+
+    physx::PxRaycastCallback* CreateRaycastHit();
+	bool FireRaycast(physx::PxScene* scene, physx::PxVec3* origin, physx::PxVec3* direction, physx::PxReal distance, physx::PxRaycastCallback* raycastHit);
+	void GetRaycastHitNormal(physx::PxRaycastCallback* raycastHit, physx::PxVec3* normal);
+	void GetRaycastHitPoint(physx::PxRaycastCallback* raycastHit, physx::PxVec3* point);
+	physx::PxShape* GetRaycastHitShape(physx::PxRaycastCallback* raycastHit);
+	physx::PxActor* GetRaycastHitActor(physx::PxRaycastCallback* raycastHit);
+	physx::PxReal GetRaycastHitDistance(physx::PxRaycastCallback* raycastHit);
+	void DestroyRaycastHit(physx::PxRaycastCallback* raycastHit);
 }

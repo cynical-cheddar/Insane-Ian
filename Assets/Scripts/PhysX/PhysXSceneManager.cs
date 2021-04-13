@@ -7,18 +7,22 @@ using AOT;
 
 public class PhysXSceneManager : MonoBehaviour
 {
-    private IntPtr scene = IntPtr.Zero;
+    private static IntPtr scene = IntPtr.Zero;
 
-    private Dictionary<IntPtr, PhysXRigidBody> rigidBodies = new Dictionary<IntPtr, PhysXRigidBody>();
-    private List<PhysXRigidBody> preRegisteredRigidBodies = new List<PhysXRigidBody>();
+    private static Dictionary<IntPtr, PhysXBody> bodies = new Dictionary<IntPtr, PhysXBody>();
+    private List<PhysXBody> preRegisteredBodies = new List<PhysXBody>();
 
     private static List<PhysXCollision> ongoingCollisions = new List<PhysXCollision>();
+    private static List<PhysXTrigger> ongoingTriggers = new List<PhysXTrigger>();
 
     public PhysicMaterial defaultMaterial;
 
     void Awake() {
+        if (scene != IntPtr.Zero) Debug.LogError("PhysX already set up. There may be multiple scene managers.");
+
         PhysXLib.SetupPhysX();
         PhysXLib.RegisterCollisionCallback(AddCollision);
+        PhysXLib.RegisterTriggerCallback(AddTrigger);
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
@@ -32,41 +36,53 @@ public class PhysXSceneManager : MonoBehaviour
     void OnSceneUnloaded(Scene s) {
         Debug.LogWarning("unloaded     TODO: cleanup physx on unload");
         scene = IntPtr.Zero;
-        rigidBodies.Clear();
+        bodies.Clear();
     }
 
     void Setup() {
         scene = PhysXLib.CreateScene(new PhysXVec3(Physics.gravity));
-        foreach (PhysXRigidBody rigidBody in preRegisteredRigidBodies) {
-            AddActor(rigidBody);
+        foreach (PhysXBody body in preRegisteredBodies) {
+            AddActor(body);
         }
-        preRegisteredRigidBodies.Clear();
+        preRegisteredBodies.Clear();
     }
 
-    public void AddActor(PhysXRigidBody rigidBody) {
+    public void AddActor(PhysXBody body) {
         if (scene == IntPtr.Zero) {
-            preRegisteredRigidBodies.Add(rigidBody);
+            preRegisteredBodies.Add(body);
         }
         else {
-            rigidBody.Setup();
-            rigidBodies.Add(rigidBody.physXDynamicRigidBody, rigidBody);
-            PhysXLib.AddActorToScene(scene, rigidBody.physXDynamicRigidBody);
+            body.Setup();
+            bodies.Add(body.physXBody, body);
+            PhysXLib.AddActorToScene(scene, body.physXBody);
+            body.PostSceneInsertionSetup();
         }
+    }
+
+    public static PhysXBody GetBodyFromPointer(IntPtr pointer) {
+        return bodies[pointer];
     }
 
     public void Simulate() {
         PhysXLib.StepPhysics(scene, Time.fixedDeltaTime);
 
-        foreach (PhysXRigidBody rigidBody in rigidBodies.Values) {
-            rigidBody.UpdatePositionAndVelocity();
+        foreach (PhysXBody body in bodies.Values) {
+            body.UpdatePositionAndVelocity();
         }
 
         foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
-            collision.PopulateWithUnityObjects(rigidBodies);
-            rigidBodies[collision.self].FireCollisionEvents(collision);
+            collision.PopulateWithUnityObjects(bodies);
+            bodies[collision.self].FireCollisionEvents(collision);
             PhysXCollision.ReleaseCollision(collision);
         }
         PhysXSceneManager.ongoingCollisions.Clear();
+
+        foreach (PhysXTrigger trigger in PhysXSceneManager.ongoingTriggers) {
+            trigger.PopulateWithUnityObjects(bodies);
+            bodies[trigger.self].FireTriggerEvents(trigger);
+            PhysXTrigger.ReleaseTrigger(trigger);
+        }
+        PhysXSceneManager.ongoingTriggers.Clear();
     }
 
     [MonoPInvokeCallback(typeof(PhysXLib.CollisionCallback))]
@@ -74,5 +90,16 @@ public class PhysXSceneManager : MonoBehaviour
         PhysXCollision collision = PhysXCollision.GetCollision();
         collision.FromPhysXInternalCollision(pairHeader, pairs, pairCount, self, isEnter, isStay, isExit);
         ongoingCollisions.Add(collision);
-    } 
+    }
+
+    [MonoPInvokeCallback(typeof(PhysXLib.TriggerCallback))]
+    public static void AddTrigger(IntPtr other, IntPtr otherShape, IntPtr self, bool isEnter, bool isExit) {
+        PhysXTrigger trigger = PhysXTrigger.GetTrigger();
+        trigger.FromPhysXInternalTrigger(other, otherShape, self, isEnter, isExit);
+        ongoingTriggers.Add(trigger);
+    }
+
+    public static bool FireRaycast(PhysXVec3 origin, PhysXVec3 direction, float distance, IntPtr raycastHit) {
+        return PhysXLib.FireRaycast(scene, origin, direction, distance, raycastHit);
+    }
 }

@@ -101,9 +101,10 @@ namespace PhysX {
             impulse /= contactCount;
         }
 
-        internal void PopulateWithUnityObjects(Dictionary<IntPtr, PhysXRigidBody> rigidBodies) {
-            rigidBody = rigidBodies[otherActor];
-            gameObject = rigidBody.gameObject;
+        internal void PopulateWithUnityObjects(Dictionary<IntPtr, PhysXBody> bodies) {
+            PhysXBody body = bodies[otherActor];
+            rigidBody = body as PhysXRigidBody;
+            gameObject = body.gameObject;
 
             IntPtr currentShape = IntPtr.Zero;
             PhysXCollider currentCollider = null;
@@ -111,7 +112,7 @@ namespace PhysX {
             foreach (PhysXContactPoint contactPoint in contactPoints) {
                 if (contactPoint.colliderShape != currentShape) {
                     currentShape = contactPoint.colliderShape;
-                    currentCollider = rigidBody.GetColliderFromShape(currentShape);
+                    currentCollider = body.GetColliderFromShape(currentShape);
                 }
 
                 contactPoint.collider = currentCollider;

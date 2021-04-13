@@ -8,7 +8,9 @@ namespace PhysX {
     public class PhysXLib {
         private delegate void PhysXDebugLog(IntPtr stringPtr, int length);
         public delegate void CollisionCallback(IntPtr pairHeader, IntPtr pairs, int pairCount, IntPtr self, bool isEnter, bool isStay, bool isExit);
+        public delegate void TriggerCallback(IntPtr other, IntPtr otherShape, IntPtr self, bool isEnter, bool isExit);
 
+        [Flags]
         public enum PhysXRigidBodyFlag {
             eKINEMATIC = (1<<0),
             eUSE_KINEMATIC_TARGET_FOR_SCENE_QUERIES = (1<<1),
@@ -18,6 +20,15 @@ namespace PhysX {
             eENABLE_SPECULATIVE_CCD = (1 << 5),
             eENABLE_CCD_MAX_CONTACT_IMPULSE = (1 << 6),
             eRETAIN_ACCELERATIONS = (1<<7)
+        }
+
+        [Flags]
+        public enum CollisionEvent {
+            CONTACT_BEGIN = (1),
+            CONTACT_SUSTAIN = (1 << 1),
+            CONTACT_END = (1 << 2),
+            TRIGGER_BEGIN = (1 << 3),
+            TRIGGER_END = (1 << 5)
         }
 
         #if UNITY_WEBGL
@@ -70,13 +81,25 @@ namespace PhysX {
         public static extern IntPtr CreateTransform([In] PhysXVec3 pos, [In] PhysXQuat rot);
 
         [DllImport(dllName)]
-        public static extern IntPtr CreateShape(IntPtr geometry, IntPtr mat);
+        public static extern IntPtr CreateShape(IntPtr geometry, IntPtr mat, float contactOffset);
 
         [DllImport(dllName)]
         public static extern void SetShapeLocalTransform(IntPtr shape, IntPtr transform);
 
         [DllImport(dllName)]
+        public static extern void SetShapeSimulationFlag(IntPtr shape, bool value);
+
+        [DllImport(dllName)]
+	    public static extern void SetShapeTriggerFlag(IntPtr shape, bool value);
+
+        [DllImport(dllName)]
+	    public static extern void SetShapeSceneQueryFlag(IntPtr shape, bool value);
+
+        [DllImport(dllName)]
         public static extern IntPtr CreateDynamicRigidBody(IntPtr pose);
+
+        [DllImport(dllName)]
+        public static extern IntPtr CreateStaticRigidBody(IntPtr pose);
 
         [DllImport(dllName)]
         public static extern IntPtr SetCollisionFilterData(IntPtr shape, UInt32 w0, UInt32 w1, UInt32 w2, UInt32 w3);
@@ -184,22 +207,49 @@ namespace PhysX {
 	    public static extern void SetWheelDynTireData(IntPtr wheelDynData, int wheelNum, IntPtr tire);
 
         [DllImport(dllName)]
+        public static extern void SetWheelSteer(IntPtr vehicle, int wheelNum, float steerAngle);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelDrive(IntPtr vehicle, int wheelNum, float driveTorque);
+
+        [DllImport(dllName)]
+        public static extern void SetWheelBrake(IntPtr vehicle, int wheelNum, float brakeTorque);
+
+        [DllImport(dllName)]
         public static extern void RegisterCollisionCallback(CollisionCallback callback);
+
+        [DllImport(dllName)]
+        public static extern void RegisterTriggerCallback(TriggerCallback callback);
 
         [DllImport(dllName)]
         public static extern IntPtr SetRigidBodyMassAndInertia(IntPtr body, float mass, [In] PhysXVec3 massLocalPose = null);
 
         [DllImport(dllName)]
+        public static extern IntPtr SetRigidBodyMassPose(IntPtr body, IntPtr pose);
+
+        [DllImport(dllName)]
         public static extern IntPtr SetRigidBodyDamping(IntPtr body, float linear, float angular);
 
         [DllImport(dllName)]
+        public static extern void UpdateVehicleCentreOfMass(IntPtr oldCentre, IntPtr newCentre, IntPtr vehicle);
+
+        [DllImport(dllName)]
         public static extern IntPtr SetRigidBodyFlag(IntPtr body, PhysXRigidBodyFlag flag, bool value);
+
+        [DllImport(dllName)]
+        public static extern void SetRigidBodyDominanceGroup(IntPtr body, int group);
+
+        [DllImport(dllName)]
+        public static extern void SetRigidBodyMaxDepenetrationVelocity(IntPtr body, float velocity);
 
         [DllImport(dllName)]
         public static extern void AddActorToScene(IntPtr scene, IntPtr actor);
 
         [DllImport(dllName)]
         public static extern void StepPhysics(IntPtr scene, float time);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetCentreOfMass(IntPtr rigidBody);
 
         [DllImport(dllName)]
         public static extern void GetPosition(IntPtr actor, [Out] PhysXVec3 position);
@@ -239,6 +289,39 @@ namespace PhysX {
 
         [DllImport(dllName)]
         public static extern void GetContactPointData(IntPtr iter, int j, IntPtr pairs, int i, [Out] PhysXVec3 point, [Out] PhysXVec3 normal, [Out] PhysXVec3 impulse);
+
+        [DllImport(dllName)]
+        public static extern float GetSuspensionCompression(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern void GetWheelTransform(IntPtr vehicle, int wheelNum, [Out] PhysXVec3 position, [Out] PhysXQuat rotation);
+
+        [DllImport(dllName)]
+        public static extern void GetTransformComponents(IntPtr transform, [Out] PhysXVec3 position, [Out] PhysXQuat rotation);
+
+        [DllImport(dllName)]
+        public static extern IntPtr CreateRaycastHit();
+
+        [DllImport(dllName)]
+        public static extern bool FireRaycast(IntPtr scene, [In] PhysXVec3 origin, [In] PhysXVec3 direction, float distance, IntPtr raycastHit);
+
+        [DllImport(dllName)]
+        public static extern void GetRaycastHitNormal(IntPtr raycastHit, [Out] PhysXVec3 normal);
+
+        [DllImport(dllName)]
+        public static extern void GetRaycastHitPoint(IntPtr raycastHit, [Out] PhysXVec3 point);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetRaycastHitShape(IntPtr raycastHit);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetRaycastHitActor(IntPtr raycastHit);
+
+        [DllImport(dllName)]
+        public static extern float GetRaycastHitDistance(IntPtr raycastHit);
+
+        [DllImport(dllName)]
+        public static extern void DestroyRaycastHit(IntPtr raycastHit);
 
         [MonoPInvokeCallback(typeof(PhysXDebugLog))]
         private static void HandleDebugLog(IntPtr stringPtr, int length) {
