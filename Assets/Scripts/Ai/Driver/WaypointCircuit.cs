@@ -218,7 +218,8 @@ using UnityEditor;
 
 // UNCOMMENT THIS SECTION WHEN YOU NEED TO MAKE WAYPOINTS
 
-/*
+
+
 namespace UnityStandardAssets.Utility.Inspector
 {
 #if UNITY_EDITOR
@@ -385,6 +386,7 @@ namespace UnityStandardAssets.Utility.Inspector
             }
         }
     }
-}
 #endif
-*/
+}
+
+

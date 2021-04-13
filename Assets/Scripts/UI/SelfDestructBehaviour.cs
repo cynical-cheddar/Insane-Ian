@@ -4,12 +4,13 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using Gamestate;
+using TMPro;
 
 public class SelfDestructBehaviour : MonoBehaviour
 {
     GamestateTracker gamestateTracker;
-    public Text title;
-    public Text timeLeftText;
+    public TextMeshProUGUI title;
+    public TextMeshProUGUI timeLeftText;
     public float timeToDestruct = 3f;
     float timeLeft;
     bool shouldBlowUp;
@@ -42,7 +43,7 @@ public class SelfDestructBehaviour : MonoBehaviour
                 int teamId = entry.teamId;
                 entry.Release();
 
-                foreach (VehicleManager vehicle in FindObjectsOfType<VehicleManager>()) {
+                foreach (VehicleHealthManager vehicle in FindObjectsOfType<VehicleHealthManager>()) {
                     if (vehicle.teamId == teamId) {
                         vehicle.TakeDamage(99999);
                         shouldBlowUp = false;

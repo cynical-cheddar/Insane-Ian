@@ -66,6 +66,20 @@ public class PlayerGunnerController : MonoBehaviour {
             }
         }
 
+        if (Input.GetButtonDown("Ultimate"))
+        {
+            if (gunnerPhotonView.IsMine)
+            {
+                gunnerWeaponManager.SelectUltimate();
+            }
+        }
+
+        if (Input.GetKey(KeyCode.Space)) {
+            camera.m_Lens.FieldOfView = Mathf.Lerp(camera.m_Lens.FieldOfView, 30, 0.1f);
+        } else {
+            camera.m_Lens.FieldOfView = Mathf.Lerp(camera.m_Lens.FieldOfView, 60, 0.1f);
+        }
+
         turretController.ChangeTargetYaw(cameraSensitivity * Input.GetAxis("Mouse X") * Time.deltaTime);
         turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime));
         turretController.UpdateTargeterRotation();

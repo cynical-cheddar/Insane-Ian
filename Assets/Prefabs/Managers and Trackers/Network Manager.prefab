@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 235361769666211092}
   - component: {fileID: 235361769666211093}
   - component: {fileID: 7853446149527289200}
+  - component: {fileID: 464313524}
+  - component: {fileID: 8075214528858699430}
   m_Layer: 0
   m_Name: Network Manager
   m_TagString: Untagged
@@ -57,10 +59,15 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  timer: {fileID: 0}
   version: 1.0
   roomName: room
-  defaultPlayerVehiclePrefabName: VehiclePrefabs/Interceptor
+  defaultPlayerVehiclePrefabName: VehiclePrefabs/Ian Interceptor
+  loadingScreenPrefab: {fileID: 6986147006330187601, guid: 1fdd8d9e9ce625749a24e755f7b7317a,
+    type: 3}
+  spawningPlayersScreenPrefab: {fileID: 6986147006330187601, guid: d55fd8abaf63543448fb59fb5406c208,
+    type: 3}
+  startCountdownPrefab: {fileID: 3466252441008373437, guid: 46f2d42d51c485c459802b226c5beaba,
+    type: 3}
 --- !u!114 &7853446149527289200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,3 +82,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loopLength: 4
   vehicleTransformPairs: []
+--- !u!114 &464313524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235361769666211094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f78dd9cb9c98cf4fb392da1b48f7206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectPools:
+  - amount: 3
+    objectToPool: {fileID: -6674781048089617136, guid: 2c93f0aed6cd60541bb19e1a6c3ee024,
+      type: 3}
+--- !u!114 &8075214528858699430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235361769666211094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

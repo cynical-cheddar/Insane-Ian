@@ -11,9 +11,17 @@ public class OnlyInteractableIfMaster : MonoBehaviour
     public bool disableIfNotMaster = false;
     void Start()
     {
-        if(!PhotonNetwork.IsMasterClient)GetComponent<Button>().interactable = false;
-        
-        if(disableIfNotMaster && !PhotonNetwork.IsMasterClient) gameObject.SetActive(false);
+        Button button = GetComponent<Button>();
+        if (button != null) {
+            if (!PhotonNetwork.IsMasterClient) {
+                button.interactable = false;
+            }
+        }
+
+
+        if (disableIfNotMaster && !PhotonNetwork.IsMasterClient) {
+            gameObject.SetActive(false);
+        }
         
     }
 

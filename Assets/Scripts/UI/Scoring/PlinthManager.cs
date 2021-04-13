@@ -25,16 +25,14 @@ public class PlinthManager : MonoBehaviour {
         Cursor.lockState = CursorLockMode.None;
     }
 
-
-
     void SpawnPlayerVehicles() {
         List<string> vehicleNames = gamestateTracker.GetComponent<GamestateVehicleLookup>().sortedVehicleNames;
 
         for (int i = 0; i < Mathf.Min(sortedTeams.Count, spawnpoints.Count); i++) {
             string vehiclePrefabName = defaultVehiclePrefabName;
 
-            if (sortedTeams[i].vehicle > 0) {
-                vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[sortedTeams[i].vehicle];
+            if (sortedTeams[i].hasSelectedVehicle) {
+                vehiclePrefabName = "VehicleDummyPrefabs/" + vehicleNames[sortedTeams[i].vehicle];
             }
 
             object[] instantiationData = new object[] { (int)sortedTeams[i].id };
@@ -45,7 +43,7 @@ public class PlinthManager : MonoBehaviour {
 
     void UpdateText() {
         // Sort teams by score
-        sortedTeams = scoringHelper.SortTeams();
+        sortedTeams = scoringHelper.SortTeams(gamestateTracker);
 
         if (PhotonNetwork.IsMasterClient) SpawnPlayerVehicles();
 
@@ -55,14 +53,17 @@ public class PlinthManager : MonoBehaviour {
 
         string newText = "";
         foreach (TeamEntry team in sortedTeams) {
-            newText += $"{team.name} -- Score: {scoringHelper.CalcScore(team)} -- K/D/A: {team.kills}/{team.deaths}/{team.assists}\n";
+            string name;
+            if (team.name == null) name = $"Team {team.id}";
+            else name = team.name;
+            newText += $"{name} -- Score: {scoringHelper.CalcScore(team)} -- K/D/A: {team.kills}/{team.deaths}/{team.assists}\n";
         }
         scoreboardText.text = newText;
     }
 
     public void ReturnToMainMenu()
     {
-        PhotonNetwork.LeaveRoom();
+       // PhotonNetwork.Disconnect();
         SceneManager.LoadScene(returnToMenuScene);
     }
 

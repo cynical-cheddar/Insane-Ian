@@ -99,7 +99,8 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
     }
 
     void IPunInstantiateMagicCallback.OnPhotonInstantiate(PhotonMessageInfo info) {
-        GetComponent<VehicleManager>().SetupVehicleManager();
+        Debug.Log("Spawn start");
+        GetComponent<VehicleHealthManager>().SetupVehicleManager();
 
         gamestateTracker = FindObjectOfType<GamestateTracker>();
 
@@ -158,19 +159,42 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if (botDriver) driverPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
         if (botGunner) gunnerPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
 
+        
+
+       
+
+        
+        //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
+    }
+
+    [PunRPC]
+    public void ActivateVehicleInputs()
+    {
         // check if the driver is a human or a bot
   
         // if they are a bot, then get the MASTER CLIENT to turn on ai controls
         if (botDriver && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiDriverScripts);
         // otherwise, find the driver player by their nickname. Tell their client to turn on player driver controls
         //Debug.Log("My local name is " + PhotonNetwork.LocalPlayer.NickName);
-        if (PhotonNetwork.LocalPlayer.ActorNumber == driverId) EnableMonobehaviours(playerDriverScripts);
+        GetComponent<TeamNameSetup>().SetupTeamName("Team " + teamId);
+
+        if (PhotonNetwork.LocalPlayer.ActorNumber == driverId)
+        {
+            EnableMonobehaviours(playerDriverScripts);
+            GetComponent<TeamNameSetup>().SetupTeamName("");
+        }
         //Debug.Log("GOT HERE");
         // Do the same again for the gunner
         if (botGunner && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiGunnerScripts);
-        if (PhotonNetwork.LocalPlayer.ActorNumber == gunnerId) EnableMonobehaviours(playerGunnerScripts);
+        if (PhotonNetwork.LocalPlayer.ActorNumber == gunnerId)
+        {
+            EnableMonobehaviours(playerGunnerScripts);
+            GetComponent<TeamNameSetup>().SetupTeamName("");
+        }
         //Debug.Log("GOT HERE2");
+        Debug.Log("Spawn success");
 
-        //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
+        
+        GetComponent<DriverAbilityManager>().SetupDriverAbilityManager();
     }
 }

@@ -58,6 +58,7 @@ public class LoadingScreenNetwork : MonoBehaviour
     [PunRPC]
     void AddReady()
     {
+        Debug.Log("loadedPlayers += 1");
         loadedPlayers += 1;
     }
     IEnumerator LoadAsync(string name)
@@ -69,19 +70,21 @@ public class LoadingScreenNetwork : MonoBehaviour
 
         while (operation.isDone == false)
         {
-
-            float fltProgress = Mathf.Clamp01(operation.progress / 0.9f);
+            
+            float fltProgress = Mathf.Clamp01(operation.progress);
             progressBar.fillAmount = fltProgress;
             if(fltProgress < 0.99) percentText.text = Mathf.RoundToInt(fltProgress * 100) + "%";
             else percentText.text = "Waiting for players";
 
-            if (operation.progress > 0.85 && sentReady == false)
+            if (operation.progress >= 0.89 && sentReady == false)
             {
-                GetComponent<PhotonView>().RPC(nameof(AddReady), RpcTarget.All);
+                GetComponent<PhotonView>().RPC(nameof(AddReady), RpcTarget.AllBufferedViaServer);
                 sentReady = true;
+                Debug.Log("sentReady");
             }
             if(loadedPlayers >= playersInRoom)
             {
+                Debug.Log("activate scene");
                 operation.allowSceneActivation = true;
             }
             yield return null;

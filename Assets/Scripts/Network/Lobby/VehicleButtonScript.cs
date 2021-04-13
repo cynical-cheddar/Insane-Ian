@@ -34,6 +34,7 @@ public class VehicleButtonScript : MonoBehaviour
         }
     }
 
+    //  USED
     public void SelectVehicle()
     {
         vehicleSelector.SelectVehicle(vehicleId);
