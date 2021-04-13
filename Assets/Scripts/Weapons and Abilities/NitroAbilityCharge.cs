@@ -13,15 +13,28 @@ public class NitroAbilityCharge : DriverAbility
 
     private InterfaceCarDrive4W interfaceCarDrive4W;
 
-    public float newMass = 1000f;
-    public float newCollisiionResistance = 4;
-    
+    public float newMass = 10000f;
+    public float newRammingDamageMultiplier = 4f;
+    public float newRammingResistance = 20;
+
+    private float oldMass = 4000;
+    private float oldRammingResistance = 1;
+    private float oldRammingDamageMultiplier = 1f;
     public override void SetupAbility()
     {
         base.SetupAbility();
         interfaceCarDrive4W = GetComponentInParent<InterfaceCarDrive4W>();
-        
+        // old vars
+        GetComponent<PhotonView>().RPC(nameof(SaveVars), RpcTarget.AllBuffered);
 
+    }
+
+    [PunRPC]
+    void SaveVars()
+    {
+        oldMass = driverPhotonView.GetComponent<Rigidbody>().mass;
+        oldRammingResistance = driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageResistance;
+        oldRammingDamageMultiplier = driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageMultiplier;
     }
 
     public override void ResetAbility()
@@ -37,6 +50,11 @@ public class NitroAbilityCharge : DriverAbility
 
         if (set)
         {
+
+            // new vars
+            driverPhotonView.GetComponent<Rigidbody>().mass = newMass;
+            driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageResistance = newRammingResistance;
+            driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageMultiplier = newRammingDamageMultiplier;
             if (loopingNitroPrefab != null)
             {
                 loopingNitroInstance = Instantiate(loopingNitroPrefab, transform.position, transform.rotation);
@@ -47,6 +65,10 @@ public class NitroAbilityCharge : DriverAbility
         {
 
             //  Destroy(loopingNitroInstance);
+            // old vars
+            driverPhotonView.GetComponent<Rigidbody>().mass = oldMass;
+            driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageResistance =oldRammingResistance;
+            driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageMultiplier =oldRammingDamageMultiplier;
 
             {
                 foreach (Transform child in transform)
@@ -62,6 +84,10 @@ public class NitroAbilityCharge : DriverAbility
 
     public override void ActivateAbility()
     {
+        
+        
+        
+        
         if (driverPhotonView.IsMine)
         {
             if (!isSetup)
@@ -107,8 +133,8 @@ public class NitroAbilityCharge : DriverAbility
             UseCharge(chargeUsedPerFire);
             Transform me = interfaceCarDrive4W.transform;
             me.GetComponent<Rigidbody>().AddForce(me.forward * activationVelocityChange, ForceMode.VelocityChange);
-            if(currentCharge == 0) DeactivateAbility();
-           // abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
+            if (currentCharge == 0) Invoke(nameof(DeactivateAbility), cooldown);
+            // abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
         }
     }
 
