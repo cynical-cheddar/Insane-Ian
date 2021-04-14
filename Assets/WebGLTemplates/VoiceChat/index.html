@@ -89,6 +89,7 @@
 	  
     var lastPeerId = null;
     var peer = null; // own peer object
+	var audios = [];
 
     function initialize(id) {
         // Create own peer object with connection to shared PeerJS server
@@ -138,8 +139,10 @@
                     console.error('Failed to get local stream', err);
                 });
                 call.on('stream', (remoteStream) => {
-                    var audio = document.querySelector('audio');
+                    var audio = document.createElement('audio');
                     audio.srcObject = remoteStream;
+					audio.autoplay = true;
+					audios.push(audio);
                 });
         });
     };
@@ -150,8 +153,10 @@
             .then((stream) => {
                 const call = peer.call(callerID, stream);
                 call.on('stream', (remoteStream) => {
-                    var audio = document.querySelector('audio');
+                    var audio = document.createElement('audio');
                     audio.srcObject = remoteStream;
+					audio.autoplay = true;
+					audios.push(audio);
                 });
             })
             .catch((err) => {
