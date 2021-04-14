@@ -216,6 +216,9 @@ public class HitscanWeapon : Weapon {
             else if(!raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget) FireHitscanRoundEffectMiss(raycastTracerDetails.worldHitPoint);
             // if valid target is null, then fire a ray effect with no impact
             else FireHitscanRoundEffectNoValidTarget(raycastTracerDetails.worldHitPoint);
+            // do camera shake
+            ShakeCameras(cameraShakeAmplitude, cameraShakeDuration);
+            shakeTimerCur = 0;
             
             
             

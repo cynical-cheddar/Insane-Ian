@@ -1432,11 +1432,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22236.885
-    damper: 5336.8525
+    spring: 22236.73
+    damper: 5336.8154
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060269
+  m_ForceAppPointDistance: 1.2060288
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1508,11 +1508,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27829.234
-    damper: 6679.016
+    spring: 27829.076
+    damper: 6678.978
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.256027
+  m_ForceAppPointDistance: 1.2560288
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1870,7 +1870,7 @@ MonoBehaviour:
   terrainTags:
   - DustGround
   - MetalGround
-  sensorLength: 20
+  sensorLength: 40
   frontSensorPosition: {x: 0, y: 0.2, z: 0.5}
   frontSideSensorPosition: 0.2
   frontSensorAngle: 30
@@ -1963,7 +1963,7 @@ MonoBehaviour:
   drawDebugLines: 0
   sensorLayerMask:
     serializedVersion: 2
-    m_Bits: 449
+    m_Bits: 320
   slowRange:
     speed: 15
     sensorLength: 15
@@ -2043,11 +2043,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22170.766
-    damper: 5320.9834
+    spring: 22170.928
+    damper: 5321.023
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2060269
+  m_ForceAppPointDistance: 1.2060288
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2119,11 +2119,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27763.11
-    damper: 6663.146
+    spring: 27763.275
+    damper: 6663.1865
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.256027
+  m_ForceAppPointDistance: 1.2560288
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -2760,6 +2760,12 @@ PrefabInstance:
       objectReference: {fileID: 8103896753619876248}
     - target: {fileID: 1174249634495627729, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
+      propertyPath: m_NoiseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4,
+        type: 2}
+    - target: {fileID: 1174249634495627729, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
       propertyPath: mNoiseOffsets.x
       value: -65.96765
       objectReference: {fileID: 0}
@@ -2773,11 +2779,16 @@ PrefabInstance:
       propertyPath: mNoiseOffsets.z
       value: -538.59094
       objectReference: {fileID: 0}
+    - target: {fileID: 1174249634495627729, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_AmplitudeGain
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1473605419750259399, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_NoiseProfile
       value: 
-      objectReference: {fileID: 11400000, guid: b241f91b9ccf8ff489abf204b30d3112,
+      objectReference: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4,
         type: 2}
     - target: {fileID: 1473605419750259399, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
@@ -2794,6 +2805,11 @@ PrefabInstance:
       propertyPath: mNoiseOffsets.z
       value: 519.1693
       objectReference: {fileID: 0}
+    - target: {fileID: 1473605419750259399, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_AmplitudeGain
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1948528121757556809, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_Enabled
@@ -2804,6 +2820,28 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 8103896753619876248}
+    - target: {fileID: 4790817388014323792, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_NoiseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4,
+        type: 2}
+    - target: {fileID: 4790817388014323792, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_AmplitudeGain
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115087267086833091, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_NoiseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4,
+        type: 2}
+    - target: {fileID: 5115087267086833091, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_AmplitudeGain
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5656757840181123761, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_Name
@@ -2862,6 +2900,17 @@ PrefabInstance:
     - target: {fileID: 5724923541622387011, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6342712842558265903, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_NoiseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4,
+        type: 2}
+    - target: {fileID: 6342712842558265903, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_AmplitudeGain
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6491060584344204206, guid: ecdc7bb0cf94601428d4a9616df82aca,
@@ -2924,6 +2973,17 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.00034182507
       objectReference: {fileID: 0}
+    - target: {fileID: 7751431094115054062, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_NoiseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4,
+        type: 2}
+    - target: {fileID: 7751431094115054062, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_AmplitudeGain
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7791303216631031471, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -2953,6 +3013,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.0000000016178376
+      objectReference: {fileID: 0}
+    - target: {fileID: 7879718557183524089, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_NoiseProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4,
+        type: 2}
+    - target: {fileID: 7879718557183524089, guid: ecdc7bb0cf94601428d4a9616df82aca,
+        type: 3}
+      propertyPath: m_AmplitudeGain
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8839082291315134073, guid: ecdc7bb0cf94601428d4a9616df82aca,
         type: 3}

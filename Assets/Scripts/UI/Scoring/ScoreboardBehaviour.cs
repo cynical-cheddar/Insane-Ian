@@ -13,7 +13,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
     readonly ScoringHelper scoringHelper = new ScoringHelper();
 
     // Start is called before the first frame update
-    void Start() {
+    public void StartScoreboard() {
         Debug.Log(" scoreboard start called");
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         SetUpScoreboard();
@@ -28,6 +28,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
             Debug.Log(" scoreboard listener added");
             team.Release();
             teamPanels[i].gameObject.SetActive(true);
+            teamPanels[i].Setup();
         }
         UpdateScores();
         Debug.Log(" scoreboard setup done");
