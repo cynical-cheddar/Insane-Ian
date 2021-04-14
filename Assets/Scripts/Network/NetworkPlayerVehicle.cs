@@ -159,6 +159,17 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if (botDriver) driverPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
         if (botGunner) gunnerPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
 
+        
+
+       
+
+        
+        //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
+    }
+
+    [PunRPC]
+    public void ActivateVehicleInputs()
+    {
         // check if the driver is a human or a bot
   
         // if they are a bot, then get the MASTER CLIENT to turn on ai controls
@@ -171,7 +182,6 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         {
             EnableMonobehaviours(playerDriverScripts);
             GetComponent<TeamNameSetup>().SetupTeamName("");
-
         }
         //Debug.Log("GOT HERE");
         // Do the same again for the gunner
@@ -181,12 +191,13 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
             EnableMonobehaviours(playerGunnerScripts);
             GetComponent<TeamNameSetup>().SetupTeamName("");
         }
+
+
+
         //Debug.Log("GOT HERE2");
         Debug.Log("Spawn success");
 
-
+        
         GetComponent<DriverAbilityManager>().SetupDriverAbilityManager();
-
-        //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
     }
 }

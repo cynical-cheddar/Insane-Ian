@@ -17,18 +17,22 @@ public class TeamPanelBehaviour : MonoBehaviour
     public bool isCurrentTeam = false;
 
     Vector3 initialPosition;
-    public RectTransform rectTransform;
 
-    private void Start() {
+    public void Setup() {
         Debug.Log(" scoreboard team panel start called");
         if (isFirstPanel) initialPosition = new Vector3(90f, 20f, 0f);
         else initialPosition = transform.localPosition;
         UpdateTransform(isCurrentTeam);
         Debug.Log(" scoreboard team panel start done");
     }
+    
+    
 
     public void UpdateTransform(bool isCurrentTeam) {
         Debug.Log(" scoreboard team panel update transform called");
+        Debug.Log(" parentPanel: " + parentPanel);
+        Debug.Log(" parentPanel.transform: " + parentPanel.transform);
+        Debug.Log(" parentTeamPanelBehaviour: " + parentTeamPanelBehaviour);
         this.isCurrentTeam = isCurrentTeam;
         if (isFirstPanel) {
             if (isCurrentTeam) {

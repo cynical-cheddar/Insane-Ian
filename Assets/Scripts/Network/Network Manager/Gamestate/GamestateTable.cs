@@ -29,8 +29,8 @@ namespace Gamestate {
 
         public delegate void CreationListener(T newEntry);
         public delegate void DeletionListener(int entryId);
-        private List<CreationListener> creationListeners;
-        private List<DeletionListener> deletionListeners;
+        private List<CreationListener> creationListeners = new List<CreationListener>();
+        private List<DeletionListener> deletionListeners = new List<DeletionListener>();
 
         public delegate bool TableSearcher(T entry);
         [SerializeField] private List<T> entries;

@@ -243,7 +243,7 @@ public class BeamWeapon : Weapon
             {
                 // StartCoroutine(DoBonusRecharge(extraRechargeTimeOnDepletion));
 
-                Debug.Log("cease fire");
+               // Debug.Log("cease fire");
                 CeaseFire();
 
             }
@@ -449,11 +449,22 @@ public class BeamWeapon : Weapon
             if(t<1)elapsedTime += Time.deltaTime;
             Vector3 pos1 = Vector3.zero;
             Vector3 pos2 = Vector3.zero;
+
             
-            if (hit1.hasHitPlayer) pos1 = hit1.hitTransform.TransformPoint(hit1.localHitpoint);
+            if (hit1.hasHitPlayer) {
+               // Debug.Log("hit1: " + hit1);
+                //Debug.Log("hit1.hitTransform: " + hit1.hitTransform);
+                //Debug.Log("hit1.localHitpoint: " + hit1.localHitpoint);
+                pos1 = hit1.hitTransform.TransformPoint(hit1.localHitpoint);
+            }
             else  pos1 = hit1.worldHitPoint;
 
-            if (hit2.hasHitPlayer) pos2 = hit2.hitTransform.TransformPoint(hit2.localHitpoint);
+            if (hit2.hasHitPlayer) {
+              //  Debug.Log("hit2: " + hit2);
+              //  Debug.Log("hit2.hitTransform: " + hit2.hitTransform);
+              //  Debug.Log("hit2.localHitpoint: " + hit2.localHitpoint);
+                pos2 = hit2.hitTransform.TransformPoint(hit2.localHitpoint);
+            }
             else pos2 = hit2.worldHitPoint;
 
 
@@ -470,7 +481,12 @@ public class BeamWeapon : Weapon
         while (lastHitId == currentHitId)
         {
             Vector3 pos2 = Vector3.zero;
-            if (hit2.hasHitPlayer) pos2 = hit2.hitTransform.TransformPoint(hit2.localHitpoint);
+            if (hit2.hasHitPlayer) {
+               // Debug.Log("hit2: " + hit2);
+               // Debug.Log("hit2.hitTransform: " + hit2.hitTransform);
+               // Debug.Log("hit2.localHitpoint: " + hit2.localHitpoint);
+                pos2 = hit2.hitTransform.TransformPoint(hit2.localHitpoint);
+            }
             else pos2 = hit2.worldHitPoint;
             ShootBeamAtPoint(barrelEndMuzzleTransform.position, pos2);
             lookpoint.transform.position = pos2;
@@ -500,6 +516,10 @@ public class BeamWeapon : Weapon
             Vector3 targetPoint = Vector3.zero;
             if (firstPos.hasHitPlayer)
             {
+               // Debug.Log("firstPos: " + firstPos);
+              //  Debug.Log("firstPos.hitTransform: " + firstPos.hitTransform);
+              //  Debug.Log("firstPos.localHitpoint: " + firstPos.localHitpoint);
+
                 targetPoint = firstPos.hitTransform.TransformPoint(firstPos.localHitpoint);
             }
             else
