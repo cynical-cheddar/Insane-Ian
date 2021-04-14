@@ -9,16 +9,16 @@ using Gamestate;
 public class VoiceCallBehaviour : MonoBehaviour
 {
     [DllImport("__Internal")]
-    private static extern void initialize(string id);
+    private static extern void initializeA(string id);
 
     [DllImport("__Internal")]
-    private static extern void call(string id);
+    private static extern void callA(string id);
 
     GamestateTracker gamestateTracker;
 
     private void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
-        initialize($"{PhotonNetwork.CurrentRoom.Name}{PhotonNetwork.LocalPlayer.ActorNumber}");
+        initializeA($"{PhotonNetwork.CurrentRoom.Name}{PhotonNetwork.LocalPlayer.ActorNumber}");
     }
 
     public void JoinPeerJSSession() {
@@ -31,7 +31,7 @@ public class VoiceCallBehaviour : MonoBehaviour
             PlayerEntry player = gamestateTracker.players.GetAtIndex(i);
             if (player.id != PhotonNetwork.LocalPlayer.ActorNumber && player.isInVC) {
                 string callerID = PhotonNetwork.CurrentRoom.Name + player.id.ToString();
-                call(callerID);
+                callA(callerID);
             }
             player.Release();
         }
