@@ -515,8 +515,8 @@ extern "C" {
     }
 
     EXPORT_FUNC void SetSuspensionSprungMasses(physx::PxVehicleSuspensionData** suspensions, physx::PxU32 wheelCount, std::vector<physx::PxVec3>* wheelPositions, physx::PxVec3* centreOfMass, physx::PxReal mass) {
-        physx::PxReal sprungMasses[wheelCount];
-        physx::PxVehicleComputeSprungMasses(wheelCount, wheelPositions->data(), *centreOfMass, mass, 1, sprungMasses);
+        std::vector<physx::PxReal> sprungMasses(wheelCount);
+        physx::PxVehicleComputeSprungMasses(wheelCount, wheelPositions->data(), *centreOfMass, mass, 1, sprungMasses.data());
         for (int i = 0; i < wheelCount; i++) {
             suspensions[i]->mSprungMass = sprungMasses[i];
         }
