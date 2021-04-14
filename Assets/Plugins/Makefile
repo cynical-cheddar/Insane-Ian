@@ -81,7 +81,7 @@ EXT_SOURCE := $(filter-out $(USED_EXT_SOURCE), $(EXT_SOURCE))
 CHAR_SOURCE +=  $(shell find $(PHYSX_SOURCE) -type f -path '*/physxcharacterkinematic/*' -name '*.cpp')
 SOURCE := $(filter-out $(CHAR_SOURCE), $(SOURCE))
 
-PHYSX_DEFS := -D NO_AUTO_DEFS -D _DEBUG -D __STDC_LIMIT_MACROS
+PHYSX_DEFS := -D NO_AUTO_DEFS -D _DEBUG -D __STDC_LIMIT_MACROS -D ON_MAC
 #PHYSX_DEFS := -D _DEBUG
 
 ifeq ($(OS), Windows_NT)
@@ -500,6 +500,9 @@ LIBS += macLibs/libPhysXCommon_static_64.a
 #LIBS := -LmacLibs
 endif
 
+ifeq ($(WINDOWS_BUILD), yes)
+CXX := x86_64-w64-mingw32-g++
+endif
 
 OBJECT := $(patsubst $(PHYSX_SOURCE)/%.cpp, $(PHYSX_BUILD)/%.o, $(SOURCE))
 
