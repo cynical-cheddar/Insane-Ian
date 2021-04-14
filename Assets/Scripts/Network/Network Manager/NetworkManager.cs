@@ -52,6 +52,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
         // activate all cars in time
         Invoke(nameof(ActivateVehicles), 4f);
+
+
         
     }
     
@@ -261,7 +263,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         object[] instantiationData = new object[]{teamId};
 
-        PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
+        //Put strong brakes on for spawn
+        var spawnedVehicle = PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
+        WheelCollider[] wheelColliders = spawnedVehicle.GetComponentsInChildren<WheelCollider>();
+        foreach (WheelCollider wc in wheelColliders) {
+            wc.brakeTorque = 10000;
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
