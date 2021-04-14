@@ -219,10 +219,10 @@ using UnityEditor;
 // UNCOMMENT THIS SECTION WHEN YOU NEED TO MAKE WAYPOINTS
 
 
-
+#if UNITY_EDITOR
 namespace UnityStandardAssets.Utility.Inspector
 {
-#if UNITY_EDITOR
+
     [CustomPropertyDrawer(typeof(WaypointCircuit.WaypointList))]
     public class WaypointListDrawer : PropertyDrawer
     {
