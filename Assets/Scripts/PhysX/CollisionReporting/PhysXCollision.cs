@@ -99,6 +99,8 @@ namespace PhysX {
             }
 
             impulse /= contactCount;
+
+            Debug.Log(contactPoints.Count);
         }
 
         internal void PopulateWithUnityObjects(Dictionary<IntPtr, PhysXBody> bodies) {

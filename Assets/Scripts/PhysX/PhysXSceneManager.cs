@@ -83,7 +83,6 @@ public class PhysXSceneManager : MonoBehaviour
         PhysXSceneManager.ongoingCollisions.Clear();
 
         foreach (PhysXTrigger trigger in PhysXSceneManager.ongoingTriggers) {
-            Debug.Log("triggered");
             trigger.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
             if (bodies.TryGetValue(trigger.self, out body)) body.FireTriggerEvents(trigger);

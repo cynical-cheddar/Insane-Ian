@@ -15,6 +15,9 @@ GameObject:
   - component: {fileID: 942895696477310872}
   - component: {fileID: 942895696477310873}
   - component: {fileID: 942895696477310874}
+  - component: {fileID: 294301046852873616}
+  - component: {fileID: 8121324191208312781}
+  - component: {fileID: 8693348307145616179}
   m_Layer: 0
   m_Name: CactusTall
   m_TagString: Untagged
@@ -110,7 +113,7 @@ MeshCollider:
   m_GameObject: {fileID: 131940785662423798}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
@@ -128,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 5
-  rammingDamageResistance: 1
+  rammingDamageResistance: 0.1
   defaultCollisionResistance: 1
   audioSourcePrefab: {fileID: 0}
   crashSoundsSmallDamageThreshold: 5
@@ -163,3 +166,60 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &294301046852873616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131940785662423798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: -0.65}
+  x: 1.2
+  y: 3.8
+  z: 1.2
+--- !u!114 &8121324191208312781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131940785662423798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0.3, z: 0.5}
+  x: 1
+  y: 1.4
+  z: 1.4
+--- !u!114 &8693348307145616179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131940785662423798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f9c52f195e6a448c8bd38e0a7c65986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kinematic: 0
+  mass: 30
+  linearDamping: 0.1
+  angularDamping: 0.05
+  _centreOfMass: {x: 0, y: -2, z: 0}

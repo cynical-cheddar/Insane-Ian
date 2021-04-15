@@ -23,6 +23,7 @@ public class PhysXWheelCollider : MonoBehaviour
     public float forwardStiffness = 1000;
     public float asymptoteSidewaysTireLoad = 2;
     public bool autoCalculateSpringStrength = false;
+    private PhysXRigidBody attachedRigidBody = null;
 
     [SerializeField]
     private float _asymptoteSidewaysStiffness = 10;
@@ -132,6 +133,8 @@ public class PhysXWheelCollider : MonoBehaviour
 
         this.wheelNum = wheelNum;
 
+        this.attachedRigidBody = attachedRigidBody;
+
         Transform bodyParent = attachedRigidBody.transform;
 
         PhysXVec3 wheelCentrePos = new PhysXVec3(bodyParent.InverseTransformPoint(transform.TransformPoint(wheelCentre)));
@@ -161,15 +164,14 @@ public class PhysXWheelCollider : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.TransformPoint(wheelCentre), radius);
 
-            Transform grandestParent = transform;
-            while (grandestParent.parent != null) {
-                grandestParent = grandestParent.parent;
+            if (attachedRigidBody != null) {
+                Transform bodyParent = attachedRigidBody.transform;
+                PhysXVec3 position = new PhysXVec3(Vector3.zero);
+                PhysXQuat rotation = new PhysXQuat(Quaternion.identity);
+                PhysXLib.GetWheelTransform(vehicle, wheelNum, position, rotation);
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(bodyParent.TransformPoint(position.ToVector()), radius);
             }
-            PhysXVec3 position = new PhysXVec3(Vector3.zero);
-            PhysXQuat rotation = new PhysXQuat(Quaternion.identity);
-            PhysXLib.GetWheelTransform(vehicle, wheelNum, position, rotation);
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(grandestParent.TransformPoint(position.ToVector()), radius);
         }
         else {
             
