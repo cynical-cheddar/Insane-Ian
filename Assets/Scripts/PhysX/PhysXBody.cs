@@ -18,12 +18,22 @@ public class PhysXBody : MonoBehaviour
         get {
             return _position;
         }
+        set {
+            _position = value;
+            transform.position = _position;
+            PhysXLib.SetPosition(physXBody, new PhysXVec3(_position));
+        }
     }
 
     protected Quaternion _rotation;
     public Quaternion rotation {
         get {
             return _rotation;
+        }
+        set {
+            _rotation = value;
+            transform.rotation = _rotation;
+            PhysXLib.SetRotation(physXBody, new PhysXQuat(_rotation));
         }
     }
 
@@ -64,6 +74,8 @@ public class PhysXBody : MonoBehaviour
 
     public virtual void Setup() {
         IntPtr physXTransform = PhysXLib.CreateTransform(new PhysXVec3(transform.position), new PhysXQuat(transform.rotation));
+        _position = transform.position;
+        _rotation = transform.rotation;
         physXBody = PhysXLib.CreateStaticRigidBody(physXTransform);
 
         PhysXCollider[] colliders = GetComponentsInChildren<PhysXCollider>(true);

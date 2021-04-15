@@ -194,6 +194,9 @@ extern "C" {
     EXPORT_FUNC void GetPosition(physx::PxRigidActor* actor, physx::PxVec3* position);
     EXPORT_FUNC void GetRotation(physx::PxRigidActor* actor, physx::PxQuat* rotation);
 
+    EXPORT_FUNC void SetPosition(physx::PxRigidActor* actor, physx::PxVec3* position);
+    EXPORT_FUNC void SetRotation(physx::PxRigidActor* actor, physx::PxQuat* rotation);
+
     EXPORT_FUNC void GetLinearVelocity(physx::PxRigidBody* rigidBody, physx::PxVec3* velocity);
     EXPORT_FUNC void GetAngularVelocity(physx::PxRigidBody* rigidBody, physx::PxVec3* velocity);
 
@@ -210,6 +213,7 @@ extern "C" {
 
     EXPORT_FUNC physx::PxReal GetSuspensionCompression(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
     EXPORT_FUNC void GetWheelTransform(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position, physx::PxQuat* rotation);
+    EXPORT_FUNC physx::PxReal GetSuspensionSprungMass(physx::PxVehicleSuspensionData* suspension);
 
     EXPORT_FUNC void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation);
 

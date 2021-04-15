@@ -261,6 +261,12 @@ namespace PhysX {
         public static extern void GetRotation(IntPtr actor, [Out] PhysXQuat rotation);
 
         [DllImport(dllName)]
+        public static extern void SetPosition(IntPtr actor, [In] PhysXVec3 position);
+
+        [DllImport(dllName)]
+        public static extern void SetRotation(IntPtr actor, [In] PhysXQuat rotation);
+
+        [DllImport(dllName)]
         public static extern void GetLinearVelocity(IntPtr rigidBody, [Out] PhysXVec3 velocity);
 
         [DllImport(dllName)]
@@ -298,6 +304,9 @@ namespace PhysX {
 
         [DllImport(dllName)]
         public static extern void GetWheelTransform(IntPtr vehicle, int wheelNum, [Out] PhysXVec3 position, [Out] PhysXQuat rotation);
+
+        [DllImport(dllName)]
+        public static extern float GetSuspensionSprungMass(IntPtr suspension);
 
         [DllImport(dllName)]
         public static extern void GetTransformComponents(IntPtr transform, [Out] PhysXVec3 position, [Out] PhysXQuat rotation);

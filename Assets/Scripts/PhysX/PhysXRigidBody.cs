@@ -69,6 +69,8 @@ public class PhysXRigidBody : PhysXBody
 
     public override void Setup() {
         IntPtr physXTransform = PhysXLib.CreateTransform(new PhysXVec3(transform.position), new PhysXQuat(transform.rotation));
+        _position = transform.position;
+        _rotation = transform.rotation;
         physXBody = PhysXLib.CreateDynamicRigidBody(physXTransform);
 
         // PhysXLib.RegisterCollisionEnterCallback(ProcessCollisionEnterEvents, physXDynamicRigidBody);

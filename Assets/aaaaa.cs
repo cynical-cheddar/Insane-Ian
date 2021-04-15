@@ -5,14 +5,19 @@ using PhysX;
 
 public class aaaaa : MonoBehaviour, ITriggerEnterEvent
 {
+    private float timer = 0;
+
     public bool requiresData { get { return true; } }
 
-    void Start() {
-        PhysXRigidBody rigidBody = GetComponent<PhysXRigidBody>();
+    private PhysXRigidBody body;
+    private Vector3 startPosition;
+    private Quaternion startRotation;
 
-        if (rigidBody != null) {
-            rigidBody.centreOfMass = Vector3.forward;
-        }
+    void Start() {
+        body = GetComponent<PhysXRigidBody>();
+        startPosition = body.position;
+        startRotation = body.rotation;
+        body.AddTorque(Random.onUnitSphere, ForceMode.Impulse);
     }
 
     public void OnTriggerEnter() {
@@ -23,17 +28,13 @@ public class aaaaa : MonoBehaviour, ITriggerEnterEvent
         Debug.Log("wop");
     }
 
-    void Update() {
-        PhysXRaycastHit hit = PhysXRaycast.GetRaycastHit();
+    void FixedUpdate() {
+        timer += Time.deltaTime;
 
-        if (PhysXRaycast.Fire(transform.position, transform.forward, hit)) {
-            Debug.Log(hit.point);
-            Debug.Log(hit.normal);
-            Debug.Log(hit.distance);
-            Debug.Log(hit.collider.gameObject.name);
-            Debug.Log(hit.transform.gameObject.name);
+        if (timer >= 1) {
+            body.position = startPosition;
+            body.rotation = startRotation;
+            timer = 0;
         }
-
-        PhysXRaycast.ReleaseRaycastHit(hit);
     }
 }

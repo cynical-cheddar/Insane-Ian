@@ -22,6 +22,7 @@ public class PhysXWheelCollider : MonoBehaviour
     public float asymptoteForwardFriction = 5;
     public float forwardStiffness = 1000;
     public float asymptoteSidewaysTireLoad = 2;
+    public bool autoCalculateSpringStrength = false;
 
     [SerializeField]
     private float _asymptoteSidewaysStiffness = 10;
@@ -124,6 +125,11 @@ public class PhysXWheelCollider : MonoBehaviour
     }
 
     public void SetupSimData(IntPtr wheelSimData, int wheelNum, uint vehicleId) {
+        if (autoCalculateSpringStrength) {
+            float sprungMass = PhysXLib.GetSuspensionSprungMass(suspension);
+            suspensionSpringStrength = (Physics.gravity.magnitude * sprungMass) / (suspensionDistance * (1 - suspensionSpringTargetPosition));
+        }
+
         this.wheelNum = wheelNum;
 
         Transform grandestParent = transform;

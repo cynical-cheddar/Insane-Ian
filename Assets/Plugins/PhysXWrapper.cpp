@@ -374,8 +374,7 @@ extern "C" {
         physx::PxDefaultMemoryOutputStream buffer;
         physx::PxTriangleMeshCookingResult::Enum result;
         bool status = gCooking->cookTriangleMesh(meshDesc, buffer, &result);
-        if(!status)
-            return NULL;
+        if (!status) return NULL;
 
         physx::PxDefaultMemoryInputData input(buffer.getData(), buffer.getSize());
         
@@ -736,6 +735,16 @@ extern "C" {
         *rotation = actor->getGlobalPose().q;
     }
 
+    EXPORT_FUNC void SetPosition(physx::PxRigidActor* actor, physx::PxVec3* position) {
+        physx::PxQuat rotation = actor->getGlobalPose().q;
+        actor->setGlobalPose(physx::PxTransform(*position, rotation));
+    }
+
+    EXPORT_FUNC void SetRotation(physx::PxRigidActor* actor, physx::PxQuat* rotation) {
+        physx::PxVec3 position = actor->getGlobalPose().p;
+        actor->setGlobalPose(physx::PxTransform(position, *rotation));
+    }
+
     EXPORT_FUNC void GetLinearVelocity(physx::PxRigidBody* rigidBody, physx::PxVec3* velocity) {
         *velocity = rigidBody->getLinearVelocity();
     }
@@ -808,6 +817,10 @@ extern "C" {
         *rotation = actorUserData->queryResults[wheelNum].localPose.q;
     }
 
+    EXPORT_FUNC physx::PxReal GetSuspensionSprungMass(physx::PxVehicleSuspensionData* suspension) {
+        return suspension->mSprungMass;
+    }
+
     EXPORT_FUNC void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation) {
         *position = transform->p;
         *rotation = transform->q;
@@ -817,6 +830,18 @@ extern "C" {
         ActorUserData* actorUserData = (ActorUserData*)vehicle->getRigidDynamicActor()->userData;
 
         return actorUserData->queryResults[wheelNum].tireContactShape;
+    }
+
+    EXPORT_FUNC void GetGroundHitPosition(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position) {
+        ActorUserData* actorUserData = (ActorUserData*)vehicle->getRigidDynamicActor()->userData;
+
+        *position = actorUserData->queryResults[wheelNum].tireContactPoint;
+    }
+
+    EXPORT_FUNC bool GetGroundHitIsGrounded(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position) {
+        ActorUserData* actorUserData = (ActorUserData*)vehicle->getRigidDynamicActor()->userData;
+
+        return !actorUserData->queryResults[wheelNum].isInAir;
     }
 
     EXPORT_FUNC void DestroyActor(physx::PxActor* actor) {
