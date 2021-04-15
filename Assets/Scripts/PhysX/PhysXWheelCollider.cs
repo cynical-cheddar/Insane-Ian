@@ -105,7 +105,7 @@ public class PhysXWheelCollider : MonoBehaviour
         PhysXLib.SetWheelWidth(wheel, width);
 
         tire = PhysXLib.CreateTireData();
-        PhysXLib.SetTireBaseFriction(tire, 5);
+        PhysXLib.SetTireBaseFriction(tire, baseForwardFriction);
         PhysXLib.SetTireMaxFrictionSlipPoint(tire, extremumForwardSlip);
         PhysXLib.SetTireMaxFriction(tire, extremumForwardFriction);
         PhysXLib.SetTirePlateuxSlipPoint(tire, asymptoteForwardSlip);
