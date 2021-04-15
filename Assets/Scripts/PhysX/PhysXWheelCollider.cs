@@ -165,6 +165,11 @@ public class PhysXWheelCollider : MonoBehaviour
         }
     }
 
+    public void GetWorldPose(out Vector3 position, out Quaternion rotation) {
+        position = transform.TransformPoint(wheelCentre);
+        rotation = Quaternion.AngleAxis(steerAngle * Mathf.Rad2Deg, transform.TransformDirection(transform.up));
+    }
+
     public bool doSteer = false;
     public float oldAsymptoteSidewaysStiffness;
 
