@@ -7,13 +7,19 @@ public class PhysXMeshCollider : PhysXCollider
 {
     public Mesh mesh;
     public bool convex = true;
+    public Vector3 scale = Vector3.one;
 
     // Start is called before the first frame update
     public override void Setup(PhysXBody attachedRigidBody)
     {
         IntPtr vertexArray = PhysXLib.CreateVectorArray();
 
-        Vector3[] vertices = mesh.vertices;
+        Vector3[] unscaledVertices = mesh.vertices;
+        Vector3[] vertices = new Vector3[unscaledVertices.Length];
+        for (int i = 0; i < unscaledVertices.Length; i++) {
+            vertices[i] = new Vector3(unscaledVertices[i].x * scale.x, unscaledVertices[i].y * scale.y, unscaledVertices[i].z * scale.z);
+        }
+
         Vector3 centre = Vector3.zero;
         foreach (Vector3 vertex in vertices) {
             centre += vertex;
@@ -23,7 +29,7 @@ public class PhysXMeshCollider : PhysXCollider
         offset += centre;
 
         foreach (Vector3 vertex in vertices) {
-            PhysXLib.AddVectorToArray(vertexArray, new PhysXVec3(vertex - centre));
+            PhysXLib.AddVectorToArray(vertexArray, new PhysXVec3((vertex - centre)));
         }
 
         IntPtr geom = IntPtr.Zero;
