@@ -20,11 +20,11 @@ public class aaaaa : MonoBehaviour, ITriggerEnterEvent
         body.AddTorque(Random.onUnitSphere, ForceMode.Impulse);
     }
 
-    public void OnTriggerEnter() {
+    public void TriggerEnter() {
 
     }
 
-    public void OnTriggerEnter(PhysXCollider collider) {
+    public void TriggerEnter(PhysXCollider collider) {
         Debug.Log("wop");
     }
 

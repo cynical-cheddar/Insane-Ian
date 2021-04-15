@@ -278,6 +278,8 @@ GameObject:
   - component: {fileID: 3211866177313125976}
   - component: {fileID: 3211866177313125975}
   - component: {fileID: 3211866177313125974}
+  - component: {fileID: 1557932243988537449}
+  - component: {fileID: 6423933381577761123}
   m_Layer: 0
   m_Name: HotPotatoGO
   m_TagString: Untagged
@@ -361,6 +363,36 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 2.7
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1557932243988537449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3211866177313125972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6423933381577761123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3211866177313125972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8e167f3cef174267a88f6d3deb03eb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 1
+  offset: {x: 0, y: 0, z: 0}
+  radius: 2.7
 --- !u!1 &3211866177454659941
 GameObject:
   m_ObjectHideFlags: 0

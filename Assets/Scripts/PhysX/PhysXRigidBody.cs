@@ -24,6 +24,10 @@ public class PhysXRigidBody : PhysXBody
         get {
             return _velocity;
         }
+        set {
+            _velocity = value;
+            PhysXLib.SetLinearVelocity(physXBody, new PhysXVec3(_velocity));
+        }
     }
 
     private Vector3 _angularVelocity;

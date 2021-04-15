@@ -174,6 +174,8 @@ GameObject:
   - component: {fileID: 1590214199835440396}
   - component: {fileID: 1590214199835440397}
   - component: {fileID: 1822977634548557242}
+  - component: {fileID: 3229392048748754193}
+  - component: {fileID: -8466764412623039933}
   m_Layer: 0
   m_Name: DriverUltPickupSmall
   m_TagString: Untagged
@@ -262,6 +264,38 @@ MonoBehaviour:
     type: 3}
   pickupSoundVolume: 1
   ultIncrease: 100
+--- !u!114 &3229392048748754193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590214199835440392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-8466764412623039933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1590214199835440392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  x: 5
+  y: 5
+  z: 5
 --- !u!1 &1590214200647046662
 GameObject:
   m_ObjectHideFlags: 0

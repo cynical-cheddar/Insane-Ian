@@ -3,7 +3,7 @@ namespace PhysX {
     public interface ICollisionExitEvent {
         bool requiresData { get; }
 
-        void OnCollisionExit();
+        void CollisionExit();
         void OnCollisionExit(PhysXCollision collision);
     }
 }

@@ -200,6 +200,8 @@ extern "C" {
     EXPORT_FUNC void GetLinearVelocity(physx::PxRigidBody* rigidBody, physx::PxVec3* velocity);
     EXPORT_FUNC void GetAngularVelocity(physx::PxRigidBody* rigidBody, physx::PxVec3* velocity);
 
+    EXPORT_FUNC void SetLinearVelocity(physx::PxRigidBody* body, physx::PxVec3* velocity);
+
     EXPORT_FUNC void AddForce(physx::PxRigidBody* rigidBody, physx::PxVec3* force, physx::PxForceMode::Enum forceMode);
     EXPORT_FUNC void AddForceAtPosition(physx::PxRigidBody* rigidBody, physx::PxVec3* force, physx::PxVec3* position, physx::PxForceMode::Enum forceMode);
     EXPORT_FUNC void AddTorque(physx::PxRigidBody* rigidBody, physx::PxVec3* torque, physx::PxForceMode::Enum forceMode);

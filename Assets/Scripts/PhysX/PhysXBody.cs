@@ -105,20 +105,20 @@ public class PhysXBody : MonoBehaviour
     public void FireCollisionEvents(PhysXCollision collision) {
         if (collision.isEnter) {
             foreach (ICollisionEnterEvent collisionEnterEvent in collisionEnterEvents) {
-                if (collisionEnterEvent.requiresData) collisionEnterEvent.OnCollisionEnter(collision);
-                else collisionEnterEvent.OnCollisionEnter();
+                if (collisionEnterEvent.requiresData) collisionEnterEvent.CollisionEnter(collision);
+                else collisionEnterEvent.CollisionEnter();
             }
         }
         if (collision.isStay) {
             foreach (ICollisionStayEvent collisionStayEvent in collisionStayEvents) {
-                if (collisionStayEvent.requiresData) collisionStayEvent.OnCollisionStay(collision);
-                else collisionStayEvent.OnCollisionStay();
+                if (collisionStayEvent.requiresData) collisionStayEvent.CollisionStay(collision);
+                else collisionStayEvent.CollisionStay();
             }
         }
         if (collision.isExit) {
             foreach (ICollisionExitEvent collisionExitEvent in collisionExitEvents) {
                 if (collisionExitEvent.requiresData) collisionExitEvent.OnCollisionExit(collision);
-                else collisionExitEvent.OnCollisionExit();
+                else collisionExitEvent.CollisionExit();
             }
         }
     }
@@ -126,14 +126,14 @@ public class PhysXBody : MonoBehaviour
     public void FireTriggerEvents(PhysXTrigger trigger) {
         if (trigger.isEnter) {
             foreach (ITriggerEnterEvent triggerEnterEvent in triggerEnterEvents) {
-                if (triggerEnterEvent.requiresData) triggerEnterEvent.OnTriggerEnter(trigger.collider);
-                else triggerEnterEvent.OnTriggerEnter();
+                if (triggerEnterEvent.requiresData) triggerEnterEvent.TriggerEnter(trigger.collider);
+                else triggerEnterEvent.TriggerEnter();
             }
         }
         if (trigger.isExit) {
             foreach (ITriggerExitEvent triggerExitEvent in triggerExitEvents) {
-                if (triggerExitEvent.requiresData) triggerExitEvent.OnTriggerExit(trigger.collider);
-                else triggerExitEvent.OnTriggerExit();
+                if (triggerExitEvent.requiresData) triggerExitEvent.TriggerExit(trigger.collider);
+                else triggerExitEvent.TriggerExit();
             }
         }
     }

@@ -8,7 +8,7 @@ public class PickupDriverUlt : PickupItem
     public float ultIncrease = 25f;
 
 
-    public override void OnTriggerEnter(Collider other)
+    public override void TriggerEnter(PhysXCollider other)
     {
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.

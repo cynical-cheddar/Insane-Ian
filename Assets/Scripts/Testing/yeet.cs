@@ -12,11 +12,11 @@ public class yeet : MonoBehaviour, ICollisionEnterEvent
         GetComponent<PhysXRigidBody>().AddForce(Vector3.right * 10, ForceMode.Impulse);
     }
 
-    public void OnCollisionEnter() {
+    public void CollisionEnter() {
         Debug.Log("boop!");
     }
 
-    public void OnCollisionEnter(PhysXCollision collision) {
+    public void CollisionEnter(PhysXCollision collision) {
         Debug.LogError("ohno");
     }
 }
