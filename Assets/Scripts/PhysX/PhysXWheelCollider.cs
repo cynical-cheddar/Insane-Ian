@@ -70,10 +70,10 @@ public class PhysXWheelCollider : MonoBehaviour
     [HideInInspector]
     public float steerAngle {
         get {
-            return _steerAngle;
+            return _steerAngle * Mathf.Rad2Deg;
         }
         set {
-            _steerAngle = value;
+            _steerAngle = value * Mathf.Deg2Rad;
 
             PhysXLib.SetWheelSteer(vehicle, wheelNum, _steerAngle);
         }
@@ -123,7 +123,7 @@ public class PhysXWheelCollider : MonoBehaviour
         return suspension;
     }
 
-    public void SetupSimData(IntPtr wheelSimData, int wheelNum) {
+    public void SetupSimData(IntPtr wheelSimData, int wheelNum, uint vehicleId) {
         this.wheelNum = wheelNum;
 
         Transform grandestParent = transform;
@@ -141,6 +141,7 @@ public class PhysXWheelCollider : MonoBehaviour
         PhysXLib.SetWheelSimTireData(wheelSimData, wheelNum, tire);
         PhysXLib.SetWheelSimSuspensionData(wheelSimData, wheelNum, suspension, new PhysXVec3(-transform.up));
         PhysXLib.SetWheelSimWheelShape(wheelSimData, wheelNum, -1);
+        PhysXLib.SetWheelSimQueryFilterData(wheelSimData, wheelNum, 0, 0, 0, vehicleId);
     }
 
     public void SetVehicle(IntPtr vehicle) {
@@ -175,6 +176,6 @@ public class PhysXWheelCollider : MonoBehaviour
 
     public void GetWorldPose(out Vector3 position, out Quaternion rotation) {
         position = transform.TransformPoint(wheelCentre);
-        rotation = Quaternion.AngleAxis(steerAngle * Mathf.Rad2Deg, transform.TransformDirection(transform.up));
+        rotation = transform.rotation * Quaternion.AngleAxis(steerAngle, transform.TransformDirection(transform.up));
     }
 }

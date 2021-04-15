@@ -161,12 +161,12 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
     void IDrivable.Drift() {
         foreach (wheelStruct ws in wheelStructs) {
-            ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * driftStiffness;
+            //ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * driftStiffness;
         }
     }
     void IDrivable.StopDrift() {
         foreach (wheelStruct ws in wheelStructs) {
-            ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * baseStiffness;
+            //ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * baseStiffness;
         }
     } 
     private bool AllWheelsGrounded() {
@@ -185,7 +185,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         Vector3 pos = transform.position;
         Quaternion quat = transform.rotation;
 
-        //collider.GetWorldPose(out pos, out quat);
+        collider.GetWorldPose(out pos, out quat);
 
         transform.position = pos;
         transform.rotation = quat;

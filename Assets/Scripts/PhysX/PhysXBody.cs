@@ -69,7 +69,7 @@ public class PhysXBody : MonoBehaviour
         PhysXCollider[] colliders = GetComponentsInChildren<PhysXCollider>(true);
 
         foreach (PhysXCollider collider in colliders) {
-            collider.Setup(this);
+            collider.Setup(this, 0);
         }
     }
 

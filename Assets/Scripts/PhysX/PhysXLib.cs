@@ -105,6 +105,9 @@ namespace PhysX {
         public static extern IntPtr SetCollisionFilterData(IntPtr shape, UInt32 w0, UInt32 w1, UInt32 w2, UInt32 w3);
 
         [DllImport(dllName)]
+        public static extern IntPtr SetQueryFilterData(IntPtr shape, UInt32 w0, UInt32 w1, UInt32 w2, UInt32 w3);
+
+        [DllImport(dllName)]
         public static extern int AttachShapeToRigidBody(IntPtr shape, IntPtr body);
 
         [DllImport(dllName)]
@@ -189,7 +192,7 @@ namespace PhysX {
         public static extern void SetWheelSimForceAppPoint(IntPtr wheelSimData, int wheelNum, [In] PhysXVec3 point);
 
         [DllImport(dllName)]
-        public static extern void SetWheelSimQueryFilterData(IntPtr wheelSimData, int wheelNum, int w0, int w1, int w2, int w3);
+        public static extern void SetWheelSimQueryFilterData(IntPtr wheelSimData, int wheelNum, uint w0, uint w1, uint w2, uint w3);
 
         [DllImport(dllName)]
         public static extern void SetWheelSimWheelShape(IntPtr wheelSimData, int wheelNum, int shapeNum);

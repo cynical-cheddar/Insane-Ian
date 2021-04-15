@@ -8,11 +8,11 @@ public class PhysXSphereCollider : PhysXCollider
     public float radius = 0.5f;
 
     // Start is called before the first frame update
-    public override void Setup(PhysXBody attachedRigidBody)
+    public override void Setup(PhysXBody attachedRigidBody, uint vehicleId)
     {
         IntPtr geom = PhysXLib.CreateSphereGeometry(radius);
         shape = PhysXLib.CreateShape(geom, physXMaterial, 0.02f);
 
-        base.Setup(attachedRigidBody);
+        base.Setup(attachedRigidBody, vehicleId);
     }
 }

@@ -253,7 +253,10 @@ physx::PxVehicleDrivableSurfaceToTireFrictionPairs* createFrictionPairs(const ph
 physx::PxQueryHitType::Enum WheelSceneQueryPreFilterBlocking(physx::PxFilterData filterData0, physx::PxFilterData filterData1, const void* constantBlock, physx::PxU32 constantBlockSize, physx::PxHitFlags& queryFlags) {
     //filterData0 is the vehicle suspension query.
     //filterData1 is the shape potentially hit by the query.
+
+    if (filterData0.word3 == filterData1.word3) return physx::PxQueryHitType::eNONE;
     return physx::PxQueryHitType::eBLOCK;
+
 }
 
 RaycastHitHandler::RaycastHitHandler(physx::PxRaycastHit* hitBuffer, physx::PxU32 bufferSize) : physx::PxRaycastCallback(hitBuffer, bufferSize) {
@@ -420,7 +423,13 @@ extern "C" {
     }
 
     EXPORT_FUNC void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3) {
+        debugLog(std::to_string(w3));
         shape->setSimulationFilterData(physx::PxFilterData(w0, w1, w2, w3));
+    }
+
+    EXPORT_FUNC void SetQueryFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3) {
+        debugLog(std::to_string(w3));
+        shape->setQueryFilterData(physx::PxFilterData(w0, w1, w2, w3));
     }
 
     EXPORT_FUNC int AttachShapeToRigidBody(physx::PxShape* shape, physx::PxRigidActor* body) {
@@ -432,7 +441,7 @@ extern "C" {
         physx::PxVehicleWheelData* wheel = new physx::PxVehicleWheelData();
         wheel->mMaxBrakeTorque = PX_MAX_F32 - 1;
         wheel->mMaxHandBrakeTorque = PX_MAX_F32 - 1;
-        wheel->mMaxSteer = physx::PxPi * 2;
+        wheel->mMaxSteer = (physx::PxPi / 2) - 0.0001f;
         return wheel;
     }
 
@@ -582,6 +591,8 @@ extern "C" {
         batchQueryDesc.queryMemory.userRaycastResultBuffer = sceneUserData->raycastResults.data();
         batchQueryDesc.queryMemory.userRaycastTouchBuffer = sceneUserData->raycastHits.data();
         batchQueryDesc.queryMemory.raycastTouchBufferSize = sceneUserData->raycastHits.size();
+
+        batchQueryDesc.preFilterShader = WheelSceneQueryPreFilterBlocking;
 
         sceneUserData->suspensionBatchQuery = actorUserData->scene->createBatchQuery(batchQueryDesc);
 
@@ -800,6 +811,23 @@ extern "C" {
     EXPORT_FUNC void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation) {
         *position = transform->p;
         *rotation = transform->q;
+    }
+
+    EXPORT_FUNC physx::PxShape* GetGroundHitShape(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum) {
+        ActorUserData* actorUserData = (ActorUserData*)vehicle->getRigidDynamicActor()->userData;
+
+        return actorUserData->queryResults[wheelNum].tireContactShape;
+    }
+
+    EXPORT_FUNC void DestroyActor(physx::PxActor* actor) {
+        ActorUserData* actorUserData = (ActorUserData*)actor->userData;
+        delete actorUserData;
+
+        actor->release();
+    }
+
+    EXPORT_FUNC void DestroyVehicle(physx::PxVehicleNoDrive* vehicle) {
+        vehicle->free();
     }
 
     EXPORT_FUNC physx::PxRaycastCallback* CreateRaycastHit() {

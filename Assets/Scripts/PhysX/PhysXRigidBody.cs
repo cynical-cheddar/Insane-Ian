@@ -5,10 +5,14 @@ using PhysX;
 
 public class PhysXRigidBody : PhysXBody
 {
+    static uint currentVehicleId = 1;
+
     private List<PhysXWheelCollider> wheels;
 
     //public IntPtr physXBody { get; private set; }
     private IntPtr vehicle = IntPtr.Zero;
+
+    public uint vehicleId { get; private set; } = 0;
 
     public bool kinematic = false;
     public float mass = 1;
@@ -77,10 +81,17 @@ public class PhysXRigidBody : PhysXBody
         PhysXLib.SetRigidBodyMaxDepenetrationVelocity(physXBody, 10);
 
 
+        wheels = new List<PhysXWheelCollider>(GetComponentsInChildren<PhysXWheelCollider>(true));
         PhysXCollider[] colliders = GetComponentsInChildren<PhysXCollider>(true);
 
+        if (wheels.Count > 0) {
+            vehicleId = currentVehicleId;
+            currentVehicleId++;
+        }
+        //Debug.Log(vehicleId);
+
         foreach (PhysXCollider collider in colliders) {
-            collider.Setup(this);
+            collider.Setup(this, vehicleId);
         }
         
         PhysXLib.SetRigidBodyMassAndInertia(physXBody, mass, new PhysXVec3(Vector3.zero));
@@ -88,7 +99,6 @@ public class PhysXRigidBody : PhysXBody
     }
 
     public override void PostSceneInsertionSetup() {
-        wheels = new List<PhysXWheelCollider>(GetComponentsInChildren<PhysXWheelCollider>(true));
 
         if (wheels.Count > 0) {
             IntPtr wheelSimData = PhysXLib.CreateWheelSimData(wheels.Count);
@@ -103,7 +113,8 @@ public class PhysXRigidBody : PhysXBody
             PhysXLib.SetSuspensionSprungMasses(suspensions, wheels.Count, wheelPositions, new PhysXVec3(Vector3.zero), mass);
 
             for (int i = 0; i < wheels.Count; i++) {
-                wheels[i].SetupSimData(wheelSimData, i);
+                //Debug.Log(vehicleId);
+                wheels[i].SetupSimData(wheelSimData, i, vehicleId);
             }
 
             vehicle = PhysXLib.CreateVehicleFromRigidBody(physXBody, wheelSimData);

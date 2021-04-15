@@ -59,7 +59,7 @@ public class PhysXCollider : MonoBehaviour
     public Vector3 offset = Vector3.zero;
 
     // Start is called before the first frame update
-    public virtual void Setup(PhysXBody attachedRigidBody)
+    public virtual void Setup(PhysXBody attachedRigidBody, uint vehicleId)
     {
         Transform grandestParent = transform;
         while (grandestParent.parent != null) {
@@ -78,6 +78,7 @@ public class PhysXCollider : MonoBehaviour
 
         PhysXLib.CollisionEvent collisionEventFlags = attachedRigidBody.collisionEventFlags;
         PhysXLib.SetCollisionFilterData(shape, (UInt32)ownLayers, (UInt32)collisionLayers, (UInt32)collisionEventFlags, 0);
+        PhysXLib.SetQueryFilterData(shape, (UInt32)ownLayers, 0, 0, vehicleId);
         shapeNum = attachedRigidBody.AddCollider(this);
     }
 }

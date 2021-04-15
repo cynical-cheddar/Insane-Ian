@@ -10,9 +10,15 @@ public class PhysXMeshCollider : PhysXCollider
     public Vector3 scale = Vector3.one;
 
     // Start is called before the first frame update
-    public override void Setup(PhysXBody attachedRigidBody)
+    public override void Setup(PhysXBody attachedRigidBody, uint vehicleId)
     {
-        if (mesh != null) {
+        if (mesh == null) {
+            Debug.LogError("Collider mesh is null on " + gameObject.name);
+        }
+        else if (!mesh.isReadable) {
+            Debug.LogError("Collider mesh: " + mesh.name + " is not readable");
+        }
+        else {
             IntPtr vertexArray = PhysXLib.CreateVectorArray();
 
             Vector3[] unscaledVertices = mesh.vertices;
@@ -44,7 +50,7 @@ public class PhysXMeshCollider : PhysXCollider
             shape = PhysXLib.CreateShape(geom, physXMaterial, 0.02f);
 
 
-            base.Setup(attachedRigidBody);
+            base.Setup(attachedRigidBody, vehicleId);
         }
     }
 }

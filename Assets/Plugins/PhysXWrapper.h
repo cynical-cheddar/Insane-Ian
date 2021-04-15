@@ -19,6 +19,8 @@
 #define TRIGGER_SUSTAIN (1 << 4)
 #define TRIGGER_END     (1 << 5)
 
+#define WHEEL_LAYER (1 << 1)
+
 extern "C" {
     typedef void(*DebugLog)(const char* stringPtr, int length);
     typedef void(*CollisionCallback)(const physx::PxContactPairHeader* pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs, const physx::PxActor* self, bool isEnter, bool isStay, bool isExit);
