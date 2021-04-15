@@ -97,7 +97,7 @@ public class PhysXRigidBody : PhysXBody
 
             for (int i = 0; i < wheels.Count; i++) {
                 suspensions[i] = wheels[i].SetupInitialProperties();
-                PhysXLib.AddVectorToArray(wheelPositions, new PhysXVec3(wheels[i].wheelCentre));
+                PhysXLib.AddVectorToArray(wheelPositions, new PhysXVec3(transform.InverseTransformPoint(wheels[i].worldWheelCentre)));
             }
 
             PhysXLib.SetSuspensionSprungMasses(suspensions, wheels.Count, wheelPositions, new PhysXVec3(Vector3.zero), mass);
