@@ -80,9 +80,7 @@ public class VehicleSelector : MonoBehaviour
                 Destroy(currentVehicleInstance);
             }
             // spawn new vehicle
-             currentVehicleInstance = Instantiate (Resources.Load (prefix + currentVehicle) as GameObject);
-             currentVehicleInstance.transform.position = spawnPoint.position;
-             currentVehicleInstance.transform.rotation = spawnPoint.rotation;
+             currentVehicleInstance = Instantiate(Resources.Load (prefix + currentVehicle) as GameObject, spawnPoint.position, spawnPoint.rotation);
         }
     }
 

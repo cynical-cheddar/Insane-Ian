@@ -169,40 +169,4 @@ public class PhysXWheelCollider : MonoBehaviour
         position = transform.TransformPoint(wheelCentre);
         rotation = Quaternion.AngleAxis(steerAngle * Mathf.Rad2Deg, transform.TransformDirection(transform.up));
     }
-
-    public bool doSteer = false;
-    public float oldAsymptoteSidewaysStiffness;
-
-    void Update() {
-        if (Input.GetKey(KeyCode.Space)) {
-            asymptoteSidewaysStiffness = 5;
-        }
-        else {
-            asymptoteSidewaysStiffness = oldAsymptoteSidewaysStiffness;
-        }
-
-        if (doSteer) {
-
-            if (Input.GetKey(KeyCode.A)) {
-                steerAngle = -0.35f;
-            }
-            else if (Input.GetKey(KeyCode.D)) {
-                steerAngle = 0.35f;
-            }
-            else {
-                steerAngle = 0;
-            }
-        }
-        else {
-            if (Input.GetKey(KeyCode.W)) {
-                motorTorque = 2000;
-            }
-            else if (Input.GetKey(KeyCode.S)) {
-                motorTorque = -2000;
-            }
-            else {
-                motorTorque = 0;
-            }
-        }
-    }
 }
