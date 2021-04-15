@@ -661,9 +661,9 @@ MonoBehaviour:
   extremumForwardFriction: 10
   asymptoteForwardSlip: 0.8
   asymptoteForwardFriction: 5
-  forwardStiffness: 2200
-  asymptoteSidewaysTireLoad: 2
-  _asymptoteSidewaysStiffness: 5
+  forwardStiffness: 1900
+  asymptoteSidewaysTireLoad: 1.5
+  _asymptoteSidewaysStiffness: 10
   isGrounded: 1
 --- !u!114 &4933783384860103410
 MonoBehaviour:
@@ -741,9 +741,9 @@ MonoBehaviour:
   extremumForwardFriction: 10
   asymptoteForwardSlip: 0.8
   asymptoteForwardFriction: 5
-  forwardStiffness: 2200
-  asymptoteSidewaysTireLoad: 2
-  _asymptoteSidewaysStiffness: 5
+  forwardStiffness: 1900
+  asymptoteSidewaysTireLoad: 1.5
+  _asymptoteSidewaysStiffness: 10
   isGrounded: 1
 --- !u!1 &4105169429449499628
 GameObject:
@@ -803,9 +803,9 @@ MonoBehaviour:
   extremumForwardFriction: 10
   asymptoteForwardSlip: 0.8
   asymptoteForwardFriction: 5
-  forwardStiffness: 2200
-  asymptoteSidewaysTireLoad: 2
-  _asymptoteSidewaysStiffness: 5
+  forwardStiffness: 1900
+  asymptoteSidewaysTireLoad: 1.5
+  _asymptoteSidewaysStiffness: 10
   isGrounded: 1
 --- !u!1 &4685882747475122894
 GameObject:
@@ -1088,9 +1088,9 @@ MonoBehaviour:
   extremumForwardFriction: 10
   asymptoteForwardSlip: 0.8
   asymptoteForwardFriction: 5
-  forwardStiffness: 2200
-  asymptoteSidewaysTireLoad: 2
-  _asymptoteSidewaysStiffness: 5
+  forwardStiffness: 1900
+  asymptoteSidewaysTireLoad: 1.5
+  _asymptoteSidewaysStiffness: 10
   isGrounded: 1
 --- !u!1 &6068705774694015769
 GameObject:
@@ -2081,7 +2081,7 @@ MonoBehaviour:
   carRB: {fileID: 8126532692333351774}
   carTransform: {fileID: 8103896753619876248}
   maxSteerAngle: 20
-  motorTorque: 4000
+  motorTorque: 3000
   brakeTorque: 8000
   brakeForce: 16000
   steerRateLerp: 0.07
@@ -2307,7 +2307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kinematic: 0
   mass: 3000
-  linearDamping: 0.05
+  linearDamping: 0.1
   angularDamping: 0.6
   _centreOfMass: {x: 0, y: 0, z: 0}
 --- !u!1 &8105189969027782720
