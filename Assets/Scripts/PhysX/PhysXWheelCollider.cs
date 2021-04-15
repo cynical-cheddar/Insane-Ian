@@ -80,6 +80,11 @@ public class PhysXWheelCollider : MonoBehaviour
     }
 
     public Vector3 wheelCentre { get; private set; }
+    public Vector3 worldWheelCentre {
+        get {
+            return transform.TransformPoint(wheelCentre);
+        }
+    }
 
     private IntPtr wheel = IntPtr.Zero;
     private IntPtr tire = IntPtr.Zero;
@@ -162,6 +167,9 @@ public class PhysXWheelCollider : MonoBehaviour
             PhysXLib.GetWheelTransform(vehicle, wheelNum, position, rotation);
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(grandestParent.TransformPoint(position.ToVector()), radius);
+        }
+        else {
+            
         }
     }
 
