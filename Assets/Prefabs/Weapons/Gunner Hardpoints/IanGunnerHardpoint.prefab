@@ -1,5 +1,172 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &375321648
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 375321649}
+  - component: {fileID: 375321654}
+  - component: {fileID: 375321653}
+  - component: {fileID: 375321652}
+  - component: {fileID: 375321650}
+  m_Layer: 8
+  m_Name: TestWeaponLightning
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &375321649
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375321648}
+  m_LocalRotation: {x: -0, y: 0.4309048, z: -0, w: 0.90239745}
+  m_LocalPosition: {x: 1.887, y: -0.22422647, z: -0.394}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1235429334662900981}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &375321654
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375321648}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!95 &375321653
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375321648}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 41e05cb00cf68874a8360a1bc4074b77, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &375321652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375321648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 1
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &375321650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375321648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0620b082a2099ef4d947dad37fd0b882, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponName: Thunder Humper
+  isUltimate: 0
+  returnToFirstWeaponGroupOnEmpty: 1
+  barrelTransform: {fileID: 6191808877921439371}
+  barrelEndMuzzleTransform: {fileID: 6191808877921439371}
+  projectileDeviationDegrees: 0
+  damageRampupMultiplierCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  damageMultiplierPlateuDistance: 100
+  damageMultiplierClosestRampupThreshold: 10
+  salvoSize: 5
+  reloadType: 0
+  reloadTime: 0.8
+  fireRate: 0.25
+  ammoPerShot: 1
+  unlimitedAmmo: 1
+  reserveAmmo: 100
+  maxReserveAmmo: 100
+  fullSalvoOnStart: 1
+  baseDamage: 20
+  damageType: 1
+  damageMultiplier: 1
+  weaponAnimator: {fileID: 3571881367042851317}
+  weaponSelectTriggerName: Primary
+  reloadAnimatorTriggerName: Reload
+  primaryFireAnimatorTriggerName: Fire
+  weaponPhotonView: {fileID: 375321652}
+  gunnerPhotonView: {fileID: 657969082931476739}
+  weaponFireSound: {fileID: 8300000, guid: cfb6a097b6aac5248b7e50227e663224, type: 3}
+  muzzleflashVolume: 0.67
+  impactParticleSound: {fileID: 8300000, guid: fd380ac974b42f14dbc92c25e0a69988, type: 3}
+  imapactParticleVolume: 1
+  impactParticleSoundMiss: {fileID: 8300000, guid: d9dc6680ffe0da9439db8df58174615b,
+    type: 3}
+  missImpactParticleVolume: 0.622
+  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
+    type: 3}
+  muzzleflash: {fileID: 2045599435740197598, guid: 8a3ccb13c6d546b4dbc3c783ca2bf6ed,
+    type: 3}
+  imapactParticle: {fileID: 2859100533643478028, guid: 979d23d075e59b84ea03cfa0cd5f0102,
+    type: 3}
+  missImpactParticle: {fileID: 2859100533643478028, guid: 979d23d075e59b84ea03cfa0cd5f0102,
+    type: 3}
+  cameraShakeAmplitude: 4
+  cameraShakeDuration: 0.6
+  muzzleflashChildOfBarrel: 1
+  useTracerHitCorrection: 1
+  lightningPrefab: {fileID: 4726141367327023070, guid: c3fcc639886fbb246b921753fe18d2e1,
+    type: 3}
+  lightningBoltDuration: 0.15
 --- !u!1 &867405840605657571
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +379,7 @@ MonoBehaviour:
   reloadType: 2
   reloadTime: 0.2
   fireRate: 0.1
-  ammoPerShot: 1
+  ammoPerShot: 5
   unlimitedAmmo: 1
   reserveAmmo: 100
   maxReserveAmmo: 100
@@ -221,7 +388,7 @@ MonoBehaviour:
   damageType: 1
   damageMultiplier: 1
   weaponAnimator: {fileID: 3571881367042851317}
-  weaponSelectTriggerName: Primary
+  weaponSelectTriggerName: Ultimate
   reloadAnimatorTriggerName: Reload
   primaryFireAnimatorTriggerName: Fire
   weaponPhotonView: {fileID: 1365914871908541255}
@@ -241,6 +408,8 @@ MonoBehaviour:
     type: 3}
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
+  cameraShakeAmplitude: 2
+  cameraShakeDuration: 0.1
   extraRechargeTimeOnDepletion: 2
   extraRechargeTimeOnCeaseFire: 1
   muzzleFlashChildOfBarrel: 1
@@ -257,6 +426,23 @@ MonoBehaviour:
   beamEndOffset: 1
   textureScrollSpeed: 8
   textureLengthScale: 3
+--- !u!114 &1362823606006599511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4651146583577421300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 1
+  mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &4758937072320128530
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,6 +603,8 @@ MonoBehaviour:
     type: 3}
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
+  cameraShakeAmplitude: 2
+  cameraShakeDuration: 0.1
   extraRechargeTimeOnDepletion: 2
   extraRechargeTimeOnCeaseFire: 1
   muzzleFlashChildOfBarrel: 1
@@ -565,11 +753,11 @@ MonoBehaviour:
   reloadTime: 2
   fireRate: 0.1
   ammoPerShot: 1
-  unlimitedAmmo: 0
+  unlimitedAmmo: 1
   reserveAmmo: 100
   maxReserveAmmo: 100
   fullSalvoOnStart: 1
-  baseDamage: 10
+  baseDamage: 5
   damageType: 1
   damageMultiplier: 1
   weaponAnimator: {fileID: 3571881367042851317}
@@ -593,6 +781,8 @@ MonoBehaviour:
     type: 3}
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
+  cameraShakeAmplitude: 2
+  cameraShakeDuration: 0.2
   fireDummyProjectile: 1
   dummyProjectile: {fileID: 9059136699761698773, guid: 2107d21e09d746a448c48aa43e70bb07,
     type: 3}
@@ -633,6 +823,7 @@ Transform:
   - {fileID: 7562676511663549323}
   - {fileID: 6365497449484451343}
   - {fileID: 2036352126956770327}
+  - {fileID: 375321649}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -781,13 +972,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6441009334081616009, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
+      propertyPath: m_FollowOffset.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6441009334081616009, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
       propertyPath: m_FollowOffset.y
-      value: 5.9
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 6441009334081616009, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: m_FollowOffset.z
-      value: -16.2
+      value: -6.56
       objectReference: {fileID: 0}
     - target: {fileID: 7125790997404546552, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
@@ -823,7 +1019,7 @@ PrefabInstance:
         type: 3}
       propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[0].weapons.Array.data[0]
       value: 
-      objectReference: {fileID: 8902805692153213542}
+      objectReference: {fileID: 375321650}
     - target: {fileID: 7516828217327879153, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: weaponControlGroups.weaponControlGroupList.Array.data[1].weapons.Array.data[0]
@@ -929,6 +1125,46 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.499997
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.5599947
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9997172
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.022079948
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.00883698
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950277, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.00019517523
+      objectReference: {fileID: 0}
+    - target: {fileID: 8611565674475950278, guid: 8f84a8310268c4376bb6a418458e0579,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8611565674475950278, guid: 8f84a8310268c4376bb6a418458e0579,
         type: 3}
       propertyPath: m_Lens.FieldOfView
@@ -941,27 +1177,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f84a8310268c4376bb6a418458e0579, type: 3}
---- !u!4 &4651146582680679955 stripped
+--- !u!4 &4651146582692583869 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 8611565673091648864, guid: 8f84a8310268c4376bb6a418458e0579,
-    type: 3}
-  m_PrefabInstance: {fileID: 3967209984078871411}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &657969082931476739 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
-    type: 3}
-  m_PrefabInstance: {fileID: 3967209984078871411}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!95 &3571881367042851317 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
+  m_CorrespondingSourceObject: {fileID: 8611565673112314574, guid: 8f84a8310268c4376bb6a418458e0579,
     type: 3}
   m_PrefabInstance: {fileID: 3967209984078871411}
   m_PrefabAsset: {fileID: 0}
@@ -977,9 +1195,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54092c34360e04a4c94568e83daed3a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &4651146582692583869 stripped
+--- !u!95 &3571881367042851317 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 477244515141974662, guid: 8f84a8310268c4376bb6a418458e0579,
+    type: 3}
+  m_PrefabInstance: {fileID: 3967209984078871411}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &657969082931476739 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4481027835023491696, guid: 8f84a8310268c4376bb6a418458e0579,
+    type: 3}
+  m_PrefabInstance: {fileID: 3967209984078871411}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &4651146582680679955 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 8611565673112314574, guid: 8f84a8310268c4376bb6a418458e0579,
+  m_CorrespondingSourceObject: {fileID: 8611565673091648864, guid: 8f84a8310268c4376bb6a418458e0579,
+    type: 3}
+  m_PrefabInstance: {fileID: 3967209984078871411}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4651146583577421300 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8611565674323517063, guid: 8f84a8310268c4376bb6a418458e0579,
     type: 3}
   m_PrefabInstance: {fileID: 3967209984078871411}
   m_PrefabAsset: {fileID: 0}

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CrashCameraBehaviour : BaseCameraBehaviour
 {
-    
-    
-    
+
+
+    public bool interruptOnRealCrash = true;
     
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -24,6 +24,7 @@ public class CrashCameraBehaviour : BaseCameraBehaviour
         
         Update_TimeoutTimer();
         Update_Lock();
+        if(interruptOnRealCrash) Update_CheckForCrash();
         if (!Update_EnvironmentCrashDetectSensorActions())
         {
             Update_CrashDetectBack();

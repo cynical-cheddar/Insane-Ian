@@ -18,6 +18,10 @@ public class HealthManager : MonoBehaviour
     protected Weapon.WeaponDamageDetails lastHitDetails;
     
     protected bool isDead = false;
+
+    public float rammingDamageResistance = 1f;
+    
+    
     public bool isAtFullHealth {
         get {
             return health == maxHealth;
@@ -48,6 +52,8 @@ public class HealthManager : MonoBehaviour
     public virtual void TakeDamage(Weapon.WeaponDamageDetails hitDetails)
     {
         // call take damage on everyone else's instance of the game
+        
+        
         string hitDetailsJson = JsonUtility.ToJson(hitDetails);
         
         myPhotonView.RPC(nameof(TakeDamage_RPC), RpcTarget.All, hitDetailsJson);
@@ -79,6 +85,10 @@ public class HealthManager : MonoBehaviour
         Weapon.WeaponDamageDetails weaponDamageDetails =
             JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
         lastHitDetails = weaponDamageDetails;
+        
+        
+        
+        
         float amount = weaponDamageDetails.damage;
         if (health > 0) {
             health -= amount;

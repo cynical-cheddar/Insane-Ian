@@ -337,6 +337,9 @@ MonoBehaviour:
     - isUltimate: 1
       weapons:
       - {fileID: 3288995559967620321}
+  currentWeaponControlGroup:
+    isUltimate: 0
+    weapons: []
   usingUltimate: 0
 --- !u!1 &2168710133248794438
 GameObject:
@@ -519,6 +522,7 @@ GameObject:
   - component: {fileID: 2168710133949604626}
   - component: {fileID: 2507164703913016334}
   - component: {fileID: 3529041894249317634}
+  - component: {fileID: 1870191945872288847}
   m_Layer: 8
   m_Name: cm
   m_TagString: Untagged
@@ -601,6 +605,23 @@ MonoBehaviour:
   m_YawDamping: 0
   m_RollDamping: 0
   m_AngularDamping: 0
+--- !u!114 &1870191945872288847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2168710133949604620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 2
+  mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &2168710134099684687
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,6 +1140,8 @@ MonoBehaviour:
     type: 3}
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
+  cameraShakeAmplitude: 3
+  cameraShakeDuration: 0.2
   fireDummyProjectile: 1
   dummyProjectile: {fileID: 9059136699761698773, guid: 2107d21e09d746a448c48aa43e70bb07,
     type: 3}
@@ -1904,6 +1927,8 @@ MonoBehaviour:
     type: 3}
   missImpactParticle: {fileID: 5650223041333689875, guid: 95d7979e638e3c748bb0f99651b44544,
     type: 3}
+  cameraShakeAmplitude: 2
+  cameraShakeDuration: 0.1
   extraRechargeTimeOnDepletion: 2
   extraRechargeTimeOnCeaseFire: 1
   muzzleFlashChildOfBarrel: 1
@@ -2160,6 +2185,8 @@ MonoBehaviour:
   imapactParticle: {fileID: 169654, guid: 1dadf691cda82fa44a8a66d7dd374612, type: 3}
   missImpactParticle: {fileID: 188979726394358872, guid: ec73083dbded2e94e803bf4abff83e23,
     type: 3}
+  cameraShakeAmplitude: 2
+  cameraShakeDuration: 0.1
   projectilePrefab: {fileID: 1540927066135063348, guid: 45e930d2774331d41b3609c6b726b2c4,
     type: 3}
   projectileParticleEffectPrefab: {fileID: 417134808801317985, guid: 25fe656145cc6ed4585c4535e0bb67b9,
