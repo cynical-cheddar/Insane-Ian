@@ -59,7 +59,7 @@ public class PhysXBody : MonoBehaviour
         }
     }
 
-    void Awake() {
+    protected void Awake() {
         collisionEnterEvents = new List<ICollisionEnterEvent>(GetComponentsInChildren<ICollisionEnterEvent>(true));
         collisionStayEvents = new List<ICollisionStayEvent>(GetComponentsInChildren<ICollisionStayEvent>(true));
         collisionExitEvents = new List<ICollisionExitEvent>(GetComponentsInChildren<ICollisionExitEvent>(true));
@@ -124,6 +124,7 @@ public class PhysXBody : MonoBehaviour
     }
 
     public void FireTriggerEvents(PhysXTrigger trigger) {
+        Debug.Log(gameObject.name);
         if (trigger.isEnter) {
             foreach (ITriggerEnterEvent triggerEnterEvent in triggerEnterEvents) {
                 if (triggerEnterEvent.requiresData) triggerEnterEvent.TriggerEnter(trigger.collider);
@@ -136,5 +137,10 @@ public class PhysXBody : MonoBehaviour
                 else triggerExitEvent.TriggerExit();
             }
         }
+    }
+
+    protected virtual void OnDestroy() {
+        PhysXLib.DestroyActor(physXBody);
+        sceneManager.RemoveActor(this);
     }
 }

@@ -124,7 +124,7 @@ public class PhysXWheelCollider : MonoBehaviour
         return suspension;
     }
 
-    public void SetupSimData(IntPtr wheelSimData, int wheelNum, uint vehicleId) {
+    public void SetupSimData(PhysXRigidBody attachedRigidBody, IntPtr wheelSimData, int wheelNum, uint vehicleId) {
         if (autoCalculateSpringStrength) {
             float sprungMass = PhysXLib.GetSuspensionSprungMass(suspension);
             suspensionSpringStrength = (Physics.gravity.magnitude * sprungMass) / (suspensionDistance * (1 - suspensionSpringTargetPosition));
@@ -132,14 +132,10 @@ public class PhysXWheelCollider : MonoBehaviour
 
         this.wheelNum = wheelNum;
 
-        Transform grandestParent = transform;
-        while (grandestParent.parent != null) {
-            grandestParent = grandestParent.parent;
-        }
+        Transform bodyParent = attachedRigidBody.transform;
 
-        PhysXVec3 wheelCentrePos = new PhysXVec3(grandestParent.InverseTransformPoint(transform.TransformPoint(wheelCentre)));
-        PhysXVec3 forceAppPos = new PhysXVec3(grandestParent.InverseTransformPoint(transform.TransformPoint(wheelCentre + forceAppPoint)));
-        //PhysXQuat rotation = new PhysXQuat(transform.rotation * Quaternion.Inverse(grandestParent.rotation));
+        PhysXVec3 wheelCentrePos = new PhysXVec3(bodyParent.InverseTransformPoint(transform.TransformPoint(wheelCentre)));
+        PhysXVec3 forceAppPos = new PhysXVec3(bodyParent.InverseTransformPoint(transform.TransformPoint(wheelCentre + forceAppPoint)));
 
         PhysXLib.SetWheelSimForceAppPoint(wheelSimData, wheelNum, forceAppPos);
         PhysXLib.SetWheelSimWheelCentre(wheelSimData, wheelNum, wheelCentrePos);

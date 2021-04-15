@@ -59,6 +59,10 @@ public class PhysXSceneManager : MonoBehaviour
         }
     }
 
+    public void RemoveActor(PhysXBody body) {
+        bodies.Remove(body.physXBody);
+    }
+
     public static PhysXBody GetBodyFromPointer(IntPtr pointer) {
         return bodies[pointer];
     }
@@ -72,14 +76,17 @@ public class PhysXSceneManager : MonoBehaviour
 
         foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
             collision.PopulateWithUnityObjects(bodies);
-            bodies[collision.self].FireCollisionEvents(collision);
+            PhysXBody body = null;
+            if (bodies.TryGetValue(collision.self, out body)) body.FireCollisionEvents(collision);
             PhysXCollision.ReleaseCollision(collision);
         }
         PhysXSceneManager.ongoingCollisions.Clear();
 
         foreach (PhysXTrigger trigger in PhysXSceneManager.ongoingTriggers) {
+            Debug.Log("triggered");
             trigger.PopulateWithUnityObjects(bodies);
-            bodies[trigger.self].FireTriggerEvents(trigger);
+            PhysXBody body = null;
+            if (bodies.TryGetValue(trigger.self, out body)) body.FireTriggerEvents(trigger);
             PhysXTrigger.ReleaseTrigger(trigger);
         }
         PhysXSceneManager.ongoingTriggers.Clear();

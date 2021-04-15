@@ -61,13 +61,10 @@ public class PhysXCollider : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Setup(PhysXBody attachedRigidBody, uint vehicleId)
     {
-        Transform grandestParent = transform;
-        while (grandestParent.parent != null) {
-            grandestParent = grandestParent.parent;
-        }
+        Transform bodyParent = attachedRigidBody.transform;
 
-        PhysXVec3 position = new PhysXVec3(grandestParent.InverseTransformPoint(transform.TransformPoint(offset)));
-        PhysXQuat rotation = new PhysXQuat(transform.rotation * Quaternion.Inverse(grandestParent.rotation));
+        PhysXVec3 position = new PhysXVec3(bodyParent.InverseTransformPoint(transform.TransformPoint(offset)));
+        PhysXQuat rotation = new PhysXQuat(transform.rotation * Quaternion.Inverse(bodyParent.rotation));
 
         IntPtr localTransform = PhysXLib.CreateTransform(position, rotation);
         PhysXLib.SetShapeLocalTransform(shape, localTransform);

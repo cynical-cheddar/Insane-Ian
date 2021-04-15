@@ -58,19 +58,6 @@ public class PhysXRigidBody : PhysXBody
         }
     }
 
-    void Awake() {
-        collisionEnterEvents = new List<ICollisionEnterEvent>(GetComponentsInChildren<ICollisionEnterEvent>(true));
-        collisionStayEvents = new List<ICollisionStayEvent>(GetComponentsInChildren<ICollisionStayEvent>(true));
-        collisionExitEvents = new List<ICollisionExitEvent>(GetComponentsInChildren<ICollisionExitEvent>(true));
-
-        triggerEnterEvents = new List<ITriggerEnterEvent>(GetComponentsInChildren<ITriggerEnterEvent>(true));
-        triggerExitEvents = new List<ITriggerExitEvent>(GetComponentsInChildren<ITriggerExitEvent>(true));
-
-        sceneManager = FindObjectOfType<PhysXSceneManager>();
-
-        sceneManager.AddActor(this);
-    }
-
     public override void Setup() {
         IntPtr physXTransform = PhysXLib.CreateTransform(new PhysXVec3(transform.position), new PhysXQuat(transform.rotation));
         _position = transform.position;
@@ -120,7 +107,7 @@ public class PhysXRigidBody : PhysXBody
 
             for (int i = 0; i < wheels.Count; i++) {
                 //Debug.Log(vehicleId);
-                wheels[i].SetupSimData(wheelSimData, i, vehicleId);
+                wheels[i].SetupSimData(this, wheelSimData, i, vehicleId);
             }
 
             vehicle = PhysXLib.CreateVehicleFromRigidBody(physXBody, wheelSimData);
@@ -185,5 +172,10 @@ public class PhysXRigidBody : PhysXBody
         if (forceMode == ForceMode.Acceleration) forceModeInt = 3;
 
         PhysXLib.AddTorque(physXBody, new PhysXVec3(force), forceModeInt);
+    }
+
+    protected override void OnDestroy() {
+        base.OnDestroy();
+        if (vehicle != IntPtr.Zero) PhysXLib.DestroyVehicle(vehicle);
     }
 }

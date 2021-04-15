@@ -15,4 +15,10 @@ public class PhysXBoxCollider : PhysXCollider
 
         base.Setup(attachedRigidBody, vehicleId);
     }
+
+    void OnDrawGizmosSelected() {
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.DrawWireCube(offset, new Vector3(x, y, z));
+        Gizmos.matrix = Matrix4x4.identity;
+    }
 }
