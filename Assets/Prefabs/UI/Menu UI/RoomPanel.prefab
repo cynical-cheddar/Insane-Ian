@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 8663467593408651973}
   - component: {fileID: 8663467593408651975}
   - component: {fileID: 8663467593408651974}
+  - component: {fileID: 7491821877634923747}
   m_Layer: 5
   m_Name: RoomPanel
   m_TagString: Untagged
@@ -212,6 +213,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7491821877634923747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8663467593408651972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 226be0c01ea10c547895733ad76b6dae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomName: {fileID: 8663467593326889833}
+  playersNumber: {fileID: 8663467594963391464}
 --- !u!1 &8663467594963391470
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,7 +239,7 @@ GameObject:
   - component: {fileID: 8663467594963391465}
   - component: {fileID: 8663467594963391464}
   m_Layer: 5
-  m_Name: People In Loby
+  m_Name: People In Lobby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -23,7 +23,7 @@ public class VoiceCallBehaviour : MonoBehaviour
         initializeA($"{PhotonNetwork.CurrentRoom.Name}{PhotonNetwork.LocalPlayer.ActorNumber}");
 #else
         gameObject.GetComponent<Button>().interactable = false;
-        gameObject.GetComponentInChildren<Text>().text = "Voice Call Disabled";
+        gameObject.GetComponentInChildren<Text>().text = "VC Disabled";
 #endif
     }
 
