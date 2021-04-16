@@ -102,11 +102,13 @@ public class DriverCrashDetector : MonoBehaviour
     private void Start()
     {
         Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
-        return;
+       // return;
 
+       /*
         myRb = GetComponent<Rigidbody>();
         currentSensorReport = new CurrentSensorReportStruct();
         currentSensorReport.lastCrashedPlayer = transform.root;
+        */
     }
 
 
