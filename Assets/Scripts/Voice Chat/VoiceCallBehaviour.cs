@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using UnityEngine.UI;
 using Photon.Pun;
 using Gamestate;
+using TMPro;
 
 public class VoiceCallBehaviour : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class VoiceCallBehaviour : MonoBehaviour
         initializeA($"{PhotonNetwork.CurrentRoom.Name}{PhotonNetwork.LocalPlayer.ActorNumber}");
 #else
         gameObject.GetComponent<Button>().interactable = false;
-        gameObject.GetComponentInChildren<Text>().text = "Voice Call Disabled";
+        gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "VC Disabled";
 #endif
     }
 
