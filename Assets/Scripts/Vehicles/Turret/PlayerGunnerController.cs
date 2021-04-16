@@ -17,6 +17,8 @@ public class PlayerGunnerController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        Debug.LogWarning("Player Gunner Controller has not been ported to the new PhysX system");
+        return;
         turretController = GetComponent<TurretController>();
         cam = Camera.main.transform;
         colliders = transform.root.gameObject.GetComponentsInChildren<Collider>();

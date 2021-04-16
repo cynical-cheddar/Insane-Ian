@@ -35,11 +35,11 @@ public class Skidmarks : MonoBehaviour
 
 
     //check if at the origin or not and jump to it if not
-    void Start()
-    {
+    void Start() {
+        Debug.LogWarning("Skidmarks has not been ported to the new PhysX system");
+        return;
 
-        if (transform.position != new Vector3(0, 0, 0))
-        {
+        if (transform.position != new Vector3(0, 0, 0)) {
             transform.position = new Vector3(0, 0, 0);
         }
     }
@@ -50,10 +50,12 @@ public class Skidmarks : MonoBehaviour
     void Awake()
     {
         skidmarks = new markSection[maxMarks];
-        for (var i = 0; i < maxMarks; i++)
+        for (var i = 0; i < maxMarks; i++) {
             skidmarks[i] = new markSection();
-        if (GetComponent<MeshFilter>().mesh == null)
+        }
+        if (GetComponent<MeshFilter>().mesh == null) {
             GetComponent<MeshFilter>().mesh = new Mesh();
+        }
     }
 
     // Function called by the wheels that is skidding. Gathers all the information needed to
@@ -101,11 +103,7 @@ public class Skidmarks : MonoBehaviour
 
     void LateUpdate()
     {
-
-
-
-
-
+        Debug.LogWarning("We need to rewrite this aaaaaa");
 
         WheelCollider[] wheels = FindObjectsOfType(typeof(WheelCollider)) as WheelCollider[];
 
@@ -119,8 +117,6 @@ public class Skidmarks : MonoBehaviour
 
         }
 
-
-       
         skidmake = true;
 
         if (!updated)
@@ -129,18 +125,13 @@ public class Skidmarks : MonoBehaviour
         }
         updated = false;
 
-
-       
-
-
-
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
         int segmentCount = 0;
 
-        for (int j = 0; j < numMarks && j < maxMarks; j++)
-            if (skidmarks[j].lastIndex != -1 && skidmarks[j].lastIndex > numMarks - maxMarks)
-                segmentCount++;
+        for (int j = 0; j < numMarks && j < maxMarks; j++) {
+            if (skidmarks[j].lastIndex != -1 && skidmarks[j].lastIndex > numMarks - maxMarks) segmentCount++;
+        }
 
         Vector3[] vertices = new Vector3[segmentCount * 4];
         Vector3[] normals = new Vector3[segmentCount * 4];
@@ -150,9 +141,8 @@ public class Skidmarks : MonoBehaviour
         int[] triangles = new int[segmentCount * 6];
         segmentCount = 0;
 
-        for (int i = 0; i < numMarks && i < maxMarks; i++)
-            if (skidmarks[i].lastIndex != -1 && skidmarks[i].lastIndex > numMarks - maxMarks)
-            {
+        for (int i = 0; i < numMarks && i < maxMarks; i++) {
+            if (skidmarks[i].lastIndex != -1 && skidmarks[i].lastIndex > numMarks - maxMarks) {
                 markSection curr = skidmarks[i];
                 markSection last = skidmarks[curr.lastIndex % maxMarks];
 
@@ -190,8 +180,7 @@ public class Skidmarks : MonoBehaviour
                 triangles[segmentCount * 6 + 4] = segmentCount * 4 + 3;
                 segmentCount++;
             }
-
-       
+        }
 
         mesh.vertices = vertices;
         mesh.normals = normals;

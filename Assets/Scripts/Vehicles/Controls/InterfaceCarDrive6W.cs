@@ -135,6 +135,7 @@ public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
     }
 
     void IDrivable.Accellerate() {
+        Debug.LogWarning("Interface Car Drive 6W has not been ported to the new PhysX system");
         //check if needing to brake or accellerate
         rearRight2W.motorTorque = motorTorque;
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
@@ -152,6 +153,7 @@ public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Reverse() {
+        Debug.LogWarning("Interface Car Drive 6W has not been ported to the new PhysX system");
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
             ((IDrivable)this).StopBrake();
@@ -169,6 +171,7 @@ public class InterfaceCarDrive6W : InterfaceCarDrive, IDrivable {
     }
 
     void IDrivable.Brake() {
+        Debug.LogWarning("Interface Car Drive 6W has not been ported to the new PhysX system");
         //brake all wheels
         frontLeftW.brakeTorque = brakeTorque;
         frontRightW.brakeTorque = brakeTorque;

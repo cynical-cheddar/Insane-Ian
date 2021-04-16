@@ -5,9 +5,11 @@ using System.Runtime.InteropServices;
 using UnityEngine.UI;
 using Photon.Pun;
 using Gamestate;
+using TMPro;
 
 public class VoiceCallBehaviour : MonoBehaviour
 {
+
     [DllImport("__Internal")]
     private static extern void initializeA(string id);
 
@@ -17,8 +19,13 @@ public class VoiceCallBehaviour : MonoBehaviour
     GamestateTracker gamestateTracker;
 
     private void Start() {
+#if UNITY_WEBGL && !UNITY_EDITOR
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         initializeA($"{PhotonNetwork.CurrentRoom.Name}{PhotonNetwork.LocalPlayer.ActorNumber}");
+#else
+        gameObject.GetComponent<Button>().interactable = false;
+        gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "VC Disabled";
+#endif
     }
 
     public void JoinPeerJSSession() {
@@ -36,5 +43,4 @@ public class VoiceCallBehaviour : MonoBehaviour
             player.Release();
         }
     }
-
 }

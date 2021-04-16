@@ -36,7 +36,6 @@ public class HitscanWeapon : Weapon {
     [Header("Hitscan Settings")]
     public bool useTracerHitCorrection = true;
     public float hitscanRange = 10000f;
-    protected Rigidbody parentRigidbody;
     // we should serialize this bool on change. when it is active and the photon view is not ours and optimisations are enabled, then do fire effects
     protected bool isFiring = false;
 
@@ -153,6 +152,8 @@ public class HitscanWeapon : Weapon {
 
     protected new void SetupWeapon()
     {
+        Debug.LogWarning("Hitscan Weapon has not been ported to the new PhysX system");
+        return;
         base.SetupWeapon();
         colliders = transform.root.GetComponentsInChildren<Collider>();
     }
@@ -273,12 +274,13 @@ public class HitscanWeapon : Weapon {
 
     protected void FireDummyProjectile(Vector3 target)
     {
+        Debug.LogWarning("Hitscan Weapon has not been ported to the new PhysX system");
+        return;
         if (dummyProjectile != null&& fireDummyProjectile)
         {
             GameObject dummyProj = Instantiate(dummyProjectile, barrelTransform.position, barrelTransform.rotation);
             dummyProj.transform.LookAt(target);
-            dummyProj.GetComponent<Rigidbody>().AddForce(dummyProj.transform.forward * dummyProjectileSpeed,
-                ForceMode.VelocityChange);
+            dummyProj.GetComponent<Rigidbody>().AddForce(dummyProj.transform.forward * dummyProjectileSpeed, ForceMode.VelocityChange);
             Destroy(dummyProj, 0.2f);
         }
     }

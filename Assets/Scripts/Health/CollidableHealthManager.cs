@@ -4,9 +4,12 @@ using Photon.Pun;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System;
+using PhysX;
 
-public class CollidableHealthManager : HealthManager
+public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 {
+    public bool requiresData { get { return true; } }
+
     [Serializable]
     public struct CollisionArea {
         public bool show;
@@ -20,7 +23,7 @@ public class CollidableHealthManager : HealthManager
     }
 
     public float defaultCollisionResistance = 1;
-    public GameObject audioSourcePrefab;
+    public GameObject audioSourcePrefab = null;
     public float crashSoundsSmallDamageThreshold = 5f;
     public float crashSoundsLargeDamageThreshold = 40f;
     public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
@@ -43,7 +46,9 @@ public class CollidableHealthManager : HealthManager
         base.Start();
     }
 
-    protected void OnCollisionEnter(Collision collision) {
+    public void CollisionEnter() {}
+
+    public void CollisionEnter(PhysXCollision collision) {
         if (PhotonNetwork.IsMasterClient) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
@@ -69,12 +74,12 @@ public class CollidableHealthManager : HealthManager
 
             damage = damage / rammingDamageResistance;
             
-            if (GetComponent<COMDropper>() != null && !resetting)
-            {
-                resetting = true;
-                Rigidbody rb = GetComponent<Rigidbody>();
-                StartCoroutine(ResetPreviousCOM(rb.centerOfMass, 1f));
-                rb.centerOfMass = Vector3.zero;
+            if (GetComponent<COMDropper>() != null && !resetting) {
+                Debug.LogWarning("Whatever this is has not been ported to the new PhysX system");
+                // resetting = true;
+                // Rigidbody rb = GetComponent<Rigidbody>();
+                // StartCoroutine(ResetPreviousCOM(rb.centerOfMass, 1f));
+                // rb.centerOfMass = Vector3.zero;
             }
             
             if (otherVehicleManager != null) {
@@ -123,29 +128,29 @@ public class CollidableHealthManager : HealthManager
     [PunRPC]
     protected void PlayDamageSoundNetwork(float damage)
     {
-        GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
-        AudioSource a = crashSound.GetComponent<AudioSource>();
-        if (damage > crashSoundsLargeDamageThreshold && crashSoundsLarge.Count > 0)
-        {
-            int randInt = Random.Range(0, crashSoundsLarge.Count - 1);
-            a.clip = crashSoundsLarge[randInt];
-        }
-        else if(crashSoundsSmall.Count > 0)
-        {
-            int randInt = Random.Range(0, crashSoundsSmall.Count - 1);
-            a.clip = crashSoundsLarge[randInt];
-        }
+        if (audioSourcePrefab != null) {
+            GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
+            AudioSource a = crashSound.GetComponent<AudioSource>();
+            if (damage > crashSoundsLargeDamageThreshold && crashSoundsLarge.Count > 0)
+            {
+                int randInt = Random.Range(0, crashSoundsLarge.Count - 1);
+                a.clip = crashSoundsLarge[randInt];
+            }
+            else if(crashSoundsSmall.Count > 0)
+            {
+                int randInt = Random.Range(0, crashSoundsSmall.Count - 1);
+                a.clip = crashSoundsLarge[randInt];
+            }
 
-        if (a.clip != null)
-        {
-            a.Play();
-            Destroy(crashSound, a.clip.length);
+            if (a.clip != null)
+            {
+                a.Play();
+                Destroy(crashSound, a.clip.length);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
-        else
-        {
-            Destroy(gameObject);
-        }
-        
     }
-
 }
