@@ -53,7 +53,11 @@ public class PhysXWheelCollider : MonoBehaviour
     }
 
     [HideInInspector]
-    public bool isGrounded = true;
+    public bool isGrounded {
+        get {
+            return PhysXLib.GetGroundHitIsGrounded(vehicle, wheelNum);
+        }
+    }
 
     private float _motorTorque = 0;
     [HideInInspector]
@@ -78,6 +82,13 @@ public class PhysXWheelCollider : MonoBehaviour
             _steerAngle = value * Mathf.Deg2Rad;
 
             PhysXLib.SetWheelSteer(vehicle, wheelNum, _steerAngle);
+        }
+    }
+
+    private const float RadSec2RPM = 60f / Mathf.PI;
+    public float rpm {
+        get {
+            return PhysXLib.GetWheelRotationSpeed(vehicle, wheelNum) * RadSec2RPM;
         }
     }
 
@@ -171,6 +182,13 @@ public class PhysXWheelCollider : MonoBehaviour
 
     public void GetWorldPose(out Vector3 position, out Quaternion rotation) {
         position = transform.TransformPoint(wheelCentre);
-        rotation = transform.rotation * Quaternion.AngleAxis(steerAngle, transform.TransformDirection(transform.up));
+        float rotationAngle = PhysXLib.GetWheelRotationAngle(vehicle, wheelNum) * Mathf.Rad2Deg;
+        rotation = transform.rotation * Quaternion.AngleAxis(steerAngle, Vector3.up) * Quaternion.AngleAxis(rotationAngle, Vector3.right);
+        //rotation = transform.rotation * Quaternion.AngleAxis(steerAngle, transform.up);
+    }
+
+    public bool GetGroundHit(PhysXWheelHit wheelHit) {
+        if (isGrounded) wheelHit.PopulateFields(vehicle, wheelNum);
+        return isGrounded;
     }
 }

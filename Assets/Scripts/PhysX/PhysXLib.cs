@@ -315,6 +315,24 @@ namespace PhysX {
         public static extern float GetSuspensionSprungMass(IntPtr suspension);
 
         [DllImport(dllName)]
+        public static extern float GetWheelRotationSpeed(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern float GetWheelRotationAngle(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetGroundHitActor(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetGroundHitShape(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern void GetGroundHitPosition(IntPtr vehicle, int wheelNum, [Out] PhysXVec3 position);
+        
+        [DllImport(dllName)]
+        public static extern bool GetGroundHitIsGrounded(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
         public static extern void GetTransformComponents(IntPtr transform, [Out] PhysXVec3 position, [Out] PhysXQuat rotation);
 
         [DllImport(dllName)]

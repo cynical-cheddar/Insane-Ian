@@ -53,7 +53,7 @@ namespace PhysX {
             PhysXLib.GetRaycastHitNormal(physXRaycastHit, _pxnormal);
             _pxnormal.ToVector(ref _normal);
 
-            PhysXLib.GetRaycastHitNormal(physXRaycastHit, _pxpoint);
+            PhysXLib.GetRaycastHitPoint(physXRaycastHit, _pxpoint);
             _pxpoint.ToVector(ref _point);
         }
     }

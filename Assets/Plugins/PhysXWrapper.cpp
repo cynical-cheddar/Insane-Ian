@@ -849,9 +849,23 @@ extern "C" {
         return suspension->mSprungMass;
     }
 
+    EXPORT_FUNC physx::PxReal GetWheelRotationSpeed(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum) {
+        return vehicle->mWheelsDynData.getWheelRotationSpeed(wheelNum);
+    }
+
+    EXPORT_FUNC physx::PxReal GetWheelRotationAngle(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum) {
+        return vehicle->mWheelsDynData.getWheelRotationAngle(wheelNum);
+    }
+
     EXPORT_FUNC void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation) {
         *position = transform->p;
         *rotation = transform->q;
+    }
+
+    EXPORT_FUNC physx::PxActor* GetGroundHitActor(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum) {
+        ActorUserData* actorUserData = (ActorUserData*)vehicle->getRigidDynamicActor()->userData;
+
+        return actorUserData->queryResults[wheelNum].tireContactActor;
     }
 
     EXPORT_FUNC physx::PxShape* GetGroundHitShape(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum) {
@@ -866,7 +880,7 @@ extern "C" {
         *position = actorUserData->queryResults[wheelNum].tireContactPoint;
     }
 
-    EXPORT_FUNC bool GetGroundHitIsGrounded(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position) {
+    EXPORT_FUNC bool GetGroundHitIsGrounded(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum) {
         ActorUserData* actorUserData = (ActorUserData*)vehicle->getRigidDynamicActor()->userData;
 
         return !actorUserData->queryResults[wheelNum].isInAir;

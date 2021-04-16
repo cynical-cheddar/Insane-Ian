@@ -224,6 +224,12 @@ extern "C" {
     EXPORT_FUNC physx::PxReal GetSuspensionCompression(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
     EXPORT_FUNC void GetWheelTransform(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position, physx::PxQuat* rotation);
     EXPORT_FUNC physx::PxReal GetSuspensionSprungMass(physx::PxVehicleSuspensionData* suspension);
+    EXPORT_FUNC physx::PxReal GetWheelRotationSpeed(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    EXPORT_FUNC physx::PxReal GetWheelRotationAngle(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    EXPORT_FUNC physx::PxActor* GetGroundHitActor(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    EXPORT_FUNC physx::PxShape* GetGroundHitShape(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    EXPORT_FUNC void GetGroundHitPosition(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position);
+    EXPORT_FUNC bool GetGroundHitIsGrounded(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
 
     EXPORT_FUNC void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation);
 
