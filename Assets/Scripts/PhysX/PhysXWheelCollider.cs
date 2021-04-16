@@ -163,15 +163,6 @@ public class PhysXWheelCollider : MonoBehaviour
         if (Application.isPlaying) {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.TransformPoint(wheelCentre), radius);
-
-            if (attachedRigidBody != null) {
-                Transform bodyParent = attachedRigidBody.transform;
-                PhysXVec3 position = new PhysXVec3(Vector3.zero);
-                PhysXQuat rotation = new PhysXQuat(Quaternion.identity);
-                PhysXLib.GetWheelTransform(vehicle, wheelNum, position, rotation);
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(bodyParent.TransformPoint(position.ToVector()), radius);
-            }
         }
         else {
             

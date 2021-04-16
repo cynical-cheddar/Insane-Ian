@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
-    // Start is called before the first frame update
-
     public float maxSpeed = 30f;
 
     [Header("Wheel Colliders:")]
@@ -97,7 +95,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Accellerate() {
-        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
             ((IDrivable)this).StopBrake();
@@ -122,7 +119,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Reverse() {
-        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
             ((IDrivable)this).StopBrake();
@@ -144,7 +140,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             ws.collider.brakeTorque = brakeTorque;
         }
 
-        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //if all wheels grounded, add additional brake force
         if (AllWheelsGrounded()) {
             if (transform.InverseTransformDirection(carRB.velocity).z < 0) {
@@ -323,7 +318,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         wheelStructs.Add(new wheelStruct(0f, "", rearLeftW));
         wheelStructs.Add(new wheelStruct(0f, "", rearRightW));
 
-
+        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
     }
 }
 

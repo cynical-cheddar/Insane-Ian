@@ -270,9 +270,11 @@ physx::PxQueryHitType::Enum RaycastQueryFilter::preFilter(const physx::PxFilterD
     //filterData0 is the query.
     //filterData1 is the shape potentially hit by the query.
 
-    if (filterData.word3 != 0 && filterData.word3 == shapeFilterData.word3) return physx::PxQueryHitType::eNONE;
+    if (filterData.word3 != 0 && filterData.word3 == shapeFilterData.word3) {
+        return physx::PxQueryHitType::eNONE;
+    }
 
-    if (filterData.word1 & shapeFilterData.word1) {
+    if ((filterData.word0 & shapeFilterData.word0)) {
         return physx::PxQueryHitType::eBLOCK;
     }
 
@@ -446,12 +448,10 @@ extern "C" {
     }
 
     EXPORT_FUNC void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3) {
-        debugLog(std::to_string(w3));
         shape->setSimulationFilterData(physx::PxFilterData(w0, w1, w2, w3));
     }
 
     EXPORT_FUNC void SetQueryFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3) {
-        debugLog(std::to_string(w3));
         shape->setQueryFilterData(physx::PxFilterData(w0, w1, w2, w3));
     }
 

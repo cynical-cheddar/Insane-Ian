@@ -103,7 +103,7 @@ public class Skidmarks : MonoBehaviour
 
     void LateUpdate()
     {
-        Debug.LogWarning("We need to rewrite this aaaaaa");
+        //Debug.LogWarning("We need to rewrite this aaaaaa");
 
         WheelCollider[] wheels = FindObjectsOfType(typeof(WheelCollider)) as WheelCollider[];
 

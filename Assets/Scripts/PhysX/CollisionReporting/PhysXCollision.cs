@@ -54,6 +54,9 @@ namespace PhysX {
             return contactPoints.ToArray();
         }
 
+        private PhysXVec3 pointPos = new PhysXVec3(Vector3.zero);
+        private PhysXVec3 pointNormal = new PhysXVec3(Vector3.zero);
+        private PhysXVec3 pointImpulse = new PhysXVec3(Vector3.zero);
         internal void FromPhysXInternalCollision(IntPtr pairHeader, IntPtr pairs, int pairCount, IntPtr self, bool isEnter, bool isStay, bool isExit) {
             this.self = self;
             this.isEnter = isEnter;
@@ -78,10 +81,6 @@ namespace PhysX {
 
                 while (PhysXLib.NextContactPatch(iter)) {
                     while (PhysXLib.NextContactPoint(iter)) {
-                        PhysXVec3 pointPos = new PhysXVec3(Vector3.zero);
-                        PhysXVec3 pointNormal = new PhysXVec3(Vector3.zero);
-                        PhysXVec3 pointImpulse = new PhysXVec3(Vector3.zero);
-
                         PhysXLib.GetContactPointData(iter, j, pairs, i, pointPos, pointNormal, pointImpulse);
 
                         PhysXContactPoint contactPoint = PhysXContactPoint.GetContactPoint();

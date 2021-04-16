@@ -10,15 +10,8 @@ using PhysX;
 
 public class DriverCrashDetector : MonoBehaviour
 {
-
-
-
-
-
     public float crashAngleThreshold = 50;
 
-
-    
     public float playerSensorMultiplier = 3f;
 
     public int playerLayer = 8;
@@ -26,12 +19,6 @@ public class DriverCrashDetector : MonoBehaviour
     private float currentSpeed;
 
     public bool drawDebugLines = false;
-
-
-
-    
-    
-
     
     [Header("Sensors")]
     public PhysXCollider.CollisionLayer sensorLayerMask;
@@ -261,12 +248,6 @@ public class DriverCrashDetector : MonoBehaviour
         {
           //  Debug.Log("Velocity difference not gonna hit" + velocityDifference);
           float relativeDistance = Vector3.Distance(hitpoint, transform.position + transform.forward * frontSensorPosition.z);
-
-
-
-
-
-
         }
         else if (velocityDifference.z > 1)
         {
@@ -311,7 +292,7 @@ public class DriverCrashDetector : MonoBehaviour
             //front right sensor
             sensorStartPos += transform.right * frontSideSensorPosition;
             PhysXRaycastHit hit = PhysXRaycast.GetRaycastHit();
-            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask)) {
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                  if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     float increase = 1f;
@@ -343,7 +324,7 @@ public class DriverCrashDetector : MonoBehaviour
 
 
             //front right angle sensor
-            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask))
+            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId))
             {
                 if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 0.5f;
@@ -371,7 +352,7 @@ public class DriverCrashDetector : MonoBehaviour
 
             //front left sensor
             sensorStartPos -= transform.right * (frontSideSensorPosition * 2);
-            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask)) {
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 1f;
                 float telecastIncrease = 1f;
@@ -398,8 +379,7 @@ public class DriverCrashDetector : MonoBehaviour
 
             //front left angle sensor
             else if (PhysXRaycast.Fire(sensorStartPos,
-                Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, hit, sensorLength,
-                sensorLayerMask))
+                Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId))
             {
                 if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 0.5f;
@@ -426,7 +406,7 @@ public class DriverCrashDetector : MonoBehaviour
             }
 
             //front center sensor
-            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask))
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId))
                 {
                     if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                     float increase = 1.5f;
