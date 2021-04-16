@@ -34,7 +34,9 @@ public class Squishing : MonoBehaviour
         collisionResolver = Instantiate(collisionResolver);
     }
 
-    public void ResetMesh() {
+    public void ResetMesh()
+    {
+        return;
         deformableMeshes[0].GetMeshFilter().mesh = Instantiate(originalMesh);
         vertices = originalMesh.vertices.ToList();
         foreach (VertexGroup group in meshGraph.groups) {
