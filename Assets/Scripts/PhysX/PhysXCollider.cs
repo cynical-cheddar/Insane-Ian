@@ -25,7 +25,7 @@ public class PhysXCollider : MonoBehaviour
 
     public PhysicMaterial material = null;
 
-    public PhysXRigidBody attachedRigidbody { get; protected set; }
+    public PhysXRigidBody attachedRigidBody { get; protected set; }
 
     private IntPtr _physXMaterial = IntPtr.Zero;
     protected IntPtr physXMaterial {

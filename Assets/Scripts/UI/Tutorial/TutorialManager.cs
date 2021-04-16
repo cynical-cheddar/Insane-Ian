@@ -38,6 +38,8 @@ public class TutorialManager : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+        Debug.LogWarning("Tutorial Manager has not been ported to the new PhysX system");
+
         List<VehicleHealthManager> vehicles = FindObjectsOfType<VehicleHealthManager>().ToList();
         VehicleHealthManager playerVehicle = null;
         PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);

@@ -47,6 +47,8 @@ public class FlakCannon : ProjectileWeapon
     [PunRPC]
     protected virtual void FireRPC_FlakCannon(Vector3 targetPoint, string serializedDamageDetails, int i)
     {
+        Debug.LogWarning("Flak Cannon has not been ported to the new PhysX system");
+        return;
         WeaponDamageDetails weaponDamageDetails = JsonUtility.FromJson<WeaponDamageDetails>(serializedDamageDetails);
         parentRigidbody = transform.root.GetComponent<Rigidbody>();
         // debug function to fire weapon

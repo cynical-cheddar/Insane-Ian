@@ -97,6 +97,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Accellerate() {
+        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
             ((IDrivable)this).StopBrake();
@@ -121,6 +122,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Reverse() {
+        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
             ((IDrivable)this).StopBrake();
@@ -141,6 +143,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         foreach (wheelStruct ws in wheelStructs) {
             ws.collider.brakeTorque = brakeTorque;
         }
+
+        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //if all wheels grounded, add additional brake force
         if (AllWheelsGrounded()) {
             if (transform.InverseTransformDirection(carRB.velocity).z < 0) {

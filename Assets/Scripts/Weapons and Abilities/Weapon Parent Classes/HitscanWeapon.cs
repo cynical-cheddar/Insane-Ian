@@ -6,23 +6,24 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HitscanWeapon : Weapon
-{
-    public struct RaycastHitDetails
-    {
+public class HitscanWeapon : Weapon {
+    public struct RaycastHitDetails {
         public Vector3 worldHitPoint;
         public Vector3 localHitPoint;
+        public Vector3 normalAngle;
         public Transform hitTransform;
         public bool hasHealth;
         public bool validTarget;
+        
 
-        public RaycastHitDetails(Vector3 worldHit, Vector3 localHit, Transform hitT, bool healthExists, bool valid)
-        {
+
+        public RaycastHitDetails(Vector3 worldHit, Vector3 localHit, Vector3 normal, Transform hitT, bool healthExists, bool valid) {
             worldHitPoint = worldHit;
             localHitPoint = localHit;
             hitTransform = hitT;
             hasHealth = healthExists;
             validTarget = valid;
+            normalAngle = normal;
         }
     }
 
@@ -31,25 +32,27 @@ public class HitscanWeapon : Weapon
     public GameObject dummyProjectile;
     public float dummyProjectileSpeed = 200f;
     public bool muzzleflashChildOfBarrel = false;
-    
-    [Header("Hitscan Settings")]
 
-    
+    [Header("Hitscan Settings")]
     public bool useTracerHitCorrection = true;
     public float hitscanRange = 10000f;
-    protected Rigidbody parentRigidbody;
     // we should serialize this bool on change. when it is active and the photon view is not ours and optimisations are enabled, then do fire effects
     protected bool isFiring = false;
-    
+
     [Header(("Hitscan Rapid Fire Optimisation Settings"))]
     public bool useRapidFireOptimisation = false;
     public float stopFireFxLoopThreshold = 0.2f;
-    
+
+    [Header(("Bullet holes"))]
+    public GameObject[] bulletHoles;
+
+
     protected bool isRemotelyFiring = false;
     protected bool lastIsRemotelyFiring = false;
 
     
     private Collider[] colliders;
+
     
     
     
@@ -149,6 +152,8 @@ public class HitscanWeapon : Weapon
 
     protected new void SetupWeapon()
     {
+        Debug.LogWarning("Hitscan Weapon has not been ported to the new PhysX system");
+        return;
         base.SetupWeapon();
         colliders = transform.root.GetComponentsInChildren<Collider>();
     }
@@ -195,17 +200,26 @@ public class HitscanWeapon : Weapon
             {
                 WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier, raycastTracerDetails.localHitPoint);
                 raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleHealthManager>().TakeDamage(weaponDamageDetails);
+                var bh = Instantiate(bulletHoles[0],raycastTracerDetails.worldHitPoint, Quaternion.Euler(raycastTracerDetails.normalAngle * 360));
+                //bh.transform.rotation.SetEulerAngles(raycastTracerDetails.hitTransform.rotation.eulerAngles);
+                bh.transform.SetParent(raycastTracerDetails.hitTransform.gameObject.transform, true);
+                Debug.Log("aaaaaaaaaaa" + raycastTracerDetails.normalAngle * 360) ;
+                Debug.Log(bh.transform.rotation.eulerAngles);
+
             }
             // do the fire effect on our end
-            
-            
+
+
             // ------------ local firing procedure:
             // if we hit, then fire a ray effect playing hitsound on hit
-            if(raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)FireHitscanRoundEffect(raycastTracerDetails.worldHitPoint);
+            if (raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget)FireHitscanRoundEffect(raycastTracerDetails.worldHitPoint);
             // if we miss, then fire a ray effect playing missound on hit
             else if(!raycastTracerDetails.hasHealth && raycastTracerDetails.validTarget) FireHitscanRoundEffectMiss(raycastTracerDetails.worldHitPoint);
             // if valid target is null, then fire a ray effect with no impact
             else FireHitscanRoundEffectNoValidTarget(raycastTracerDetails.worldHitPoint);
+            // do camera shake
+            ShakeCameras(cameraShakeAmplitude, cameraShakeDuration);
+            shakeTimerCur = 0;
             
             
             
@@ -260,12 +274,13 @@ public class HitscanWeapon : Weapon
 
     protected void FireDummyProjectile(Vector3 target)
     {
+        Debug.LogWarning("Hitscan Weapon has not been ported to the new PhysX system");
+        return;
         if (dummyProjectile != null&& fireDummyProjectile)
         {
             GameObject dummyProj = Instantiate(dummyProjectile, barrelTransform.position, barrelTransform.rotation);
             dummyProj.transform.LookAt(target);
-            dummyProj.GetComponent<Rigidbody>().AddForce(dummyProj.transform.forward * dummyProjectileSpeed,
-                ForceMode.VelocityChange);
+            dummyProj.GetComponent<Rigidbody>().AddForce(dummyProj.transform.forward * dummyProjectileSpeed, ForceMode.VelocityChange);
             Destroy(dummyProj, 0.2f);
         }
     }
@@ -306,6 +321,7 @@ public class HitscanWeapon : Weapon
         InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
         // instantiate tracer (if exists)
         FireDummyProjectile(targetPoint);
+        // instantiate bullet holes
     }
     [PunRPC]
     protected void FireHitscanRoundEffectCorrected(Vector3 localTargetPoint, int hitTeamId)
@@ -361,7 +377,7 @@ public class HitscanWeapon : Weapon
 
     protected RaycastHitDetails FindClosestRaycastHitDetails(Ray ray, Vector3 targetPoint)
     {
-        RaycastHitDetails raycastHitDetails = new RaycastHitDetails(targetPoint, Vector3.zero, null, false, false);;
+        RaycastHitDetails raycastHitDetails = new RaycastHitDetails(targetPoint, Vector3.zero, Vector3.zero, null, false, false);;
         
         RaycastHit[] hits = Physics.RaycastAll(ray);
         
@@ -387,11 +403,11 @@ public class HitscanWeapon : Weapon
                 // the health script exists
                 if (hit.transform.root.GetComponent<VehicleHealthManager>() != null)
                 {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,true,true );
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, hit.normal,closestHit,true,true );
                 }
                 else
                 {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,false,true );
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, hit.normal, closestHit,false,true );
                 }
 
             }

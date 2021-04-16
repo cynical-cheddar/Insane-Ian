@@ -55,6 +55,7 @@ public class VehicleHealthManager : CollidableHealthManager
     }
     
     public void SetupVehicleManager() {
+        Debug.LogWarning("Vehicle Health Manager has not been ported to the new PhysX system");
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
         networkManager = FindObjectOfType<NetworkManager>();
