@@ -21,6 +21,8 @@ public class Squishing : MonoBehaviour
 
     // Start is called before the first frame update.
     void Start() {
+        Debug.LogWarning("Squishing has not been ported to the new PhysX system");
+        return;
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
         //deformableMeshes[0].Subdivide(maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);

@@ -49,6 +49,9 @@ public class ProjectileWeapon : Weapon
     // we need a new version of this for every child class, otherwise the top level RPC will be called
     public override void Fire(Vector3 targetPoint)
     {
+        Debug.LogWarning("Projectile Weapon has not been ported to the new PhysX system");
+        return;
+
         if (CanFire() && gunnerPhotonView.IsMine)
         {
             targetPoint =

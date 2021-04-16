@@ -20,16 +20,15 @@ void Start()
     skidCaller = transform.root.gameObject;
     wheel_col = GetComponent<WheelCollider>();
     //find object "Skidmarks" from the game
-    if (FindObjectOfType(typeof(Skidmarks)))
-    {
+    if (FindObjectOfType<Skidmarks>()) {
         skidmarks = FindObjectOfType(typeof(Skidmarks)) as Skidmarks;
     }
-    else
-        Debug.Log("No skidmarks object found. Skidmarks will not be drawn");
+    else Debug.Log("No skidmarks object found. Skidmarks will not be drawn");
 }
 
-void FixedUpdate () //This has to be in fixed update or it wont get time to make skidmesh fully.
-	{
+void FixedUpdate() {
+	Debug.LogWarning("Wheel Skidmarks has not been ported to the new PhysX system");
+    return;
 		//	sideways slip will be an angle now, sorry Alex
 
 	WheelHit GroundHit; //variable to store hit data

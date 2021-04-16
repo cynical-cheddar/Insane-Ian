@@ -60,7 +60,6 @@ public class BeamWeapon : Weapon
     public float extraRechargeTimeOnCeaseFire = 1f;
     public bool muzzleFlashChildOfBarrel = true;
     public float hitscanRange = 10000f;
-    protected Rigidbody parentRigidbody;
     public bool instantBeam = false;
 
     [Header("Beam Audio")]
@@ -110,6 +109,8 @@ public class BeamWeapon : Weapon
 
     protected void Start()
     {
+        Debug.LogWarning("Beam Weapon has not been ported to the new PhysX system");
+        return;
         lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);
     }
 
@@ -140,7 +141,7 @@ public class BeamWeapon : Weapon
 
     protected new void SetupWeapon()
     {
-               colliders = transform.root.GetComponentsInChildren<Collider>();
+        colliders = transform.root.GetComponentsInChildren<Collider>();
         newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         lookpoint = Instantiate(new GameObject(), Vector3.zero, Quaternion.identity);

@@ -153,6 +153,9 @@ using Random = UnityEngine.Random;
 
         private void FixedUpdate()
         {
+            Debug.LogWarning("AI control needs porting to new PhysX system.");
+            return;
+
             if (circuitFound)
             {
                 if (m_Rigidbody.velocity.magnitude < 1)
