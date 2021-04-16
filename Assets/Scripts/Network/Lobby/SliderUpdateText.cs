@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SliderUpdateText : MonoBehaviour
 {
     public Slider observedSlider;
 
-    public Text variableText;
+    public TextMeshProUGUI variableText;
 
     public float valueMultiplier = 1f;
     // Start is called before the first frame update
