@@ -20,8 +20,8 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
     string gameVersion = "0.9";
     private void Start()
     {
-        Random rnd = new Random();
-        roomName = roomName + rnd.Next(1,9999).ToString();
+        //Random rnd = new Random();
+        //roomName = roomName + rnd.Next(1,9999).ToString();
         
         PhotonNetwork.AutomaticallySyncScene = true;
 
