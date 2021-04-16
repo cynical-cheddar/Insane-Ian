@@ -25,6 +25,7 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
     List<RoomInfo> createdRooms = new List<RoomInfo>();
     PageBehaviour pageBehaviour;
     List<RoomPanelBehaviour> roomPBs;
+    List<string> randomNames;
 
     void Start()
     {
@@ -49,6 +50,13 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
             roomPBs.Add(room.GetComponent<RoomPanelBehaviour>());
         }
         roomsPerPage = pageBehaviour.roomsPerPage;
+        randomNames = new List<string>() {
+            "XxInsaneIanxX",
+            "Her Majesty The Queen TM",
+            "James. Just James",
+            "Not A Bot",
+            "Didn't Choose A Nickname"
+        };
     }
 
     void Update() {
@@ -83,16 +91,18 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
     void RefreshRoomPages() {
         // Manage multiple pages
         noOfPages = Mathf.CeilToInt((float)createdRooms.Count / (float)roomsPerPage);
-        while (pageNumber > noOfPages - 1) {
+        while (pageNumber > noOfPages) {
             pageNumber--;
         }
+        Debug.Log($"Page number: {pageNumber}");
+        Debug.Log($"noofpages: {noOfPages}");
         pageNumberText.text = $"Page: {pageNumber}";
         if (noOfPages > 1) {
             ExtraPagesInfo.gameObject.SetActive(true);
         } else {
             ExtraPagesInfo.gameObject.SetActive(false);
         }
-        Debug.Log($"createdroomscount: {createdRooms.Count}");
+        Debug.Log($"Createdroomscount: {createdRooms.Count}");
         if (createdRooms.Count > 0) {
             Page.gameObject.SetActive(true);
             BrowserText.gameObject.SetActive(false);
@@ -109,7 +119,9 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
                 NextPageButton.interactable = true;
                 PrevPageButton.interactable = false;
             }
+            Debug.Log($"actives: {activeRoomsInPage}");
             int index = pageNumber * roomsPerPage;
+            Debug.Log($"index: {index}");
             for (int i = 0; i < roomsPerPage; i++) {
                 if (i < activeRoomsInPage) {
                     roomPBs[i].gameObject.SetActive(true);
@@ -140,7 +152,7 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
     public void JoinRoom(int index) {
         string playerName = nameInputField.text;
         if (playerName == "") {
-            playerName = "noNickName";
+            playerName = randomNames[Random.Range(0, randomNames.Count)];
         }
         PhotonNetwork.NickName = playerName;
         PhotonNetwork.JoinRoom(createdRooms[pageNumber * roomsPerPage + index].Name);
