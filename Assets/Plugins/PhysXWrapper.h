@@ -51,6 +51,14 @@ extern "C" {
                                                                  const void* constantBlock, physx::PxU32 constantBlockSize,
                                                                  physx::PxHitFlags& queryFlags);
 
+    class RaycastQueryFilter : public physx::PxQueryFilterCallback {
+    public:
+        ~RaycastQueryFilter();
+
+        physx::PxQueryHitType::Enum preFilter(const physx::PxFilterData &filterData, const physx::PxShape *shape, const physx::PxRigidActor *actor, physx::PxHitFlags &queryFlags);
+        physx::PxQueryHitType::Enum postFilter(const physx::PxFilterData &filterData, const physx::PxQueryHit &hit);
+    };
+
     class RaycastHitHandler : public physx::PxRaycastCallback {
     public:
         RaycastHitHandler(physx::PxRaycastHit* hitBuffer, physx::PxU32 bufferSize);
@@ -224,6 +232,7 @@ extern "C" {
 
     EXPORT_FUNC physx::PxRaycastCallback* CreateRaycastHit();
     EXPORT_FUNC bool FireRaycast(physx::PxScene* scene, physx::PxVec3* origin, physx::PxVec3* direction, physx::PxReal distance, physx::PxRaycastCallback* raycastHit);
+    EXPORT_FUNC bool FireRaycastFiltered(physx::PxScene* scene, physx::PxVec3* origin, physx::PxVec3* direction, physx::PxReal distance, physx::PxRaycastCallback* raycastHit, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
     EXPORT_FUNC void GetRaycastHitNormal(physx::PxRaycastCallback* raycastHit, physx::PxVec3* normal);
     EXPORT_FUNC void GetRaycastHitPoint(physx::PxRaycastCallback* raycastHit, physx::PxVec3* point);
     EXPORT_FUNC physx::PxShape* GetRaycastHitShape(physx::PxRaycastCallback* raycastHit);

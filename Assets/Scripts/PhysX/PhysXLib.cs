@@ -330,6 +330,9 @@ namespace PhysX {
         public static extern bool FireRaycast(IntPtr scene, [In] PhysXVec3 origin, [In] PhysXVec3 direction, float distance, IntPtr raycastHit);
 
         [DllImport(dllName)]
+        public static extern bool FireRaycastFiltered(IntPtr scene, [In] PhysXVec3 origin, [In] PhysXVec3 direction, float distance, IntPtr raycastHit, uint w0, uint w1, uint w2, uint w3);
+
+        [DllImport(dllName)]
         public static extern void GetRaycastHitNormal(IntPtr raycastHit, [Out] PhysXVec3 normal);
 
         [DllImport(dllName)]

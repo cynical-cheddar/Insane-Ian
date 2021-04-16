@@ -256,7 +256,31 @@ physx::PxQueryHitType::Enum WheelSceneQueryPreFilterBlocking(physx::PxFilterData
 
     if (filterData0.word3 == filterData1.word3) return physx::PxQueryHitType::eNONE;
     return physx::PxQueryHitType::eBLOCK;
+}
 
+RaycastQueryFilter gQueryFilterCallback;
+
+RaycastQueryFilter::~RaycastQueryFilter() {
+
+}
+
+physx::PxQueryHitType::Enum RaycastQueryFilter::preFilter(const physx::PxFilterData &filterData, const physx::PxShape *shape, const physx::PxRigidActor *actor, physx::PxHitFlags &queryFlags) {
+    physx::PxFilterData shapeFilterData = shape->getQueryFilterData();
+
+    //filterData0 is the query.
+    //filterData1 is the shape potentially hit by the query.
+
+    if (filterData.word3 != 0 && filterData.word3 == shapeFilterData.word3) return physx::PxQueryHitType::eNONE;
+
+    if (filterData.word1 & shapeFilterData.word1) {
+        return physx::PxQueryHitType::eBLOCK;
+    }
+
+    return physx::PxQueryHitType::eNONE;
+}
+
+physx::PxQueryHitType::Enum RaycastQueryFilter::postFilter(const physx::PxFilterData &filterData, const physx::PxQueryHit &hit) {
+    return physx::PxQueryHitType::eBLOCK;
 }
 
 RaycastHitHandler::RaycastHitHandler(physx::PxRaycastHit* hitBuffer, physx::PxU32 bufferSize) : physx::PxRaycastCallback(hitBuffer, bufferSize) {
@@ -865,6 +889,11 @@ extern "C" {
 
     EXPORT_FUNC bool FireRaycast(physx::PxScene* scene, physx::PxVec3* origin, physx::PxVec3* direction, physx::PxReal distance, physx::PxRaycastCallback* raycastHit) {
         return scene->raycast(*origin, *direction, distance, *raycastHit);
+    }
+
+    EXPORT_FUNC bool FireRaycastFiltered(physx::PxScene* scene, physx::PxVec3* origin, physx::PxVec3* direction, physx::PxReal distance, physx::PxRaycastCallback* raycastHit, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3) {
+        physx::PxQueryFlags flags = physx::PxQueryFlag::eSTATIC | physx::PxQueryFlag::eDYNAMIC | physx::PxQueryFlag::ePREFILTER;
+        return scene->raycast(*origin, *direction, distance, *raycastHit, physx::PxHitFlag::eDEFAULT, physx::PxQueryFilterData(physx::PxFilterData(w0, w1, w2, w3), flags), &gQueryFilterCallback);
     }
 
     EXPORT_FUNC void GetRaycastHitNormal(physx::PxRaycastCallback* raycastHit, physx::PxVec3* normal) {

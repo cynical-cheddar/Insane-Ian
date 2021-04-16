@@ -108,4 +108,8 @@ public class PhysXSceneManager : MonoBehaviour
     public static bool FireRaycast(PhysXVec3 origin, PhysXVec3 direction, float distance, IntPtr raycastHit) {
         return PhysXLib.FireRaycast(scene, origin, direction, distance, raycastHit);
     }
+
+    public static bool FireRaycastFiltered(PhysXVec3 origin, PhysXVec3 direction, float distance, IntPtr raycastHit, uint w0, uint w1, uint w2, uint w3) {
+        return PhysXLib.FireRaycastFiltered(scene, origin, direction, distance, raycastHit, w0, w1, w2, w3);
+    }
 }
