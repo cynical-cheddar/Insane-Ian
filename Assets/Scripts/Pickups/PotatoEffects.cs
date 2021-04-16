@@ -70,8 +70,10 @@ public class PotatoEffects : MonoBehaviour
     {
         foreach (Transform t in teslaCoils)
         {
-            GameObject a = Instantiate(teslaWreck, t.position, t.rotation);
-            a.transform.localScale = t.lossyScale;
+            GameObject wreck = teslaWreck;
+            wreck.transform.localScale = t.lossyScale;
+            GameObject a = Instantiate(wreck, t.position, t.rotation);
+            
         }
         animation.clip = deactivateAnimation;
         animation.Play();
