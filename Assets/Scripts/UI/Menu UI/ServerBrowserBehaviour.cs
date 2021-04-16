@@ -94,15 +94,12 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
         while (pageNumber > noOfPages) {
             pageNumber--;
         }
-        Debug.Log($"Page number: {pageNumber}");
-        Debug.Log($"noofpages: {noOfPages}");
         pageNumberText.text = $"Page: {pageNumber}";
         if (noOfPages > 1) {
             ExtraPagesInfo.gameObject.SetActive(true);
         } else {
             ExtraPagesInfo.gameObject.SetActive(false);
         }
-        Debug.Log($"Createdroomscount: {createdRooms.Count}");
         if (createdRooms.Count > 0) {
             Page.gameObject.SetActive(true);
             BrowserText.gameObject.SetActive(false);
@@ -119,9 +116,7 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
                 NextPageButton.interactable = true;
                 PrevPageButton.interactable = false;
             }
-            Debug.Log($"actives: {activeRoomsInPage}");
             int index = pageNumber * roomsPerPage;
-            Debug.Log($"index: {index}");
             for (int i = 0; i < roomsPerPage; i++) {
                 if (i < activeRoomsInPage) {
                     roomPBs[i].gameObject.SetActive(true);
