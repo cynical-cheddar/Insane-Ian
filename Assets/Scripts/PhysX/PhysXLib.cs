@@ -353,7 +353,7 @@ namespace PhysX {
         [MonoPInvokeCallback(typeof(PhysXDebugLog))]
         private static void HandleDebugLog(IntPtr stringPtr, int length) {
             string str = Marshal.PtrToStringAnsi(stringPtr, length);
-            Debug.Log(str);
+            Debug.LogError(str);
         }
 
         public static void SetupPhysX() {
