@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using Gamestate;
+using TMPro;
 
 public class LobbyButtonScript : MonoBehaviourPunCallbacks
 {
@@ -18,20 +19,14 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     public bool driverSlotEmpty = true;
     public bool gunnerSlotEmpty = true;
 
-    public Text driverPlayerText;
-    public Text gunnerPlayerText;
+    public TextMeshProUGUI driverPlayerText;
+    public TextMeshProUGUI gunnerPlayerText;
 
     public ReadyToggle readyToggle;
 
     private LobbySlotMaster lobbySlotMaster;
 
     public GamestateTracker gamestateTracker;
-
-    public Image addBotDriver;
-    public Image kickBotDriver;
-
-    public Image addBotGunner;
-    public Image kickBotGunner;
     
     // new stuff
 

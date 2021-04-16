@@ -17,6 +17,8 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
     public TMP_InputField usernameInputField;
     public TextMeshProUGUI observedMaxPlayersText;
     public TMP_InputField roomNameInputField;
+    public Button hostGameButton;
+    public TextMeshProUGUI hostGameButtonText;
     string gameVersion = "0.9";
     private void Start()
     {
@@ -45,6 +47,11 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
         //Debug.Log("OnConnectedToMaster");
         //After we connected to Master server, join the Lobby
         PhotonNetwork.JoinLobby(TypedLobby.Default);
+    }
+
+    public override void OnJoinedLobby() {
+        hostGameButtonText.text = "Host Game";
+        hostGameButton.interactable = true;
     }
 
     public void SetMaxPlayers(int newMaxPlayers)
