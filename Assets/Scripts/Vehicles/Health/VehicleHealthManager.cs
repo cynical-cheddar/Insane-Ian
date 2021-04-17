@@ -10,12 +10,15 @@ using Photon.Realtime;
 
 public class VehicleHealthManager : CollidableHealthManager
 {
+    public ParticleSystem smokeL;
+    public ParticleSystem smokeM;
+    public ParticleSystem smokeH;
 
-    
     // car stuff
     protected Weapon.WeaponDamageDetails _rammingDetails;
 
     public GameObject tutorials;
+    public HotPotatoManager hpm;
 
     protected PlayerTransformTracker playerTransformTracker;
     
@@ -23,7 +26,7 @@ public class VehicleHealthManager : CollidableHealthManager
     float defaultAngularDrag = 0.2f;
     Vector3 defaultCOM;   
     
-    Rigidbody rb;
+    PhysXRigidBody rb;
     InterfaceCarDrive icd;
     InputDriver inputDriver;
     IDrivable carDriver;
@@ -52,11 +55,12 @@ public class VehicleHealthManager : CollidableHealthManager
     }
     
     public void SetupVehicleManager() {
+        Debug.LogWarning("Vehicle Health Manager has not been fully ported to the new PhysX system");
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
         networkManager = FindObjectOfType<NetworkManager>();
         maxHealth = health;
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<PhysXRigidBody>();
         icd = GetComponent<InterfaceCarDrive>();
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
@@ -73,14 +77,15 @@ public class VehicleHealthManager : CollidableHealthManager
             collisionAreas[i] = collisionArea;
         }
 
-        defaultDrag = rb.drag;
-        defaultAngularDrag = rb.angularDrag;
-        defaultCOM = GetComponent<COMDropper>().Shift;
+        // defaultDrag = rb.drag;
+        // defaultAngularDrag = rb.angularDrag;
+        // defaultCOM = GetComponent<COMDropper>().Shift;
         playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
 
         PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         if (player.teamId == teamId) tutorials.SetActive(true);
         else tutorials.SetActive(false);
+        player.Release();
     }
 
     public override void SetupHealthManager()
@@ -114,7 +119,9 @@ public class VehicleHealthManager : CollidableHealthManager
         float amount = weaponDamageDetails.damage;
         if (health > 0) {
             health -= amount;
-            if (health <= 0&&!isDead && myPhotonView.IsMine)
+            if (health > maxHealth) health = maxHealth;
+            SetSmoke();
+            if (health <= 0 && !isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
                 isDead = true;
@@ -133,6 +140,8 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         if (health > 0) {
             health -= amount;
+            if (health > maxHealth) health = maxHealth;
+            SetSmoke();
             if (health <= 0&&!isDead && myPhotonView.IsMine)
             {
                 // die is only called once, by the driver
@@ -185,12 +194,36 @@ public class VehicleHealthManager : CollidableHealthManager
         }
     }
 
+    // Helper function just to avoid repeating code. Sets smoke to correct level
+    private void SetSmoke() {
+        smokeL.Stop();
+        smokeM.Stop();
+        smokeH.Stop();
+        if (health < maxHealth * 0.6) {
+            smokeL.Play();
+            smokeM.Stop();
+            smokeH.Stop();
+        }
+        if (health < maxHealth * 0.4) {
+            smokeL.Stop();
+            smokeM.Play();
+            smokeH.Stop();
+
+        }
+        if (health < maxHealth * 0.2) {
+            smokeL.Stop();
+            smokeM.Play();
+            smokeH.Play();
+        }
+    }
+
     
     // Die is a LOCAL function that is only called by the driver when they get dead.
     protected void Die(bool updateDeath, bool updateKill) {
         // Update gamestate
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
+        hpm.removePotato();
         team.Release();
         // update my deaths
         if (updateDeath)
@@ -232,8 +265,8 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         PlayDeathTrailEffects(true);
         inputDriver.enabled = false;
-        rb.drag = 0.75f;
-        rb.angularDrag = 0.75f;
+        // rb.drag = 0.75f;
+        // rb.angularDrag = 0.75f;
         float x, y, z;
         x = Random.Range(-0.5f, 0.5f);
         if (x < 0) {
@@ -243,13 +276,19 @@ public class VehicleHealthManager : CollidableHealthManager
         }
         y = 0.9f;
         z = Random.Range(0, 2f);
-        
-        Vector3 explodePos = new Vector3(x, y, z);
-        Vector3 newCom = new Vector3(0, 1.3f, 0);
-        rb.centerOfMass = newCom;
-        rb.angularDrag = 0.1f;
-        rb.AddForce(explodePos*rb.mass * 10f, ForceMode.Impulse);
-        rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
+
+        if (lastHitDetails.damageType != Weapon.DamageType.ramming)
+        {
+            Vector3 explodePos = new Vector3(x, y, z);
+            Vector3 newCom = new Vector3(0, 1.3f, 0);
+            // rb.centerOfMass = newCom;
+            // rb.angularDrag = 0.1f;
+            rb.AddForce(explodePos * rb.mass * 10f, ForceMode.Impulse);
+            rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
+        }
+
+        smokeM.Play();
+        smokeH.Play();
         StartCoroutine(stopControls(1.7f));
     }
 
@@ -301,13 +340,18 @@ public class VehicleHealthManager : CollidableHealthManager
 
         DriverAbilityManager driverAbilityManager = GetComponent<DriverAbilityManager>();
         driverAbilityManager.Reset();
+        hpm.canPickupPotato = true;
 
-        rb.drag = defaultDrag;
-        rb.angularDrag = defaultAngularDrag;
+        smokeL.Stop();
+        smokeM.Stop();
+        smokeH.Stop();
+
+        // rb.drag = defaultDrag;
+        // rb.angularDrag = defaultAngularDrag;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         isDead = false;
-        rb.centerOfMass = defaultCOM;
+        // rb.centreOfMass = defaultCOM;
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
         teamEntry.isDead = false;
         teamEntry.Increment();

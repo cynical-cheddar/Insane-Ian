@@ -22,15 +22,74 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public string defaultPlayerVehiclePrefabName;
 
+    private int loadedPlayers = 0;
+    private int instantiatedPlayerIndex = 0;
 
+    public GameObject loadingScreenPrefab;
+
+    private GameObject loadingScreenInstance;
+    
     
 
+    public GameObject spawningPlayersScreenPrefab;
+    
+    private GameObject spawningPlayersScreenInstance;
+
+    public GameObject startCountdownPrefab;
+    private GameObject startCountdownInstance;
+    
+    
+    
+    
+    // called on the master client when the game is fully set up
+    void GameFullySetupMaster()
+    {
+        
+        // remove overlay
+        GetComponent<PhotonView>().RPC(nameof(RemoveSpawningPlayersCanvas), RpcTarget.AllBuffered);
+        GetComponent<PhotonView>().RPC(nameof(StartCountdown), RpcTarget.AllBuffered);
+        // start scoreboard stuff
+        
+        // activate all cars in time
+        Invoke(nameof(ActivateVehicles), 4f);
+
+
+        
+    }
+    
     // Start is called before the first frame update
     void Start()
     {
-        //PhotonNetwork.ConnectUsingSettings();
+        loadingScreenInstance = Instantiate(loadingScreenPrefab, transform.position, Quaternion.identity);
+        Invoke(nameof(Begin), 1f);
+    }
+
+    void Begin()
+    {
+        
+        GetComponent<PhotonView>().RPC(nameof(LoadedMap), RpcTarget.AllBufferedViaServer);
+    }
+
+    [PunRPC]
+    void LoadedMap()
+    {
+        Debug.Log("loaded map");
+        loadedPlayers += 1;
+        if (loadedPlayers == PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient)
+        {
+            GetComponent<PhotonView>().RPC(nameof(AllPlayersLoaded), RpcTarget.AllViaServer);
+        }
+    }
+
+    [PunRPC]
+    void AllPlayersLoaded()
+    {
+        // start instantiating the players
+        if(loadingScreenInstance !=null) Destroy(loadingScreenInstance);
         StartGame();
     }
+
+
 
 
 
@@ -50,15 +109,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         
-        
-        
-        
     }
     
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
         //SynchroniseSchemaBeforeSpawn();
-        Invoke(nameof(SpawnPlayers), 2f);
+        // change back
+        StartCoroutine(SpawnPlayers());
         timer = FindObjectOfType<TimerBehaviour>();
         GlobalsEntry globals = gamestateTracker.globals;
         float time = globals.timeLimit;
@@ -76,21 +133,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // only to be called by the master client when we can be sure that everyone has loaded into the game
 
 
-    void SpawnPlayers()
+    IEnumerator SpawnPlayers()
     { 
+        spawningPlayersScreenInstance = Instantiate(spawningPlayersScreenPrefab, transform.position, Quaternion.identity);
         if (PhotonNetwork.IsMasterClient)
         {
             GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
-            //List<GamestateTracker.PlayerDetails> playerDetailsList = gamestateTracker.schema.playerList;
-            //List<List<GamestateTracker.PlayerDetails>> playerPairs = gamestateTracker.GetPlayerPairs();
-            
+
             
             // players should have already had their teams validated through the lobby screen
             // If we end up with bugs, get Jordan to add extra checks to fill slots with bots at this point.
 
-            // a
-            // we now have a list of the players in each team
-            //foreach (GamestateTracker.TeamDetails team in gamestateTracker.schema.teamsList)
+
+
             for (short i = 0; i < gamestateTracker.teams.count; i++)
             {
                 TeamEntry entry = gamestateTracker.teams.GetAtIndex(i);
@@ -98,8 +153,39 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 entry.Release();
                 // instantiate the vehicle from the vehiclePrefabName in the schema, if null, instantiate the testing truck
                 Spawn(teamId);
+                yield return new WaitForSeconds(0.5f);
             }
+            
+            GameFullySetupMaster();
         }
+    }
+
+ 
+
+    void ActivateVehicles()
+    {
+        NetworkPlayerVehicle[] npvs = FindObjectsOfType<NetworkPlayerVehicle>();
+        foreach (NetworkPlayerVehicle npv in npvs)
+        {
+            npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBuffered);
+        }
+    }
+
+    [PunRPC]
+    void StartCountdown()
+    {
+        startCountdownInstance = Instantiate(startCountdownPrefab, transform.position, transform.rotation);
+    }
+    
+
+    [PunRPC]
+    void RemoveSpawningPlayersCanvas()
+    {
+        ScoreboardBehaviour sb = FindObjectOfType<ScoreboardBehaviour>();
+        sb.StartScoreboard();
+        if(spawningPlayersScreenInstance!=null) Destroy(spawningPlayersScreenInstance);
+        
+        
     }
 
     public void CallRespawnVehicle(float time, int teamId)
@@ -139,8 +225,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 } else {
                     spawnPoint = spawnPoints[teamId - 1];
                 }
-                vehicle.gameObject.transform.position = spawnPoint.position;
-                vehicle.gameObject.transform.rotation = spawnPoint.rotation;
+                PhysXRigidBody rigidBody = vehicle.GetComponent<PhysXRigidBody>();
+                rigidBody.position = spawnPoint.position;
+                rigidBody.rotation = spawnPoint.rotation;
 
                 // Add back damping on camera after move
                 yield return new WaitForSecondsRealtime(0.5f);
@@ -177,7 +264,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         object[] instantiationData = new object[]{teamId};
 
-        PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
+        //Put strong brakes on for spawn
+        var spawnedVehicle = PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
+        WheelCollider[] wheelColliders = spawnedVehicle.GetComponentsInChildren<WheelCollider>();
+        foreach (WheelCollider wc in wheelColliders) {
+            wc.brakeTorque = 10000;
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

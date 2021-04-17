@@ -78,7 +78,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
 
     [Header("Link fire command to all these scripts")]
     [SerializeField]public WeaponControlGroups weaponControlGroups;
-    WeaponControlGroup currentWeaponControlGroup;
+    public WeaponControlGroup currentWeaponControlGroup;
 
     public void Reset()
     {

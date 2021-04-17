@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using Gamestate;
+using TMPro;
 
 public class LobbyButtonScript : MonoBehaviourPunCallbacks
 {
@@ -18,20 +19,20 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     public bool driverSlotEmpty = true;
     public bool gunnerSlotEmpty = true;
 
-    public Text driverPlayerText;
-    public Text gunnerPlayerText;
+    public TextMeshProUGUI driverPlayerText;
+    public TextMeshProUGUI gunnerPlayerText;
+
+    public Image driverFillImage;
+    public Image gunnerFillImage;
+
+    public Button driverButton;
+    public Button gunnerButton;
 
     public ReadyToggle readyToggle;
 
     private LobbySlotMaster lobbySlotMaster;
 
     public GamestateTracker gamestateTracker;
-
-    public Image addBotDriver;
-    public Image kickBotDriver;
-
-    public Image addBotGunner;
-    public Image kickBotGunner;
     
     // new stuff
 
@@ -87,10 +88,14 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             PlayerEntry driverEntry = gamestateTracker.players.Get((short) driverId);
             driverPlayerText.text = driverEntry.name;
             driverEntry.Release();
+            driverFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
+            driverButton.interactable = false;
         }
         else
         {
-            driverPlayerText.text = "Empty";
+            driverPlayerText.text = "Empty"; 
+            driverFillImage.color = new Color32(0xB0, 0xB0, 0xB0, 0xFF);
+            driverButton.interactable = true;
         }
         
         // gunner stuff
@@ -100,10 +105,14 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             PlayerEntry gunnerEntry = gamestateTracker.players.Get((short) gunnerId);
             gunnerPlayerText.text = gunnerEntry.name;
             gunnerEntry.Release();
+            gunnerFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
+            gunnerButton.interactable = false;
         }
         else
         {
             gunnerPlayerText.text = "Empty";
+            gunnerFillImage.color = new Color32(0xB0, 0xB0, 0xB0, 0xFF);
+            gunnerButton.interactable = true;
         }
         
         teamEntry.Release();

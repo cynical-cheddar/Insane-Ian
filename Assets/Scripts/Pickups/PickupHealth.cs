@@ -9,7 +9,7 @@ public class PickupHealth : PickupItem
     public float healthIncrease = 25f;
     
     
-    public override void OnTriggerEnter(Collider other)
+    public override void TriggerEnter(PhysXCollider other)
     {
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
@@ -43,7 +43,7 @@ public class PickupHealth : PickupItem
         HealthManager hm = otherpv.gameObject.GetComponentInChildren<HealthManager>();
         
         
-        hm.HealObject(healthIncrease);
+        hm.TakeDamage(-healthIncrease);
         this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
     }
     

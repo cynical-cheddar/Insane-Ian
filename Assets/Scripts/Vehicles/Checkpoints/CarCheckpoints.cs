@@ -15,6 +15,8 @@ public class CarCheckpoints : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.LogWarning("Car Checkpoints has not been ported to the new PhysX system");
+        return;
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         bc = (BasicCheckpoint)FindObjectOfType(typeof(BasicCheckpoint));
         if (!bc) Debug.LogWarning("No BasicCheckpoint object could be found (this is fine in menus but BAD in game");

@@ -71,6 +71,8 @@ using Random = UnityEngine.Random;
         protected bool circuitFound = false;
         private void Awake()
         {
+            Debug.LogWarning("AI control needs porting to new PhysX system.");
+            return;
             // get the car controller reference
             interfaceCarDrive = GetComponent<InterfaceCarDrive4W>();
 
@@ -86,6 +88,38 @@ using Random = UnityEngine.Random;
         }
 
         IEnumerator ThreePointTurn()
+        {
+            Debug.Log("ThreePointTurn");
+            inThreePointTurn = true;
+            float elapsedTime = 0;
+            float maxTime = 1.5f;
+
+            Vector3 targetPos = m_Target.position;
+            Vector3 targetDir = targetPos - transform.position;
+            
+            float dotResult = Vector3.Dot(transform.forward, targetDir);
+            float turnDir = 0;
+            if (dotResult > 0.0) {
+                turnDir = 1.0f;
+            } else if (dotResult < 0.0) {
+                turnDir = -1.0f;
+            } else {
+                turnDir = 0.0f;
+            }
+            
+            while (elapsedTime<=maxTime)
+            {
+                elapsedTime += Time.deltaTime;
+                CarDriver.StopAccellerate();
+                CarDriver.StopBrake();
+                CarDriver.Reverse();
+                CarDriver.Steer(turnDir);
+                yield return new WaitForFixedUpdate();
+            }
+
+            inThreePointTurn = false;
+        }
+        IEnumerator ThreePointTurn2()
         {
             inThreePointTurn = true;
             float elapsedTime = 0;
@@ -107,8 +141,10 @@ using Random = UnityEngine.Random;
             while (elapsedTime<=maxTime)
             {
                 elapsedTime += Time.deltaTime;
-                CarDriver.Reverse();
-                CarDriver.Steer(-turnDir);
+  
+                CarDriver.StopBrake();
+                CarDriver.Accellerate();
+                CarDriver.Steer(turnDir);
                 yield return new WaitForFixedUpdate();
             }
 
@@ -119,9 +155,11 @@ using Random = UnityEngine.Random;
 
         private void FixedUpdate()
         {
+            return;
+
             if (circuitFound)
             {
-                if (m_Rigidbody.velocity.magnitude < 0.2)
+                if (m_Rigidbody.velocity.magnitude < 1)
                 {
                     stuckTimer += Time.deltaTime;
                 }
@@ -130,10 +168,15 @@ using Random = UnityEngine.Random;
                     stuckTimer = 0;
                 }
 
-                if (stuckTimer > 0.5 && !inThreePointTurn)
+                if (stuckTimer > 1 && !inThreePointTurn)
                 {
+                    int rand = Random.Range(0, 1);
                     StartCoroutine(ThreePointTurn());
+                    
+                   // else if(rand==2)StartCoroutine(ThreePointTurn2());
                 }
+
+               
 
                 if (!inThreePointTurn)
                 {
@@ -215,8 +258,8 @@ using Random = UnityEngine.Random;
 
             if (avoiding) {
                 CarDriver.Steer(avoidMultiplier);
-                if(avoidMultiplier >= 1 && m_Rigidbody.velocity.magnitude > maxSpeed/2) CarDriver.Brake();
-                else if(avoidMultiplier <= -1 && m_Rigidbody.velocity.magnitude > maxSpeed/2) CarDriver.Brake();
+                if(avoidMultiplier >= 1 && m_Rigidbody.velocity.magnitude > maxSpeed/2) CarDriver.Reverse();
+                else if(avoidMultiplier <= -1 && m_Rigidbody.velocity.magnitude > maxSpeed/2) CarDriver.Reverse();
             }
 
             return avoiding;
