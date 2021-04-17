@@ -38,6 +38,11 @@ public class PhysXRigidBody : PhysXBody
         get {
             return _angularVelocity;
         }
+        set {
+            _angularVelocity = value;
+            physXVelocity.FromVector(_angularVelocity);
+            PhysXLib.SetAngularVelocity(physXBody, physXAngularVelocity);
+        }
     }
 
     private PhysXVec3 physXCOMPosition = new PhysXVec3(Vector3.zero);

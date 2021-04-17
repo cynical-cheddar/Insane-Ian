@@ -275,8 +275,8 @@ namespace PhysX {
         [DllImport(dllName)]
         public static extern void SetLinearVelocity(IntPtr rigidBody, [In] PhysXVec3 velocity);
 
-        //[DllImport(dllName)]
-        //public static extern void SetAngularVelocity(IntPtr rigidBody, [Out] PhysXVec3 velocity);
+        [DllImport(dllName)]
+        public static extern void SetAngularVelocity(IntPtr rigidBody, [Out] PhysXVec3 velocity);
 
         [DllImport(dllName)]
         public static extern void AddForce(IntPtr rigidBody, [In] PhysXVec3 force, int forceMode);

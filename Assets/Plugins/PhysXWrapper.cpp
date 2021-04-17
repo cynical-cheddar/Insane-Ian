@@ -781,6 +781,10 @@ extern "C" {
         body->setLinearVelocity(*velocity);
     }
 
+    EXPORT_FUNC void SetAngularVelocity(physx::PxRigidBody* body, physx::PxVec3* velocity) {
+        body->setAngularVelocity(*velocity);
+    }
+
     EXPORT_FUNC void AddForce(physx::PxRigidBody* rigidBody, physx::PxVec3* force, physx::PxForceMode::Enum forceMode) {
         rigidBody->addForce(*force, forceMode);
     }
