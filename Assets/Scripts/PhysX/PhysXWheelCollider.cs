@@ -10,7 +10,6 @@ public class PhysXWheelCollider : MonoBehaviour
     public float width = 0.2f;
     public float dampingRate = 0.1f;
     public Vector3 forceAppPoint = Vector3.up * 0.1f;
-    public Vector3 center = Vector3.zero;
     public float suspensionDistance = 0.2f;
     public float suspensionSpringStrength = 10000;
     public float suspensionSpringDamper = 5000;
