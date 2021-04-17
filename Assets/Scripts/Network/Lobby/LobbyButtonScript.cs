@@ -25,6 +25,9 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     public Image driverFillImage;
     public Image gunnerFillImage;
 
+    public Button driverButton;
+    public Button gunnerButton;
+
     public ReadyToggle readyToggle;
 
     private LobbySlotMaster lobbySlotMaster;
@@ -86,11 +89,13 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             driverPlayerText.text = driverEntry.name;
             driverEntry.Release();
             driverFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
+            driverButton.interactable = false;
         }
         else
         {
             driverPlayerText.text = "Empty"; 
             driverFillImage.color = new Color32(0xB0, 0xB0, 0xB0, 0xFF);
+            driverButton.interactable = true;
         }
         
         // gunner stuff
@@ -101,11 +106,13 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             gunnerPlayerText.text = gunnerEntry.name;
             gunnerEntry.Release();
             gunnerFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
+            gunnerButton.interactable = false;
         }
         else
         {
             gunnerPlayerText.text = "Empty";
             gunnerFillImage.color = new Color32(0xB0, 0xB0, 0xB0, 0xFF);
+            gunnerButton.interactable = true;
         }
         
         teamEntry.Release();
