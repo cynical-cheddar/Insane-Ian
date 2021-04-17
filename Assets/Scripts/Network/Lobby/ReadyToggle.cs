@@ -42,10 +42,10 @@ public class ReadyToggle : MonoBehaviour
 
         if (!isReady) {
             buttonFill.color = new Color32(0xFF, 0x61, 0x61, 0xFF);
-            buttonText.text = "Not Ready";
+            buttonText.text = "Ready Up";
         } else {
             buttonFill.color = new Color32(0x65, 0xC5, 0x6B, 0xFF);
-            buttonText.text = "Ready";
+            buttonText.text = "Unready";
         }
     }
 

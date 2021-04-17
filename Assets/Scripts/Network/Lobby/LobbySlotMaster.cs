@@ -23,6 +23,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
     public TextMeshProUGUI playersInLobbyText;
     public TextMeshProUGUI readyPlayersText;
     public TMP_InputField timeLimitInputField;
+    public TextMeshProUGUI selectMapText;
 
     public string selectedMap = "null";
     public string selectedMapDisplayName = "null";
@@ -129,6 +130,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             PlayerEntry playerEntry = gamestateTracker.players.Create((short)PhotonNetwork.LocalPlayer.ActorNumber);
             playerEntry.name = PhotonNetwork.LocalPlayer.NickName;
             playerEntry.Commit();
+            selectMapText.text = "Select a map:";
         }
         
 
