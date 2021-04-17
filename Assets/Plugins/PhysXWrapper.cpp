@@ -897,6 +897,10 @@ extern "C" {
         vehicle->free();
     }
 
+    EXPORT_FUNC void DestroyScene(physx::PxScene* scene) {
+        scene->release();
+    }
+
     EXPORT_FUNC physx::PxRaycastCallback* CreateRaycastHit() {
         return new RaycastHitHandler(NULL, 0);
     }

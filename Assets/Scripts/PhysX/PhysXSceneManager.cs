@@ -34,7 +34,7 @@ public class PhysXSceneManager : MonoBehaviour
     }
 
     void OnSceneUnloaded(Scene s) {
-        Debug.LogWarning("unloaded     TODO: cleanup physx on unload");
+        PhysXLib.DestroyScene(scene);
         scene = IntPtr.Zero;
         bodies.Clear();
     }

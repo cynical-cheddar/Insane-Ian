@@ -235,6 +235,7 @@ extern "C" {
 
     EXPORT_FUNC void DestroyActor(physx::PxActor* actor);
     EXPORT_FUNC void DestroyVehicle(physx::PxVehicleNoDrive* vehicle);
+    EXPORT_FUNC void DestroyScene(physx::PxScene* scene);
 
     EXPORT_FUNC physx::PxRaycastCallback* CreateRaycastHit();
     EXPORT_FUNC bool FireRaycast(physx::PxScene* scene, physx::PxVec3* origin, physx::PxVec3* direction, physx::PxReal distance, physx::PxRaycastCallback* raycastHit);

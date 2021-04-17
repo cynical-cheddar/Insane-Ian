@@ -342,6 +342,9 @@ namespace PhysX {
         public static extern void DestroyVehicle(IntPtr vehicle);
 
         [DllImport(dllName)]
+        public static extern void DestroyScene(IntPtr scene);
+
+        [DllImport(dllName)]
         public static extern IntPtr CreateRaycastHit();
 
         [DllImport(dllName)]
