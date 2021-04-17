@@ -100,10 +100,12 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             PlayerEntry gunnerEntry = gamestateTracker.players.Get((short) gunnerId);
             gunnerPlayerText.text = gunnerEntry.name;
             gunnerEntry.Release();
+            gunnerFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
         }
         else
         {
             gunnerPlayerText.text = "Empty";
+            gunnerFillImage.color = new Color32(0xB0, 0xB0, 0xB0, 0xFF);
         }
         
         teamEntry.Release();
