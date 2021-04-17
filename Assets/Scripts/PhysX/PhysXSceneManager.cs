@@ -7,6 +7,8 @@ using AOT;
 
 public class PhysXSceneManager : MonoBehaviour
 {
+    private static bool sceneManagerExists = false;
+
     private static IntPtr scene = IntPtr.Zero;
 
     private static Dictionary<IntPtr, PhysXBody> bodies = new Dictionary<IntPtr, PhysXBody>();
@@ -18,7 +20,15 @@ public class PhysXSceneManager : MonoBehaviour
     public PhysicMaterial defaultMaterial;
 
     void Awake() {
-        if (scene != IntPtr.Zero) Debug.LogError("PhysX already set up. There may be multiple scene managers.");
+        if (sceneManagerExists) {
+            Debug.Log("PhysX Scene Manager already exists");
+            Destroy(gameObject);
+            return;
+        }
+
+        sceneManagerExists = true;
+
+        GetComponent<PhysicsToggle>().Setup();
 
         PhysXLib.SetupPhysX();
         PhysXLib.RegisterCollisionCallback(AddCollision);

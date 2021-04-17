@@ -14,7 +14,7 @@ public class PhysicsToggle : MonoBehaviour
     private IntPtr physicsFunction = IntPtr.Zero;
 
     // Start is called before the first frame update
-    void Awake()
+    public void Setup()
     {
         if (Application.IsPlaying(gameObject)) {
             DontDestroyOnLoad(gameObject);
