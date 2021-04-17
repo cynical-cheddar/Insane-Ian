@@ -22,6 +22,9 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
     public TextMeshProUGUI driverPlayerText;
     public TextMeshProUGUI gunnerPlayerText;
 
+    public Image driverFillImage;
+    public Image gunnerFillImage;
+
     public ReadyToggle readyToggle;
 
     private LobbySlotMaster lobbySlotMaster;
@@ -82,10 +85,12 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             PlayerEntry driverEntry = gamestateTracker.players.Get((short) driverId);
             driverPlayerText.text = driverEntry.name;
             driverEntry.Release();
+            driverFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
         }
         else
         {
-            driverPlayerText.text = "Empty";
+            driverPlayerText.text = "Empty"; 
+            driverFillImage.color = new Color32(0xB0, 0xB0, 0xB0, 0xFF);
         }
         
         // gunner stuff
