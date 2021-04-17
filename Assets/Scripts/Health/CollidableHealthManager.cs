@@ -76,6 +76,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             
             if (GetComponent<COMDropper>() != null && !resetting) {
                 Debug.LogWarning("Whatever this is has not been ported to the new PhysX system");
+                // Might not be needed anymore as COM is no longer dropped?
                 // resetting = true;
                 // Rigidbody rb = GetComponent<Rigidbody>();
                 // StartCoroutine(ResetPreviousCOM(rb.centerOfMass, 1f));
