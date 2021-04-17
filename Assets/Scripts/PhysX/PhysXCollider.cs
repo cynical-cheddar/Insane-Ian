@@ -61,6 +61,7 @@ public class PhysXCollider : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Setup(PhysXBody attachedRigidBody, uint vehicleId)
     {
+        this.attachedRigidBody = attachedRigidBody as PhysXRigidBody;
         Transform bodyParent = attachedRigidBody.transform;
 
         PhysXVec3 position = new PhysXVec3(bodyParent.InverseTransformPoint(transform.TransformPoint(offset)));

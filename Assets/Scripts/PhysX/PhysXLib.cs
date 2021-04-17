@@ -275,8 +275,8 @@ namespace PhysX {
         [DllImport(dllName)]
         public static extern void SetLinearVelocity(IntPtr rigidBody, [In] PhysXVec3 velocity);
 
-        //[DllImport(dllName)]
-        //public static extern void SetAngularVelocity(IntPtr rigidBody, [Out] PhysXVec3 velocity);
+        [DllImport(dllName)]
+        public static extern void SetAngularVelocity(IntPtr rigidBody, [Out] PhysXVec3 velocity);
 
         [DllImport(dllName)]
         public static extern void AddForce(IntPtr rigidBody, [In] PhysXVec3 force, int forceMode);
@@ -315,6 +315,24 @@ namespace PhysX {
         public static extern float GetSuspensionSprungMass(IntPtr suspension);
 
         [DllImport(dllName)]
+        public static extern float GetWheelRotationSpeed(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern float GetWheelRotationAngle(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetGroundHitActor(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern IntPtr GetGroundHitShape(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
+        public static extern void GetGroundHitPosition(IntPtr vehicle, int wheelNum, [Out] PhysXVec3 position);
+        
+        [DllImport(dllName)]
+        public static extern bool GetGroundHitIsGrounded(IntPtr vehicle, int wheelNum);
+
+        [DllImport(dllName)]
         public static extern void GetTransformComponents(IntPtr transform, [Out] PhysXVec3 position, [Out] PhysXQuat rotation);
 
         [DllImport(dllName)]
@@ -324,10 +342,16 @@ namespace PhysX {
         public static extern void DestroyVehicle(IntPtr vehicle);
 
         [DllImport(dllName)]
+        public static extern void DestroyScene(IntPtr scene);
+
+        [DllImport(dllName)]
         public static extern IntPtr CreateRaycastHit();
 
         [DllImport(dllName)]
         public static extern bool FireRaycast(IntPtr scene, [In] PhysXVec3 origin, [In] PhysXVec3 direction, float distance, IntPtr raycastHit);
+
+        [DllImport(dllName)]
+        public static extern bool FireRaycastFiltered(IntPtr scene, [In] PhysXVec3 origin, [In] PhysXVec3 direction, float distance, IntPtr raycastHit, uint w0, uint w1, uint w2, uint w3);
 
         [DllImport(dllName)]
         public static extern void GetRaycastHitNormal(IntPtr raycastHit, [Out] PhysXVec3 normal);
@@ -350,7 +374,7 @@ namespace PhysX {
         [MonoPInvokeCallback(typeof(PhysXDebugLog))]
         private static void HandleDebugLog(IntPtr stringPtr, int length) {
             string str = Marshal.PtrToStringAnsi(stringPtr, length);
-            Debug.Log(str);
+            Debug.LogError(str);
         }
 
         public static void SetupPhysX() {

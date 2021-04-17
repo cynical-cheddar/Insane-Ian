@@ -7,6 +7,8 @@ using AOT;
 
 public class PhysXSceneManager : MonoBehaviour
 {
+    private static bool sceneManagerExists = false;
+
     private static IntPtr scene = IntPtr.Zero;
 
     private static Dictionary<IntPtr, PhysXBody> bodies = new Dictionary<IntPtr, PhysXBody>();
@@ -18,7 +20,15 @@ public class PhysXSceneManager : MonoBehaviour
     public PhysicMaterial defaultMaterial;
 
     void Awake() {
-        if (scene != IntPtr.Zero) Debug.LogError("PhysX already set up. There may be multiple scene managers.");
+        if (sceneManagerExists) {
+            Debug.Log("PhysX Scene Manager already exists");
+            Destroy(gameObject);
+            return;
+        }
+
+        sceneManagerExists = true;
+
+        GetComponent<PhysicsToggle>().Setup();
 
         PhysXLib.SetupPhysX();
         PhysXLib.RegisterCollisionCallback(AddCollision);
@@ -34,7 +44,7 @@ public class PhysXSceneManager : MonoBehaviour
     }
 
     void OnSceneUnloaded(Scene s) {
-        Debug.LogWarning("unloaded     TODO: cleanup physx on unload");
+        PhysXLib.DestroyScene(scene);
         scene = IntPtr.Zero;
         bodies.Clear();
     }
@@ -107,5 +117,9 @@ public class PhysXSceneManager : MonoBehaviour
 
     public static bool FireRaycast(PhysXVec3 origin, PhysXVec3 direction, float distance, IntPtr raycastHit) {
         return PhysXLib.FireRaycast(scene, origin, direction, distance, raycastHit);
+    }
+
+    public static bool FireRaycastFiltered(PhysXVec3 origin, PhysXVec3 direction, float distance, IntPtr raycastHit, uint w0, uint w1, uint w2, uint w3) {
+        return PhysXLib.FireRaycastFiltered(scene, origin, direction, distance, raycastHit, w0, w1, w2, w3);
     }
 }

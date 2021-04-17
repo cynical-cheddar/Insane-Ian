@@ -19,6 +19,7 @@ public class PhysXRigidBody : PhysXBody
     public float linearDamping = 0;
     public float angularDamping = 0;
 
+    private PhysXVec3 physXVelocity = new PhysXVec3(Vector3.zero);
     private Vector3 _velocity;
     public Vector3 velocity {
         get {
@@ -26,17 +27,26 @@ public class PhysXRigidBody : PhysXBody
         }
         set {
             _velocity = value;
-            PhysXLib.SetLinearVelocity(physXBody, new PhysXVec3(_velocity));
+            physXVelocity.FromVector(_velocity);
+            PhysXLib.SetLinearVelocity(physXBody, physXVelocity);
         }
     }
 
+    private PhysXVec3 physXAngularVelocity = new PhysXVec3(Vector3.zero);
     private Vector3 _angularVelocity;
     public Vector3 angularVelocity {
         get {
             return _angularVelocity;
         }
+        set {
+            _angularVelocity = value;
+            physXVelocity.FromVector(_angularVelocity);
+            PhysXLib.SetAngularVelocity(physXBody, physXAngularVelocity);
+        }
     }
 
+    private PhysXVec3 physXCOMPosition = new PhysXVec3(Vector3.zero);
+    private PhysXQuat physXCOMRotation = new PhysXQuat(Quaternion.identity);
     [SerializeField]
     private Vector3 _centreOfMass = Vector3.zero;
     public Vector3 centreOfMass {
@@ -46,12 +56,11 @@ public class PhysXRigidBody : PhysXBody
         set {
             _centreOfMass = value;
 
-            PhysXVec3 position = new PhysXVec3(_centreOfMass);
-            PhysXQuat rotation = new PhysXQuat(Quaternion.identity);
+            physXCOMPosition.FromVector(_centreOfMass);
 
             IntPtr oldCentre = PhysXLib.GetCentreOfMass(physXBody);
 
-            IntPtr newCentre = PhysXLib.CreateTransform(position, rotation);
+            IntPtr newCentre = PhysXLib.CreateTransform(physXCOMPosition, physXCOMRotation);
             PhysXLib.SetRigidBodyMassPose(physXBody, newCentre);
 
             if (vehicle != IntPtr.Zero) PhysXLib.UpdateVehicleCentreOfMass(oldCentre, newCentre, vehicle);
@@ -59,7 +68,9 @@ public class PhysXRigidBody : PhysXBody
     }
 
     public override void Setup() {
-        IntPtr physXTransform = PhysXLib.CreateTransform(new PhysXVec3(transform.position), new PhysXQuat(transform.rotation));
+        physXPosition.FromVector(transform.position);
+        physXRotation.FromQuaternion(transform.rotation);
+        IntPtr physXTransform = PhysXLib.CreateTransform(physXPosition, physXRotation);
         _position = transform.position;
         _rotation = transform.rotation;
         physXBody = PhysXLib.CreateDynamicRigidBody(physXTransform);
@@ -117,61 +128,64 @@ public class PhysXRigidBody : PhysXBody
             }
         }
 
-        PhysXVec3 position = new PhysXVec3(centreOfMass);
-        PhysXQuat rotation = new PhysXQuat(Quaternion.identity);
+        physXCOMPosition.FromVector(centreOfMass);
+        // PhysXVec3 position = new PhysXVec3(centreOfMass);
+        // PhysXQuat rotation = new PhysXQuat(Quaternion.identity);
 
         IntPtr oldCentre = PhysXLib.GetCentreOfMass(physXBody);
 
-        IntPtr newCentre = PhysXLib.CreateTransform(position, rotation);
+        IntPtr newCentre = PhysXLib.CreateTransform(physXCOMPosition, physXCOMRotation);
         PhysXLib.SetRigidBodyMassPose(physXBody, newCentre);
 
         if (vehicle != IntPtr.Zero) PhysXLib.UpdateVehicleCentreOfMass(oldCentre, newCentre, vehicle);
     }
 
     public override void UpdatePositionAndVelocity() {
-        PhysXVec3 p = new PhysXVec3(Vector3.zero);
-        PhysXLib.GetPosition(physXBody, p);
+        PhysXLib.GetPosition(physXBody, physXPosition);
 
-        PhysXQuat q = new PhysXQuat(Quaternion.identity);
-        PhysXLib.GetRotation(physXBody, q);
+        PhysXLib.GetRotation(physXBody, physXRotation);
 
-        p.ToVector(ref _position);
-        q.ToQuaternion(ref _rotation);
+        physXPosition.ToVector(ref _position);
+        physXRotation.ToQuaternion(ref _rotation);
 
         transform.SetPositionAndRotation(_position, _rotation);
 
-        PhysXVec3 lv = new PhysXVec3(Vector3.zero);
-        PhysXLib.GetLinearVelocity(physXBody, lv);
-        lv.ToVector(ref _velocity);
+        PhysXLib.GetLinearVelocity(physXBody, physXVelocity);
+        physXVelocity.ToVector(ref _velocity);
 
-        PhysXVec3 av = new PhysXVec3(Vector3.zero);
-        PhysXLib.GetAngularVelocity(physXBody, av);
-        av.ToVector(ref _angularVelocity);
+        PhysXLib.GetAngularVelocity(physXBody, physXAngularVelocity);
+        physXAngularVelocity.ToVector(ref _angularVelocity);
 
         foreach (PhysXWheelCollider wheel in wheels) {
             wheel.UpdateData();
         }
     }
 
+    private PhysXVec3 physXForce = new PhysXVec3(Vector3.zero);
+    private PhysXVec3 physXForcePos = new PhysXVec3(Vector3.zero);
     public void AddForce(Vector3 force, ForceMode forceMode = ForceMode.Force) {
         int forceModeInt = (int)forceMode;
         if (forceMode == ForceMode.Acceleration) forceModeInt = 3;
 
-        PhysXLib.AddForce(physXBody, new PhysXVec3(force), forceModeInt);
+        physXForce.FromVector(force);
+        PhysXLib.AddForce(physXBody, physXForce, forceModeInt);
     }
 
     public void AddForceAtPosition(Vector3 force, Vector3 position, ForceMode forceMode) {
         int forceModeInt = (int)forceMode;
         if (forceMode == ForceMode.Acceleration) forceModeInt = 3;
 
-        PhysXLib.AddForceAtPosition(physXBody, new PhysXVec3(force), new PhysXVec3(position), forceModeInt);
+        physXForce.FromVector(force);
+        physXForcePos.FromVector(position);
+        PhysXLib.AddForceAtPosition(physXBody, physXForce, physXForcePos, forceModeInt);
     }
 
     public void AddTorque(Vector3 force, ForceMode forceMode) {
         int forceModeInt = (int)forceMode;
         if (forceMode == ForceMode.Acceleration) forceModeInt = 3;
 
-        PhysXLib.AddTorque(physXBody, new PhysXVec3(force), forceModeInt);
+        physXForce.FromVector(force);
+        PhysXLib.AddTorque(physXBody, physXForce, forceModeInt);
     }
 
     protected override void OnDestroy() {

@@ -13,6 +13,7 @@ public class PhysXBody : MonoBehaviour
 
     protected PhysXSceneManager sceneManager;
 
+    protected PhysXVec3 physXPosition = new PhysXVec3(Vector3.zero);
     protected Vector3 _position;
     public Vector3 position {
         get {
@@ -21,10 +22,12 @@ public class PhysXBody : MonoBehaviour
         set {
             _position = value;
             transform.position = _position;
-            PhysXLib.SetPosition(physXBody, new PhysXVec3(_position));
+            physXPosition.FromVector(_position);
+            PhysXLib.SetPosition(physXBody, physXPosition);
         }
     }
 
+    protected PhysXQuat physXRotation = new PhysXQuat(Quaternion.identity);
     protected Quaternion _rotation;
     public Quaternion rotation {
         get {
@@ -33,7 +36,8 @@ public class PhysXBody : MonoBehaviour
         set {
             _rotation = value;
             transform.rotation = _rotation;
-            PhysXLib.SetRotation(physXBody, new PhysXQuat(_rotation));
+            physXRotation.FromQuaternion(_rotation);
+            PhysXLib.SetRotation(physXBody, physXRotation);
         }
     }
 
@@ -73,7 +77,9 @@ public class PhysXBody : MonoBehaviour
     }
 
     public virtual void Setup() {
-        IntPtr physXTransform = PhysXLib.CreateTransform(new PhysXVec3(transform.position), new PhysXQuat(transform.rotation));
+        physXPosition.FromVector(transform.position);
+        physXRotation.FromQuaternion(transform.rotation);
+        IntPtr physXTransform = PhysXLib.CreateTransform(physXPosition, physXRotation);
         _position = transform.position;
         _rotation = transform.rotation;
         physXBody = PhysXLib.CreateStaticRigidBody(physXTransform);

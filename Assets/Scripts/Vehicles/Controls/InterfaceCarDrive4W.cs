@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using PhysX;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
-    // Start is called before the first frame update
-
     public float maxSpeed = 30f;
 
     [Header("Wheel Colliders:")]
@@ -97,7 +96,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Accellerate() {
-        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //check if needing to brake or accellerate
         if (transform.InverseTransformDirection(carRB.velocity).z > -4) {
             ((IDrivable)this).StopBrake();
@@ -122,7 +120,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     }
     void IDrivable.Reverse() {
-        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
             ((IDrivable)this).StopBrake();
@@ -144,7 +141,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             ws.collider.brakeTorque = brakeTorque;
         }
 
-        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
         //if all wheels grounded, add additional brake force
         if (AllWheelsGrounded()) {
             if (transform.InverseTransformDirection(carRB.velocity).z < 0) {
@@ -211,7 +207,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
 
     private void EngineNoise() {
-        /*
         float newpitch;
         newpitch = Mathf.Clamp((Mathf.Abs(frontLeftW.rpm + frontRightW.rpm + rearLeftW.rpm + rearRightW.rpm)) * 0.01f * 0.25f, 0, 14f);
         volume = Mathf.Lerp(volume, newpitch, 0.1f);
@@ -227,7 +222,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
         EngineLow.pitch = 2.4f + volume / 10;
         EngineHigh.pitch = 2.4f + volume / 10;
-        */
     }
 
     private void AntiRoll(PhysXWheelCollider left, PhysXWheelCollider right) {
@@ -260,10 +254,10 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
        } */
     }
     private void Particles() {
-        /*
-        WheelHit lHit, rHit;
-        bool lGrounded = rearLeftW.GetGroundHit(out lHit);
-        bool rGrounded = rearRightW.GetGroundHit(out rHit);
+        PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
+        PhysXWheelHit rHit = PhysXWheelHit.GetWheelHit();
+        bool lGrounded = rearLeftW.GetGroundHit(lHit);
+        bool rGrounded = rearRightW.GetGroundHit(rHit);
         var lEmission = leftPS.emission;
         var rEmission = rightPS.emission;
 
@@ -285,7 +279,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         } else {
             rEmission.enabled = false;
         }
-        */
+
+        PhysXWheelHit.ReleaseWheelHit(lHit);
+        PhysXWheelHit.ReleaseWheelHit(rHit);
     }
 
     private void getSurface() {
@@ -323,7 +319,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         wheelStructs.Add(new wheelStruct(0f, "", rearLeftW));
         wheelStructs.Add(new wheelStruct(0f, "", rearRightW));
 
-
+        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
     }
 }
 

@@ -51,6 +51,14 @@ extern "C" {
                                                                  const void* constantBlock, physx::PxU32 constantBlockSize,
                                                                  physx::PxHitFlags& queryFlags);
 
+    class RaycastQueryFilter : public physx::PxQueryFilterCallback {
+    public:
+        ~RaycastQueryFilter();
+
+        physx::PxQueryHitType::Enum preFilter(const physx::PxFilterData &filterData, const physx::PxShape *shape, const physx::PxRigidActor *actor, physx::PxHitFlags &queryFlags);
+        physx::PxQueryHitType::Enum postFilter(const physx::PxFilterData &filterData, const physx::PxQueryHit &hit);
+    };
+
     class RaycastHitHandler : public physx::PxRaycastCallback {
     public:
         RaycastHitHandler(physx::PxRaycastHit* hitBuffer, physx::PxU32 bufferSize);
@@ -201,6 +209,7 @@ extern "C" {
     EXPORT_FUNC void GetAngularVelocity(physx::PxRigidBody* rigidBody, physx::PxVec3* velocity);
 
     EXPORT_FUNC void SetLinearVelocity(physx::PxRigidBody* body, physx::PxVec3* velocity);
+    EXPORT_FUNC void SetAngularVelocity(physx::PxRigidBody* body, physx::PxVec3* velocity);
 
     EXPORT_FUNC void AddForce(physx::PxRigidBody* rigidBody, physx::PxVec3* force, physx::PxForceMode::Enum forceMode);
     EXPORT_FUNC void AddForceAtPosition(physx::PxRigidBody* rigidBody, physx::PxVec3* force, physx::PxVec3* position, physx::PxForceMode::Enum forceMode);
@@ -216,14 +225,22 @@ extern "C" {
     EXPORT_FUNC physx::PxReal GetSuspensionCompression(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
     EXPORT_FUNC void GetWheelTransform(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position, physx::PxQuat* rotation);
     EXPORT_FUNC physx::PxReal GetSuspensionSprungMass(physx::PxVehicleSuspensionData* suspension);
+    EXPORT_FUNC physx::PxReal GetWheelRotationSpeed(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    EXPORT_FUNC physx::PxReal GetWheelRotationAngle(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    EXPORT_FUNC physx::PxActor* GetGroundHitActor(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    EXPORT_FUNC physx::PxShape* GetGroundHitShape(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
+    EXPORT_FUNC void GetGroundHitPosition(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position);
+    EXPORT_FUNC bool GetGroundHitIsGrounded(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
 
     EXPORT_FUNC void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation);
 
     EXPORT_FUNC void DestroyActor(physx::PxActor* actor);
     EXPORT_FUNC void DestroyVehicle(physx::PxVehicleNoDrive* vehicle);
+    EXPORT_FUNC void DestroyScene(physx::PxScene* scene);
 
     EXPORT_FUNC physx::PxRaycastCallback* CreateRaycastHit();
     EXPORT_FUNC bool FireRaycast(physx::PxScene* scene, physx::PxVec3* origin, physx::PxVec3* direction, physx::PxReal distance, physx::PxRaycastCallback* raycastHit);
+    EXPORT_FUNC bool FireRaycastFiltered(physx::PxScene* scene, physx::PxVec3* origin, physx::PxVec3* direction, physx::PxReal distance, physx::PxRaycastCallback* raycastHit, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
     EXPORT_FUNC void GetRaycastHitNormal(physx::PxRaycastCallback* raycastHit, physx::PxVec3* normal);
     EXPORT_FUNC void GetRaycastHitPoint(physx::PxRaycastCallback* raycastHit, physx::PxVec3* point);
     EXPORT_FUNC physx::PxShape* GetRaycastHitShape(physx::PxRaycastCallback* raycastHit);

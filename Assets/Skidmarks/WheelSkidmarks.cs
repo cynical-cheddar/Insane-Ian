@@ -16,6 +16,9 @@ private WheelCollider wheel_col;//To hold self wheel collider
 
 void Start()
 {
+	Debug.LogWarning("Wheel Skidmarks has not been ported to the new PhysX system");
+    return;
+
     //Get the Wheel Collider attached to self
     skidCaller = transform.root.gameObject;
     wheel_col = GetComponent<WheelCollider>();
@@ -27,8 +30,7 @@ void Start()
 }
 
 void FixedUpdate() {
-	Debug.LogWarning("Wheel Skidmarks has not been ported to the new PhysX system");
-    return;
+	return;
 		//	sideways slip will be an angle now, sorry Alex
 
 	WheelHit GroundHit; //variable to store hit data
