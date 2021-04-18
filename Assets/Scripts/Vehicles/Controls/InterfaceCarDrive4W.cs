@@ -44,9 +44,10 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Range(0, 20000)]
     public float antiRollStiffness = 5000;
     [Range(0, 30)]
-    public float baseStiffness = 15f;
+    public float baseStiffness = 1f;
     [Range(0, 20)]
-    public float driftStiffness = 5f;
+    public float driftStiffness = 0.3f;
+    public float currentStiffness = 0;
 
     [Space(5)]
 
@@ -153,14 +154,14 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
     void IDrivable.Drift() {
         foreach (wheelStruct ws in wheelStructs) {
-            //ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * driftStiffness;
-            ws.collider.asymptoteSidewaysStiffness = driftStiffness;
+            ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * driftStiffness;
+            //ws.collider.asymptoteSidewaysStiffness = driftStiffness;
         }
     }
     void IDrivable.StopDrift() {
         foreach (wheelStruct ws in wheelStructs) {
-            //ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * baseStiffness;
-            ws.collider.asymptoteSidewaysStiffness = baseStiffness;
+            ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * baseStiffness;
+            //ws.collider.asymptoteSidewaysStiffness = baseStiffness;
         }
     }
     private bool AllWheelsGrounded() {
@@ -285,18 +286,16 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
 
     private void getSurface() {
-        /*
         for (int i = 0; i < wheelStructs.Count; i++) { 
-            WheelHit hit;
-            wheelStructs[i].collider.GetGroundHit(out hit);
-            if (hit.collider != null) {
+            PhysXWheelHit hit = PhysXWheelHit.GetWheelHit();
+            if (wheelStructs[i].collider.GetGroundHit(hit)) {
                 if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
                     wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
                 } else {
                     wheelStructs[i] = new wheelStruct(8f, "0", wheelStructs[i].collider);
                 }
             }
-        } */
+        } 
     }
 
     void FixedUpdate() {
@@ -305,6 +304,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         AntiRoll(frontLeftW, frontRightW);
         AntiRoll(rearLeftW, rearRightW);
         Particles();
+        foreach (wheelStruct wc in wheelStructs) {
+            currentStiffness = wc.collider.asymptoteSidewaysStiffness;
+        }
     }
 
 
