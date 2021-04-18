@@ -1,6 +1,6 @@
+using PhysX;
 using System.Collections.Generic;
 using UnityEngine;
-using PhysX;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float maxSpeed = 30f;
@@ -226,33 +226,34 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
 
     private void AntiRoll(PhysXWheelCollider left, PhysXWheelCollider right) {
-        /*
-       WheelHit lHit, rHit;
-       float lDistance = 1f;
-       float rDistance = 1f;
 
-       bool lGrounded = left.GetGroundHit(out lHit);
-       bool rGrounded = right.GetGroundHit(out rHit);
+        PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
+        PhysXWheelHit rHit = PhysXWheelHit.GetWheelHit();
+        bool lGrounded = left.GetGroundHit(lHit);
+        bool rGrounded = right.GetGroundHit(rHit);
+        float lDistance = 1f;
+        float rDistance = 1f;
 
-       //  Can get suspension compression if tht's useful
-       if (lGrounded) {
-           lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
-       }
 
-       if (rGrounded) {
-           rDistance = (-right.transform.InverseTransformPoint(rHit.point).y - right.radius) / right.suspensionDistance;
-       }
+        //  Can get suspension compression if tht's useful
+        if (lGrounded) {
+            lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
+        }
 
-       float addedForce = (lDistance - rDistance) * antiRollStiffness;
+        if (rGrounded) {
+            rDistance = (-right.transform.InverseTransformPoint(rHit.point).y - right.radius) / right.suspensionDistance;
+        }
 
-       if (lGrounded) {
-           carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position);
-       }
+        float addedForce = (lDistance - rDistance) * antiRollStiffness;
 
-       if (rGrounded) {
-           carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
+        if (lGrounded) {
+            carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position);
+        }
 
-       } */
+        if (rGrounded) {
+            carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
+
+        }
     }
     private void Particles() {
         PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
@@ -286,7 +287,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
 
     private void getSurface() {
-        for (int i = 0; i < wheelStructs.Count; i++) { 
+        for (int i = 0; i < wheelStructs.Count; i++) {
             PhysXWheelHit hit = PhysXWheelHit.GetWheelHit();
             if (wheelStructs[i].collider.GetGroundHit(hit)) {
                 if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
@@ -295,7 +296,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
                     wheelStructs[i] = new wheelStruct(8f, "0", wheelStructs[i].collider);
                 }
             }
-        } 
+        }
     }
 
     void FixedUpdate() {
