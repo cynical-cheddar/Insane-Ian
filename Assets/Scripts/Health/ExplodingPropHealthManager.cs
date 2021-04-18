@@ -10,6 +10,9 @@ public class ExplodingPropHealthManager : PropHealthManager
     
 
     void explode(){
+        Debug.LogWarning("Exploding Prop Health Manager has not been ported to the new PhysX system");
+        Debug.LogWarning("I need to sort out overlap sphere stuff");
+        return;
         GameObject temporaryDeathExplosionInstance = Instantiate(temporaryDeathExplosion, transform.position, transform.rotation);
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5);
         foreach (Collider collider in hitColliders){

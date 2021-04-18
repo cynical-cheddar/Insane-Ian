@@ -71,6 +71,8 @@ using Random = UnityEngine.Random;
         protected bool circuitFound = false;
         private void Awake()
         {
+            Debug.LogWarning("AI control needs porting to new PhysX system.");
+            return;
             // get the car controller reference
             interfaceCarDrive = GetComponent<InterfaceCarDrive4W>();
 
@@ -153,6 +155,8 @@ using Random = UnityEngine.Random;
 
         private void FixedUpdate()
         {
+            return;
+
             if (circuitFound)
             {
                 if (m_Rigidbody.velocity.magnitude < 1)
