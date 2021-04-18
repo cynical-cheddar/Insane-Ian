@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <math.h>
 
 #ifdef ON_MAC
 #define EXPORT_FUNC
@@ -20,6 +21,7 @@
 #define TRIGGER_BEGIN   (1 << 3)
 #define TRIGGER_SUSTAIN (1 << 4)
 #define TRIGGER_END     (1 << 5)
+#define CONTACT_MODIFY  (1 << 6)
 
 #define WHEEL_LAYER (1 << 1)
 
@@ -68,6 +70,11 @@ extern "C" {
         physx::PxAgain processTouches(const physx::PxRaycastHit* hits, physx::PxU32 hitCount);
     };
 
+    class SoftContactModifier : public physx::PxContactModifyCallback {
+    public:
+        void onContactModify(physx::PxContactModifyPair* const pairs, physx::PxU32 pairCount);
+    };
+
     struct SceneUserData
     {
         SceneUserData() : wheelCount(0),
@@ -95,14 +102,17 @@ extern "C" {
 
     struct ShapeUserData
     {
-        ShapeUserData()
-            : isWheel(false),
-            wheelId(0xffffffff)
-        {
+        ShapeUserData() : maxImpulse(100),
+                          minImpulse(0.0001f),
+                          penForMaxImpulse(0.5f),
+                          penExp(3) {
+
         }
 
-        bool isWheel;
-        physx::PxU32 wheelId;
+        physx::PxReal maxImpulse;
+        physx::PxReal minImpulse;
+        physx::PxReal penForMaxImpulse;
+        physx::PxU32 penExp;
     };
 
     EXPORT_FUNC void RegisterDebugLog(DebugLog dl);
@@ -127,6 +137,7 @@ extern "C" {
     EXPORT_FUNC physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot);
 
     EXPORT_FUNC physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat, physx::PxReal contactOffset);
+    EXPORT_FUNC void SetShapeSoftness(physx::PxShape* shape, physx::PxReal maxImpulse, physx::PxReal minImpulse, physx::PxReal penForMaxImpulse, physx::PxU32 penExp);
     EXPORT_FUNC void SetShapeLocalTransform(physx::PxShape* shape, physx::PxTransform* transform);
     EXPORT_FUNC void SetShapeSimulationFlag(physx::PxShape* shape, bool value);
     EXPORT_FUNC void SetShapeTriggerFlag(physx::PxShape* shape, bool value);

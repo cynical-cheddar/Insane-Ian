@@ -28,7 +28,8 @@ namespace PhysX {
             CONTACT_SUSTAIN = (1 << 1),
             CONTACT_END = (1 << 2),
             TRIGGER_BEGIN = (1 << 3),
-            TRIGGER_END = (1 << 5)
+            TRIGGER_END = (1 << 5),
+            CONTACT_MODIFY = (1 << 6)
         }
 
         #if UNITY_WEBGL
@@ -82,6 +83,9 @@ namespace PhysX {
 
         [DllImport(dllName)]
         public static extern IntPtr CreateShape(IntPtr geometry, IntPtr mat, float contactOffset);
+
+        [DllImport(dllName)]
+        public static extern void SetShapeSoftness(IntPtr shape, float maxImpulse, float minImpulse, float penForMaxImpulse, int penExp);
 
         [DllImport(dllName)]
         public static extern void SetShapeLocalTransform(IntPtr shape, IntPtr transform);

@@ -231,6 +231,10 @@ physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, p
         pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
     }
 
+    if ((dataA.word2 & CONTACT_MODIFY) || (dataB.word2 & CONTACT_MODIFY)) {
+        pairFlags |= physx::PxPairFlag::eMODIFY_CONTACTS;
+    }
+
     return physx::PxFilterFlag::eDEFAULT;
 }
 
@@ -293,6 +297,86 @@ physx::PxAgain RaycastHitHandler::processTouches(const physx::PxRaycastHit* hits
     return false;
 }
 
+void SoftContactModifier::onContactModify(physx::PxContactModifyPair* const pairs, physx::PxU32 pairCount) {
+    debugLog("pairCount: " + std::to_string(pairCount));
+    for (int i = 0; i < pairCount; i++) {
+        physx::PxU32 n = 0;
+
+        physx::PxReal maxImpulse = 0;
+        physx::PxReal minImpulse = 0;
+        physx::PxReal penForMaxImpulse = 0;
+        physx::PxU32 penExp = 0;
+
+        if (pairs[i].shape[0]->userData != NULL) {
+            ShapeUserData* shapeUserData = (ShapeUserData*)pairs[i].shape[0]->userData;
+
+            maxImpulse += shapeUserData->maxImpulse;
+            minImpulse += shapeUserData->minImpulse;
+            penForMaxImpulse += shapeUserData->penForMaxImpulse;
+            penExp += shapeUserData->penExp;
+
+            n++;
+        }
+
+        if (pairs[i].shape[1]->userData != NULL) {
+            ShapeUserData* shapeUserData = (ShapeUserData*)pairs[i].shape[1]->userData;
+
+            maxImpulse += shapeUserData->maxImpulse;
+            minImpulse += shapeUserData->minImpulse;
+            penForMaxImpulse += shapeUserData->penForMaxImpulse;
+            penExp += shapeUserData->penExp;
+
+            n++;
+        }
+
+        if (n == 2) {
+            maxImpulse /= 2;
+            minImpulse /= 2;
+            penForMaxImpulse /= 2;
+            penExp /= 2;
+        }
+
+        physx::PxReal penCoefficient = maxImpulse / pow(penForMaxImpulse, penExp);
+
+        // if (pairs[i].shape[0].getSimulationFilterData().word2 & CONTACT_MODIFY) {
+        //     if (pairs[i].shape[1].getSimulationFilterData().word2 & CONTACT_MODIFY) {
+        //         single = false;
+        //     }
+        // }
+        // else if (pairs[i].shape[1].getSimulationFilterData().word2 & CONTACT_MODIFY) {
+        //     softActor = 1;
+        // }
+
+        // if (single) {
+
+        // }
+        debugLog("contact count: " + std::to_string(pairs[i].contacts.size()));
+
+        pairs[i].contacts.setInvInertiaScale0(0.0001f);
+        pairs[i].contacts.setInvInertiaScale1(0.0001f);
+        for (int j = 0; j < pairs[i].contacts.size(); j++) {
+            physx::PxReal pen = -pairs[i].contacts.getSeparation(j);
+            if (pen < 0) pen = 0;
+
+            if (pen < penForMaxImpulse) {
+                pen = pow(pen, penExp);
+                debugLog("pen: " + std::to_string(pen));
+
+                physx::PxReal maxImpulse = penCoefficient * pen;
+                //if (maxImpulse < minImpulse) maxImpulse = minImpulse;
+                if (pen == 0) pairs[i].contacts.setMaxImpulse(j, maxImpulse);
+                //pairs[i].contacts.setSeparation(j, 0.01f);
+                debugLog("maxImpulse: " + std::to_string(maxImpulse));
+            }
+            else {
+                debugLog("no max impulse");
+            }
+        }
+    }
+}
+
+SoftContactModifier gContactModifier;
+
 physx::PxVehicleDrive4WRawInputData gVehicleInputData;
 physx::PxF32 gVehicleModeTimer = 0.0f;
 physx::PxU32 gVehicleOrderProgress = 0;
@@ -332,7 +416,6 @@ extern "C" {
         sceneDesc.filterShader    = FilterShader;
         sceneDesc.simulationEventCallback = &collisionHandler;
         sceneDesc.bounceThresholdVelocity = 2;
-        sceneDesc.solverType = physx::PxSolverType::eTGS;
 
         physx::PxScene* scene = gPhysics->createScene(sceneDesc);
 
@@ -340,6 +423,8 @@ extern "C" {
 
         SceneUserData* sceneUserData = new SceneUserData();
         scene->userData = (void*)sceneUserData;
+
+        scene->setContactModifyCallback(&gContactModifier);
 
         return scene;
     }
@@ -416,6 +501,17 @@ extern "C" {
         physx::PxShape* shape = gPhysics->createShape(*geometry, *mat);
         shape->setContactOffset(contactOffset);
         return shape;
+    }
+
+    EXPORT_FUNC void SetShapeSoftness(physx::PxShape* shape, physx::PxReal maxImpulse, physx::PxReal minImpulse, physx::PxReal penForMaxImpulse, physx::PxU32 penExp) {
+        if (shape->userData == NULL) shape->userData = (void*) new ShapeUserData();
+
+        ShapeUserData* shapeUserData = (ShapeUserData*)shape->userData;
+
+        shapeUserData->maxImpulse = maxImpulse;
+        shapeUserData->minImpulse = minImpulse;
+        shapeUserData->penForMaxImpulse = penForMaxImpulse;
+        shapeUserData->penExp = penExp;
     }
 
     EXPORT_FUNC void SetShapeLocalTransform(physx::PxShape* shape, physx::PxTransform* transform) {

@@ -564,6 +564,11 @@ MonoBehaviour:
   collisionLayers: 3
   material: {fileID: 13400000, guid: 4e2a18fdb7d20fa40bafb75ae73783d7, type: 2}
   _trigger: 0
+  soft: 1
+  maxImpulse: 0.001
+  minImpulse: 0.0001
+  penForMaxImpulse: 0.5
+  penExp: 10
   offset: {x: 0, y: 0, z: 0}
   mesh: {fileID: -839344556246454297, guid: 44fa16960c7e3d94d9fc2e7b18e69226, type: 3}
   convex: 1
@@ -651,7 +656,6 @@ MonoBehaviour:
   width: 0.2
   dampingRate: 0.25
   forceAppPoint: {x: 0, y: 1.2, z: 0}
-  center: {x: 0, y: 0, z: 0}
   suspensionDistance: 0.5
   suspensionSpringStrength: 51000
   suspensionSpringDamper: 8200
@@ -681,6 +685,11 @@ MonoBehaviour:
   collisionLayers: 3
   material: {fileID: 0}
   _trigger: 0
+  soft: 0
+  maxImpulse: 100
+  minImpulse: 0.0001
+  penForMaxImpulse: 0.5
+  penExp: 3
   offset: {x: 0, y: 0, z: 0}
   radius: 0.04
 --- !u!1 &3927228970840446705
@@ -731,7 +740,6 @@ MonoBehaviour:
   width: 0.2
   dampingRate: 0.25
   forceAppPoint: {x: 0, y: 1.2, z: 0}
-  center: {x: 0, y: 0, z: 0}
   suspensionDistance: 0.5
   suspensionSpringStrength: 51000
   suspensionSpringDamper: 8200
@@ -793,7 +801,6 @@ MonoBehaviour:
   width: 0.2
   dampingRate: 0.25
   forceAppPoint: {x: 0, y: 1.2, z: 0}
-  center: {x: 0, y: 0, z: 0}
   suspensionDistance: 0.5
   suspensionSpringStrength: 51000
   suspensionSpringDamper: 8200
@@ -1078,7 +1085,6 @@ MonoBehaviour:
   width: 0.2
   dampingRate: 0.25
   forceAppPoint: {x: 0, y: 1.2, z: 0}
-  center: {x: 0, y: 0, z: 0}
   suspensionDistance: 0.5
   suspensionSpringStrength: 51000
   suspensionSpringDamper: 8200
