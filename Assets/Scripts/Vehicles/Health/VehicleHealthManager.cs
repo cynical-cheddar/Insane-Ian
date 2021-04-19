@@ -31,6 +31,7 @@ public class VehicleHealthManager : CollidableHealthManager
     InputDriver inputDriver;
     IDrivable carDriver;
     NetworkPlayerVehicle npv;
+    InterfaceCarDrive4W icd4;
     public int teamId {
         get {
             return npv.teamId;
@@ -62,6 +63,7 @@ public class VehicleHealthManager : CollidableHealthManager
         maxHealth = health;
         rb = GetComponent<PhysXRigidBody>();
         icd = GetComponent<InterfaceCarDrive>();
+        icd4 = GetComponent<InterfaceCarDrive4W>();
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
         myPhotonView = GetComponent<PhotonView>();
@@ -77,9 +79,8 @@ public class VehicleHealthManager : CollidableHealthManager
             collisionAreas[i] = collisionArea;
         }
 
-        // defaultDrag = rb.drag;
-        // defaultAngularDrag = rb.angularDrag;
-        // defaultCOM = GetComponent<COMDropper>().Shift;
+        defaultDrag = rb.linearDamping;
+        defaultAngularDrag = rb.angularDamping;
         playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
 
         PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
@@ -265,8 +266,8 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         PlayDeathTrailEffects(true);
         inputDriver.enabled = false;
-        // rb.drag = 0.75f;
-        // rb.angularDrag = 0.75f;
+        rb.linearDamping = 0.75f;
+        rb.angularDamping = 0.75f;
         float x, y, z;
         x = Random.Range(-0.5f, 0.5f);
         if (x < 0) {
@@ -279,10 +280,11 @@ public class VehicleHealthManager : CollidableHealthManager
 
         if (lastHitDetails.damageType != Weapon.DamageType.ramming)
         {
+            icd4.isDead = true;
             Vector3 explodePos = new Vector3(x, y, z);
             Vector3 newCom = new Vector3(0, 1.3f, 0);
-            // rb.centerOfMass = newCom;
-            // rb.angularDrag = 0.1f;
+            rb.centreOfMass = newCom;
+            rb.angularDamping = 0.1f;
             rb.AddForce(explodePos * rb.mass * 10f, ForceMode.Impulse);
             rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
         }
@@ -346,12 +348,13 @@ public class VehicleHealthManager : CollidableHealthManager
         smokeM.Stop();
         smokeH.Stop();
 
-        // rb.drag = defaultDrag;
-        // rb.angularDrag = defaultAngularDrag;
+        rb.linearDamping = defaultDrag;
+        rb.angularDamping = defaultAngularDrag;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        icd4.isDead = false;
         isDead = false;
-        // rb.centreOfMass = defaultCOM;
+        rb.centreOfMass = Vector3.zero;
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
         teamEntry.isDead = false;
         teamEntry.Increment();
