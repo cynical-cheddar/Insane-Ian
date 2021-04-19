@@ -302,16 +302,22 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     private void AutoRight() {
         angle = Mathf.Abs(Vector3.Angle(transform.up, Vector3.up));
         if ( angle > 45) {
+            carRB.angularDamping = 4f; 
             Vector3 forceVector = new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass;
             Debug.Log("called");
             Debug.Log(forceVector);
             Debug.Log(transform.rotation.x);
             Debug.Log(transform.rotation.z);
             if (angle > 120) {
-                carRB.AddTorque(new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass / 2, ForceMode.Impulse);
+                carRB.AddTorque(new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass, ForceMode.Impulse);
+                Debug.Log("called greater");
             } else {
-                carRB.AddTorque(new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass*4, ForceMode.Force);
+                carRB.AddTorque(new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass*6, ForceMode.Force);
+                Debug.Log("called less");
             }
+        }
+        else {
+            carRB.angularDamping = 0.6f;
         }
     }
 
