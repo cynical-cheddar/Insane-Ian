@@ -1,6 +1,6 @@
+using PhysX;
 using System.Collections.Generic;
 using UnityEngine;
-using PhysX;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float maxSpeed = 30f;
@@ -23,7 +23,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Space(5)]
 
     [Header("Main Car")]
-    public Rigidbody carRB;
+    public PhysXRigidBody carRB;
     public Transform carTransform;
     [Space(5)]
 
@@ -40,14 +40,12 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float steerRateLerp = 0.1f;
     [Range(0, 1)]
     public float baseExtremiumSlip = 0.3f;
-    public Vector3 addedDownforce;
     [Range(0, 20000)]
     public float antiRollStiffness = 5000;
-    [Range(0, 30)]
-    public float baseStiffness = 1f;
-    [Range(0, 20)]
+    [Range(0, 5)]
+    public float baseStiffness = 2f;
+    [Range(0, 2)]
     public float driftStiffness = 0.3f;
-    public float currentStiffness = 0;
 
     [Space(5)]
 
@@ -222,37 +220,38 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
 
         EngineLow.pitch = 2.4f + volume / 10;
-        EngineHigh.pitch = 2.4f + volume / 10;
+        EngineHigh.pitch = 3f + volume / 10;
     }
 
     private void AntiRoll(PhysXWheelCollider left, PhysXWheelCollider right) {
-        /*
-       WheelHit lHit, rHit;
-       float lDistance = 1f;
-       float rDistance = 1f;
 
-       bool lGrounded = left.GetGroundHit(out lHit);
-       bool rGrounded = right.GetGroundHit(out rHit);
+        PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
+        PhysXWheelHit rHit = PhysXWheelHit.GetWheelHit();
+        bool lGrounded = left.GetGroundHit(lHit);
+        bool rGrounded = right.GetGroundHit(rHit);
+        float lDistance = 1f;
+        float rDistance = 1f;
 
-       //  Can get suspension compression if tht's useful
-       if (lGrounded) {
-           lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
-       }
 
-       if (rGrounded) {
-           rDistance = (-right.transform.InverseTransformPoint(rHit.point).y - right.radius) / right.suspensionDistance;
-       }
+        //  Can get suspension compression if tht's useful
+        if (lGrounded) {
+            lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
+        }
 
-       float addedForce = (lDistance - rDistance) * antiRollStiffness;
+        if (rGrounded) {
+            rDistance = (-right.transform.InverseTransformPoint(rHit.point).y - right.radius) / right.suspensionDistance;
+        }
 
-       if (lGrounded) {
-           carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position);
-       }
+        float addedForce = (lDistance - rDistance) * antiRollStiffness;
 
-       if (rGrounded) {
-           carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
+        if (lGrounded) {
+            carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position, ForceMode.Force);
+        }
 
-       } */
+        if (rGrounded) {
+            carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position, ForceMode.Force);
+
+        }
     }
     private void Particles() {
         PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
@@ -286,7 +285,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
 
     private void getSurface() {
-        for (int i = 0; i < wheelStructs.Count; i++) { 
+        for (int i = 0; i < wheelStructs.Count; i++) {
             PhysXWheelHit hit = PhysXWheelHit.GetWheelHit();
             if (wheelStructs[i].collider.GetGroundHit(hit)) {
                 if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
@@ -295,7 +294,22 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
                     wheelStructs[i] = new wheelStruct(8f, "0", wheelStructs[i].collider);
                 }
             }
-        } 
+        }
+    }
+    private void AutoRight() {
+        float angle = Mathf.Abs(Vector3.Angle(transform.up, Vector3.up));
+
+        // if tipping by at least 45 degrees, nudge back
+        if (angle > 45) {
+            if (angle > 120) {
+                // at severe angles, offset center of mass from center so if stuck on roof, can rotate over
+                carRB.centreOfMass = new Vector3(-1f, -3f, 0);
+            } else {
+                carRB.centreOfMass = new Vector3(0, -2.5f, 0);
+            }
+        } else
+            carRB.centreOfMass = new Vector3(0, 0, 0);
+
     }
 
     void FixedUpdate() {
@@ -303,12 +317,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         EngineNoise();
         AntiRoll(frontLeftW, frontRightW);
         AntiRoll(rearLeftW, rearRightW);
+        AutoRight();
         Particles();
-        foreach (wheelStruct wc in wheelStructs) {
-            currentStiffness = wc.collider.asymptoteSidewaysStiffness;
-        }
     }
-
 
 
     private void Start() {
