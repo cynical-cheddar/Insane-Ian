@@ -40,14 +40,12 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float steerRateLerp = 0.1f;
     [Range(0, 1)]
     public float baseExtremiumSlip = 0.3f;
-    public Vector3 addedDownforce;
     [Range(0, 20000)]
     public float antiRollStiffness = 5000;
-    [Range(0, 30)]
-    public float baseStiffness = 1f;
-    [Range(0, 20)]
+    [Range(0, 5)]
+    public float baseStiffness = 2f;
+    [Range(0, 2)]
     public float driftStiffness = 0.3f;
-    public float angle = 0f;
 
     [Space(5)]
 
@@ -299,7 +297,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
     }
     private void AutoRight() {
-        angle = Mathf.Abs(Vector3.Angle(transform.up, Vector3.up));
+        float angle = Mathf.Abs(Vector3.Angle(transform.up, Vector3.up));
 
         // if tipping by at least 45 degrees, nudge back
         if (angle > 45) {

@@ -20,7 +20,6 @@ public class NitroAbilitySustained : DriverAbility
     public float steerRateLerp = 0.1f;
     [Range(0, 1)]
     public float baseExtremiumSlip = 0.3f;
-    public Vector3 addedDownforce;
     [Range(0,20000)]
     public float antiRollStiffness = 5000;
 
@@ -30,7 +29,6 @@ public class NitroAbilitySustained : DriverAbility
     private float oldBrakeForce;
     private float oldSteerRateLerp;
     private float oldbaseExtremiumSlip;
-    private Vector3 oldAddedDownforce;
     private float oldAntiRollStiffness;
 
     private InterfaceCarDrive4W interfaceCarDrive4W;
@@ -46,7 +44,6 @@ public class NitroAbilitySustained : DriverAbility
         oldBrakeTorque = interfaceCarDrive4W.brakeTorque;
         oldBrakeForce = interfaceCarDrive4W.brakeForce;
         oldbaseExtremiumSlip = interfaceCarDrive4W.baseExtremiumSlip;
-        oldAddedDownforce = interfaceCarDrive4W.addedDownforce;
         oldAntiRollStiffness = interfaceCarDrive4W.antiRollStiffness;
         
         interfaceCarDrive4W.maxSteerAngle = maxSteerAngle;
@@ -54,7 +51,6 @@ public class NitroAbilitySustained : DriverAbility
         interfaceCarDrive4W.brakeTorque = brakeTorque;
         interfaceCarDrive4W.brakeForce = brakeForce;
         interfaceCarDrive4W.baseExtremiumSlip = baseExtremiumSlip;
-        interfaceCarDrive4W.addedDownforce = addedDownforce;
         interfaceCarDrive4W.antiRollStiffness = antiRollStiffness;
     }
 
@@ -80,7 +76,6 @@ public class NitroAbilitySustained : DriverAbility
         oldBrakeTorque = interfaceCarDrive4W.brakeTorque;
         oldBrakeForce = interfaceCarDrive4W.brakeForce;
         oldbaseExtremiumSlip = interfaceCarDrive4W.baseExtremiumSlip;
-        oldAddedDownforce = interfaceCarDrive4W.addedDownforce;
         oldAntiRollStiffness = interfaceCarDrive4W.antiRollStiffness;
         
         interfaceCarDrive4W.maxSteerAngle = maxSteerAngle;
@@ -88,7 +83,6 @@ public class NitroAbilitySustained : DriverAbility
         interfaceCarDrive4W.brakeTorque = brakeTorque;
         interfaceCarDrive4W.brakeForce = brakeForce;
         interfaceCarDrive4W.baseExtremiumSlip = baseExtremiumSlip;
-        interfaceCarDrive4W.addedDownforce = addedDownforce;
         interfaceCarDrive4W.antiRollStiffness = antiRollStiffness;
 
         Transform me = interfaceCarDrive4W.transform;
@@ -105,7 +99,6 @@ public class NitroAbilitySustained : DriverAbility
         interfaceCarDrive4W.brakeTorque = oldBrakeTorque;
         interfaceCarDrive4W.brakeForce = oldBrakeForce;
         interfaceCarDrive4W.baseExtremiumSlip = oldbaseExtremiumSlip;
-        interfaceCarDrive4W.addedDownforce = oldAddedDownforce;
         interfaceCarDrive4W.antiRollStiffness = oldAntiRollStiffness;
        
     }

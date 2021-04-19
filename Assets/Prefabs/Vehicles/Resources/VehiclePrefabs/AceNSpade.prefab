@@ -576,6 +576,7 @@ GameObject:
   - component: {fileID: 7601505587869675759}
   - component: {fileID: 4443958165396357167}
   - component: {fileID: 6942342458153007772}
+  - component: {fileID: 5186423232709554915}
   m_Layer: 8
   m_Name: AceNSpade
   m_TagString: Player
@@ -681,6 +682,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 482347747890627913}
   - {fileID: 1233716553736572939}
+  - {fileID: 5186423232709554915}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -797,7 +799,7 @@ MonoBehaviour:
   frontRightT: {fileID: 2892731658112772128}
   rearLeftT: {fileID: 1602233068931317639}
   rearRightT: {fileID: 1837069385729047062}
-  carRB: {fileID: 436422559543559530}
+  carRB: {fileID: 6942342458153007772}
   carTransform: {fileID: 486267010860937132}
   maxSteerAngle: 20
   motorTorque: 5000
@@ -809,7 +811,7 @@ MonoBehaviour:
   antiRollStiffness: 7000
   baseStiffness: 2
   driftStiffness: 0.3
-  currentStiffness: 0
+  angle: 0
   EngineIdle: {fileID: 8129776033949159376}
   EngineLow: {fileID: 4979435539793011968}
   EngineHigh: {fileID: 6567186082044929194}
@@ -1048,6 +1050,22 @@ MonoBehaviour:
   linearDamping: 0.15
   angularDamping: 0.6
   _centreOfMass: {x: 0, y: 0, z: 0}
+--- !u!114 &5186423232709554915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482493435927083060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a455e85786f14e079577b9293bc5e7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &482493436807253620
 GameObject:
   m_ObjectHideFlags: 0
