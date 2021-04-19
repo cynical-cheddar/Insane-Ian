@@ -1,4 +1,5 @@
 using PhysX;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     [Space(5)]
 
     [Header("Main Car")]
-    public Rigidbody carRB;
+    public PhysXRigidBody carRB;
     public Transform carTransform;
     [Space(5)]
 
@@ -47,7 +48,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float baseStiffness = 1f;
     [Range(0, 20)]
     public float driftStiffness = 0.3f;
-    public float currentStiffness = 0;
+    public float angle = 0f;
 
     [Space(5)]
 
@@ -247,11 +248,11 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         float addedForce = (lDistance - rDistance) * antiRollStiffness;
 
         if (lGrounded) {
-            carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position);
+            carRB.AddForceAtPosition(left.transform.up * -addedForce, left.transform.position, ForceMode.Force);
         }
 
         if (rGrounded) {
-            carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position);
+            carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position, ForceMode.Force);
 
         }
     }
@@ -298,15 +299,30 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             }
         }
     }
+    private void AutoRight() {
+        angle = Mathf.Abs(Vector3.Angle(transform.up, Vector3.up));
+        if ( angle > 45) {
+            Vector3 forceVector = new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass;
+            Debug.Log("called");
+            Debug.Log(forceVector);
+            Debug.Log(transform.rotation.x);
+            Debug.Log(transform.rotation.z);
+            if (angle > 120) {
+                carRB.AddTorque(new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass / 2, ForceMode.Impulse);
+            } else {
+                carRB.AddTorque(new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass*4, ForceMode.Force);
+            }
+        }
+    }
 
     void FixedUpdate() {
         getSurface();
         EngineNoise();
         AntiRoll(frontLeftW, frontRightW);
         AntiRoll(rearLeftW, rearRightW);
+        AutoRight();
         Particles();
     }
-
 
 
     private void Start() {
