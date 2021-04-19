@@ -222,7 +222,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
 
         EngineLow.pitch = 2.4f + volume / 10;
-        EngineHigh.pitch = 2.4f + volume / 10;
+        EngineHigh.pitch = 3f + volume / 10;
     }
 
     private void AntiRoll(PhysXWheelCollider left, PhysXWheelCollider right) {
