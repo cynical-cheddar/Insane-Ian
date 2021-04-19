@@ -60,6 +60,9 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public ParticleSystem leftPS;
     public ParticleSystem rightPS;
 
+    [Space(5)]
+    [Header("Additional parameters")]
+    public bool isDead = false;
     private List<wheelStruct> wheelStructs = new List<wheelStruct>();
 
     struct wheelStruct {
@@ -300,7 +303,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         float angle = Mathf.Abs(Vector3.Angle(transform.up, Vector3.up));
 
         // if tipping by at least 45 degrees, nudge back
-        if (angle > 45) {
+        if (angle > 45 && !isDead) {
             if (angle > 120) {
                 // at severe angles, offset center of mass from center so if stuck on roof, can rotate over
                 carRB.centreOfMass = new Vector3(-1f, -3f, 0);
