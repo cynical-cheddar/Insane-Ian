@@ -305,9 +305,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         AntiRoll(frontLeftW, frontRightW);
         AntiRoll(rearLeftW, rearRightW);
         Particles();
-        foreach (wheelStruct wc in wheelStructs) {
-            currentStiffness = wc.collider.asymptoteSidewaysStiffness;
-        }
     }
 
 
