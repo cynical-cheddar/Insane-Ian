@@ -14,6 +14,8 @@ public class PooledObject : MonoBehaviour
 
     void Awake()
     {
+        Debug.LogWarning("Pooled Object has not been ported to the new PhysX system");
+        return;
         if (GetComponent<Rigidbody>() != null) rb = GetComponent<Rigidbody>();
         if (GetComponentInChildren<TrailRenderer>() != null)
         {
@@ -24,16 +26,15 @@ public class PooledObject : MonoBehaviour
 
     private void OnEnable()
     {
-        if(tr!=null)tr.Clear();
+        if (tr!=null) tr.Clear();
     }
 
     public void Finish() {
-        if(rb!=null)rb.velocity = Vector3.zero;
-        if(tr!=null)tr.Clear();
+        if (rb != null) rb.velocity = Vector3.zero;
+        if (tr != null) tr.Clear();
         if (Finished != null) {
             Finished(this);
         }
-        
     }
 
     // Convenience method to call finish when particles finish.

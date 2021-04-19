@@ -225,8 +225,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 } else {
                     spawnPoint = spawnPoints[teamId - 1];
                 }
-                vehicle.gameObject.transform.position = spawnPoint.position;
-                vehicle.gameObject.transform.rotation = spawnPoint.rotation;
+                PhysXRigidBody rigidBody = vehicle.GetComponent<PhysXRigidBody>();
+                rigidBody.position = spawnPoint.position;
+                rigidBody.rotation = spawnPoint.rotation;
 
                 // Add back damping on camera after move
                 yield return new WaitForSecondsRealtime(0.5f);

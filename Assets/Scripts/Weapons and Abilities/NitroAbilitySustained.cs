@@ -37,6 +37,7 @@ public class NitroAbilitySustained : DriverAbility
     
     public override void SetupAbility()
     {
+        Debug.LogWarning("Nitro Ability Sustained has not been ported to the new PhysX system");
         base.SetupAbility();
         interfaceCarDrive4W = GetComponentInParent<InterfaceCarDrive4W>();
         

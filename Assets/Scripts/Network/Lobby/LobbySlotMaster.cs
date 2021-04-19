@@ -7,21 +7,23 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using Gamestate;
+using TMPro;
 
 public class LobbySlotMaster : MonoBehaviourPunCallbacks
 {
     
-    private int readyPlayers = 0;
+    public int readyPlayers = 0;
 
-    private int selectedPlayers = 0;
+    public int selectedPlayers = 0;
 
-    private int playersInLobby = 1;
+    public int playersInLobby = 1;
 
     private int maxPlayers = 0;
 
-    public Text playersInLobbyText;
-    public Text readyPlayersText;
-    public Text timeLimitText;
+    public TextMeshProUGUI playersInLobbyText;
+    public TextMeshProUGUI readyPlayersText;
+    public TMP_InputField timeLimitInputField;
+    public TextMeshProUGUI selectMapText;
 
     public string selectedMap = "null";
     public string selectedMapDisplayName = "null";
@@ -105,8 +107,8 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
         
         readyPlayers = count;
         
-        playersInLobbyText.text = "Players in lobby:"  + playersInLobby.ToString();
-        readyPlayersText.text = "Ready players: " + readyPlayers.ToString();
+        playersInLobbyText.text = "Players in lobby:  "  + playersInLobby.ToString();
+        readyPlayersText.text = "Ready players:  " + readyPlayers.ToString();
     }
 
     void Update()
@@ -128,6 +130,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             PlayerEntry playerEntry = gamestateTracker.players.Create((short)PhotonNetwork.LocalPlayer.ActorNumber);
             playerEntry.name = PhotonNetwork.LocalPlayer.NickName;
             playerEntry.Commit();
+            selectMapText.text = "Select a map:";
         }
         
 
@@ -233,8 +236,8 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
             if (readyPlayers >= selectedPlayers && readyPlayers >= playersInLobby && selectedMap != "null")
             {
                 GlobalsEntry globals = gamestateTracker.globals;
-                if (timeLimitText.text != "") {
-                    globals.timeLimit = short.Parse(timeLimitText.text);
+                if (timeLimitInputField.text != "") {
+                    globals.timeLimit = short.Parse(timeLimitInputField.text);
                 } else {
                     globals.timeLimit = 0;
                 }

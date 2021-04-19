@@ -13,13 +13,14 @@ public class PlayerGunnerController : MonoBehaviour {
     public PhotonView gunnerPhotonView;
     public float maxZoomOut = 6f;
     Transform cam;
-    Collider[] colliders;
+    PhysXCollider[] colliders;
 
     // Start is called before the first frame update
     void Start() {
+        Debug.LogWarning("Player Gunner Controller has not been ported to the new PhysX system");
         turretController = GetComponent<TurretController>();
         cam = Camera.main.transform;
-        colliders = transform.root.gameObject.GetComponentsInChildren<Collider>();
+        colliders = transform.root.gameObject.GetComponentsInChildren<PhysXCollider>();
         if (gunnerPhotonView == null) gunnerPhotonView = GetComponent<PhotonView>();
     }
 
@@ -41,38 +42,38 @@ public class PlayerGunnerController : MonoBehaviour {
 
     void Update() {
         // fire 1
-        if (Input.GetButton("Fire1")) {
-            if (gunnerPhotonView.IsMine) {
-                if (gunnerWeaponManager.CurrentWeaponGroupCanFire()) {
-                    Vector3 targetHitpoint;
-                    if (turretController.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
-                    else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
+        // if (Input.GetButton("Fire1")) {
+        //     if (gunnerPhotonView.IsMine) {
+        //         if (gunnerWeaponManager.CurrentWeaponGroupCanFire()) {
+        //             Vector3 targetHitpoint;
+        //             if (turretController.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
+        //             else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
 
-                    gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
-                }
-            }
-        }
+        //             gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
+        //         }
+        //     }
+        // }
 
-        if (Input.GetButtonUp("Fire1")) {
-            if (gunnerPhotonView.IsMine) {
-                gunnerWeaponManager.CeaseFireCurrentWeaponGroup();
-            }
-        }
+        // if (Input.GetButtonUp("Fire1")) {
+        //     if (gunnerPhotonView.IsMine) {
+        //         gunnerWeaponManager.CeaseFireCurrentWeaponGroup();
+        //     }
+        // }
 
-        // relaod
-        if (Input.GetButtonDown("Reload")) {
-            if (gunnerPhotonView.IsMine) {
-                gunnerWeaponManager.ReloadCurrentWeaponGroup();
-            }
-        }
+        // // relaod
+        // if (Input.GetButtonDown("Reload")) {
+        //     if (gunnerPhotonView.IsMine) {
+        //         gunnerWeaponManager.ReloadCurrentWeaponGroup();
+        //     }
+        // }
 
-        if (Input.GetButtonDown("Ultimate"))
-        {
-            if (gunnerPhotonView.IsMine)
-            {
-                gunnerWeaponManager.SelectUltimate();
-            }
-        }
+        // if (Input.GetButtonDown("Ultimate"))
+        // {
+        //     if (gunnerPhotonView.IsMine)
+        //     {
+        //         gunnerWeaponManager.SelectUltimate();
+        //     }
+        // }
 
         if (Input.GetKey(KeyCode.Space)) {
             camera.m_Lens.FieldOfView = Mathf.Lerp(camera.m_Lens.FieldOfView, 30, 0.1f);
@@ -118,23 +119,23 @@ public class PlayerGunnerController : MonoBehaviour {
     protected Transform FindClosestHitObject(Ray ray, out Vector3 hitPoint) {
 
         RaycastHit[] hits = Physics.RaycastAll(ray);
-        colliders = transform.root.gameObject.GetComponentsInChildren<Collider>();
+        colliders = transform.root.gameObject.GetComponentsInChildren<PhysXCollider>();
         Transform closestHit = null;
         float distance = 0;
         hitPoint = Vector3.zero;
 
         foreach (RaycastHit hit in hits) {
-            if (hit.transform.root != this.transform && (closestHit == null || hit.distance < distance) && !colliders.Contains(hit.collider)) {
-                // We have hit something that is:
-                // a) not us
-                // b) the first thing we hit (that is not us)
-                // c) or, if not b, is at least closer than the previous closest thing
+            // if (hit.transform.root != this.transform && (closestHit == null || hit.distance < distance) && !colliders.Contains(hit.collider)) {
+            //     // We have hit something that is:
+            //     // a) not us
+            //     // b) the first thing we hit (that is not us)
+            //     // c) or, if not b, is at least closer than the previous closest thing
 
-                closestHit = hit.transform;
-                distance = hit.distance;
-                hitPoint = hit.point;
+            //     closestHit = hit.transform;
+            //     distance = hit.distance;
+            //     hitPoint = hit.point;
 
-            }
+            // }
         }
 
         // closestHit is now either still null (i.e. we hit nothing) OR it contains the closest thing that is a valid thing to hit

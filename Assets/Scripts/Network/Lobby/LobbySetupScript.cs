@@ -6,11 +6,12 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using TMPro;
 
 
 public class LobbySetupScript : MonoBehaviour
 {
-    public Text roomNameText;
+    public TextMeshProUGUI roomNameText;
     
     void Start()
     {

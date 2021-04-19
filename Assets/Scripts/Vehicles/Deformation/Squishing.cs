@@ -21,6 +21,8 @@ public class Squishing : MonoBehaviour
 
     // Start is called before the first frame update.
     void Start() {
+        Debug.LogWarning("Squishing has not been ported to the new PhysX system");
+        return;
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
         //deformableMeshes[0].Subdivide(maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
@@ -32,7 +34,9 @@ public class Squishing : MonoBehaviour
         collisionResolver = Instantiate(collisionResolver);
     }
 
-    public void ResetMesh() {
+    public void ResetMesh()
+    {
+        return;
         deformableMeshes[0].GetMeshFilter().mesh = Instantiate(originalMesh);
         vertices = originalMesh.vertices.ToList();
         foreach (VertexGroup group in meshGraph.groups) {

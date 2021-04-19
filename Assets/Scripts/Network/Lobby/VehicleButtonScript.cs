@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class VehicleButtonScript : MonoBehaviour
 {
     public bool showVehicleNameText = true;
-    public Text vehicleNameText;
+    public TextMeshProUGUI vehicleNameText;
     string vehicleName;
     short vehicleId;
     Sprite icon;

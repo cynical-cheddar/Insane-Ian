@@ -8,6 +8,9 @@ public class COMDropper : MonoBehaviour {
     public Vector3 Shift;
 
     void Start() {
+        Debug.LogWarning("COM Dropper has not been ported to the new PhysX system");
+        return;
+
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = Shift;
     }
