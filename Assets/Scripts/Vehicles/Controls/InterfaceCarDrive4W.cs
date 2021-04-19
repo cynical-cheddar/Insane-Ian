@@ -1,5 +1,4 @@
 using PhysX;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -301,24 +300,18 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
     private void AutoRight() {
         angle = Mathf.Abs(Vector3.Angle(transform.up, Vector3.up));
-        if ( angle > 45) {
-            carRB.angularDamping = 4f; 
-            Vector3 forceVector = new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass;
-            Debug.Log("called");
-            Debug.Log(forceVector);
-            Debug.Log(transform.rotation.x);
-            Debug.Log(transform.rotation.z);
+
+        // if tipping by at least 45 degrees, nudge back
+        if (angle > 45) {
             if (angle > 120) {
-                carRB.AddTorque(new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass, ForceMode.Impulse);
-                Debug.Log("called greater");
+                // at severe angles, offset center of mass from center so if stuck on roof, can rotate over
+                carRB.centreOfMass = new Vector3(-1f, -3f, 0);
             } else {
-                carRB.AddTorque(new Vector3(transform.rotation.x, 0, transform.rotation.z) * carRB.mass*6, ForceMode.Force);
-                Debug.Log("called less");
+                carRB.centreOfMass = new Vector3(0, -2.5f, 0);
             }
-        }
-        else {
-            carRB.angularDamping = 0.6f;
-        }
+        } else
+            carRB.centreOfMass = new Vector3(0, 0, 0);
+
     }
 
     void FixedUpdate() {
