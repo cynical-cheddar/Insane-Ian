@@ -99,6 +99,8 @@ public class PhysXSceneManager : MonoBehaviour
             PhysXTrigger.ReleaseTrigger(trigger);
         }
         PhysXSceneManager.ongoingTriggers.Clear();
+
+        PhysXLib.StepGhostPhysics(scene, Time.fixedDeltaTime);
     }
 
     [MonoPInvokeCallback(typeof(PhysXLib.CollisionCallback))]

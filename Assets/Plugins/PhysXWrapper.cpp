@@ -138,10 +138,12 @@ void CollisionHandler::onSleep(physx::PxActor **actors, physx::PxU32 count) {
 }
 
 void CollisionHandler::onContact(const physx::PxContactPairHeader &pairHeader, const physx::PxContactPair *pairs, physx::PxU32 nbPairs) {
+    bool hasA = !(pairHeader.flags & physx::PxContactPairHeaderFlag::eREMOVED_ACTOR_0);
     bool fireBeginA = false;
     bool fireSustainA = false;
     bool fireEndA = false;
 
+    bool hasB = !(pairHeader.flags & physx::PxContactPairHeaderFlag::eREMOVED_ACTOR_1);
     bool fireBeginB = false;
     bool fireSustainB = false;
     bool fireEndB = false;
@@ -167,12 +169,16 @@ void CollisionHandler::onContact(const physx::PxContactPairHeader &pairHeader, c
         }
     }
 
-    if (fireBeginA || fireSustainA || fireEndA) {
-        collision(&pairHeader, pairs, nbPairs, pairHeader.actors[0], fireBeginA, fireSustainA, fireEndA);
+    if (hasA) {
+        if (fireBeginA || fireSustainA || fireEndA) {
+            collision(&pairHeader, pairs, nbPairs, pairHeader.actors[0], fireBeginA, fireSustainA, fireEndA);
+        }
     }
 
-    if (fireBeginB || fireSustainB || fireEndB) {
-        collision(&pairHeader, pairs, nbPairs, pairHeader.actors[1], fireBeginB, fireSustainB, fireEndB);
+    if (hasB) {
+        if (fireBeginB || fireSustainB || fireEndB) {
+            collision(&pairHeader, pairs, nbPairs, pairHeader.actors[1], fireBeginB, fireSustainB, fireEndB);
+        }
     }
 }
 
@@ -223,7 +229,7 @@ physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, p
         pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
     }
 
-    if ((dataA.word2 & CONTACT_SUSTAIN) || (dataB.word2 & CONTACT_SUSTAIN)) {
+    if ((dataA.word2 & (CONTACT_SUSTAIN | HAS_GHOST)) || (dataB.word2 & (CONTACT_SUSTAIN | HAS_GHOST))) {
         pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
     }
 
@@ -233,6 +239,7 @@ physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, p
 
     if ((dataA.word2 & CONTACT_MODIFY) || (dataB.word2 & CONTACT_MODIFY)) {
         pairFlags |= physx::PxPairFlag::eMODIFY_CONTACTS;
+        //pairFlags &= (~physx::PxPairFlag::eSOLVE_CONTACT);
     }
 
     return physx::PxFilterFlag::eDEFAULT;
@@ -262,13 +269,13 @@ physx::PxQueryHitType::Enum WheelSceneQueryPreFilterBlocking(physx::PxFilterData
     return physx::PxQueryHitType::eBLOCK;
 }
 
+RaycastQueryFilter::~RaycastQueryFilter() {}
+
 RaycastQueryFilter gQueryFilterCallback;
 
-RaycastQueryFilter::~RaycastQueryFilter() {
-
-}
-
 physx::PxQueryHitType::Enum RaycastQueryFilter::preFilter(const physx::PxFilterData &filterData, const physx::PxShape *shape, const physx::PxRigidActor *actor, physx::PxHitFlags &queryFlags) {
+    if (((ActorUserData*)actor->userData)->isGhost) return physx::PxQueryHitType::eNONE;
+
     physx::PxFilterData shapeFilterData = shape->getQueryFilterData();
 
     //filterData0 is the query.
@@ -307,7 +314,7 @@ void SoftContactModifier::onContactModify(physx::PxContactModifyPair* const pair
         physx::PxReal penForMaxImpulse = 0;
         physx::PxU32 penExp = 0;
 
-        if (pairs[i].shape[0]->userData != NULL) {
+        if ((pairs[i].shape[0]->getSimulationFilterData().word2 & CONTACT_MODIFY)) {
             ShapeUserData* shapeUserData = (ShapeUserData*)pairs[i].shape[0]->userData;
 
             maxImpulse += shapeUserData->maxImpulse;
@@ -318,7 +325,7 @@ void SoftContactModifier::onContactModify(physx::PxContactModifyPair* const pair
             n++;
         }
 
-        if (pairs[i].shape[1]->userData != NULL) {
+        if (pairs[i].shape[1]->getSimulationFilterData().word2 & CONTACT_MODIFY) {
             ShapeUserData* shapeUserData = (ShapeUserData*)pairs[i].shape[1]->userData;
 
             maxImpulse += shapeUserData->maxImpulse;
@@ -352,8 +359,8 @@ void SoftContactModifier::onContactModify(physx::PxContactModifyPair* const pair
         // }
         debugLog("contact count: " + std::to_string(pairs[i].contacts.size()));
 
-        pairs[i].contacts.setInvInertiaScale0(0.0001f);
-        pairs[i].contacts.setInvInertiaScale1(0.0001f);
+        // pairs[i].contacts.setInvInertiaScale0(0.0001f);
+        // pairs[i].contacts.setInvInertiaScale1(0.0001f);
         for (int j = 0; j < pairs[i].contacts.size(); j++) {
             physx::PxReal pen = -pairs[i].contacts.getSeparation(j);
             if (pen < 0) pen = 0;
@@ -365,7 +372,7 @@ void SoftContactModifier::onContactModify(physx::PxContactModifyPair* const pair
                 physx::PxReal maxImpulse = penCoefficient * pen;
                 //if (maxImpulse < minImpulse) maxImpulse = minImpulse;
                 if (pen == 0) pairs[i].contacts.setMaxImpulse(j, maxImpulse);
-                //pairs[i].contacts.setSeparation(j, 0.01f);
+                pairs[i].contacts.setSeparation(j, 0.05f);
                 debugLog("maxImpulse: " + std::to_string(maxImpulse));
             }
             else {
@@ -377,9 +384,179 @@ void SoftContactModifier::onContactModify(physx::PxContactModifyPair* const pair
 
 SoftContactModifier gContactModifier;
 
-physx::PxVehicleDrive4WRawInputData gVehicleInputData;
-physx::PxF32 gVehicleModeTimer = 0.0f;
-physx::PxU32 gVehicleOrderProgress = 0;
+//  This class was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
+class BlockBasedAllocator {
+
+    struct AllocationPage {
+        static const physx::PxU32 PageSize = 32 * 1024;
+        physx::PxU8 page[PageSize];
+
+        physx::PxU32 currentIndex;
+
+        AllocationPage() : currentIndex(0) {}
+
+        physx::PxU8* allocate(const physx::PxU32 size) {
+            physx::PxU32 alignedSize = (size + 15) & (~15);
+            if ((currentIndex + alignedSize) < PageSize) {
+                physx::PxU8* allocatedMem = &page[currentIndex];
+                currentIndex += alignedSize;
+                return allocatedMem;
+            }
+            return NULL;
+        }
+    };
+
+    AllocationPage* currentPage;
+
+    physx::shdfnd::Array<AllocationPage*> mAllocatedBlocks;
+    physx::PxU32 mCurrentIndex;
+
+public:
+    BlockBasedAllocator() : currentPage(NULL),
+                            mCurrentIndex(0) {}
+
+    virtual physx::PxU8* allocate(const physx::PxU32 byteSize) {
+        if (currentPage) {
+            physx::PxU8* data = currentPage->allocate(byteSize);
+            if (data) return data;
+        }
+
+        if (mCurrentIndex < mAllocatedBlocks.size()) {
+            currentPage = mAllocatedBlocks[mCurrentIndex++];
+            currentPage->currentIndex = 0;
+            return currentPage->allocate(byteSize);
+        }
+        currentPage = PX_PLACEMENT_NEW(PX_ALLOC(sizeof(AllocationPage), PX_DEBUG_EXP("AllocationPage")), AllocationPage)();
+        mAllocatedBlocks.pushBack(currentPage);
+        mCurrentIndex = mAllocatedBlocks.size();
+
+        return currentPage->allocate(byteSize);
+    }
+
+    void release() {
+        for (physx::PxU32 a = 0; a < mAllocatedBlocks.size(); ++a) {
+            PX_FREE(mAllocatedBlocks[a]);
+            mAllocatedBlocks.clear();
+            currentPage = NULL;
+            mCurrentIndex = 0;
+        }
+    }
+
+    void reset() {
+        currentPage = NULL;
+        mCurrentIndex = 0;
+    }
+
+    virtual ~BlockBasedAllocator()
+    {
+        release();
+    }
+};
+
+//  This class was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
+class TestCacheAllocator : public physx::PxCacheAllocator {
+
+    BlockBasedAllocator mAllocator[2];
+    physx::PxU32 currIdx;
+
+public:
+    TestCacheAllocator() : currIdx(0) {}
+
+    virtual physx::PxU8* allocateCacheData(const physx::PxU32 byteSize) {
+        return mAllocator[currIdx].allocate(byteSize);
+    }
+
+    void release() {
+        currIdx = 1 - currIdx;
+        mAllocator[currIdx].release();
+    }
+
+    void reset() {
+        currIdx = 1 - currIdx;
+        mAllocator[currIdx].reset();
+    }
+
+    virtual ~TestCacheAllocator() {}
+};
+
+TestCacheAllocator* gCacheAllocator = NULL;
+
+//  This class was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
+class TestConstraintAllocator : public physx::PxConstraintAllocator {
+    BlockBasedAllocator mConstraintAllocator;
+    BlockBasedAllocator mFrictionAllocator[2];
+
+    physx::PxU32 currIdx;
+
+public:
+    TestConstraintAllocator() : currIdx(0) {}
+
+    virtual physx::PxU8* reserveConstraintData(const physx::PxU32 byteSize) {
+        return mConstraintAllocator.allocate(byteSize);
+    }
+
+    virtual physx::PxU8* reserveFrictionData(const physx::PxU32 byteSize) {
+        return mFrictionAllocator[currIdx].allocate(byteSize);
+    }
+
+    void release() {
+        currIdx = 1 - currIdx;
+        mConstraintAllocator.release();
+        mFrictionAllocator[currIdx].release();
+    }
+
+    virtual ~TestConstraintAllocator() {}
+};
+
+TestConstraintAllocator* gConstraintAllocator = NULL;
+
+//  This struct was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
+struct ContactPair
+{
+    physx::PxRigidDynamic* actor0;
+    physx::PxRigidActor* actor1;
+
+    physx::PxU32 idx0, idx1;
+
+    physx::PxU32 startContactIndex;
+    physx::PxU32 nbContacts;
+};
+
+//  This function was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
+// static bool generateContacts(const physx::PxGeometryHolder& geom0, const physx::PxGeometryHolder& geom1, physx::PxRigidDynamic& actor0, physx::PxRigidActor& actor1, physx::PxCacheAllocator& cacheAllocator,
+// 							 physx::shdfnd::Array<physx::Gu::ContactPoint>& contactPoints, physx::shdfnd::Array<ContactPair>& contactPairs, physx::PxU32 idx0, physx::PxU32 idx1, physx::PxCache& cache) {
+// 	const physx::PxTransform tr0 = actor0.getGlobalPose();
+// 	const physx::PxTransform tr1 = actor1.getGlobalPose();
+
+// 	TestContactRecorder recorder(contactPairs, contactPoints, actor0, actor1, idx0, idx1);
+
+// 	const physx::PxGeometry* pxGeom0 = &geom0.any();
+// 	const physx::PxGeometry* pxGeom1 = &geom1.any();
+
+// 	physx::immediate::PxGenerateContacts(&pxGeom0, &pxGeom1, &tr0, &tr1, &cache, 1, recorder, 0.04f, 0.01f, 1, cacheAllocator);
+
+// 	return recorder.hasContacts();
+// }
+
+void MergeWithGhostBody(physx::PxRigidDynamic* body) {
+    physx::PxRigidDynamic* ghostBody = ((ActorUserData*)body->userData)->ghostBody;
+
+    physx::PxVec3 linearVelocity = body->getLinearVelocity();
+    linearVelocity += ghostBody->getLinearVelocity();
+    linearVelocity /= 2;
+    body->setLinearVelocity(linearVelocity);
+
+    physx::PxVec3 angularVelocity = body->getAngularVelocity();
+    angularVelocity += ghostBody->getAngularVelocity();
+    angularVelocity /= 2;
+    body->setAngularVelocity(angularVelocity);
+
+    physx::PxVec3 position = body->getGlobalPose().p;
+    physx::PxQuat rotation = body->getGlobalPose().q;
+    position += ghostBody->getGlobalPose().p;
+    position /= 2;
+    body->setGlobalPose(physx::PxTransform(position, rotation));
+}
 
 extern "C" {
     EXPORT_FUNC void RegisterDebugLog(DebugLog debl) {
@@ -394,6 +571,9 @@ extern "C" {
         }
 
         gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, gToleranceScale);
+
+        gCacheAllocator = new TestCacheAllocator();
+        gConstraintAllocator = new TestConstraintAllocator();
     }
 
     EXPORT_FUNC void CreatePhysics(bool trackAllocations) {
@@ -418,10 +598,12 @@ extern "C" {
         sceneDesc.bounceThresholdVelocity = 2;
 
         physx::PxScene* scene = gPhysics->createScene(sceneDesc);
+        physx::PxScene* ghostScene = gPhysics->createScene(sceneDesc);
 
-        scene->setDominanceGroupPair(1, 0, physx::PxDominanceGroupPair(0, 1));
+        // scene->setDominanceGroupPair(1, 0, physx::PxDominanceGroupPair(0, 1));
 
         SceneUserData* sceneUserData = new SceneUserData();
+        sceneUserData->ghostScene = ghostScene;
         scene->userData = (void*)sceneUserData;
 
         scene->setContactModifyCallback(&gContactModifier);
@@ -532,9 +714,35 @@ extern "C" {
 
     EXPORT_FUNC physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose) {
         physx::PxRigidDynamic* actor = gPhysics->createRigidDynamic(*pose);
-        actor->setSolverIterationCounts(20, 10);
+        actor->setSolverIterationCounts(10, 3);
         actor->userData = (void *)(new ActorUserData());
         return actor;
+    }
+
+    EXPORT_FUNC physx::PxRigidDynamic* CreateGhostRigidBody(physx::PxRigidDynamic* baseBody, physx::PxReal blend) {
+        physx::PxRigidDynamic* ghostBody = gPhysics->createRigidDynamic(baseBody->getGlobalPose());
+        ((ActorUserData*)baseBody->userData)->ghostBody = ghostBody;
+        ((ActorUserData*)baseBody->userData)->ghostVelocityBlend = blend;
+
+        ghostBody->setSolverIterationCounts(10, 3);
+        ghostBody->setMass(baseBody->getMass());
+        ghostBody->setMassSpaceInertiaTensor(baseBody->getMassSpaceInertiaTensor());
+        ghostBody->setLinearDamping(baseBody->getLinearDamping());
+        ghostBody->setAngularDamping(baseBody->getAngularDamping());
+        ghostBody->setRigidBodyFlags(baseBody->getRigidBodyFlags());
+        ghostBody->setMaxLinearVelocity(baseBody->getMaxLinearVelocity());
+        ghostBody->setMaxDepenetrationVelocity(baseBody->getMaxDepenetrationVelocity());
+
+        ActorUserData* actorUserData = new ActorUserData();
+        actorUserData->isGhost = true;
+        ghostBody->userData = (void*)actorUserData;
+
+        SceneUserData* sceneUserData = (SceneUserData*)((ActorUserData*)baseBody->userData)->scene->userData;
+        sceneUserData->hauntedBodies.push_back(baseBody);
+
+        AddActorToScene(sceneUserData->ghostScene, ghostBody);
+
+        return ghostBody;
     }
 
     EXPORT_FUNC physx::PxRigidStatic* CreateStaticRigidBody(physx::PxTransform* pose) {
@@ -772,7 +980,7 @@ extern "C" {
     EXPORT_FUNC void RegisterTriggerCallback(TriggerCallback onTriggerCallback) {
         triggerCallback = onTriggerCallback;
     }
-
+    //  HERE
     EXPORT_FUNC void SetRigidBodyMassAndInertia(physx::PxRigidBody* body, float mass, const physx::PxVec3* massLocalPose) {
         physx::PxRigidBodyExt::setMassAndUpdateInertia(*body, mass, massLocalPose);
     }
@@ -798,33 +1006,70 @@ extern "C" {
         body->setMaxDepenetrationVelocity(velocity);
     }
 
+    EXPORT_FUNC void SetRigidBodyMaxLinearVelocity(physx::PxRigidBody* body, physx::PxReal velocity) {
+        body->setMaxLinearVelocity(velocity);
+    }
+
     EXPORT_FUNC void AddActorToScene(physx::PxScene* scene, physx::PxActor* actor) {
         scene->addActor(*actor);
         ((ActorUserData*)actor->userData)->scene = scene;
     }
 
     EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time) {
-        int substeps = 1;
-        float substepTime = time / substeps;
+        SceneUserData* sceneUserData = ((SceneUserData*)scene->userData);
 
-        for (int i = 0; i < substeps; i++) {
-            SceneUserData* sceneUserData = ((SceneUserData*)scene->userData);
+        physx::PxU32 vehicleCount = sceneUserData->vehicles.size();
+        physx::PxVehicleWheels** vehicles = sceneUserData->vehicles.data();
+        physx::PxU32 wheelCount = sceneUserData->wheelCount;
+        physx::PxBatchQuery* batchQuery = sceneUserData->suspensionBatchQuery;
+        physx::PxRaycastQueryResult* raycastResults = sceneUserData->raycastResults.data();
+        physx::PxVehicleWheelQueryResult* queryResults = sceneUserData->queryResults.data();
 
-            physx::PxU32 vehicleCount = sceneUserData->vehicles.size();
-            physx::PxVehicleWheels** vehicles = sceneUserData->vehicles.data();
-            physx::PxU32 wheelCount = sceneUserData->wheelCount;
-            physx::PxBatchQuery* batchQuery = sceneUserData->suspensionBatchQuery;
-            physx::PxRaycastQueryResult* raycastResults = sceneUserData->raycastResults.data();
-            physx::PxVehicleWheelQueryResult* queryResults = sceneUserData->queryResults.data();
+        if (vehicleCount > 0) {
+            PxVehicleSuspensionRaycasts(batchQuery, vehicleCount, vehicles, wheelCount, raycastResults);
 
-            if (vehicleCount > 0) {
-                PxVehicleSuspensionRaycasts(batchQuery, vehicleCount, vehicles, wheelCount, raycastResults);
+            PxVehicleUpdates(time, scene->getGravity(), *gFrictionPairs, vehicleCount, vehicles, queryResults);
+        }
 
-                PxVehicleUpdates(substepTime, scene->getGravity(), *gFrictionPairs, vehicleCount, vehicles, queryResults);
+        for (int i = 0; i < sceneUserData->hauntedBodies.size(); i++) {
+            physx::PxRigidDynamic* baseBody = sceneUserData->hauntedBodies[i];
+            physx::PxRigidDynamic* ghostBody = ((ActorUserData*)baseBody->userData)->ghostBody;
+
+            if (ghostBody != NULL) {
+                ghostBody->setLinearVelocity(baseBody->getLinearVelocity());
+                ghostBody->setAngularVelocity(baseBody->getAngularVelocity());
+                ghostBody->setGlobalPose(baseBody->getGlobalPose());
             }
+        }
 
-            scene->simulate(substepTime);
-            scene->fetchResults(true);
+        scene->simulate(time);
+        scene->fetchResults(true);
+    }
+
+    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time) {
+        SceneUserData* sceneUserData = ((SceneUserData*)scene->userData);
+        sceneUserData->ghostScene->simulate(time);
+        sceneUserData->ghostScene->fetchResults(true);
+
+        for (int i = 0; i < sceneUserData->hauntedBodies.size(); i++) {
+            physx::PxRigidDynamic* baseBody = sceneUserData->hauntedBodies[i];
+
+            ActorUserData* actorUserData = (ActorUserData*)baseBody->userData;
+            physx::PxRigidDynamic* ghostBody = actorUserData->ghostBody;
+            physx::PxReal velocityBlend = actorUserData->ghostVelocityBlend;
+
+            if (ghostBody != NULL) {
+                physx::PxVec3 linearVelocity = ghostBody->getLinearVelocity() * velocityBlend;
+                physx::PxVec3 angularVelocity = ghostBody->getAngularVelocity() * velocityBlend;
+                linearVelocity += baseBody->getLinearVelocity() * (1.f - velocityBlend);
+                angularVelocity += baseBody->getAngularVelocity() * (1.f - velocityBlend);
+                baseBody->setLinearVelocity(linearVelocity);
+                baseBody->setAngularVelocity(angularVelocity);
+                // physx::PxVec3 position = ghostBody->getGlobalPose().p;
+                // physx::PxQuat rotation = baseBody->getGlobalPose().q;
+                // baseBody->setGlobalPose(physx::PxTransform(position, rotation));
+                baseBody->setGlobalPose(ghostBody->getGlobalPose());
+            }
         }
     }
 
@@ -925,13 +1170,15 @@ extern "C" {
         return false;
     }
 
-    EXPORT_FUNC void GetContactPointData(physx::PxContactStreamIterator* iter, int j, physx::PxContactPair* pairs, int i, physx::PxVec3* point, physx::PxVec3* normal, physx::PxVec3* impulse) {
+    EXPORT_FUNC physx::PxReal GetContactPointData(physx::PxContactStreamIterator* iter, int j, physx::PxContactPair* pairs, int i, physx::PxVec3* point, physx::PxVec3* normal, physx::PxVec3* impulse) {
         *point = iter->getContactPoint();
         *normal = iter->getContactNormal();
 
         if (pairs[i].flags & physx::PxContactPairFlag::eINTERNAL_HAS_IMPULSES) {
             *impulse = *normal * pairs[i].contactImpulses[j];
         }
+
+        return iter->getSeparation();
     }
 
     EXPORT_FUNC physx::PxReal GetSuspensionCompression(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum) {
@@ -988,16 +1235,56 @@ extern "C" {
 
     EXPORT_FUNC void DestroyActor(physx::PxActor* actor) {
         ActorUserData* actorUserData = (ActorUserData*)actor->userData;
+        if (actorUserData->ghostBody != NULL) {
+            DestroyActor(actorUserData->ghostBody);
+
+            SceneUserData* sceneUserData = ((SceneUserData*)actorUserData->scene->userData);
+
+            physx::PxU32 index = 0;
+            while (sceneUserData->hauntedBodies[index] != actor) index++;
+
+            sceneUserData->hauntedBodies.erase(sceneUserData->hauntedBodies.begin() + index);
+        }
         delete actorUserData;
 
         actor->release();
     }
 
     EXPORT_FUNC void DestroyVehicle(physx::PxVehicleNoDrive* vehicle) {
+        ActorUserData* actorUserData = ((ActorUserData*)vehicle->getRigidDynamicActor()->userData);
+        SceneUserData* sceneUserData = ((SceneUserData*)actorUserData->scene->userData);
+
+        physx::PxU32 index = 0;
+        while (sceneUserData->vehicles[index] != vehicle) index++;
+
+        sceneUserData->vehicles.erase(sceneUserData->vehicles.begin() + index);
+        sceneUserData->wheelCount -= vehicle->mWheelsSimData.getNbWheels();
+
+        for (int i = 0; i < vehicle->mWheelsSimData.getNbWheels(); i++) {
+            sceneUserData->raycastResults.pop_back();
+            sceneUserData->raycastHits.pop_back();
+        }
+
+        if (sceneUserData->suspensionBatchQuery != NULL) {
+            PX_RELEASE(sceneUserData->suspensionBatchQuery);
+        }
+
+        physx::PxBatchQueryDesc batchQueryDesc(sceneUserData->wheelCount, sceneUserData->wheelCount, 1);
+        batchQueryDesc.queryMemory.userRaycastResultBuffer = sceneUserData->raycastResults.data();
+        batchQueryDesc.queryMemory.userRaycastTouchBuffer = sceneUserData->raycastHits.data();
+        batchQueryDesc.queryMemory.raycastTouchBufferSize = sceneUserData->raycastHits.size();
+
+        batchQueryDesc.preFilterShader = WheelSceneQueryPreFilterBlocking;
+
+        sceneUserData->suspensionBatchQuery = actorUserData->scene->createBatchQuery(batchQueryDesc);
+
+        sceneUserData->queryResults.erase(sceneUserData->queryResults.begin() + index);
+
         vehicle->free();
     }
 
     EXPORT_FUNC void DestroyScene(physx::PxScene* scene) {
+        ((SceneUserData*)scene->userData)->ghostScene->release();
         scene->release();
     }
 

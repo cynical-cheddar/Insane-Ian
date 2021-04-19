@@ -54,15 +54,11 @@ public class PhysXCollider : MonoBehaviour
         }
     }
 
-    public bool soft = false;
-    public float maxImpulse = 100;
-    public float minImpulse = 0.0001f;
-    public float penForMaxImpulse = 0.5f;
-    public int penExp = 3;
-
     public int shapeNum { get; private set; }
 
     public Vector3 offset = Vector3.zero;
+
+    public CollisionSoftener collisionSoftener = null;
 
     // Start is called before the first frame update
     public virtual void Setup(PhysXBody attachedRigidBody, uint vehicleId)
@@ -81,13 +77,14 @@ public class PhysXCollider : MonoBehaviour
         PhysXLib.SetShapeTriggerFlag(shape, trigger);
 
         PhysXLib.CollisionEvent collisionEventFlags = attachedRigidBody.collisionEventFlags;
-        if (soft) {
-            collisionEventFlags |= PhysXLib.CollisionEvent.CONTACT_MODIFY;
-            PhysXLib.SetShapeSoftness(shape, maxImpulse, minImpulse, penForMaxImpulse, penExp);
-            PhysXLib.SetRigidBodyMaxDepenetrationVelocity(attachedRigidBody.physXBody, 0.00001f);
-        }
-        PhysXLib.SetCollisionFilterData(shape, (UInt32)ownLayers, (UInt32)collisionLayers, (UInt32)collisionEventFlags, 0);
+        PhysXLib.SetCollisionFilterData(shape, (UInt32)ownLayers, (UInt32)collisionLayers, (UInt32)collisionEventFlags, vehicleId);
         PhysXLib.SetQueryFilterData(shape, (UInt32)ownLayers, 0, 0, vehicleId);
         shapeNum = attachedRigidBody.AddCollider(this);
+    }
+
+    private PhysXVec3 physXPoint = new PhysXVec3(Vector3.zero);
+    private PhysXVec3 physXClosestPoint = new PhysXVec3(Vector3.zero);
+    public Vector3 ClosestPoint(Vector3 position) {
+        physXPoint.FromVector(position);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GraphBending;
 using System.Linq;
+using PhysX;
 
 public class Squishing : MonoBehaviour
 {
@@ -21,8 +22,6 @@ public class Squishing : MonoBehaviour
 
     // Start is called before the first frame update.
     void Start() {
-        Debug.LogWarning("Squishing has not been ported to the new PhysX system");
-        return;
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
         //deformableMeshes[0].Subdivide(maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
@@ -36,7 +35,6 @@ public class Squishing : MonoBehaviour
 
     public void ResetMesh()
     {
-        return;
         deformableMeshes[0].GetMeshFilter().mesh = Instantiate(originalMesh);
         vertices = originalMesh.vertices.ToList();
         foreach (VertexGroup group in meshGraph.groups) {
@@ -132,7 +130,7 @@ public class Squishing : MonoBehaviour
     }
 
     //  This breaks if this is on a kinematic object (big sad)
-    void OnCollisionEnter(Collision collision) {
+    void CollisionEnter(PhysXCollision collision) {
         Vector3 collisionNormal = collision.GetContact(0).normal;
         Vector3 collisionForce = collision.impulse;
         if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
@@ -141,10 +139,10 @@ public class Squishing : MonoBehaviour
         collisionForce = transform.InverseTransformDirection(collisionForce);
 
         if (collisionForce.sqrMagnitude >= 0.01f) {
-            if (collision.collider is TerrainCollider || (collision.collider is MeshCollider && !((MeshCollider)collision.collider).convex)) {
+            if (collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex) {
                 collisionResolver.transform.position = collision.GetContact(0).point;
                 collisionResolver.transform.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
-                Collider collider = collisionResolver.GetComponent<BoxCollider>();
+                PhysXCollider collider = collisionResolver.GetComponent<PhysXBoxCollider>();
                 CollideMesh(collider, collisionForce, true);
                 collisionResolver.transform.position = new Vector3(0, 10000, 0);
             }
@@ -154,7 +152,7 @@ public class Squishing : MonoBehaviour
         }
     }
 
-    public void CollideMesh(Collider collider, Vector3 collisionForce, bool addNoise) {
+    public void CollideMesh(PhysXCollider collider, Vector3 collisionForce, bool addNoise) {
         
 
         //List<VertexGroup> moved = new List<VertexGroup>();

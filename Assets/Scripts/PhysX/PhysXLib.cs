@@ -103,6 +103,9 @@ namespace PhysX {
         public static extern IntPtr CreateDynamicRigidBody(IntPtr pose);
 
         [DllImport(dllName)]
+        public static extern IntPtr CreateGhostRigidBody(IntPtr baseBody, float blend);
+
+        [DllImport(dllName)]
         public static extern IntPtr CreateStaticRigidBody(IntPtr pose);
 
         [DllImport(dllName)]
@@ -250,10 +253,16 @@ namespace PhysX {
         public static extern void SetRigidBodyMaxDepenetrationVelocity(IntPtr body, float velocity);
 
         [DllImport(dllName)]
+        public static extern void SetRigidBodyMaxLinearVelocity(IntPtr body, float velocity);
+
+        [DllImport(dllName)]
         public static extern void AddActorToScene(IntPtr scene, IntPtr actor);
 
         [DllImport(dllName)]
         public static extern void StepPhysics(IntPtr scene, float time);
+
+        [DllImport(dllName)]
+        public static extern void StepGhostPhysics(IntPtr scene, float time);
 
         [DllImport(dllName)]
         public static extern IntPtr GetCentreOfMass(IntPtr rigidBody);
@@ -307,7 +316,7 @@ namespace PhysX {
         public static extern bool NextContactPoint(IntPtr iter);
 
         [DllImport(dllName)]
-        public static extern void GetContactPointData(IntPtr iter, int j, IntPtr pairs, int i, [Out] PhysXVec3 point, [Out] PhysXVec3 normal, [Out] PhysXVec3 impulse);
+        public static extern float GetContactPointData(IntPtr iter, int j, IntPtr pairs, int i, [Out] PhysXVec3 point, [Out] PhysXVec3 normal, [Out] PhysXVec3 impulse);
 
         [DllImport(dllName)]
         public static extern float GetSuspensionCompression(IntPtr vehicle, int wheelNum);
