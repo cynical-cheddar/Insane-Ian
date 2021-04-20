@@ -86,5 +86,7 @@ public class PhysXCollider : MonoBehaviour
     private PhysXVec3 physXClosestPoint = new PhysXVec3(Vector3.zero);
     public Vector3 ClosestPoint(Vector3 position) {
         physXPoint.FromVector(position);
+        if (PhysXLib.GetClosestPointOnShape(shape, physXPoint, physXClosestPoint) == 0) return position;
+        return physXClosestPoint.ToVector();
     }
 }

@@ -130,7 +130,6 @@ public class PhysXBody : MonoBehaviour
     }
 
     public void FireTriggerEvents(PhysXTrigger trigger) {
-        Debug.Log(gameObject.name);
         if (trigger.isEnter) {
             foreach (ITriggerEnterEvent triggerEnterEvent in triggerEnterEvents) {
                 if (triggerEnterEvent.requiresData) triggerEnterEvent.TriggerEnter(trigger.collider);

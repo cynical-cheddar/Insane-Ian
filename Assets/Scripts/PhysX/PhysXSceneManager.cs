@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Profiling;
 using PhysX;
 using AOT;
 
 public class PhysXSceneManager : MonoBehaviour
 {
+    static readonly ProfilerMarker collisionCallbackMarker = new ProfilerMarker("CollisionCallbacks");
+
     private static bool sceneManagerExists = false;
 
     private static IntPtr scene = IntPtr.Zero;
@@ -84,6 +87,7 @@ public class PhysXSceneManager : MonoBehaviour
             body.UpdatePositionAndVelocity();
         }
 
+        collisionCallbackMarker.Begin();        
         foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
             collision.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
@@ -99,6 +103,7 @@ public class PhysXSceneManager : MonoBehaviour
             PhysXTrigger.ReleaseTrigger(trigger);
         }
         PhysXSceneManager.ongoingTriggers.Clear();
+        collisionCallbackMarker.End();
 
         PhysXLib.StepGhostPhysics(scene, Time.fixedDeltaTime);
     }

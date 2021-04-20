@@ -8,6 +8,8 @@ public class DeformableMesh : MonoBehaviour
     private MeshFilter meshFilter = null;
     public float maxEdgeLength = 0.6f;
 
+    public Mesh collisionSkeleton = null;
+
     void Update() {
         if (!Application.IsPlaying(gameObject)) {
             Subdivide(maxEdgeLength);

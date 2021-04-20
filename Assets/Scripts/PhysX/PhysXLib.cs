@@ -349,6 +349,9 @@ namespace PhysX {
         public static extern void GetTransformComponents(IntPtr transform, [Out] PhysXVec3 position, [Out] PhysXQuat rotation);
 
         [DllImport(dllName)]
+        public static extern float GetClosestPointOnShape(IntPtr shape, [In] PhysXVec3 position, [Out] PhysXVec3 closestPoint);
+
+        [DllImport(dllName)]
         public static extern void DestroyActor(IntPtr actor);
 
         [DllImport(dllName)]

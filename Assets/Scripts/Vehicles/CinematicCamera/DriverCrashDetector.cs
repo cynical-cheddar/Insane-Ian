@@ -189,7 +189,7 @@ public class DriverCrashDetector : MonoBehaviour
 
     void CalculateTimeToHit(PhysXRigidBody otherPlayer)
     {
-        Debug.Log("Start calculateTimetoHit physx");
+        // Debug.Log("Start calculateTimetoHit physx");
         float answer = Mathf.Infinity;
         Vector3 otherVel = transform.InverseTransformDirection(otherPlayer.velocity);
 
@@ -228,10 +228,10 @@ public class DriverCrashDetector : MonoBehaviour
             distList.Add(relativeDistance);
             timeList.Add(answer);
             
-            Debug.Log("End calculateTimetoHit physx velocityDifference.z > 1 ");
+            // Debug.Log("End calculateTimetoHit physx velocityDifference.z > 1 ");
         }
         
-        Debug.Log("End calculateTimetoHit physx");
+        // Debug.Log("End calculateTimetoHit physx");
         
         
     }
@@ -417,7 +417,7 @@ public class DriverCrashDetector : MonoBehaviour
                         {
                             telecastIncrease *= playerSensorMultiplier;
                             playerAhead = true;
-                            Debug.Log("hit collider is: " + hit.collider + " and rb is: " + hit.collider.attachedRigidBody);
+                            // Debug.Log("hit collider is: " + hit.collider + " and rb is: " + hit.collider.attachedRigidBody);
                             CalculateTimeToHit(hit.collider.attachedRigidBody);
                         }
                         else CalculateTimeToHit(hit.point);

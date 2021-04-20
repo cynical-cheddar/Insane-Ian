@@ -384,160 +384,6 @@ void SoftContactModifier::onContactModify(physx::PxContactModifyPair* const pair
 
 SoftContactModifier gContactModifier;
 
-//  This class was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
-class BlockBasedAllocator {
-
-    struct AllocationPage {
-        static const physx::PxU32 PageSize = 32 * 1024;
-        physx::PxU8 page[PageSize];
-
-        physx::PxU32 currentIndex;
-
-        AllocationPage() : currentIndex(0) {}
-
-        physx::PxU8* allocate(const physx::PxU32 size) {
-            physx::PxU32 alignedSize = (size + 15) & (~15);
-            if ((currentIndex + alignedSize) < PageSize) {
-                physx::PxU8* allocatedMem = &page[currentIndex];
-                currentIndex += alignedSize;
-                return allocatedMem;
-            }
-            return NULL;
-        }
-    };
-
-    AllocationPage* currentPage;
-
-    physx::shdfnd::Array<AllocationPage*> mAllocatedBlocks;
-    physx::PxU32 mCurrentIndex;
-
-public:
-    BlockBasedAllocator() : currentPage(NULL),
-                            mCurrentIndex(0) {}
-
-    virtual physx::PxU8* allocate(const physx::PxU32 byteSize) {
-        if (currentPage) {
-            physx::PxU8* data = currentPage->allocate(byteSize);
-            if (data) return data;
-        }
-
-        if (mCurrentIndex < mAllocatedBlocks.size()) {
-            currentPage = mAllocatedBlocks[mCurrentIndex++];
-            currentPage->currentIndex = 0;
-            return currentPage->allocate(byteSize);
-        }
-        currentPage = PX_PLACEMENT_NEW(PX_ALLOC(sizeof(AllocationPage), PX_DEBUG_EXP("AllocationPage")), AllocationPage)();
-        mAllocatedBlocks.pushBack(currentPage);
-        mCurrentIndex = mAllocatedBlocks.size();
-
-        return currentPage->allocate(byteSize);
-    }
-
-    void release() {
-        for (physx::PxU32 a = 0; a < mAllocatedBlocks.size(); ++a) {
-            PX_FREE(mAllocatedBlocks[a]);
-            mAllocatedBlocks.clear();
-            currentPage = NULL;
-            mCurrentIndex = 0;
-        }
-    }
-
-    void reset() {
-        currentPage = NULL;
-        mCurrentIndex = 0;
-    }
-
-    virtual ~BlockBasedAllocator()
-    {
-        release();
-    }
-};
-
-//  This class was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
-class TestCacheAllocator : public physx::PxCacheAllocator {
-
-    BlockBasedAllocator mAllocator[2];
-    physx::PxU32 currIdx;
-
-public:
-    TestCacheAllocator() : currIdx(0) {}
-
-    virtual physx::PxU8* allocateCacheData(const physx::PxU32 byteSize) {
-        return mAllocator[currIdx].allocate(byteSize);
-    }
-
-    void release() {
-        currIdx = 1 - currIdx;
-        mAllocator[currIdx].release();
-    }
-
-    void reset() {
-        currIdx = 1 - currIdx;
-        mAllocator[currIdx].reset();
-    }
-
-    virtual ~TestCacheAllocator() {}
-};
-
-TestCacheAllocator* gCacheAllocator = NULL;
-
-//  This class was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
-class TestConstraintAllocator : public physx::PxConstraintAllocator {
-    BlockBasedAllocator mConstraintAllocator;
-    BlockBasedAllocator mFrictionAllocator[2];
-
-    physx::PxU32 currIdx;
-
-public:
-    TestConstraintAllocator() : currIdx(0) {}
-
-    virtual physx::PxU8* reserveConstraintData(const physx::PxU32 byteSize) {
-        return mConstraintAllocator.allocate(byteSize);
-    }
-
-    virtual physx::PxU8* reserveFrictionData(const physx::PxU32 byteSize) {
-        return mFrictionAllocator[currIdx].allocate(byteSize);
-    }
-
-    void release() {
-        currIdx = 1 - currIdx;
-        mConstraintAllocator.release();
-        mFrictionAllocator[currIdx].release();
-    }
-
-    virtual ~TestConstraintAllocator() {}
-};
-
-TestConstraintAllocator* gConstraintAllocator = NULL;
-
-//  This struct was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
-struct ContactPair
-{
-    physx::PxRigidDynamic* actor0;
-    physx::PxRigidActor* actor1;
-
-    physx::PxU32 idx0, idx1;
-
-    physx::PxU32 startContactIndex;
-    physx::PxU32 nbContacts;
-};
-
-//  This function was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
-// static bool generateContacts(const physx::PxGeometryHolder& geom0, const physx::PxGeometryHolder& geom1, physx::PxRigidDynamic& actor0, physx::PxRigidActor& actor1, physx::PxCacheAllocator& cacheAllocator,
-// 							 physx::shdfnd::Array<physx::Gu::ContactPoint>& contactPoints, physx::shdfnd::Array<ContactPair>& contactPairs, physx::PxU32 idx0, physx::PxU32 idx1, physx::PxCache& cache) {
-// 	const physx::PxTransform tr0 = actor0.getGlobalPose();
-// 	const physx::PxTransform tr1 = actor1.getGlobalPose();
-
-// 	TestContactRecorder recorder(contactPairs, contactPoints, actor0, actor1, idx0, idx1);
-
-// 	const physx::PxGeometry* pxGeom0 = &geom0.any();
-// 	const physx::PxGeometry* pxGeom1 = &geom1.any();
-
-// 	physx::immediate::PxGenerateContacts(&pxGeom0, &pxGeom1, &tr0, &tr1, &cache, 1, recorder, 0.04f, 0.01f, 1, cacheAllocator);
-
-// 	return recorder.hasContacts();
-// }
-
 void MergeWithGhostBody(physx::PxRigidDynamic* body) {
     physx::PxRigidDynamic* ghostBody = ((ActorUserData*)body->userData)->ghostBody;
 
@@ -571,9 +417,6 @@ extern "C" {
         }
 
         gCooking = PxCreateCooking(PX_PHYSICS_VERSION, *gFoundation, gToleranceScale);
-
-        gCacheAllocator = new TestCacheAllocator();
-        gConstraintAllocator = new TestConstraintAllocator();
     }
 
     EXPORT_FUNC void CreatePhysics(bool trackAllocations) {
@@ -680,7 +523,7 @@ extern "C" {
     }
 
     EXPORT_FUNC physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat, physx::PxReal contactOffset) {
-        physx::PxShape* shape = gPhysics->createShape(*geometry, *mat);
+        physx::PxShape* shape = gPhysics->createShape(*geometry, *mat, true);
         shape->setContactOffset(contactOffset);
         return shape;
     }
@@ -1231,6 +1074,11 @@ extern "C" {
         ActorUserData* actorUserData = (ActorUserData*)vehicle->getRigidDynamicActor()->userData;
 
         return !actorUserData->queryResults[wheelNum].isInAir;
+    }
+
+    EXPORT_FUNC physx::PxReal GetClosestPointOnShape(physx::PxShape* shape, physx::PxVec3* position, physx::PxVec3* closestPoint) {
+        physx::PxTransform pose = physx::PxShapeExt::getGlobalPose(*shape, *(shape->getActor()));
+        return physx::PxGeometryQuery::pointDistance(*position, shape->getGeometry().any(), pose, closestPoint);
     }
 
     EXPORT_FUNC void DestroyActor(physx::PxActor* actor) {

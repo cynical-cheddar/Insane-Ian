@@ -270,6 +270,8 @@ extern "C" {
 
     EXPORT_FUNC void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation);
 
+    EXPORT_FUNC physx::PxReal GetClosestPointOnShape(physx::PxShape* shape, physx::PxVec3* position, physx::PxVec3* closestPoint);
+
     EXPORT_FUNC void DestroyActor(physx::PxActor* actor);
     EXPORT_FUNC void DestroyVehicle(physx::PxVehicleNoDrive* vehicle);
     EXPORT_FUNC void DestroyScene(physx::PxScene* scene);
