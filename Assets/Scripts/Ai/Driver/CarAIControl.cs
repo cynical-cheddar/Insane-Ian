@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PhysX;
 
 using Random = UnityEngine.Random;
 
@@ -24,7 +25,10 @@ using Random = UnityEngine.Random;
         // "wandering" is used to give the cars a more human, less robotic feel. They can waver slightly
         // in speed and direction while driving towards their target.
 
-        public LayerMask sensorLayerMask;
+
+  
+        PhysXRigidBody myRb;
+        public  PhysXCollider.CollisionLayer sensorLayerMask;
         
         [SerializeField] [Range(0, 1)] private float m_CautiousSpeedFactor = 0.05f;               // percentage of max speed to use when being maximally cautious
         [SerializeField] [Range(0, 180)] private float m_CautiousMaxAngle = 50f;                  // angle of approaching corner to treat as warranting maximum caution
@@ -71,9 +75,11 @@ using Random = UnityEngine.Random;
         protected bool circuitFound = false;
         private void Awake()
         {
-            Debug.LogWarning("AI control needs porting to new PhysX system.");
-            return;
+           // Debug.LogWarning("AI control needs porting to new PhysX system.");
+       //     return;
             // get the car controller reference
+
+            myRb = GetComponent<PhysXRigidBody>();
             interfaceCarDrive = GetComponent<InterfaceCarDrive4W>();
 
             // give the random perlin a random value
@@ -155,11 +161,11 @@ using Random = UnityEngine.Random;
 
         private void FixedUpdate()
         {
-            return;
+         //   return;
 
             if (circuitFound)
             {
-                if (m_Rigidbody.velocity.magnitude < 1)
+                if (myRb.velocity.magnitude < 1)
                 {
                     stuckTimer += Time.deltaTime;
                 }
@@ -204,23 +210,26 @@ using Random = UnityEngine.Random;
         bool SensorsManouvre()
         {
             bool avoiding = false;
-            RaycastHit hit;
+          //  RaycastHit hit;
             Vector3 sensorStartPos = transform.position;
             sensorStartPos += transform.forward * frontSensorPosition.z;
             sensorStartPos += transform.up * frontSensorPosition.y;
             float avoidMultiplier = 0;
             avoiding = false;
 
+
+            PhysXRaycastHit hit = PhysXRaycast.GetRaycastHit();
+
             //front right sensor
             sensorStartPos += transform.right * frontSideSensorPosition;
-            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier -= 1f;
                 }
 
             //front right angle sensor
-            else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength, sensorLayerMask)) {
+            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier -= 0.5f;
@@ -228,14 +237,14 @@ using Random = UnityEngine.Random;
 
             //front left sensor
             sensorStartPos -= transform.right * (frontSideSensorPosition * 2);
-            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 1f;
             }
 
             //front left angle sensor
-            else if (Physics.Raycast(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength, sensorLayerMask)) {
+            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 0.5f;
@@ -243,7 +252,7 @@ using Random = UnityEngine.Random;
 
             //front center sensor
             if (avoidMultiplier == 0) {
-                if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
+                if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask)) {
                     if (!terrainTags.Contains(hit.collider.tag)) {
                         Debug.DrawLine(sensorStartPos, hit.point);
                         avoiding = true;
@@ -258,8 +267,8 @@ using Random = UnityEngine.Random;
 
             if (avoiding) {
                 CarDriver.Steer(avoidMultiplier);
-                if(avoidMultiplier >= 1 && m_Rigidbody.velocity.magnitude > maxSpeed/2) CarDriver.Reverse();
-                else if(avoidMultiplier <= -1 && m_Rigidbody.velocity.magnitude > maxSpeed/2) CarDriver.Reverse();
+                if(avoidMultiplier >= 1 && myRb.velocity.magnitude > maxSpeed/2) CarDriver.Reverse();
+                else if(avoidMultiplier <= -1 && myRb.velocity.magnitude > maxSpeed/2) CarDriver.Reverse();
             }
 
             return avoiding;
@@ -268,9 +277,9 @@ using Random = UnityEngine.Random;
         void NormalDriving()
         {
             Vector3 fwd = transform.forward;
-                    if (m_Rigidbody.velocity.magnitude > 20f)
+                    if (myRb.velocity.magnitude > 20f)
                     {
-                        fwd = m_Rigidbody.velocity;
+                        fwd = myRb.velocity;
                     }
 
                     float desiredSpeed = maxSpeed;
@@ -287,7 +296,7 @@ using Random = UnityEngine.Random;
 
                             // also consider the current amount we're turning, multiplied up and then compared in the same way as an upcoming corner angle
                             float spinningAngle =
-                                m_Rigidbody.angularVelocity.magnitude * m_CautiousAngularVelocityFactor;
+                                myRb.angularVelocity.magnitude * m_CautiousAngularVelocityFactor;
 
                             // if it's different to our current angle, we need to be cautious (i.e. slow down) a certain amount
                             float cautiousnessRequired = Mathf.InverseLerp(0, m_CautiousMaxAngle,
@@ -309,7 +318,7 @@ using Random = UnityEngine.Random;
 
                             // also consider the current amount we're turning, multiplied up and then compared in the same way as an upcoming corner angle
                             float spinningAngle =
-                                m_Rigidbody.angularVelocity.magnitude * m_CautiousAngularVelocityFactor;
+                                myRb.angularVelocity.magnitude * m_CautiousAngularVelocityFactor;
 
                             // if it's different to our current angle, we need to be cautious (i.e. slow down) a certain amount
                             float cautiousnessRequired = Mathf.Max(
@@ -348,12 +357,12 @@ using Random = UnityEngine.Random;
                     }
 
                     // use different sensitivity depending on whether accelerating or braking:
-                    float accelBrakeSensitivity = (desiredSpeed < m_Rigidbody.velocity.magnitude)
+                    float accelBrakeSensitivity = (desiredSpeed < myRb.velocity.magnitude)
                         ? m_BrakeSensitivity
                         : m_AccelSensitivity;
 
                     // decide the actual amount of accel/brake input to achieve desired speed.
-                    float accel = Mathf.Clamp((desiredSpeed - m_Rigidbody.velocity.magnitude) * accelBrakeSensitivity,
+                    float accel = Mathf.Clamp((desiredSpeed - myRb.velocity.magnitude) * accelBrakeSensitivity,
                         -1, 1);
 
                     // add acceleration 'wander', which also prevents AI from seeming too uniform and robotic in their driving
@@ -369,7 +378,7 @@ using Random = UnityEngine.Random;
 
                     // get the amount of steering needed to aim the car towards the target
                     float steer = Mathf.Clamp(targetAngle * m_SteerSensitivity, -1, 1) *
-                                  Mathf.Sign(m_Rigidbody.velocity.magnitude);
+                                  Mathf.Sign(myRb.velocity.magnitude);
 
                     // feed input to the car controller.
                     //  m_CarController.Move(steer, accel, accel, 0f);
@@ -378,7 +387,7 @@ using Random = UnityEngine.Random;
 
                     if (!yeaaahhhhh)
                     {
-                        if (desiredSpeed > m_Rigidbody.velocity.magnitude)
+                        if (desiredSpeed > myRb.velocity.magnitude)
                         {
                             CarDriver.Accellerate();
                             CarDriver.StopBrake();

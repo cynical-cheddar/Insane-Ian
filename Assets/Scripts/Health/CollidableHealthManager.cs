@@ -41,15 +41,19 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     
     public float rammingDamageMultiplier = 1f;
     
+    protected float timeSinceLastRam = 0f;
     protected new void Start(){
         baseCollisionResistance = deathForce / maxHealth;
         base.Start();
+    }
+    protected void Update(){
+        timeSinceLastRam += Time.deltaTime;
     }
 
     public void CollisionEnter() {}
 
     public void CollisionEnter(PhysXCollision collision) {
-        if (PhotonNetwork.IsMasterClient) {
+        if (myPhotonView.IsMine) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
             if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
@@ -70,9 +74,10 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             //Debug.Log(damage);
     
             // instantiate damage sound over network
-            if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            if(damage > crashSoundsSmallDamageThreshold && timeSinceLastRam > 0.5f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
 
             damage = damage / rammingDamageResistance;
+            
             
             if (GetComponent<COMDropper>() != null && !resetting) {
                 Debug.LogWarning("Whatever this is has not been ported to the new PhysX system");
@@ -91,6 +96,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             else {
                 TakeDamage(damage);
             }
+            timeSinceLastRam= 0f;
         }
     }
 

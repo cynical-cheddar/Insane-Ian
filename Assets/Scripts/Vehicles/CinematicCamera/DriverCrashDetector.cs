@@ -8,7 +8,7 @@ using PhysX;
 
 [VehicleScript(ScriptType.playerDriverScript)]
 
-public class DriverCrashDetector : MonoBehaviour
+public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
 {
     public float crashAngleThreshold = 50;
 
@@ -87,6 +87,9 @@ public class DriverCrashDetector : MonoBehaviour
         }
     }
 
+        public void CollisionEnter() {}
+    public bool requiresData { get { return true; } }
+
     private void Start()
     {
       //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
@@ -100,7 +103,7 @@ public class DriverCrashDetector : MonoBehaviour
     }
 
 
-    private void OnCollisionEnter(Collision other)
+    public void CollisionEnter(PhysXCollision other)
     {
         if (currentSpeed > slowRange.speed)
         {
@@ -108,9 +111,9 @@ public class DriverCrashDetector : MonoBehaviour
             {
             currentSensorReport.crashed = true;
             // get left/right 
-            ContactPoint[] contactPoints = other.contacts;
+            PhysXContactPoint[] contactPoints = other.GetContacts();
             Vector3 cpSum = Vector3.zero;
-            foreach (ContactPoint c in contactPoints)
+            foreach (PhysXContactPoint c in contactPoints)
             {
                 cpSum += c.point;
             }
