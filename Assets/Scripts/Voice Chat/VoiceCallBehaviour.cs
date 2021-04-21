@@ -33,7 +33,7 @@ public class VoiceCallBehaviour : MonoBehaviour
         self.isInVC = true;
         self.Increment();
         gameObject.GetComponent<Button>().interactable = false;
-        gameObject.GetComponentInChildren<Text>().text = "Joined Call";
+        gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Joined Call";
         for (int i = 0; i < gamestateTracker.players.count; i++) {
             PlayerEntry player = gamestateTracker.players.GetAtIndex(i);
             if (player.id != PhotonNetwork.LocalPlayer.ActorNumber && player.isInVC) {

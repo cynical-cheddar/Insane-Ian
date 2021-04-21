@@ -567,7 +567,7 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   mesh: {fileID: -839344556246454297, guid: 44fa16960c7e3d94d9fc2e7b18e69226, type: 3}
   convex: 1
-  scale: {x: 1, y: 1, z: 1}
+  scale: {x: 0.9, y: 0.9, z: 0.9}
 --- !u!1 &2422599075921859443
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +651,6 @@ MonoBehaviour:
   width: 0.2
   dampingRate: 0.25
   forceAppPoint: {x: 0, y: 1.2, z: 0}
-  center: {x: 0, y: 0, z: 0}
   suspensionDistance: 0.5
   suspensionSpringStrength: 51000
   suspensionSpringDamper: 8200
@@ -731,7 +730,6 @@ MonoBehaviour:
   width: 0.2
   dampingRate: 0.25
   forceAppPoint: {x: 0, y: 1.2, z: 0}
-  center: {x: 0, y: 0, z: 0}
   suspensionDistance: 0.5
   suspensionSpringStrength: 51000
   suspensionSpringDamper: 8200
@@ -793,7 +791,6 @@ MonoBehaviour:
   width: 0.2
   dampingRate: 0.25
   forceAppPoint: {x: 0, y: 1.2, z: 0}
-  center: {x: 0, y: 0, z: 0}
   suspensionDistance: 0.5
   suspensionSpringStrength: 51000
   suspensionSpringDamper: 8200
@@ -1078,7 +1075,6 @@ MonoBehaviour:
   width: 0.2
   dampingRate: 0.25
   forceAppPoint: {x: 0, y: 1.2, z: 0}
-  center: {x: 0, y: 0, z: 0}
   suspensionDistance: 0.5
   suspensionSpringStrength: 51000
   suspensionSpringDamper: 8200
@@ -1861,6 +1857,7 @@ GameObject:
   - component: {fileID: 5758374990144816268}
   - component: {fileID: -3668055087405952436}
   - component: {fileID: 1518582629338567789}
+  - component: {fileID: 7191491165775811052}
   m_Layer: 8
   m_Name: Ian Interceptor
   m_TagString: Player
@@ -1962,6 +1959,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 8104481329884975997}
   - {fileID: 8392620475525738692}
+  - {fileID: 7191491165775811052}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -2078,23 +2076,23 @@ MonoBehaviour:
   frontRightT: {fileID: 6839928185601785364}
   rearLeftT: {fileID: 6986494866497186227}
   rearRightT: {fileID: 8050138925847587874}
-  carRB: {fileID: 8126532692333351774}
+  carRB: {fileID: 1518582629338567789}
   carTransform: {fileID: 8103896753619876248}
   maxSteerAngle: 20
-  motorTorque: 3000
+  motorTorque: 6000
   brakeTorque: 8000
   brakeForce: 16000
   steerRateLerp: 0.07
   baseExtremiumSlip: 0.3
-  addedDownforce: {x: 0, y: 5, z: 0}
   antiRollStiffness: 5000
-  baseStiffness: 15
-  driftStiffness: 5
+  baseStiffness: 2
+  driftStiffness: 0.3
   EngineIdle: {fileID: 1322015503113332562}
   EngineLow: {fileID: 3216202774783986104}
   EngineHigh: {fileID: 1088472574208435861}
   leftPS: {fileID: 6457906580028162633}
   rightPS: {fileID: 5129428240925787101}
+  isDead: 0
 --- !u!114 &512586263302551362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2306,6 +2304,22 @@ MonoBehaviour:
   linearDamping: 0.1
   angularDamping: 0.6
   _centreOfMass: {x: 0, y: 0, z: 0}
+--- !u!114 &7191491165775811052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105189967758323200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a455e85786f14e079577b9293bc5e7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &8105189969027782720
 GameObject:
   m_ObjectHideFlags: 0
@@ -3661,6 +3675,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0620b082a2099ef4d947dad37fd0b882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3045611525418701517 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9151314206273992600, guid: c08dd695c7a00924cb5237b8fd04570b,
+    type: 3}
+  m_PrefabInstance: {fileID: 6105702706626209109}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5016711106861025696 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1235429334662900981, guid: c08dd695c7a00924cb5237b8fd04570b,
+    type: 3}
+  m_PrefabInstance: {fileID: 6105702706626209109}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6744777223263837270 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 657969082931476739, guid: c08dd695c7a00924cb5237b8fd04570b,

@@ -8,6 +8,8 @@
 
 #ifdef ON_MAC
 #define EXPORT_FUNC
+#elif __EMSCRIPTEN__
+#define EXPORT_FUNC
 #else
 #define EXPORT_FUNC __declspec(dllexport)
 #endif

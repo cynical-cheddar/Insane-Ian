@@ -266,8 +266,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         //Put strong brakes on for spawn
         var spawnedVehicle = PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
-        WheelCollider[] wheelColliders = spawnedVehicle.GetComponentsInChildren<WheelCollider>();
-        foreach (WheelCollider wc in wheelColliders) {
+        PhysXWheelCollider[] wheelColliders = spawnedVehicle.GetComponentsInChildren<PhysXWheelCollider>();
+        foreach (PhysXWheelCollider wc in wheelColliders) {
             wc.brakeTorque = 10000;
         }
     }

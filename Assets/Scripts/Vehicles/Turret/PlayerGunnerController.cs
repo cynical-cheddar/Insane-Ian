@@ -14,7 +14,7 @@ public class PlayerGunnerController : MonoBehaviour {
     public PhotonView gunnerPhotonView;
     public float maxZoomOut = 6f;
     Transform cam;
-    Collider[] colliders;
+    PhysXCollider[] colliders;
 
     public PhysXCollider.CollisionLayer raycastLayers;
 
@@ -26,7 +26,7 @@ public class PlayerGunnerController : MonoBehaviour {
       //  return;
         turretController = GetComponent<TurretController>();
         cam = Camera.main.transform;
-        colliders = transform.root.gameObject.GetComponentsInChildren<Collider>();
+        colliders = transform.root.gameObject.GetComponentsInChildren<PhysXCollider>();
         if (gunnerPhotonView == null) gunnerPhotonView = GetComponent<PhotonView>();
 
         rigidbodyVehicleId = transform.root.GetComponentInChildren<PhysXRigidBody>().vehicleId;
@@ -50,38 +50,38 @@ public class PlayerGunnerController : MonoBehaviour {
 
     void Update() {
         // fire 1
-        if (Input.GetButton("Fire1")) {
-            if (gunnerPhotonView.IsMine) {
-                if (gunnerWeaponManager.CurrentWeaponGroupCanFire()) {
-                    Vector3 targetHitpoint;
-                    if (turretController.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
-                    else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
+        // if (Input.GetButton("Fire1")) {
+        //     if (gunnerPhotonView.IsMine) {
+        //         if (gunnerWeaponManager.CurrentWeaponGroupCanFire()) {
+        //             Vector3 targetHitpoint;
+        //             if (turretController.inDeadZone) targetHitpoint = CalculateTargetingHitpoint(cam);
+        //             else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
 
-                    gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
-                }
-            }
-        }
+        //             gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
+        //         }
+        //     }
+        // }
 
-        if (Input.GetButtonUp("Fire1")) {
-            if (gunnerPhotonView.IsMine) {
-                gunnerWeaponManager.CeaseFireCurrentWeaponGroup();
-            }
-        }
+        // if (Input.GetButtonUp("Fire1")) {
+        //     if (gunnerPhotonView.IsMine) {
+        //         gunnerWeaponManager.CeaseFireCurrentWeaponGroup();
+        //     }
+        // }
 
-        // relaod
-        if (Input.GetButtonDown("Reload")) {
-            if (gunnerPhotonView.IsMine) {
-                gunnerWeaponManager.ReloadCurrentWeaponGroup();
-            }
-        }
+        // // relaod
+        // if (Input.GetButtonDown("Reload")) {
+        //     if (gunnerPhotonView.IsMine) {
+        //         gunnerWeaponManager.ReloadCurrentWeaponGroup();
+        //     }
+        // }
 
-        if (Input.GetButtonDown("Ultimate"))
-        {
-            if (gunnerPhotonView.IsMine)
-            {
-                gunnerWeaponManager.SelectUltimate();
-            }
-        }
+        // if (Input.GetButtonDown("Ultimate"))
+        // {
+        //     if (gunnerPhotonView.IsMine)
+        //     {
+        //         gunnerWeaponManager.SelectUltimate();
+        //     }
+        // }
 
         if (Input.GetKey(KeyCode.Space)) {
             camera.m_Lens.FieldOfView = Mathf.Lerp(camera.m_Lens.FieldOfView, 30, 0.1f);
@@ -127,7 +127,7 @@ public class PlayerGunnerController : MonoBehaviour {
     protected Transform FindClosestHitObject(Ray ray, out Vector3 hitPoint) {
 
         RaycastHit[] hits = Physics.RaycastAll(ray);
-        colliders = transform.root.gameObject.GetComponentsInChildren<Collider>();
+        colliders = transform.root.gameObject.GetComponentsInChildren<PhysXCollider>();
         Transform closestHit = null;
         float distance = 0;
         hitPoint = Vector3.zero;
