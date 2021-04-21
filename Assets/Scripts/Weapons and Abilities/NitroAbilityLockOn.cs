@@ -35,7 +35,7 @@ public class NitroAbilityLockOn : DriverAbility
     [PunRPC]
     void SaveVars()
     {
-        oldMass = driverPhotonView.GetComponent<Rigidbody>().mass;
+        oldMass = driverPhotonView.GetComponent<PhysXRigidBody>().mass;
         oldRammingResistance = driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageResistance;
         oldRammingDamageMultiplier = driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageMultiplier;
     }
@@ -55,7 +55,7 @@ public class NitroAbilityLockOn : DriverAbility
         {
 
             // new vars
-            driverPhotonView.GetComponent<Rigidbody>().mass = newMass;
+            driverPhotonView.GetComponent<PhysXRigidBody>().mass = newMass;
             driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageResistance = newRammingResistance;
             driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageMultiplier = newRammingDamageMultiplier;
             if (loopingNitroPrefab != null)
@@ -69,7 +69,7 @@ public class NitroAbilityLockOn : DriverAbility
 
             //  Destroy(loopingNitroInstance);
             // old vars
-            driverPhotonView.GetComponent<Rigidbody>().mass = oldMass;
+            driverPhotonView.GetComponent<PhysXRigidBody>().mass = oldMass;
             driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageResistance =oldRammingResistance;
             driverPhotonView.GetComponent<CollidableHealthManager>().rammingDamageMultiplier =oldRammingDamageMultiplier;
 
@@ -116,7 +116,7 @@ public class NitroAbilityLockOn : DriverAbility
         {
             abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, false);
             abilityActivated = false;
-            Rigidbody rb = driverPhotonView.GetComponent<Rigidbody>();
+            PhysXRigidBody rb = driverPhotonView.GetComponent<PhysXRigidBody>();
             if (rb.transform.InverseTransformDirection(rb.velocity).z > interfaceCarDrive4W.maxSpeed)
             {
                 Vector3 vel = rb.transform.InverseTransformDirection(rb.velocity);
@@ -155,8 +155,8 @@ public class NitroAbilityLockOn : DriverAbility
     {
         //Debug.Log("CrashIntoTarget");
         Transform me = interfaceCarDrive4W.transform;
-        Rigidbody rb = me.GetComponentInParent<Rigidbody>();
-        Rigidbody targetRb = target.GetComponent<Rigidbody>();
+        PhysXRigidBody rb = me.GetComponentInParent<PhysXRigidBody>();
+        PhysXRigidBody targetRb = target.GetComponent<PhysXRigidBody>();
         
         float elapsedTime = 0f;
        // rb.AddForce(transform.root.forward * rammingSpeed, ForceMode.VelocityChange); 

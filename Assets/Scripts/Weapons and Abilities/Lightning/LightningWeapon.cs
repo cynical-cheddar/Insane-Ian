@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using PhysX;
 
 public class LightningWeapon : Weapon
 {
@@ -293,45 +294,36 @@ public class LightningWeapon : Weapon
     {
         RaycastHitDetails raycastHitDetails = new RaycastHitDetails(targetPoint, Vector3.zero, null, false, false);;
         
-        RaycastHit[] hits = Physics.RaycastAll(ray);
+        //RaycastHit[] hits = Physics.RaycastAll(ray);
         
+       // if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
+
         Transform closestHit = null;
         float distance = 0;
         Vector3 hitPoint = Vector3.zero;
 
-        foreach (RaycastHit hit in hits)
-        {
-            if (hit.transform.root != this.transform && (closestHit == null || hit.distance < distance) && !(
-                (IList) colliders).Contains(hit.collider))
-            {
-                // We have hit something that is:
-                // a) not us
-                // b) the first thing we hit (that is not us)
-                // c) or, if not b, is at least closer than the previous closest thing
-
-                closestHit = hit.transform;
-                distance = hit.distance;
-                hitPoint = hit.point;
+        PhysXRaycastHit hitPhysX = PhysXRaycast.GetRaycastHit();
+         if (PhysXRaycast.Fire(ray.origin, ray.direction, hitPhysX, 999, raycastLayers, rigidbodyVehicleId)){
+             closestHit = hitPhysX.transform;
+                distance = hitPhysX.distance;
+                hitPoint = hitPhysX.point;
                 
                 // get local hitpoint
                 Vector3 localHitPoint = closestHit.root.InverseTransformPoint(hitPoint);
                 // the health script exists
-                if (hit.transform.root.GetComponent<VehicleHealthManager>() != null)
+                if (hitPhysX.transform.root.GetComponent<VehicleHealthManager>() != null)
                 {
                     raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,true,true );
                 }
                 else
                 {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint,closestHit,false,true );
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, closestHit,false,true );
                 }
-
-            }
-        }
-        
-
-        // closestHit is now either still null (i.e. we hit nothing) OR it contains the closest thing that is a valid thing to hit
+         }
+         PhysXRaycast.ReleaseRaycastHit(hitPhysX);
 
         return raycastHitDetails;
+    
 
     }
 }
