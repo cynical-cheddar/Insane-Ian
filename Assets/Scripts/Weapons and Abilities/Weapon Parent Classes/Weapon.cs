@@ -9,9 +9,13 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using PhysX;
+
+
 
 public class Weapon : Equipment
 {
+    
     public enum ReloadType
     {
         recharge,
@@ -50,7 +54,7 @@ public class Weapon : Equipment
         }
     }
 
-    
+    public PhysXCollider.CollisionLayer raycastLayers;
 
     protected PlayerTransformTracker _playerTransformTracker;
 
@@ -159,6 +163,8 @@ public class Weapon : Equipment
     protected DriverCinematicCam driverCamScript;
     protected float shakeTimerMax = 0;
     protected float shakeTimerCur= 0;
+
+    protected uint rigidbodyVehicleId = 0;
     protected void Awake()
     {
         defaultSalvoSize = salvoSize;
@@ -172,7 +178,7 @@ public class Weapon : Equipment
         turretCam = transform.root.GetComponentInChildren<PlayerGunnerController>().camera;
         cinemachineBasicMultiChannelPerlin = turretCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         driverCamScript = transform.root.GetComponentInChildren<DriverCinematicCam>();
-
+        rigidbodyVehicleId = transform.root.GetComponent<PhysXRigidBody>().vehicleId;
     }
 
 

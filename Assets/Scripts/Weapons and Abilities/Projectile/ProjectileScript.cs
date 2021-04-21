@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using PhysX;
 
 
-public class ProjectileScript : MonoBehaviour
+public class ProjectileScript : MonoBehaviour, ICollisionEnterEvent
 {
     GameObject impactParticle;
     GameObject missImpactParticle;
@@ -27,6 +28,9 @@ public class ProjectileScript : MonoBehaviour
     {
         weaponDamageDetails = wdd;
     }
+
+    public void CollisionEnter() {}
+    public bool requiresData { get { return true; } }
 
     public void SetTrueProjectile(bool set)
     {
@@ -58,8 +62,8 @@ public class ProjectileScript : MonoBehaviour
     }
     
 
-    void OnCollisionEnter(Collision collision)
-    {
+    public void  CollisionEnter(PhysXCollision collision) {
+    
         
         
         Vector3 impactNormal = collision.GetContact(0).normal;

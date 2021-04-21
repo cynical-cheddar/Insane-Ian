@@ -87,7 +87,14 @@ public class PhysXSceneManager : MonoBehaviour
         foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
             collision.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
-            if (bodies.TryGetValue(collision.self, out body)) body.FireCollisionEvents(collision);
+            if (bodies.TryGetValue(collision.self, out body)) {
+                try {
+                    body.FireCollisionEvents(collision);
+                }
+                catch (Exception e) {
+                    Debug.LogError("Exception: " + e.Message + "\n" + e.StackTrace);
+                }
+            }
             PhysXCollision.ReleaseCollision(collision);
         }
         PhysXSceneManager.ongoingCollisions.Clear();
@@ -95,7 +102,14 @@ public class PhysXSceneManager : MonoBehaviour
         foreach (PhysXTrigger trigger in PhysXSceneManager.ongoingTriggers) {
             trigger.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
-            if (bodies.TryGetValue(trigger.self, out body)) body.FireTriggerEvents(trigger);
+            if (bodies.TryGetValue(trigger.self, out body)) {
+                try {
+                    body.FireTriggerEvents(trigger);
+                }
+                catch (Exception e) {
+                    Debug.LogError("Exception: " + e.Message + "\n" + e.StackTrace);
+                }
+            }
             PhysXTrigger.ReleaseTrigger(trigger);
         }
         PhysXSceneManager.ongoingTriggers.Clear();

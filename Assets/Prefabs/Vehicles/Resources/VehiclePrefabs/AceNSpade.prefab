@@ -860,9 +860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60e9ca8dc93a33e4894a3a36014fa8d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensorLayerMask:
-    serializedVersion: 2
-    m_Bits: 192
+  sensorLayerMask: 0
   m_CautiousSpeedFactor: 0.05
   m_CautiousMaxAngle: 50
   m_CautiousMaxDistance: 100
@@ -6006,10 +6004,20 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.00065441645
       objectReference: {fileID: 0}
+    - target: {fileID: 2413017364490247176, guid: a206521bc6d08364393b512d26ce2129,
+        type: 3}
+      propertyPath: raycastLayers
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3249756922973807736, guid: a206521bc6d08364393b512d26ce2129,
         type: 3}
       propertyPath: m_Name
       value: AceNSpadeGunner
+      objectReference: {fileID: 0}
+    - target: {fileID: 3288995559967620321, guid: a206521bc6d08364393b512d26ce2129,
+        type: 3}
+      propertyPath: raycastLayers
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3529041894249317634, guid: a206521bc6d08364393b512d26ce2129,
         type: 3}
@@ -6107,6 +6115,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -6383594138712707759, guid: 58e62011db6f136458c47fc21d688ddc,
         type: 3}
+    - target: {fileID: 7575182284323385253, guid: a206521bc6d08364393b512d26ce2129,
+        type: 3}
+      propertyPath: raycastLayers
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7575182284323385253, guid: a206521bc6d08364393b512d26ce2129,
         type: 3}
       propertyPath: bulletHoles.Array.size

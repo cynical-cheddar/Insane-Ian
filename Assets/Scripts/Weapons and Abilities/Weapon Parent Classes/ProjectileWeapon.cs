@@ -36,6 +36,8 @@ public class ProjectileWeapon : Weapon
         {
             Physics.IgnoreCollision(projCollider, col);
         }
+
+        
     }
 
     
@@ -49,8 +51,8 @@ public class ProjectileWeapon : Weapon
     // we need a new version of this for every child class, otherwise the top level RPC will be called
     public override void Fire(Vector3 targetPoint)
     {
-        Debug.LogWarning("Projectile Weapon has not been ported to the new PhysX system");
-        return;
+       // Debug.LogWarning("Projectile Weapon has not been ported to the new PhysX system");
+      //  return;
 
         if (CanFire() && gunnerPhotonView.IsMine)
         {
@@ -63,6 +65,7 @@ public class ProjectileWeapon : Weapon
             WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage, Vector3.zero);
             string weaponDamageDetailsJson = JsonUtility.ToJson(weaponDamageDetails);
             weaponPhotonView.RPC(nameof(FireRPC_ProjectileWeapon), RpcTarget.All, targetPoint, weaponDamageDetailsJson);
+            ShakeCameras(cameraShakeAmplitude, cameraShakeDuration);
             // do the rest in subclass
         }
     }
@@ -75,7 +78,7 @@ public class ProjectileWeapon : Weapon
     protected virtual void FireRPC_ProjectileWeapon(Vector3 targetPoint, string serializedDamageDetails)
     {
         WeaponDamageDetails weaponDamageDetails = JsonUtility.FromJson<WeaponDamageDetails>(serializedDamageDetails);
-        parentRigidbody = transform.root.GetComponent<Rigidbody>();
+     //   parentRigidbody = transform.root.GetComponent<Rigidbody>();
         // debug function to fire weapon
         weaponAnimator.SetTrigger(primaryFireAnimatorTriggerName);
       //  Debug.Log("ProjectileWeapon class object has fired");
@@ -92,9 +95,9 @@ public class ProjectileWeapon : Weapon
         */
 
         GameObject obj = projectilePrefab;
-        StopProjectileCollisionsWithSelf(obj);
+      //  StopProjectileCollisionsWithSelf(obj);
         GameObject projectile = Instantiate(obj, barrelTransform.position, barrelTransform.rotation);
-        StopProjectileCollisionsWithSelf(projectile);
+       // StopProjectileCollisionsWithSelf(projectile);
         
         ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();
 
@@ -107,13 +110,13 @@ public class ProjectileWeapon : Weapon
         projectile.transform.LookAt(targetPoint);
 
         PlayAudioClipOneShot(weaponFireSound);
-        projectile.GetComponent<Rigidbody>().mass = projectileMass;
+        projectile.GetComponent<PhysXRigidBody>().mass = projectileMass;
         // FIRE REAL PROJECTILE
         if (gunnerPhotonView.IsMine)
         {
             projScript.SetTrueProjectile(true);
-            projectile.GetComponent<Rigidbody>().AddForce(projectileSpeed *(projectile.transform.forward) , ForceMode.VelocityChange);
-            if (inheritVelocityFromVehicle) projectile.GetComponent<Rigidbody>().AddForce(parentRigidbody.velocity, ForceMode.VelocityChange);
+            projectile.GetComponent<PhysXRigidBody>().AddForce(projectileSpeed *(projectile.transform.forward) , ForceMode.VelocityChange);
+            if (inheritVelocityFromVehicle) projectile.GetComponent<PhysXRigidBody>().AddForce(parentRigidbody.velocity, ForceMode.VelocityChange);
         }
         // add projectile settings 
         // otherwise fire a lag compensated dummy projectile with no damage scripts enabled
@@ -129,7 +132,7 @@ public class ProjectileWeapon : Weapon
             }
 
             projectile.transform.position = newPos;
-            projectile.GetComponent<Rigidbody>().AddForce(projectileSpeed *(projectile.transform.forward) , ForceMode.VelocityChange);  
+            projectile.GetComponent<PhysXRigidBody>().AddForce(projectileSpeed *(projectile.transform.forward) , ForceMode.VelocityChange);  
         }
         
         Destroy(projectile, 4f);
