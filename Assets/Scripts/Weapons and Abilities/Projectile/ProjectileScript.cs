@@ -24,6 +24,10 @@ public class ProjectileScript : MonoBehaviour, ICollisionEnterEvent
     private PooledObject pooledObject;
 
     private bool firstInstantiation = true;
+
+    PhysXRigidBody myRb;
+
+    
     public void SetWeaponDamageDetails(Weapon.WeaponDamageDetails wdd)
     {
         weaponDamageDetails = wdd;
@@ -39,7 +43,7 @@ public class ProjectileScript : MonoBehaviour, ICollisionEnterEvent
     
     public void ActivateProjectile(GameObject imp, GameObject misImp, GameObject projParticle, AudioClip hitS, AudioClip missS, float hitVol, float missVol)
     {
-       
+        lastVel = GetComponent<PhysXRigidBody>().velocity;
         impactParticle = imp;
         missImpactParticle = misImp;
         projectileParticle = projParticle;
@@ -57,14 +61,19 @@ public class ProjectileScript : MonoBehaviour, ICollisionEnterEvent
 
     void Awake()
     {
-        
+        myRb = GetComponent<PhysXRigidBody>();
         pooledObject = GetComponent<PooledObject>();
     }
     
+    Vector3 lastVel = Vector3.zero;
+
+    protected void Update(){
+        lastVel = myRb.velocity;
+    }
 
     public void  CollisionEnter(PhysXCollision collision) {
     
-        
+       // Debug.LogError(collision.gameObject);
         
         Vector3 impactNormal = collision.GetContact(0).normal;
 

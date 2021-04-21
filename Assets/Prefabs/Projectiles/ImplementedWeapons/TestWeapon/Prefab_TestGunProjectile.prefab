@@ -10,11 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1540927066135270478}
   - component: {fileID: 1540927066138126634}
-  - component: {fileID: 1540927066123236008}
   - component: {fileID: 1540927066129508212}
   - component: {fileID: -9031109656145948099}
   - component: {fileID: -6674781048089617136}
   - component: {fileID: 1029967146715598557}
+  - component: {fileID: 8944980512677007925}
+  - component: {fileID: 229072648046375747}
   m_Layer: 14
   m_Name: Prefab_TestGunProjectile
   m_TagString: Untagged
@@ -44,19 +45,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1540927066135063348}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!135 &1540927066123236008
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1540927066135063348}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1540927066129508212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,3 +101,33 @@ MonoBehaviour:
   linearDamping: 0
   angularDamping: 0
   _centreOfMass: {x: 0, y: 0, z: 0}
+--- !u!114 &8944980512677007925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540927066135063348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &229072648046375747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540927066135063348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8e167f3cef174267a88f6d3deb03eb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 2
+  collisionLayers: 1
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  radius: 1
