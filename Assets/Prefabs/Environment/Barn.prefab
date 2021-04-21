@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 3065423853156634611}
   - component: {fileID: 2100165432997970006}
   - component: {fileID: 4233874153808524444}
-  - component: {fileID: 3242639825472612390}
+  - component: {fileID: 3435514546950155591}
+  - component: {fileID: 6215829533375483665}
   m_Layer: 0
   m_Name: Barn
   m_TagString: Untagged
@@ -85,16 +86,35 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3242639825472612390
-BoxCollider:
+--- !u!114 &3435514546950155591
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2432298306854540617}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 3.1965344, y: 2.793736, z: 3.641651}
-  m_Center: {x: 0, y: 0.000000059604645, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6215829533375483665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2432298306854540617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  x: 45
+  y: 4.5
+  z: 4.5
