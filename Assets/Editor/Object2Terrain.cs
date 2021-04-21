@@ -38,7 +38,9 @@ public class Object2Terrain : EditorWindow {
  
 	delegate void CleanUp();
  
-	void CreateTerrain(){	
+	void CreateTerrain() {
+		Debug.LogError("this broken now (and not needed)");
+		return;
  
 		//fire up the progress bar
 		ShowProgressBar(1, 100);

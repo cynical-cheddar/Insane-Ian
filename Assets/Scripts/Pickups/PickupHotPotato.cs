@@ -7,12 +7,14 @@ public class PickupHotPotato : PickupItem
 {
     
     public float healthIncrease = 100f;
-    
-    
-    public override void OnTriggerEnter(Collider other)
+
+    public GameObject nutsNBoltsPrefab;
+    public override void TriggerEnter(PhysXCollider other)
     {
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
+
+        
 
         PhotonView otherpv = other.GetComponentInParent<PhotonView>();
         if (otherpv != null && otherpv.IsMine)
@@ -48,10 +50,15 @@ public class PickupHotPotato : PickupItem
         TeamNameSetup tns = otherpv.gameObject.GetComponentInParent<TeamNameSetup>();
         HotPotatoManager hpm = otherpv.gameObject.GetComponentInParent<HotPotatoManager>();
 
+        
+        this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
         hm.HealObject(healthIncrease);
         tns.ChangeColour(true);
         hpm.pickupPotato();
-        this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(), npv.GetGunnerID());
+
+        GameObject a = Instantiate(nutsNBoltsPrefab, transform.position, transform.rotation);
+        Destroy(a, 4f);
+        
         if(PhotonNetwork.IsMasterClient) PhotonNetwork.Destroy(this.gameObject);
         if(GetComponent<PhotonView>().IsMine) PhotonNetwork.Destroy(this.gameObject);
     }

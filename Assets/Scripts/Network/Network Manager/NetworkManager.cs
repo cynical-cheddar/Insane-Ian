@@ -44,11 +44,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // called on the master client when the game is fully set up
     void GameFullySetupMaster()
     {
+        
         // remove overlay
         GetComponent<PhotonView>().RPC(nameof(RemoveSpawningPlayersCanvas), RpcTarget.AllBuffered);
         GetComponent<PhotonView>().RPC(nameof(StartCountdown), RpcTarget.AllBuffered);
+        // start scoreboard stuff
+        
         // activate all cars in time
         Invoke(nameof(ActivateVehicles), 4f);
+
+
         
     }
     
@@ -176,7 +181,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void RemoveSpawningPlayersCanvas()
     {
+        ScoreboardBehaviour sb = FindObjectOfType<ScoreboardBehaviour>();
+        sb.StartScoreboard();
         if(spawningPlayersScreenInstance!=null) Destroy(spawningPlayersScreenInstance);
+        
+        
     }
 
     public void CallRespawnVehicle(float time, int teamId)
@@ -216,8 +225,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 } else {
                     spawnPoint = spawnPoints[teamId - 1];
                 }
-                vehicle.gameObject.transform.position = spawnPoint.position;
-                vehicle.gameObject.transform.rotation = spawnPoint.rotation;
+                PhysXRigidBody rigidBody = vehicle.GetComponent<PhysXRigidBody>();
+                rigidBody.position = spawnPoint.position;
+                rigidBody.rotation = spawnPoint.rotation;
 
                 // Add back damping on camera after move
                 yield return new WaitForSecondsRealtime(0.5f);
@@ -254,7 +264,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         object[] instantiationData = new object[]{teamId};
 
-        PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
+        //Put strong brakes on for spawn
+        var spawnedVehicle = PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
+        PhysXWheelCollider[] wheelColliders = spawnedVehicle.GetComponentsInChildren<PhysXWheelCollider>();
+        foreach (PhysXWheelCollider wc in wheelColliders) {
+            wc.brakeTorque = 10000;
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

@@ -4,30 +4,17 @@ using UnityEngine;
 using System.Collections;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using PhysX;
 
 
 [RequireComponent(typeof(PhotonView))]
-public class PickupItem : MonoBehaviour
+public class PickupItem : MonoBehaviour, ITriggerEnterEvent
 {
-    [Serializable]
-    public enum PickupTarget // your custom enumeration
-    {
-        Driver, 
-        Gunner,
-    };
-
-    [SerializeField]
-    
-    
-
+    public bool requiresData { get { return true; } }
     
     public float SecondsBeforeRespawn = 2;
 
-
     public bool PickupIsMine;
-
-    
-    
 
 
     // these values are internally used. they are public for debugging only
@@ -38,9 +25,6 @@ public class PickupItem : MonoBehaviour
     /// <summary>Timestamp when to respawn the item (compared to PhotonNetwork.time). </summary>
     public double TimeOfRespawn;    // needed when we want to update new players when a PickupItem respawns
 
-    /// <summary></summary>
-  //  public int ViewID { get { return this.photonView.ViewID; } }
-
     public static HashSet<PickupItem> DisabledPickupItems = new HashSet<PickupItem>();
     public AudioClip pickupSound;
     public GameObject audioSourcePrefab2d;
@@ -48,7 +32,7 @@ public class PickupItem : MonoBehaviour
     [Range(0.0f, 1.0f)]
     public float pickupSoundVolume = 1f;
 
-    public virtual void OnTriggerEnter(Collider other)
+    public virtual void TriggerEnter(PhysXCollider other)
     {
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
@@ -57,10 +41,10 @@ public class PickupItem : MonoBehaviour
         if (otherpv != null && otherpv.IsMine)
         {
             Pickup(otherpv);
-        }
-        
+        }   
     }
 
+    public void TriggerEnter() {}
 
 
     protected void PlayItemSoundToTeam(int driverId, int gunnerId)

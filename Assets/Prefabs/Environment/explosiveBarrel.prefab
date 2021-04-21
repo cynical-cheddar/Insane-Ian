@@ -151,7 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ada17ee11e83b44a52885520c343e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
+  rammingDamageResistance: 1
   defaultCollisionResistance: 0.1
   audioSourcePrefab: {fileID: 0}
   crashSoundsSmallDamageThreshold: 5
@@ -161,6 +162,7 @@ MonoBehaviour:
   crashMasterVolume: 1
   environmentCollisionResistance: 1
   collisionAreas: []
+  rammingDamageMultiplier: 1
   wreckPrefab: {fileID: 0}
   maxExplosionDamage: 50
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
