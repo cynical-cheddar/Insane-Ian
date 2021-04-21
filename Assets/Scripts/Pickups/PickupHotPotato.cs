@@ -14,6 +14,8 @@ public class PickupHotPotato : PickupItem
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
 
+        
+
         PhotonView otherpv = other.GetComponentInParent<PhotonView>();
         if (otherpv != null && otherpv.IsMine)
         {

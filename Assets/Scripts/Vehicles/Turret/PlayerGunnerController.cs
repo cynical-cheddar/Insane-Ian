@@ -2,6 +2,7 @@ using Cinemachine;
 using Photon.Pun;
 using System.Linq;
 using UnityEngine;
+using PhysX;
 
 [VehicleScript(ScriptType.playerGunnerScript)]
 public class PlayerGunnerController : MonoBehaviour {
@@ -15,13 +16,20 @@ public class PlayerGunnerController : MonoBehaviour {
     Transform cam;
     PhysXCollider[] colliders;
 
+    public PhysXCollider.CollisionLayer raycastLayers;
+
+    uint rigidbodyVehicleId = 0;
+
     // Start is called before the first frame update
     void Start() {
-        Debug.LogWarning("Player Gunner Controller has not been ported to the new PhysX system");
+      //  Debug.LogWarning("Player Gunner Controller has not been ported to the new PhysX system");
+      //  return;
         turretController = GetComponent<TurretController>();
         cam = Camera.main.transform;
         colliders = transform.root.gameObject.GetComponentsInChildren<PhysXCollider>();
         if (gunnerPhotonView == null) gunnerPhotonView = GetComponent<PhotonView>();
+
+        rigidbodyVehicleId = transform.root.GetComponentInChildren<PhysXRigidBody>().vehicleId;
     }
 
     void OnEnable() {
@@ -99,11 +107,11 @@ public class PlayerGunnerController : MonoBehaviour {
 
     Vector3 CalculateTargetingHitpoint(Transform sourceTransform) {
         Ray ray = new Ray(sourceTransform.position, sourceTransform.forward);
-        RaycastHit hit; //From camera to hitpoint, not as curent
+     //   RaycastHit hit; //From camera to hitpoint, not as curent
         Transform hitTransform;
         Vector3 hitVector;
         hitTransform = FindClosestHitObject(ray, out hitVector);
-        Physics.Raycast(ray.origin, ray.direction, out hit, 999);
+       // Physics.Raycast(ray.origin, ray.direction, out hit, 999);
         Vector3 hp;
 
         if (hitTransform == null) {
@@ -124,23 +132,24 @@ public class PlayerGunnerController : MonoBehaviour {
         float distance = 0;
         hitPoint = Vector3.zero;
 
-        foreach (RaycastHit hit in hits) {
-            // if (hit.transform.root != this.transform && (closestHit == null || hit.distance < distance) && !colliders.Contains(hit.collider)) {
-            //     // We have hit something that is:
-            //     // a) not us
-            //     // b) the first thing we hit (that is not us)
-            //     // c) or, if not b, is at least closer than the previous closest thing
+        PhysXRaycastHit hitPhysX = PhysXRaycast.GetRaycastHit();
+         if (PhysXRaycast.Fire(ray.origin, ray.direction, hitPhysX, 999, raycastLayers, rigidbodyVehicleId)){
+             closestHit = hitPhysX.transform;
+             hitPoint = hitPhysX.point;
+         }
 
-            //     closestHit = hit.transform;
-            //     distance = hit.distance;
-            //     hitPoint = hit.point;
+         
 
-            // }
-        }
+          PhysXRaycast.ReleaseRaycastHit(hitPhysX);
+
+
+        
 
         // closestHit is now either still null (i.e. we hit nothing) OR it contains the closest thing that is a valid thing to hit
 
         return closestHit;
 
     }
+
+    
 }

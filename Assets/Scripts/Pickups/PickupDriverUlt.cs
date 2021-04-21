@@ -11,6 +11,7 @@ public class PickupDriverUlt : PickupItem
     public override void TriggerEnter(PhysXCollider other)
     {
         Debug.Log("AAAAAAAAA");
+        Debug.Log("driver ult pickup");
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
 
