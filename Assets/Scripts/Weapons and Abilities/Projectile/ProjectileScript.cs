@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using PhysX;
 
 
-public class ProjectileScript : MonoBehaviour
+public class ProjectileScript : MonoBehaviour, ICollisionEnterEvent
 {
     GameObject impactParticle;
     GameObject missImpactParticle;
@@ -23,10 +24,17 @@ public class ProjectileScript : MonoBehaviour
     private PooledObject pooledObject;
 
     private bool firstInstantiation = true;
+
+    PhysXRigidBody myRb;
+
+    
     public void SetWeaponDamageDetails(Weapon.WeaponDamageDetails wdd)
     {
         weaponDamageDetails = wdd;
     }
+
+    public void CollisionEnter() {}
+    public bool requiresData { get { return true; } }
 
     public void SetTrueProjectile(bool set)
     {
@@ -35,7 +43,7 @@ public class ProjectileScript : MonoBehaviour
     
     public void ActivateProjectile(GameObject imp, GameObject misImp, GameObject projParticle, AudioClip hitS, AudioClip missS, float hitVol, float missVol)
     {
-       
+        lastVel = GetComponent<PhysXRigidBody>().velocity;
         impactParticle = imp;
         missImpactParticle = misImp;
         projectileParticle = projParticle;
@@ -53,14 +61,19 @@ public class ProjectileScript : MonoBehaviour
 
     void Awake()
     {
-        
+        myRb = GetComponent<PhysXRigidBody>();
         pooledObject = GetComponent<PooledObject>();
     }
     
+    Vector3 lastVel = Vector3.zero;
 
-    void OnCollisionEnter(Collision collision)
-    {
-        
+    protected void Update(){
+        lastVel = myRb.velocity;
+    }
+
+    public void  CollisionEnter(PhysXCollision collision) {
+    
+       // Debug.LogError(collision.gameObject);
         
         Vector3 impactNormal = collision.GetContact(0).normal;
 
