@@ -330,10 +330,10 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         EngineLow.volume = 0;
         EngineHigh.volume = 0;
 
-        wheelStructs.Add(new wheelStruct(0f, "", frontLeftW));
-        wheelStructs.Add(new wheelStruct(0f, "", frontRightW));
-        wheelStructs.Add(new wheelStruct(0f, "", rearLeftW));
-        wheelStructs.Add(new wheelStruct(0f, "", rearRightW));
+        wheelStructs.Add(new wheelStruct(1f, "", frontLeftW));
+        wheelStructs.Add(new wheelStruct(1f, "", frontRightW));
+        wheelStructs.Add(new wheelStruct(1f, "", rearLeftW));
+        wheelStructs.Add(new wheelStruct(1f, "", rearRightW));
 
         Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
     }
