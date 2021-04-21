@@ -4,13 +4,17 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 using Gamestate;
+using TMPro;
 
 public class ReadyToggle : MonoBehaviour
 {
 
     public LobbySlotMaster lobbySlotMaster;
     GamestateTracker gamestateTracker;
-    public Toggle toggle;
+    bool isReady = false;
+    public Button toggleReadyButton;
+    public Image buttonFill;
+    public TextMeshProUGUI buttonText;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,31 +26,27 @@ public class ReadyToggle : MonoBehaviour
         gamestateTracker = FindObjectOfType<GamestateTracker>();
     }
 
-    public void changeReadyStatus()
-    {
+    public void ToggleReady() {
+        SetReady(!isReady);
+    }
+
+    void SetReady(bool state) {
+        isReady = state;
         PlayerEntry playerEntry = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
-        
-        bool state = toggle.isOn;
-        
-        // check if it is valid to ready up. If we have not selected a slot, set to false
 
-        if (playerEntry.role == (short)PlayerEntry.Role.None) toggle.isOn = false;
+        if (playerEntry.role == (short)PlayerEntry.Role.None) isReady = false;
 
-
-
-        playerEntry.ready = toggle.isOn;
-        playerEntry.Commit();
-        
         lobbySlotMaster.GetComponent<PhotonView>().RPC(nameof(LobbySlotMaster.UpdateCountAndReady), RpcTarget.All);
-        
+        playerEntry.ready = isReady;
+        playerEntry.Commit();
+
+        if (!isReady) {
+            buttonFill.color = new Color32(0xFF, 0x61, 0x61, 0xFF);
+            buttonText.text = "Ready Up";
+        } else {
+            buttonFill.color = new Color32(0x65, 0xC5, 0x6B, 0xFF);
+            buttonText.text = "Unready";
+        }
     }
 
-    public void setReadyStatus(bool set)
-    {
-
-        
-        toggle.isOn = set;
-        changeReadyStatus();
-
-    }
 }

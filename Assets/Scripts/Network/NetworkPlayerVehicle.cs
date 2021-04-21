@@ -191,6 +191,9 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
             EnableMonobehaviours(playerGunnerScripts);
             GetComponent<TeamNameSetup>().SetupTeamName("");
         }
+
+
+
         //Debug.Log("GOT HERE2");
         Debug.Log("Spawn success");
 

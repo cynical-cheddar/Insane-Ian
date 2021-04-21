@@ -9,8 +9,10 @@ public class PickupHealth : PickupItem
     public float healthIncrease = 25f;
     
     
-    public override void OnTriggerEnter(Collider other)
+    public override void TriggerEnter(PhysXCollider other)
     {
+
+        Debug.Log("health pickup");
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
 

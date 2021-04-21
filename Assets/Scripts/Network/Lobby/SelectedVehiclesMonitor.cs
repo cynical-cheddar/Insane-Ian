@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SelectedVehiclesMonitor : MonoBehaviour
 {
@@ -14,12 +15,11 @@ public class SelectedVehiclesMonitor : MonoBehaviour
     private List<short> selectedHumanTeamsIds;
 
     public bool outputText = true;
-    public Text text;
+    public TextMeshProUGUI text;
     
     void Start()
     {
         gamestateTrackerUtils = FindObjectOfType<GamestateTrackerUtils>();
-        if (text == null) text = GetComponent<Text>();
     }
 
     // Update is called once per frame

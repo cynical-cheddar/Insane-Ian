@@ -4,20 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Cinemachine;
+using PhysX;
 
 [VehicleScript(ScriptType.playerDriverScript)]
 
-public class DriverCrashDetector : MonoBehaviour
+public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
 {
-
-
-
-
-
     public float crashAngleThreshold = 50;
 
-
-    
     public float playerSensorMultiplier = 3f;
 
     public int playerLayer = 8;
@@ -25,15 +19,9 @@ public class DriverCrashDetector : MonoBehaviour
     private float currentSpeed;
 
     public bool drawDebugLines = false;
-
-
-
-    
-    
-
     
     [Header("Sensors")]
-    public LayerMask sensorLayerMask;
+    public PhysXCollider.CollisionLayer sensorLayerMask;
     float sensorLength = 5f;
     
     
@@ -45,7 +33,7 @@ public class DriverCrashDetector : MonoBehaviour
     public Vector3 frontSensorPosition = new Vector3(0f, 0.2f, 2.5f);
     public float frontSideSensorPosition = 0.2f;
     public float frontSensorAngle = 30f;
-    private Rigidbody myRb;
+    private PhysXRigidBody myRb;
     
     
     [Serializable]
@@ -99,15 +87,23 @@ public class DriverCrashDetector : MonoBehaviour
         }
     }
 
+        public void CollisionEnter() {}
+    public bool requiresData { get { return true; } }
+
     private void Start()
     {
-        myRb = GetComponent<Rigidbody>();
+      //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
+       // return;
+
+       
+        myRb = GetComponent<PhysXRigidBody>();
         currentSensorReport = new CurrentSensorReportStruct();
         currentSensorReport.lastCrashedPlayer = transform.root;
+        
     }
 
 
-    private void OnCollisionEnter(Collision other)
+    public void CollisionEnter(PhysXCollision other)
     {
         if (currentSpeed > slowRange.speed)
         {
@@ -115,9 +111,9 @@ public class DriverCrashDetector : MonoBehaviour
             {
             currentSensorReport.crashed = true;
             // get left/right 
-            ContactPoint[] contactPoints = other.contacts;
+            PhysXContactPoint[] contactPoints = other.GetContacts();
             Vector3 cpSum = Vector3.zero;
-            foreach (ContactPoint c in contactPoints)
+            foreach (PhysXContactPoint c in contactPoints)
             {
                 cpSum += c.point;
             }
@@ -166,6 +162,7 @@ public class DriverCrashDetector : MonoBehaviour
     private Vector3 localVel = Vector3.zero;
     private void FixedUpdate()
     {
+        //return;
 
         vel = myRb.velocity;
         localVel = transform.InverseTransformDirection(vel);
@@ -176,7 +173,7 @@ public class DriverCrashDetector : MonoBehaviour
         
         if (currentSpeed < slowRange.speed)
         {
-            sensorLength = 0;
+            sensorLength = 0.01f;
         }
         else if (currentSpeed > fastRange.speed)
         {
@@ -193,8 +190,9 @@ public class DriverCrashDetector : MonoBehaviour
         CalculateSensors();
     }
 
-    void CalculateTimeToHit(Rigidbody otherPlayer)
+    void CalculateTimeToHit(PhysXRigidBody otherPlayer)
     {
+        Debug.Log("Start calculateTimetoHit physx");
         float answer = Mathf.Infinity;
         Vector3 otherVel = transform.InverseTransformDirection(otherPlayer.velocity);
 
@@ -232,7 +230,11 @@ public class DriverCrashDetector : MonoBehaviour
             
             distList.Add(relativeDistance);
             timeList.Add(answer);
+            
+            Debug.Log("End calculateTimetoHit physx velocityDifference.z > 1 ");
         }
+        
+        Debug.Log("End calculateTimetoHit physx");
         
         
     }
@@ -249,12 +251,6 @@ public class DriverCrashDetector : MonoBehaviour
         {
           //  Debug.Log("Velocity difference not gonna hit" + velocityDifference);
           float relativeDistance = Vector3.Distance(hitpoint, transform.position + transform.forward * frontSensorPosition.z);
-
-
-
-
-
-
         }
         else if (velocityDifference.z > 1)
         {
@@ -285,7 +281,7 @@ public class DriverCrashDetector : MonoBehaviour
             
             bool avoiding = false;
             bool playerAhead = false;
-            RaycastHit hit;
+
             Vector3 sensorStartPos = transform.position;
             sensorStartPos += transform.forward * frontSensorPosition.z;
             sensorStartPos += transform.up * frontSensorPosition.y;
@@ -298,7 +294,8 @@ public class DriverCrashDetector : MonoBehaviour
          //   Vector3 targetVel = Vector3.zero;
             //front right sensor
             sensorStartPos += transform.right * frontSideSensorPosition;
-            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
+            PhysXRaycastHit hit = PhysXRaycast.GetRaycastHit();
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                  if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     float increase = 1f;
@@ -310,7 +307,7 @@ public class DriverCrashDetector : MonoBehaviour
                         {
                             telecastIncrease *= playerSensorMultiplier;
                             playerAhead = true;
-                            CalculateTimeToHit(hit.collider.attachedRigidbody);
+                            CalculateTimeToHit(hit.collider.attachedRigidBody);
                         }
                         else CalculateTimeToHit(hit.point);
 
@@ -328,10 +325,9 @@ public class DriverCrashDetector : MonoBehaviour
                     }
             }
 
+
             //front right angle sensor
-            else if (Physics.Raycast(sensorStartPos,
-                Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength,
-                sensorLayerMask))
+            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId))
             {
                 if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 0.5f;
@@ -342,7 +338,7 @@ public class DriverCrashDetector : MonoBehaviour
                     {
                         telecastIncrease *= playerSensorMultiplier;
                         playerAhead = true;
-                        CalculateTimeToHit(hit.collider.attachedRigidbody);
+                        CalculateTimeToHit(hit.collider.attachedRigidBody);
                     }
                     else CalculateTimeToHit(hit.point);
 
@@ -359,7 +355,7 @@ public class DriverCrashDetector : MonoBehaviour
 
             //front left sensor
             sensorStartPos -= transform.right * (frontSideSensorPosition * 2);
-            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask)) {
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 1f;
                 float telecastIncrease = 1f;
@@ -369,7 +365,7 @@ public class DriverCrashDetector : MonoBehaviour
                     {
                         telecastIncrease *= playerSensorMultiplier;
                         playerAhead = true;
-                        CalculateTimeToHit(hit.collider.attachedRigidbody);
+                        CalculateTimeToHit(hit.collider.attachedRigidBody);
                     }
                     else CalculateTimeToHit(hit.point);
 
@@ -385,9 +381,8 @@ public class DriverCrashDetector : MonoBehaviour
             }
 
             //front left angle sensor
-            else if (Physics.Raycast(sensorStartPos,
-                Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength,
-                sensorLayerMask))
+            else if (PhysXRaycast.Fire(sensorStartPos,
+                Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId))
             {
                 if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                 float increase = 0.5f;
@@ -398,7 +393,7 @@ public class DriverCrashDetector : MonoBehaviour
                     {
                         telecastIncrease *= playerSensorMultiplier;
                         playerAhead = true;
-                        CalculateTimeToHit(hit.collider.attachedRigidbody);
+                        CalculateTimeToHit(hit.collider.attachedRigidBody);
                     }
                     else CalculateTimeToHit(hit.point);
 
@@ -414,7 +409,7 @@ public class DriverCrashDetector : MonoBehaviour
             }
 
             //front center sensor
-            if (Physics.Raycast(sensorStartPos, transform.forward, out hit, sensorLength, sensorLayerMask))
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId))
                 {
                     if (drawDebugLines) Debug.DrawLine(sensorStartPos, hit.point);
                     float increase = 1.5f;
@@ -425,7 +420,8 @@ public class DriverCrashDetector : MonoBehaviour
                         {
                             telecastIncrease *= playerSensorMultiplier;
                             playerAhead = true;
-                            CalculateTimeToHit(hit.collider.attachedRigidbody);
+                            Debug.Log("hit collider is: " + hit.collider + " and rb is: " + hit.collider.attachedRigidBody);
+                            CalculateTimeToHit(hit.collider.attachedRigidBody);
                         }
                         else CalculateTimeToHit(hit.point);
 
@@ -438,6 +434,7 @@ public class DriverCrashDetector : MonoBehaviour
                         timeList.Add(1f);
                     }
                 }
+            PhysXRaycast.ReleaseRaycastHit(hit);
 
             float meanDist = Mathf.Infinity;
             float meanCrashTime = Mathf.Infinity;;
