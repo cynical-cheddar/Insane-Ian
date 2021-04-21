@@ -268,25 +268,24 @@ public class VehicleHealthManager : CollidableHealthManager
         inputDriver.enabled = false;
         rb.linearDamping = 0.75f;
         rb.angularDamping = 0.75f;
+        icd4.isDead = true;
         float x, y, z;
-        x = Random.Range(-0.5f, 0.5f);
+        x = Random.Range(-0.2f, 0.2f);
         if (x < 0) {
-            x -= 1.5f;
+            x -= 1.3f;
         } else {
-            x += 1.5f;
+            x += 1.3f;
         }
         y = 0.9f;
-        z = Random.Range(0, 2f);
+        z = Random.Range(0.3f, 1.6f);
 
         if (lastHitDetails.damageType != Weapon.DamageType.ramming)
         {
-            icd4.isDead = true;
+            rb.centreOfMass = new Vector3(0, 0.6f, 0);
             Vector3 explodePos = new Vector3(x, y, z);
-            Vector3 newCom = new Vector3(0, 1.3f, 0);
-            rb.centreOfMass = newCom;
             rb.angularDamping = 0.1f;
-            rb.AddForce(explodePos * rb.mass * 10f, ForceMode.Impulse);
-            rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
+            rb.AddForce(explodePos * rb.mass * 8f, ForceMode.Impulse);
+            rb.AddTorque(explodePos * rb.mass * 3f, ForceMode.Impulse);
         }
 
         smokeM.Play();
@@ -347,6 +346,7 @@ public class VehicleHealthManager : CollidableHealthManager
         smokeL.Stop();
         smokeM.Stop();
         smokeH.Stop();
+        Debug.Log("Called");
 
         rb.linearDamping = defaultDrag;
         rb.angularDamping = defaultAngularDrag;

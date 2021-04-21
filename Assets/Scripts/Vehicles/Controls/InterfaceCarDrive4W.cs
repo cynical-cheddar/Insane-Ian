@@ -310,7 +310,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             } else {
                 carRB.centreOfMass = new Vector3(0, -2.5f, 0);
             }
-        } else
+        } else if (!isDead)
             carRB.centreOfMass = new Vector3(0, 0, 0);
 
     }
