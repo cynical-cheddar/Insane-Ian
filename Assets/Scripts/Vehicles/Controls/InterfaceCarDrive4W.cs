@@ -156,13 +156,11 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     void IDrivable.Drift() {
         foreach (wheelStruct ws in wheelStructs) {
             ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * driftStiffness;
-            //ws.collider.asymptoteSidewaysStiffness = driftStiffness;
         }
     }
     void IDrivable.StopDrift() {
         foreach (wheelStruct ws in wheelStructs) {
             ws.collider.asymptoteSidewaysStiffness = ws.groundStiffness * baseStiffness;
-            //ws.collider.asymptoteSidewaysStiffness = baseStiffness;
         }
     }
     private bool AllWheelsGrounded() {
@@ -235,8 +233,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         float lDistance = 1f;
         float rDistance = 1f;
 
-
-        //  Can get suspension compression if tht's useful
         if (lGrounded) {
             lDistance = (-left.transform.InverseTransformPoint(lHit.point).y - left.radius) / left.suspensionDistance;
         }
@@ -264,6 +260,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         var lEmission = leftPS.emission;
         var rEmission = rightPS.emission;
 
+        // left rear dust emission
         if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (lHit.collider.CompareTag("DustGround")) {
                 lEmission.enabled = true;
@@ -273,6 +270,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         } else {
             lEmission.enabled = false;
         }
+
+        // right rear dust emission
         if (rGrounded && (Mathf.Abs(rearRightW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (rHit.collider.CompareTag("DustGround")) {
                 rEmission.enabled = true;
@@ -290,7 +289,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     private void getSurface() {
         for (int i = 0; i < wheelStructs.Count; i++) {
             PhysXWheelHit hit = PhysXWheelHit.GetWheelHit();
-            if (wheelStructs[i].collider.GetGroundHit(hit)) {
+            if (wheelStructs[i].collider.GetGroundHit(hit)) { //for each wheel
+                // if new ground type, set new stiffness
                 if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
                     wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
                 } else {
@@ -334,8 +334,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         wheelStructs.Add(new wheelStruct(1f, "", frontRightW));
         wheelStructs.Add(new wheelStruct(1f, "", rearLeftW));
         wheelStructs.Add(new wheelStruct(1f, "", rearRightW));
-
-        Debug.LogWarning("Interface Car Drive has not been fully ported to the new PhysX system");
     }
 }
 
