@@ -9,13 +9,9 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
-using PhysX;
-
-
 
 public class Weapon : Equipment
 {
-    
     public enum ReloadType
     {
         recharge,
@@ -54,7 +50,7 @@ public class Weapon : Equipment
         }
     }
 
-    public PhysXCollider.CollisionLayer raycastLayers;
+    
 
     protected PlayerTransformTracker _playerTransformTracker;
 
@@ -70,6 +66,9 @@ public class Weapon : Equipment
 
     protected GunnerWeaponManager gunnerWeaponManager;
     
+    public PhysXCollider.CollisionLayer raycastLayers;
+
+
     // Start is called before the first frame update
     [Header("Primary Properties")]
     public string weaponName = "defaultWeapon";
@@ -164,7 +163,7 @@ public class Weapon : Equipment
     protected float shakeTimerMax = 0;
     protected float shakeTimerCur= 0;
 
-    protected uint rigidbodyVehicleId = 0;
+    protected uint rigidbodyVehicleId;
     protected void Awake()
     {
         defaultSalvoSize = salvoSize;
@@ -178,7 +177,7 @@ public class Weapon : Equipment
         turretCam = transform.root.GetComponentInChildren<PlayerGunnerController>().camera;
         cinemachineBasicMultiChannelPerlin = turretCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         driverCamScript = transform.root.GetComponentInChildren<DriverCinematicCam>();
-        rigidbodyVehicleId = transform.root.GetComponent<PhysXRigidBody>().vehicleId;
+        rigidbodyVehicleId = GetComponentInParent<PhysXRigidBody>().vehicleId;
     }
 
 
@@ -191,7 +190,7 @@ public class Weapon : Equipment
         shakeTimerMax = time;
         shakeTimerCur = 0;
         cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
-        
+        driverCamScript.ShakeCams(intensity, time);
     }
 
     public virtual void ResetWeaponToDefaults()
@@ -283,7 +282,7 @@ public class Weapon : Equipment
     //-----------------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------------------
-    //-----------------------           ------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------
     
     public virtual void SetupWeapon()
     {   
