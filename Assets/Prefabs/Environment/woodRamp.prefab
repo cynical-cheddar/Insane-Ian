@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 932818692997874202}
   - component: {fileID: 4277806384633122239}
   - component: {fileID: 2069726684434954613}
-  - component: {fileID: 8463452834714425367}
+  - component: {fileID: 838417198987960303}
+  - component: {fileID: 2903491134957184379}
   m_Layer: 0
   m_Name: woodRamp
   m_TagString: Untagged
@@ -82,17 +83,35 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8463452834714425367
-MeshCollider:
+--- !u!114 &838417198987960303
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 556714640852900000}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1614671836874630292, guid: 179e2d0ed56c91a49a2d0f6f185fdf5b, type: 3}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2903491134957184379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556714640852900000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b70393a1ebd9245eda71ab4f0b5976c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  mesh: {fileID: -1614671836874630292, guid: 179e2d0ed56c91a49a2d0f6f185fdf5b, type: 3}
+  convex: 1
+  scale: {x: 1.9479241, y: 1.3229731, z: 1.8831617}

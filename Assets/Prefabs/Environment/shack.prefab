@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 7974467686479462665}
   - component: {fileID: 7974467686479462666}
   - component: {fileID: 7349744480795290757}
+  - component: {fileID: 7169842608525043797}
+  - component: {fileID: 1551923918504263690}
   m_Layer: 0
   m_Name: shack
   m_TagString: Untagged
@@ -150,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bb0ce2585d3f81479a665517c4cae41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 6
+  health: 5
   rammingDamageResistance: 0.52
   defaultCollisionResistance: 1
   audioSourcePrefab: {fileID: 0}
@@ -164,3 +166,40 @@ MonoBehaviour:
   rammingDamageMultiplier: 1
   wreckPrefab: {fileID: 3030104684564936446, guid: 8315aa94b077264418f5d91f99a811dc,
     type: 3}
+--- !u!114 &7169842608525043797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7974467686479462667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  x: 3
+  y: 4
+  z: 4
+--- !u!114 &1551923918504263690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7974467686479462667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f9c52f195e6a448c8bd38e0a7c65986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kinematic: 0
+  mass: 500
+  linearDamping: 0
+  angularDamping: 0
+  _centreOfMass: {x: 0, y: -1, z: 0}
