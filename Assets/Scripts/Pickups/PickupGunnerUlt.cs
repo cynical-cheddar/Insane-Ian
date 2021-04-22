@@ -9,11 +9,12 @@ public class PickupGunnerUlt : PickupItem
     public float ultIncrease = 25f;
 
 
-    public override void OnTriggerEnter(Collider other)
+    public override void TriggerEnter(PhysXCollider other)
     {
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
 
+        Debug.Log("gunner ult pickup");
         PhotonView otherpv = other.GetComponentInParent<PhotonView>();
         if (otherpv != null && otherpv.IsMine)
         {

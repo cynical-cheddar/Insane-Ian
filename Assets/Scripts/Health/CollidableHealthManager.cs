@@ -4,9 +4,12 @@ using Photon.Pun;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System;
+using PhysX;
 
-public class CollidableHealthManager : HealthManager
+public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 {
+    public bool requiresData { get { return true; } }
+
     [Serializable]
     public struct CollisionArea {
         public bool show;
@@ -20,7 +23,7 @@ public class CollidableHealthManager : HealthManager
     }
 
     public float defaultCollisionResistance = 1;
-    public GameObject audioSourcePrefab;
+    public GameObject audioSourcePrefab = null;
     public float crashSoundsSmallDamageThreshold = 5f;
     public float crashSoundsLargeDamageThreshold = 40f;
     public List<AudioClip> crashSoundsSmall = new List<AudioClip>();
@@ -38,13 +41,19 @@ public class CollidableHealthManager : HealthManager
     
     public float rammingDamageMultiplier = 1f;
     
+    protected float timeSinceLastRam = 0f;
     protected new void Start(){
         baseCollisionResistance = deathForce / maxHealth;
         base.Start();
     }
+    protected void Update(){
+        timeSinceLastRam += Time.deltaTime;
+    }
 
-    protected void OnCollisionEnter(Collision collision) {
-        if (PhotonNetwork.IsMasterClient) {
+    public void CollisionEnter() {}
+
+    public void CollisionEnter(PhysXCollision collision) {
+        if (myPhotonView.IsMine) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
             if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
@@ -65,16 +74,18 @@ public class CollidableHealthManager : HealthManager
             //Debug.Log(damage);
     
             // instantiate damage sound over network
-            if(damage > crashSoundsSmallDamageThreshold) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            if(damage > crashSoundsSmallDamageThreshold && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
 
             damage = damage / rammingDamageResistance;
             
-            if (GetComponent<COMDropper>() != null && !resetting)
-            {
-                resetting = true;
-                Rigidbody rb = GetComponent<Rigidbody>();
-                StartCoroutine(ResetPreviousCOM(rb.centerOfMass, 1f));
-                rb.centerOfMass = Vector3.zero;
+            
+            if (GetComponent<COMDropper>() != null && !resetting) {
+                Debug.LogWarning("Whatever this is has not been ported to the new PhysX system");
+                // Might not be needed anymore as COM is no longer dropped?
+                // resetting = true;
+                // Rigidbody rb = GetComponent<Rigidbody>();
+                // StartCoroutine(ResetPreviousCOM(rb.centerOfMass, 1f));
+                // rb.centerOfMass = Vector3.zero;
             }
             
             if (otherVehicleManager != null) {
@@ -86,6 +97,7 @@ public class CollidableHealthManager : HealthManager
             else {
                 TakeDamage(damage);
             }
+            timeSinceLastRam= 0f;
         }
     }
 
@@ -123,29 +135,29 @@ public class CollidableHealthManager : HealthManager
     [PunRPC]
     protected void PlayDamageSoundNetwork(float damage)
     {
-        GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
-        AudioSource a = crashSound.GetComponent<AudioSource>();
-        if (damage > crashSoundsLargeDamageThreshold && crashSoundsLarge.Count > 0)
-        {
-            int randInt = Random.Range(0, crashSoundsLarge.Count - 1);
-            a.clip = crashSoundsLarge[randInt];
-        }
-        else if(crashSoundsSmall.Count > 0)
-        {
-            int randInt = Random.Range(0, crashSoundsSmall.Count - 1);
-            a.clip = crashSoundsLarge[randInt];
-        }
+        if (audioSourcePrefab != null) {
+            GameObject crashSound = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
+            AudioSource a = crashSound.GetComponent<AudioSource>();
+            if (damage > crashSoundsLargeDamageThreshold && crashSoundsLarge.Count > 0)
+            {
+                int randInt = Random.Range(0, crashSoundsLarge.Count - 1);
+                a.clip = crashSoundsLarge[randInt];
+            }
+            else if(crashSoundsSmall.Count > 0)
+            {
+                int randInt = Random.Range(0, crashSoundsSmall.Count - 1);
+                a.clip = crashSoundsLarge[randInt];
+            }
 
-        if (a.clip != null)
-        {
-            a.Play();
-            Destroy(crashSound, a.clip.length);
+            if (a.clip != null)
+            {
+                a.Play();
+                Destroy(crashSound, a.clip.length);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
-        else
-        {
-            Destroy(gameObject);
-        }
-        
     }
-
 }

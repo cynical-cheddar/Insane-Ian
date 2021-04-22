@@ -16,6 +16,9 @@ public class CarSwitcher : MonoBehaviour
 	
 	void Update () 
     {
+		Debug.LogWarning("Car Switcher has not been ported to the new PhysX system");
+		return;
+
 		if (Input.GetKeyUp(KeyCode.K))	
 		{
 			// Disable the previous vehicle.

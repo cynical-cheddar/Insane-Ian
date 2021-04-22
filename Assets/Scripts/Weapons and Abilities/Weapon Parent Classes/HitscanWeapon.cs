@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
+using PhysX;
 
 public class HitscanWeapon : Weapon {
     public struct RaycastHitDetails {
@@ -36,7 +37,6 @@ public class HitscanWeapon : Weapon {
     [Header("Hitscan Settings")]
     public bool useTracerHitCorrection = true;
     public float hitscanRange = 10000f;
-    protected Rigidbody parentRigidbody;
     // we should serialize this bool on change. when it is active and the photon view is not ours and optimisations are enabled, then do fire effects
     protected bool isFiring = false;
 
@@ -52,7 +52,7 @@ public class HitscanWeapon : Weapon {
     protected bool lastIsRemotelyFiring = false;
 
     
-    private Collider[] colliders;
+    private PhysXCollider[] colliders;
 
     
     
@@ -153,8 +153,10 @@ public class HitscanWeapon : Weapon {
 
     protected new void SetupWeapon()
     {
+       // Debug.LogWarning("Hitscan Weapon has not been ported to the new PhysX system");
+      //  return;
         base.SetupWeapon();
-        colliders = transform.root.GetComponentsInChildren<Collider>();
+        colliders = transform.root.GetComponentsInChildren<PhysXCollider>();
     }
 
     public override void ActivateWeapon()
@@ -199,11 +201,11 @@ public class HitscanWeapon : Weapon {
             {
                 WeaponDamageDetails weaponDamageDetails = new WeaponDamageDetails(myNickName, myPlayerId, myTeamId ,damageType, baseDamage*distanceMultiplier, raycastTracerDetails.localHitPoint);
                 raycastTracerDetails.hitTransform.gameObject.GetComponentInParent<VehicleHealthManager>().TakeDamage(weaponDamageDetails);
-                var bh = Instantiate(bulletHoles[0],raycastTracerDetails.worldHitPoint, Quaternion.Euler(raycastTracerDetails.normalAngle * 360));
+               // var bh = Instantiate(bulletHoles[0],raycastTracerDetails.worldHitPoint, Quaternion.Euler(raycastTracerDetails.normalAngle * 360));
                 //bh.transform.rotation.SetEulerAngles(raycastTracerDetails.hitTransform.rotation.eulerAngles);
-                bh.transform.SetParent(raycastTracerDetails.hitTransform.gameObject.transform, true);
-                Debug.Log("aaaaaaaaaaa" + raycastTracerDetails.normalAngle * 360) ;
-                Debug.Log(bh.transform.rotation.eulerAngles);
+              //  bh.transform.SetParent(raycastTracerDetails.hitTransform.gameObject.transform, true);
+               // Debug.Log("aaaaaaaaaaa" + raycastTracerDetails.normalAngle * 360) ;
+               // Debug.Log(bh.transform.rotation.eulerAngles);
 
             }
             // do the fire effect on our end
@@ -273,12 +275,13 @@ public class HitscanWeapon : Weapon {
 
     protected void FireDummyProjectile(Vector3 target)
     {
+      //  Debug.LogWarning("Hitscan Weapon has not been ported to the new PhysX system");
+       // return;
         if (dummyProjectile != null&& fireDummyProjectile)
         {
             GameObject dummyProj = Instantiate(dummyProjectile, barrelTransform.position, barrelTransform.rotation);
             dummyProj.transform.LookAt(target);
-            dummyProj.GetComponent<Rigidbody>().AddForce(dummyProj.transform.forward * dummyProjectileSpeed,
-                ForceMode.VelocityChange);
+            dummyProj.GetComponent<PhysXRigidBody>().AddForce(dummyProj.transform.forward * dummyProjectileSpeed, ForceMode.VelocityChange);
             Destroy(dummyProj, 0.2f);
         }
     }
@@ -377,44 +380,36 @@ public class HitscanWeapon : Weapon {
     {
         RaycastHitDetails raycastHitDetails = new RaycastHitDetails(targetPoint, Vector3.zero, Vector3.zero, null, false, false);;
         
-        RaycastHit[] hits = Physics.RaycastAll(ray);
+        //RaycastHit[] hits = Physics.RaycastAll(ray);
         
+       // if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
+
         Transform closestHit = null;
         float distance = 0;
         Vector3 hitPoint = Vector3.zero;
 
-        foreach (RaycastHit hit in hits)
-        {
-            if (hit.transform.root != this.transform && (closestHit == null || hit.distance < distance) && !colliders.Contains(hit.collider))
-            {
-                // We have hit something that is:
-                // a) not us
-                // b) the first thing we hit (that is not us)
-                // c) or, if not b, is at least closer than the previous closest thing
-
-                closestHit = hit.transform;
-                distance = hit.distance;
-                hitPoint = hit.point;
+        PhysXRaycastHit hitPhysX = PhysXRaycast.GetRaycastHit();
+         if (PhysXRaycast.Fire(ray.origin, ray.direction, hitPhysX, 999, raycastLayers, rigidbodyVehicleId)){
+             closestHit = hitPhysX.transform;
+                distance = hitPhysX.distance;
+                hitPoint = hitPhysX.point;
                 
                 // get local hitpoint
                 Vector3 localHitPoint = closestHit.root.InverseTransformPoint(hitPoint);
                 // the health script exists
-                if (hit.transform.root.GetComponent<VehicleHealthManager>() != null)
+                if (hitPhysX.transform.root.GetComponent<VehicleHealthManager>() != null)
                 {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, hit.normal,closestHit,true,true );
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, hitPhysX.normal,closestHit,true,true );
                 }
                 else
                 {
-                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, hit.normal, closestHit,false,true );
+                    raycastHitDetails = new RaycastHitDetails(hitPoint,localHitPoint, hitPhysX.normal, closestHit,false,true );
                 }
-
-            }
-        }
-        
-
-        // closestHit is now either still null (i.e. we hit nothing) OR it contains the closest thing that is a valid thing to hit
+         }
+         PhysXRaycast.ReleaseRaycastHit(hitPhysX);
 
         return raycastHitDetails;
+    
 
     }
 }

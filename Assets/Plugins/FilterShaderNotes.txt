@@ -1,0 +1,11 @@
+
+
+FilterData:
+    word0:
+        32 bits:
+            layer mask
+    word1:
+        32 bits:
+            collision layer mask
+                Object A will try to collide with object B if any of the layers in object B's layer mask match object A's collision layer mask.
+                A collision only happens if both objects agree to collide with each other. (consent is important)

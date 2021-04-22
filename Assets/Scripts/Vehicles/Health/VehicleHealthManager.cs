@@ -26,11 +26,12 @@ public class VehicleHealthManager : CollidableHealthManager
     float defaultAngularDrag = 0.2f;
     Vector3 defaultCOM;   
     
-    Rigidbody rb;
+    PhysXRigidBody rb;
     InterfaceCarDrive icd;
     InputDriver inputDriver;
     IDrivable carDriver;
     NetworkPlayerVehicle npv;
+    InterfaceCarDrive4W icd4;
     public int teamId {
         get {
             return npv.teamId;
@@ -55,12 +56,14 @@ public class VehicleHealthManager : CollidableHealthManager
     }
     
     public void SetupVehicleManager() {
+     //   Debug.LogWarning("Vehicle Health Manager has not been fully ported to the new PhysX system");
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         gamestateTrackerPhotonView = gamestateTracker.GetComponent<PhotonView>();
         networkManager = FindObjectOfType<NetworkManager>();
         maxHealth = health;
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<PhysXRigidBody>();
         icd = GetComponent<InterfaceCarDrive>();
+        icd4 = GetComponent<InterfaceCarDrive4W>();
         carDriver = icd.GetComponent<IDrivable>();
         inputDriver = GetComponent<InputDriver>();
         myPhotonView = GetComponent<PhotonView>();
@@ -76,14 +79,14 @@ public class VehicleHealthManager : CollidableHealthManager
             collisionAreas[i] = collisionArea;
         }
 
-        defaultDrag = rb.drag;
-        defaultAngularDrag = rb.angularDrag;
-        defaultCOM = GetComponent<COMDropper>().Shift;
+        defaultDrag = rb.linearDamping;
+        defaultAngularDrag = rb.angularDamping;
         playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
 
         PlayerEntry player = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         if (player.teamId == teamId) tutorials.SetActive(true);
         else tutorials.SetActive(false);
+        player.Release();
     }
 
     public override void SetupHealthManager()
@@ -263,26 +266,26 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         PlayDeathTrailEffects(true);
         inputDriver.enabled = false;
-        rb.drag = 0.75f;
-        rb.angularDrag = 0.75f;
+        rb.linearDamping = 0.75f;
+        rb.angularDamping = 0.75f;
+        icd4.isDead = true;
         float x, y, z;
-        x = Random.Range(-0.5f, 0.5f);
+        x = Random.Range(-0.2f, 0.2f);
         if (x < 0) {
-            x -= 1.5f;
+            x -= 1.3f;
         } else {
-            x += 1.5f;
+            x += 1.3f;
         }
         y = 0.9f;
-        z = Random.Range(0, 2f);
+        z = Random.Range(0.3f, 1.6f);
 
         if (lastHitDetails.damageType != Weapon.DamageType.ramming)
         {
+            rb.centreOfMass = new Vector3(0, 0.6f, 0);
             Vector3 explodePos = new Vector3(x, y, z);
-            Vector3 newCom = new Vector3(0, 1.3f, 0);
-            rb.centerOfMass = newCom;
-            rb.angularDrag = 0.1f;
-            rb.AddForce(explodePos * rb.mass * 10f, ForceMode.Impulse);
-            rb.AddTorque(explodePos * rb.mass * 4f, ForceMode.Impulse);
+            rb.angularDamping = 0.1f;
+            rb.AddForce(explodePos * rb.mass * 8f, ForceMode.Impulse);
+            rb.AddTorque(explodePos * rb.mass * 3f, ForceMode.Impulse);
         }
 
         smokeM.Play();
@@ -343,13 +346,15 @@ public class VehicleHealthManager : CollidableHealthManager
         smokeL.Stop();
         smokeM.Stop();
         smokeH.Stop();
+        Debug.Log("Called");
 
-        rb.drag = defaultDrag;
-        rb.angularDrag = defaultAngularDrag;
+        rb.linearDamping = defaultDrag;
+        rb.angularDamping = defaultAngularDrag;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        icd4.isDead = false;
         isDead = false;
-        rb.centerOfMass = defaultCOM;
+        rb.centreOfMass = Vector3.zero;
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
         teamEntry.isDead = false;
         teamEntry.Increment();

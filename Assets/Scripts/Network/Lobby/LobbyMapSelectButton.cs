@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using Gamestate;
+using TMPro;
 
 public class LobbyMapSelectButton : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class LobbyMapSelectButton : MonoBehaviour
     public string sceneDisplayName = "Testing Arena";
     public Image mapIconUI;
     public Sprite mapIcon;
-    public Text mapName;
+    public TextMeshProUGUI mapName;
     public LobbySlotMaster lobbySlotMaster;
     private GamestateTracker _gamestateTracker;
     void Start()

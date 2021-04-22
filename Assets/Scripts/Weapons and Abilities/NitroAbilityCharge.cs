@@ -22,6 +22,7 @@ public class NitroAbilityCharge : DriverAbility
     private float oldRammingDamageMultiplier = 1f;
     public override void SetupAbility()
     {
+        Debug.LogWarning("Nitro Ability Charge has not been ported to the new PhysX system");
         base.SetupAbility();
         interfaceCarDrive4W = GetComponentInParent<InterfaceCarDrive4W>();
         // old vars

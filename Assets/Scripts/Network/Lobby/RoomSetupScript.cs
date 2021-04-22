@@ -6,21 +6,24 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
+using TMPro;
 
 public class RoomSetupScript : MonoBehaviourPunCallbacks
 {
     private int maxPlayers = 2;
-    private string roomName = "room";
+    private string roomName = "myRoom";
     public string mainLobbySceneName = "";
     List<RoomInfo> createdRooms = new List<RoomInfo>();
-    public Text observedMyNameText;
-    public Text observedMaxPlayersText;
-    public Text roomNameText;
+    public TMP_InputField usernameInputField;
+    public TextMeshProUGUI observedMaxPlayersText;
+    public TMP_InputField roomNameInputField;
+    public Button hostGameButton;
+    public TextMeshProUGUI hostGameButtonText;
     string gameVersion = "0.9";
     private void Start()
     {
-        Random rnd = new Random();
-        roomName = roomName + rnd.Next(1,9999).ToString();
+        //Random rnd = new Random();
+        //roomName = roomName + rnd.Next(1,9999).ToString();
         
         PhotonNetwork.AutomaticallySyncScene = true;
 
@@ -46,6 +49,11 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinLobby(TypedLobby.Default);
     }
 
+    public override void OnJoinedLobby() {
+        hostGameButtonText.text = "Host Game";
+        hostGameButton.interactable = true;
+    }
+
     public void SetMaxPlayers(int newMaxPlayers)
     {
         maxPlayers = newMaxPlayers;
@@ -60,14 +68,14 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
         // ideally, observe the text value of the max players
         if (observedMaxPlayersText) SetMaxPlayers(Int32.Parse(observedMaxPlayersText.text));
 
-        if (roomNameText) SetRoomName(roomNameText.text);
+        if (roomNameInputField.text != "") SetRoomName(roomNameInputField.text);
         // now we have got the settings we need, create the room and load the main lobby scene
         RoomOptions roomOptions = new RoomOptions();
         
         roomOptions.IsOpen = true;
         roomOptions.IsVisible = true;
         roomOptions.MaxPlayers = (byte) maxPlayers; //Set any number
-        PhotonNetwork.NickName = observedMyNameText.text;
+        if (usernameInputField.text != "") PhotonNetwork.NickName = usernameInputField.text;
         PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
         // load the lobby scene for the room
       
