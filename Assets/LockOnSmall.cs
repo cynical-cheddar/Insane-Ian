@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using UnityEngine;
+using Photon.Pun;
 
-public class NitroAbilityLockOn : DriverAbility
+public class LockOnSmall : DriverAbilitySmall
 {
-    // Start is called before the first frame update
     public float rammingSpeed = 60f;
     
     
@@ -94,12 +93,12 @@ public class NitroAbilityLockOn : DriverAbility
         
         if (driverPhotonView.IsMine)
         {
+
             if (!isSetup)
             {
                 SetupAbility();
             }
 
-            currentCharge = maxCharge;
             abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, true);
 
             abilityActivated = true;
@@ -112,6 +111,7 @@ public class NitroAbilityLockOn : DriverAbility
     }
     public override void DeactivateAbility()
     {
+        progress = 0;
         if (driverPhotonView.IsMine)
         {
             abilityPhotonView.RPC(nameof(nitro_RPC), RpcTarget.All, false);
@@ -132,16 +132,19 @@ public class NitroAbilityLockOn : DriverAbility
     {
         if (CanUseAbility())
         {
+            progress = 0;
           //  Debug.Log("fire ability");
             currentCooldown = cooldown;
             timeSinceLastFire = 0;
-            UseCharge(chargeUsedPerFire);
 
-            if (target!=transform.root) StartCoroutine(CrashIntoTarget());
-            else GetComponentInParent<PhysXRigidBody>().velocity = transform.forward * rammingSpeed;
+            if (target!=transform.root){
+                abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
+                StartCoroutine(CrashIntoTarget());
+            } 
+           // else GetComponentInParent<PhysXRigidBody>().velocity = transform.forward * rammingSpeed;
             
-            if (currentCharge == 0) Invoke(nameof(DeactivateAbility), cooldown);
-            // abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
+            if (progress >= duration) Invoke(nameof(DeactivateAbility), cooldown);
+             
         }
     }
 
@@ -151,6 +154,7 @@ public class NitroAbilityLockOn : DriverAbility
         if(abilityActivated) justCollided = true;
     }
 
+ 
     IEnumerator CrashIntoTarget()
     {
         //Debug.Log("CrashIntoTarget");
@@ -161,7 +165,7 @@ public class NitroAbilityLockOn : DriverAbility
         float elapsedTime = 0f;
        // rb.AddForce(transform.root.forward * rammingSpeed, ForceMode.VelocityChange); 
        float fractionMaxSpeed = transform.root.InverseTransformDirection(rb.velocity).z / interfaceCarDrive4W.maxSpeed;
-        while (elapsedTime <= cooldown && !justCollided)
+        while (elapsedTime <= duration && !justCollided)
         {
             float estimatedTime = Vector3.Magnitude(target.position - transform.root.position) / rammingSpeed;
             Vector3 predictedPos = target.position + targetRb.velocity * (estimatedTime);
@@ -191,7 +195,7 @@ public class NitroAbilityLockOn : DriverAbility
         
             
 
-            if (Vector3.Distance(transform.root.position, target.position) > 7)
+            if (Vector3.Distance(transform.root.position, target.position) > 1)
             {
                 Vector3 direction = movePos - transform.root.position;
                 Quaternion toRotation = Quaternion.LookRotation(direction, Vector3.up);

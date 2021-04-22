@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using UnityEngine;
 
-public class DriverAbility : Equipment
+using Photon.Pun;
+
+public class DriverAbilitySmall : Equipment
 {
-    protected float currentCooldown = 0f;
+
+    
+        protected float currentCooldown = 0f;
     public float cooldown = 1f;
-    protected float timeSinceLastFire = 0f;
+    public float timeSinceLastFire = 0f;
     public bool isLockOnAbility = false;
     protected PhotonView driverPhotonView;
     protected PhotonView abilityPhotonView;
@@ -19,17 +22,15 @@ public class DriverAbility : Equipment
     protected int myTeamId;
     protected string myNickName = "";
 
-    protected bool allowLockOn = false;
+    protected bool allowLockOn = true;
     
     protected bool isSetup = false;
 
-    protected bool abilityActivated = false;
+    public bool abilityActivated = false;
 
     public AudioClip activateAudioClip;
 
-    public int maxCharge = 100;
-    public int currentCharge = 0;
-    public int chargeUsedPerFire = 5;
+
     
     
     // lock on stuff
@@ -56,13 +57,15 @@ public class DriverAbility : Equipment
     {
         allowLockOn = set;
 
-        if (set == false)
-        {
-            targetOverlay.SetActive(false);
-        }
-        else
-        {
-            targetOverlay.SetActive(true);
+        if(isSetup){
+            if (set == false)
+            {
+                targetOverlay.SetActive(false);
+            }
+            else
+            {
+                targetOverlay.SetActive(true);
+            }
         }
     }
 
@@ -73,17 +76,27 @@ public class DriverAbility : Equipment
     
     protected virtual void Update()
     {
+
+        if(abilityActivated){
+            duration += Time.deltaTime;
+        }
+        
+
+
         timeSinceLastFire += Time.deltaTime;
+
+        currentActivationCooldown -= Time.deltaTime;
 
         if (currentCooldown >= 0)
         {
             currentCooldown -= Time.deltaTime;
         }
 
-        if (allowLockOn && isLockOnAbility)
+        if (allowLockOn && isLockOnAbility && CanUseAbility()&& isSetup && _networkPlayerVehicle.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber)
         {
             LockOnTargetSelection();
         }
+
     }
 
 
@@ -92,7 +105,7 @@ public class DriverAbility : Equipment
     {
         // display ui over all vehicles
         target = GetBestTarget();
-        if (target != lastTarget)
+        if (target != lastTarget && target != transform.root)
         {
             GetComponent<AudioSource>().PlayOneShot(targetChangeAudioclip);
         }
@@ -146,34 +159,20 @@ public class DriverAbility : Equipment
     }
     
 
+    protected float activationCooldown = 2f;
+    protected float currentActivationCooldown = 2f;
 
-    protected bool CanUseAbility()
+    public float duration = 2f;
+    protected float progress = 0f;
+
+
+    public bool CanUseAbility()
     {
-        if (currentCooldown <= 0 && driverAbilityManager.usingUltimate && myVehicleManager.health > 0 && abilityActivated)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if(timeSinceLastFire > cooldown) return true;
+        else return false;
     }
 
-    protected void UseCharge(int amt)
-    {
-        currentCharge -= amt;
-        if (currentCharge < 0) currentCharge = 0;
-        
-        // update hud
-        
-        
-        driverAbilityManager.SetDriverUltimateProgress(currentCharge);
-        
-        if (currentCharge == 0)
-        {
-         //   Invoke(nameof(InvokeDeactivate), cooldown);
-        }
-    }
+
 
     protected void InvokeDeactivate()
     {
@@ -207,11 +206,12 @@ public class DriverAbility : Equipment
         }
 
         uiCanvas = FindObjectOfType<UiCanvasBehaviour>().GetComponent<Canvas>();
+        if(targetOverlay !=null)Destroy(targetOverlay);
         targetOverlay = Instantiate(targetOverlayPrefab, uiCanvas.transform);
         targetOverlay.SetActive(false);
         lastTarget = transform;
         isSetup = true;
-        Invoke(nameof(GetCarList), 2f);
+        Invoke(nameof(GetCarList), 12f);
     }
 
     void GetCarList()
@@ -219,7 +219,8 @@ public class DriverAbility : Equipment
         NetworkPlayerVehicle[] npvs = FindObjectsOfType<NetworkPlayerVehicle>();
         foreach (NetworkPlayerVehicle npv in npvs)
         {
-            enemyList.Add(npv.transform);
+            if(npv.transform.root != transform.root)enemyList.Add(npv.transform);
+            
         }
     }
 
@@ -236,7 +237,8 @@ public class DriverAbility : Equipment
             SetupAbility();
         }
 
-        currentCharge = maxCharge;
+        currentActivationCooldown = activationCooldown;
+
         abilityActivated = true;
        // Debug.Log("Activate driver ability");
         abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
@@ -246,7 +248,7 @@ public class DriverAbility : Equipment
     public virtual void DeactivateAbility()
     {
         abilityActivated = false;
-        Debug.Log("Deactivate driver ability");
+        Debug.Log("Deactivate mini driver ability");
     }
 
     [PunRPC]
@@ -254,6 +256,8 @@ public class DriverAbility : Equipment
     {
         GetComponent<AudioSource>().PlayOneShot(activateAudioClip);
     }
+
+
 
 
 
