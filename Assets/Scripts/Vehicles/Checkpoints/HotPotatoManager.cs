@@ -31,6 +31,10 @@ public class HotPotatoManager : MonoBehaviour
         canPickupPotato = false;
         InvokeRepeating("buffs", 2f, 2f);
         GetComponent<PhotonView>().RPC(nameof(PickupPotatoEffects), RpcTarget.All);
+
+
+        AnnouncerManager a = FindObjectOfType<AnnouncerManager>();
+        a.PlayAnnouncerLine(a.announcerShouts.potatoPickup, myDriverId, myGunnerId);
     }
 
     [PunRPC]
@@ -43,6 +47,11 @@ public class HotPotatoManager : MonoBehaviour
     {
         if (isPotato)
         {
+
+            AnnouncerManager a = FindObjectOfType<AnnouncerManager>();
+            a.PlayAnnouncerLine(a.announcerShouts.potatoDrop, myDriverId, myGunnerId);
+
+
             isPotato = false;
             canPickupPotato = false;
             Invoke(nameof(ReactivatePickupPotato), 5f);
