@@ -195,7 +195,7 @@ public class LockOnSmall : DriverAbilitySmall
         
             
 
-            if (Vector3.Distance(transform.root.position, target.position) > 1)
+            if (Vector3.Distance(transform.root.position, target.position) > 5)
             {
                 Vector3 direction = movePos - transform.root.position;
                 Quaternion toRotation = Quaternion.LookRotation(direction, Vector3.up);

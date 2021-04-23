@@ -31,6 +31,10 @@ public class HotPotatoManager : MonoBehaviour
         canPickupPotato = false;
         InvokeRepeating("buffs", 2f, 2f);
         GetComponent<PhotonView>().RPC(nameof(PickupPotatoEffects), RpcTarget.All);
+
+
+        AnnouncerManager a = FindObjectOfType<AnnouncerManager>();
+        a.PlayAnnouncerLine(a.announcerShouts.potatoPickup, myDriverId, myGunnerId);
     }
 
     [PunRPC]
@@ -39,10 +43,15 @@ public class HotPotatoManager : MonoBehaviour
         potatoEffects = GetComponentInChildren<PotatoEffects>();
         potatoEffects.ActivatePotatoEffects(myDriverId, myGunnerId);
     }
-    public void removePotato()
+    public bool removePotato()
     {
         if (isPotato)
         {
+
+            AnnouncerManager a = FindObjectOfType<AnnouncerManager>();
+            a.PlayAnnouncerLine(a.announcerShouts.potatoDrop, myDriverId, myGunnerId);
+
+
             isPotato = false;
             canPickupPotato = false;
             Invoke(nameof(ReactivatePickupPotato), 5f);
@@ -52,7 +61,9 @@ public class HotPotatoManager : MonoBehaviour
             CancelInvoke("buffs");
             Vector3 pos = gameObject.transform.position + new Vector3(0.0f, 1.5f, 0.0f);
             PhotonNetwork.Instantiate("HotPotatoGO", pos, Quaternion.identity, 0);
+            return true;
         }
+        return false;
     }
 
     void ReactivatePickupPotato()
