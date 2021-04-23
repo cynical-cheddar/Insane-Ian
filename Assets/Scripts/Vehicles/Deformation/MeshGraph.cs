@@ -13,7 +13,7 @@ namespace GraphBending {
 
                 //  Check if vertex is within grouping radius of any group
                 for (int j = 0; j < groups.Count; j++) {
-                    Vector3 distVector = vertices[i] - vertices[groups[j].vertexIndices[0]];
+                    Vector3 distVector = vertices[i] - groups[j].pos;
                     float sqrDistance = distVector.sqrMagnitude;
 
                     if (sqrDistance <= groupRadius * groupRadius) {

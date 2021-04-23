@@ -91,6 +91,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3508060665778866577}
   - component: {fileID: 8917376184998890148}
+  - component: {fileID: 9035382204624253007}
+  - component: {fileID: 5149533426479566706}
   m_Layer: 0
   m_Name: CollisionResolver
   m_TagString: Untagged
@@ -126,3 +128,36 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 0, z: 5}
+--- !u!114 &9035382204624253007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5371136353021480069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5149533426479566706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5371136353021480069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 1
+  offset: {x: 0, y: 0, z: 5}
+  collisionSoftener: {fileID: 0}
+  x: 10
+  y: 10
+  z: 10

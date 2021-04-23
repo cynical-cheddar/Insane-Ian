@@ -37,12 +37,13 @@ public class PickupDriverUlt : PickupItem
         DriverAbilityManager dam = otherpv.gameObject.GetComponent<DriverAbilityManager>();
 
 
-
-        if (!dam.usingUltimate)
-        {
-            dam.AdjustDriverUltimateProgress(ultIncrease);
-            this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(),
-                npv.GetGunnerID());
+        if (dam != null) {
+            if (!dam.usingUltimate) {
+                dam.AdjustDriverUltimateProgress(ultIncrease);
+                this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(),
+                    npv.GetGunnerID());
+            }
         }
+        
     }
 }

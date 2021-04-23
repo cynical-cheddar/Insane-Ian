@@ -25,8 +25,8 @@ namespace PhysX {
             colliderShape = otherShape;
         }
 
-        internal void PopulateWithUnityObjects(Dictionary<IntPtr, PhysXBody> rigidBodies) {
-            PhysXBody body = rigidBodies[otherActor];
+        internal void PopulateWithUnityObjects(Dictionary<long, PhysXBody> rigidBodies) {
+            PhysXBody body = rigidBodies[otherActor.ToInt64()];
 
             collider = body.GetColliderFromShape(colliderShape);
         }
