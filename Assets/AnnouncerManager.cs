@@ -9,7 +9,7 @@ using Gamestate;
 public class AnnouncerManager : MonoBehaviour
 {
 
-    public enum AnnouncerShoutsTags{potatoPickup, potatoDrop};
+    public enum AnnouncerShoutsTags{potatoPickup, potatoDrop, onKilled, suicide, matchStart, threeMinutes, twoMinutes, oneMinute, thirtySeconds, tenSecondCountdown, matchEnd};
     private AudioSource announcerAudioSource;
 
     [Serializable]
@@ -17,6 +17,23 @@ public class AnnouncerManager : MonoBehaviour
     {
         public AnnouncerClipsToPlay potatoPickup;
         public AnnouncerClipsToPlay potatoDrop;
+
+        public AnnouncerClipsToPlay onKilled;
+        public AnnouncerClipsToPlay suicide;
+
+        public AnnouncerClipsToPlay matchStart;
+
+        public AnnouncerClipsToPlay threeMinutes;
+
+        public AnnouncerClipsToPlay twoMinutes;
+
+        public AnnouncerClipsToPlay oneMinute;
+
+        public AnnouncerClipsToPlay thirtySeconds;
+
+        public AnnouncerClipsToPlay tenSecondCountdown;
+
+        public AnnouncerClipsToPlay matchEnd;
     }
 
     [Serializable]
@@ -46,6 +63,15 @@ public class AnnouncerManager : MonoBehaviour
     AnnouncerClipsToPlay GetAnnouncerClipsToPlay(AnnouncerShoutsTags shoutTag){
         if(announcerShouts.potatoPickup.announcerShoutsTag == shoutTag) return announcerShouts.potatoPickup;
         if(announcerShouts.potatoDrop.announcerShoutsTag == shoutTag) return announcerShouts.potatoDrop;
+        if(announcerShouts.matchStart.announcerShoutsTag == shoutTag) return announcerShouts.matchStart;
+        if(announcerShouts.onKilled.announcerShoutsTag == shoutTag) return announcerShouts.onKilled;
+        if(announcerShouts.suicide.announcerShoutsTag == shoutTag) return announcerShouts.suicide;
+        if(announcerShouts.threeMinutes.announcerShoutsTag == shoutTag) return announcerShouts.threeMinutes;
+        if(announcerShouts.twoMinutes.announcerShoutsTag == shoutTag) return announcerShouts.twoMinutes;
+        if(announcerShouts.oneMinute.announcerShoutsTag == shoutTag) return announcerShouts.oneMinute;
+        if(announcerShouts.thirtySeconds.announcerShoutsTag == shoutTag) return announcerShouts.thirtySeconds;
+        if(announcerShouts.tenSecondCountdown.announcerShoutsTag == shoutTag) return announcerShouts.tenSecondCountdown;
+        if(announcerShouts.matchEnd.announcerShoutsTag == shoutTag) return announcerShouts.matchEnd;
         return announcerShouts.potatoPickup;
     }
 
@@ -73,6 +99,26 @@ public class AnnouncerManager : MonoBehaviour
         if(myClipIndex < 0 || theirClipIndex < 0) playGlobal = true;
 
         GetComponent<PhotonView>().RPC(nameof(PlayClipFromSelection), RpcTarget.All, myClipIndex, theirClipIndex, globalClipIndex, (int)shoutTag, driverId, gunnerId, playGlobal);
+    }
+
+    
+    public void PlayAnnouncerLine(AnnouncerClipsToPlay clipSelection)
+    {
+
+        AnnouncerShoutsTags shoutTag = GetShoutTag(clipSelection);
+
+        int myClipIndex = -1;
+        int theirClipIndex = -1;
+        int globalClipIndex = -1;
+
+        if (clipSelection.localClips.Count > 0) myClipIndex = UnityEngine.Random.Range(0, clipSelection.localClips.Count);
+        if (clipSelection.otherClips.Count > 0) theirClipIndex = UnityEngine.Random.Range(0, clipSelection.otherClips.Count);
+        if (clipSelection.globalClips.Count > 0) globalClipIndex = UnityEngine.Random.Range(0, clipSelection.globalClips.Count);
+
+        bool playGlobal = false;
+        if(myClipIndex < 0 || theirClipIndex < 0) playGlobal = true;
+
+        GetComponent<PhotonView>().RPC(nameof(PlayClipFromSelection), RpcTarget.All, myClipIndex, theirClipIndex, globalClipIndex, (int)shoutTag, 0, 0, playGlobal);
     }
 
 
