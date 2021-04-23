@@ -7,17 +7,17 @@ namespace PhysX {
         private static Queue<PhysXContactPoint> contactPoints = new Queue<PhysXContactPoint>();
 
         internal IntPtr colliderShape;
+        internal IntPtr ownShape;
 
         public Vector3 impulse { get; internal set; }
 
-        //  USED
         public Vector3 normal { get; internal set; }
 
-        //  USED
         public Vector3 point { get; internal set; }
 
-        //  USED
         public PhysXCollider collider { get; internal set; }
+
+        public float separation { get; internal set; }
 
         internal static PhysXContactPoint GetContactPoint() {
             if (contactPoints.Count == 0) return new PhysXContactPoint();

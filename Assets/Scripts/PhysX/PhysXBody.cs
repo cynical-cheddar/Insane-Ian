@@ -5,7 +5,7 @@ using PhysX;
 
 public class PhysXBody : MonoBehaviour
 {
-    protected Dictionary<IntPtr, PhysXCollider> colliders = new Dictionary<IntPtr, PhysXCollider>();
+    protected Dictionary<long, PhysXCollider> colliders = new Dictionary<long, PhysXCollider>();
 
     protected bool isSetup = false;
 
@@ -96,12 +96,12 @@ public class PhysXBody : MonoBehaviour
     }
 
     public int AddCollider(PhysXCollider collider) {
-        colliders.Add(collider.shape, collider);
+        colliders.Add(collider.shape.ToInt64(), collider);
         return PhysXLib.AttachShapeToRigidBody(collider.shape, physXBody);
     }
 
     public PhysXCollider GetColliderFromShape(IntPtr shape) {
-        return colliders[shape];
+        return colliders[shape.ToInt64()];
     }
 
     public virtual void UpdatePositionAndVelocity() {
@@ -130,7 +130,6 @@ public class PhysXBody : MonoBehaviour
     }
 
     public void FireTriggerEvents(PhysXTrigger trigger) {
-        Debug.Log(gameObject.name);
         if (trigger.isEnter) {
             foreach (ITriggerEnterEvent triggerEnterEvent in triggerEnterEvents) {
                 if (triggerEnterEvent.requiresData) triggerEnterEvent.TriggerEnter(trigger.collider);

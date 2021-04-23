@@ -3,44 +3,83 @@ using System.Collections.Generic;
 using UnityEngine;
 using GraphBending;
 using System.Linq;
+using PhysX;
 
-public class Squishing : MonoBehaviour
+public class Squishing : MonoBehaviour, ICollisionStayEvent
 {
+    public bool requiresData { get { return true; } }
+
     private List<Vector3> vertices;
+    private List<Vector3> skeletonVertices = null;
     private MeshGraph meshGraph;
     public GameObject testMarker;
     public GameObject collisionResolver;
+    private PhysXBody resolverBody;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
     public float stretchiness = 1000000.1f;
     public float collisionResistance = 200;
     //public float maxEdgeLength = 0.6f;
-    private List<DeformableMesh> deformableMeshes;
+    private List<DeformableMesh> deformableMeshes = null;
+    private List<float> oldEdgeSqrLengths = new List<float>();
+    private Queue<VertexGroup> vertexQueue = new Queue<VertexGroup>();
+
+    private Vector3 gizmoSurfaceNormal = Vector3.forward;
+    private Vector3 gizmoSurfacePoint;
 
     Mesh originalMesh;
 
+    void OnDrawGizmos() {
+        Gizmos.color = new Color(1, 0, 1);
+        // Vector3 oldTransormPosition = transform.position;
+        // Quaternion oldTransormRotation = transform.rotation;
+
+        // transform.position = gizmoSurfacePoint;
+        // transform.rotation = Quaternion.LookRotation(gizmoSurfaceNormal, Vector3.up);
+
+        if (deformableMeshes != null && deformableMeshes.Count > 0) {
+            Gizmos.matrix = deformableMeshes[0].transform.localToWorldMatrix;
+            Gizmos.DrawWireMesh(deformableMeshes[0].collisionSkeleton);
+        }
+        // Gizmos.DrawCube(Vector3.zero, new Vector3(1, 1, 0.1f));
+        Gizmos.color = Color.white;
+        Gizmos.matrix = Matrix4x4.identity;
+
+        // transform.position = oldTransormPosition;
+        // transform.rotation = oldTransormRotation;
+    }
+
     // Start is called before the first frame update.
     void Start() {
-        Debug.LogWarning("Squishing has not been ported to the new PhysX system");
-        return;
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
-        //deformableMeshes[0].Subdivide(maxEdgeLength);
+        deformableMeshes[0].Subdivide(deformableMeshes[0].maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
+        skeletonVertices = new List<Vector3>(deformableMeshes[0].collisionSkeleton.vertices);
 
         //  Group similar vertices.
-        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, groupRadius);
+        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, deformableMeshes[0].collisionSkeleton, groupRadius);
+        foreach (VertexGroup group in meshGraph.groups) {
+            if (group.skeletonVertexIndex >= 0) {
+                skeletonVertices[group.skeletonVertexIndex] = group.pos;
+            }
+        }
+
+        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
+        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
 
         originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().sharedMesh);
         collisionResolver = Instantiate(collisionResolver);
+        resolverBody = collisionResolver.GetComponent<PhysXBody>();
+        resolverBody.position = new Vector3(0, 10000, 0);
     }
 
     public void ResetMesh()
     {
-        return;
         deformableMeshes[0].GetMeshFilter().mesh = Instantiate(originalMesh);
-        vertices = originalMesh.vertices.ToList();
+        vertices.Clear();
+        vertices.AddRange(originalMesh.vertices);
         foreach (VertexGroup group in meshGraph.groups) {
-            group.UpdatePos(deformableMeshes[0].GetMeshFilter().mesh.vertices.ToList(), true);
+            group.UpdatePos(vertices, true);
         }
 
     }
@@ -63,19 +102,18 @@ public class Squishing : MonoBehaviour
     public void ExplodeMeshAt(Vector3 pos, float force, bool addNoise = true) {
         pos = transform.InverseTransformPoint(pos);
 
-        List<VertexGroup> moved = new List<VertexGroup>();
-
         VertexGroup closest = GetClosestVertexGroup(pos);
 
         //  Make a queue (it breadth first traversal time)
-        Queue<VertexGroup> vertexQueue = new Queue<VertexGroup>();
         vertexQueue.Enqueue(closest);
+        closest.enqueued = true;
 
         // Move each vertex, making sure that it doesn't stretch too far from its neighbours
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
+            current.enqueued = false;
 
-            List<float> oldEdgeSqrLengths = new List<float>();
+            oldEdgeSqrLengths.Clear();
             for (int j = 0; j < current.connectingEdges.Count; j++) {
                 oldEdgeSqrLengths.Add(current.connectingEdges[j].sqrLength);
             }
@@ -87,13 +125,13 @@ public class Squishing : MonoBehaviour
             deformation.Normalize();
             deformation *= Mathf.Clamp(deformationForce / vertexWeight, 0, 0.5f);
 
-            current.MoveBy(vertices, deformation, false);
+            current.MoveBy(vertices, skeletonVertices, deformation, false);
 
             for (int j = 0; j < current.connectingEdges.Count; j++) {
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Check if adjacent vertex has been moved.
-                if (moved.Contains(adjacent)) {
+                if (adjacent.wasMoved) {
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
@@ -106,13 +144,13 @@ public class Squishing : MonoBehaviour
                         edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
 
                         //  move vertices so edge is not too long.
-                        current.MoveTo(vertices, adjacent.pos + edge, false);
+                        current.MoveTo(vertices, skeletonVertices, adjacent.pos + edge, false);
                         current.connectingEdges[j].UpdateEdgeLength();
                     }
                 }
             }
 
-            moved.Add(current);
+            current.wasMoved = true;
 
             //  Add adjacent, unmoved vertices into the queue for traversal
             for (int j = 0; j < current.connectingEdges.Count; j++) {
@@ -120,76 +158,120 @@ public class Squishing : MonoBehaviour
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Add it to the queue if it hasn't already been moved
-                if (!vertexQueue.Contains(adjacent) && !moved.Contains(adjacent)) {
+                if (!adjacent.enqueued && !adjacent.wasMoved) {
                     vertexQueue.Enqueue(adjacent);
+                    adjacent.enqueued = true;
                 }
+            }
+        }
+
+        for (int i = 0; i < meshGraph.groups.Count; i++) {
+            meshGraph.groups[i].wasMoved = false;
+            if (meshGraph.groups[i].enqueued) {
+                Debug.LogWarning("Vertex marked as still in queue.");
+                meshGraph.groups[i].enqueued = false;
             }
         }
 
         //  Update the mesh
-        deformableMeshes[0].GetMeshFilter().mesh.vertices = vertices.ToArray();
+        deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
+        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
+        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
     }
+
+    private bool IsBeyondCollisionSurface(Vector3 surfaceNormal, Vector3 surfacePoint, Vector3 vertex) {
+        Vector3 relativePosition = vertex - surfacePoint;
+        return Vector3.Dot(relativePosition, surfaceNormal) < 0;
+    }
+
+    private Vector3 DeformationFromCollisionSurface(Vector3 surfaceNormal, Vector3 surfacePoint, Vector3 vertex) {
+        float distBeyondPlane = Vector3.Dot(-surfaceNormal, vertex) - Vector3.Dot(-surfaceNormal, surfacePoint);
+        return surfaceNormal * distBeyondPlane;
+    }
+
+    public void CollisionStay() {}
 
     //  This breaks if this is on a kinematic object (big sad)
-    void OnCollisionEnter(Collision collision) {
-        Vector3 collisionNormal = collision.GetContact(0).normal;
-        Vector3 collisionForce = collision.impulse;
-        if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
-        collisionForce /= Time.fixedDeltaTime;
-        collisionForce /= collisionResistance;
-        collisionForce = transform.InverseTransformDirection(collisionForce);
+    public void CollisionStay(PhysXCollision collision) {
+        if (collision.contactCount > 0) {
+            bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
 
-        if (collisionForce.sqrMagnitude >= 0.01f) {
-            if (collision.collider is TerrainCollider || (collision.collider is MeshCollider && !((MeshCollider)collision.collider).convex)) {
-                collisionResolver.transform.position = collision.GetContact(0).point;
-                collisionResolver.transform.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
-                Collider collider = collisionResolver.GetComponent<BoxCollider>();
-                CollideMesh(collider, collisionForce, true);
-                collisionResolver.transform.position = new Vector3(0, 10000, 0);
+            Vector3 collisionSurfaceNormal = Vector3.zero;
+            Vector3 collisionSurfacePoint = Vector3.zero;
+            float sumImpulseMagnitudes = 0;
+
+            for (int i = 0; i < collision.contactCount; i++) {
+                PhysXContactPoint contactPoint = collision.GetContact(i);
+                float impulseMagnitude = contactPoint.impulse.magnitude;
+
+                collisionSurfaceNormal += contactPoint.normal;
+                collisionSurfacePoint += contactPoint.point;
+                // collisionSurfaceNormal += contactPoint.normal * impulseMagnitude;
+                // collisionSurfacePoint += contactPoint.point * impulseMagnitude;
+                // sumImpulseMagnitudes += impulseMagnitude;
             }
-            else {
-                CollideMesh(collision.collider, collisionForce, true);
+
+            collisionSurfaceNormal /= collision.contactCount;
+            collisionSurfacePoint /= collision.contactCount;
+            // collisionSurfaceNormal /= sumImpulseMagnitudes;
+            // collisionSurfacePoint /= sumImpulseMagnitudes;
+
+            gizmoSurfaceNormal = collisionSurfaceNormal;
+            gizmoSurfacePoint = collisionSurfacePoint;
+
+            for (int i = 0; i < meshGraph.groups.Count; i++) {
+                VertexGroup current = meshGraph.groups[i];
+                Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
+
+                if (IsBeyondCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex)) {
+                    if (isInconvenient || collision.collider.ClosestPoint(vertex) == vertex) {
+                        Vector3 deformation = DeformationFromCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex);
+                        deformation = transform.InverseTransformDirection(deformation);
+                        // Debug.Log(deformation);
+
+                        //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
+                        deformation *= Random.value * 0.2f + 0.9f;
+
+                        current.MoveBy(vertices, skeletonVertices, deformation, false);
+                        current.wasMoved = true;
+                        //moved.Add(current);
+                        vertexQueue.Enqueue(current);
+                        current.enqueued = true;
+                    }
+                }
             }
+
+            DissipateDeformation(true);
+
+            // Vector3 collisionNormal = collision.GetContact(0).normal;
+            // Vector3 collisionForce = collision.impulse;
+            // if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
+            // collisionForce /= Time.fixedDeltaTime;
+            // collisionForce /= collisionResistance;
+            // collisionForce = transform.InverseTransformDirection(collisionForce);
+
+            // if (collisionForce.sqrMagnitude >= 0.01f) {
+            //     if (collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex) {
+            //         resolverBody.position = collision.GetContact(0).point;
+            //         resolverBody.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
+            //         PhysXCollider collider = collisionResolver.GetComponent<PhysXBoxCollider>();
+            //         CollideMesh(collider, collisionForce, true);
+            //         resolverBody.position = new Vector3(0, 10000, 0);
+            //     }
+            //     else {
+            //         CollideMesh(collision.collider, collisionForce, true);
+            //     }
+            // }
         }
     }
 
-    public void CollideMesh(Collider collider, Vector3 collisionForce, bool addNoise) {
-        
-
-        //List<VertexGroup> moved = new List<VertexGroup>();
-
-        //  Make a queue (it breadth first traversal time)
-        Queue<VertexGroup> vertexQueue = new Queue<VertexGroup>();
-
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
-            VertexGroup current = meshGraph.groups[i];
-            Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
-
-            if (collider.ClosestPoint(vertex) == vertex) {
-                Vector3 deformation = collisionForce;
-                deformation /= vertexWeight;
-
-                if (deformation.sqrMagnitude > 0.25f) {
-                    deformation.Normalize();
-                    deformation *= 0.5f;
-                }
-                if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
-
-                current.MoveBy(vertices, deformation, false);
-                current.wasMoved = true;
-                //moved.Add(current);
-                vertexQueue.Enqueue(current);
-                current.enqueued = true;
-            }
-        }
-
-        // Move each vertex, making sure that it doesn't stretch too far from its neighbours
+    public void DissipateDeformation(bool addNoise) {
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
             current.enqueued = false;
 
-            List<float> oldEdgeSqrLengths = new List<float>();
+            oldEdgeSqrLengths.Clear();
             for (int j = 0; j < current.connectingEdges.Count; j++) {
                 oldEdgeSqrLengths.Add(current.connectingEdges[j].sqrLength);
             }
@@ -212,7 +294,7 @@ public class Squishing : MonoBehaviour
                         edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
 
                         //  move vertices so edge is not too long.
-                        current.MoveTo(vertices, adjacent.pos + edge, false);
+                        current.MoveTo(vertices, skeletonVertices, adjacent.pos + edge, false);
                         current.connectingEdges[j].UpdateEdgeLength();
                     }
                 }
@@ -243,8 +325,104 @@ public class Squishing : MonoBehaviour
         }
 
         //  Update the mesh
-        deformableMeshes[0].GetMeshFilter().mesh.vertices = vertices.ToArray();
+        deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
+        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
+        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
+    }
+
+    public void CollideMesh(PhysXCollider collider, Vector3 collisionForce, bool addNoise) {
+        
+
+        //List<VertexGroup> moved = new List<VertexGroup>();
+
+        //  Make a queue (it breadth first traversal time)
+
+        for (int i = 0; i < meshGraph.groups.Count; i++) {
+            VertexGroup current = meshGraph.groups[i];
+            Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
+
+            if (collider.ClosestPoint(vertex) == vertex) {
+                Vector3 deformation = collisionForce;
+                deformation /= vertexWeight;
+
+                if (deformation.sqrMagnitude > 0.25f) {
+                    deformation.Normalize();
+                    deformation *= 0.5f;
+                }
+                if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
+
+                current.MoveBy(vertices, skeletonVertices, deformation, false);
+                current.wasMoved = true;
+                //moved.Add(current);
+                vertexQueue.Enqueue(current);
+                current.enqueued = true;
+            }
+        }
+
+        // Move each vertex, making sure that it doesn't stretch too far from its neighbours
+        while (vertexQueue.Count > 0) {
+            VertexGroup current = vertexQueue.Dequeue();
+            current.enqueued = false;
+
+            oldEdgeSqrLengths.Clear();
+            for (int j = 0; j < current.connectingEdges.Count; j++) {
+                oldEdgeSqrLengths.Add(current.connectingEdges[j].sqrLength);
+            }
+
+            for (int j = 0; j < current.connectingEdges.Count; j++) {
+                VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
+
+                //  Check if adjacent vertex has been moved.
+                //if (moved.Contains(adjacent)) {
+                if (adjacent.wasMoved) {
+                    //  Get vector of edge between vertices.
+                    Vector3 edge = current.pos - adjacent.pos;
+                    //  ohno edge too long
+                    if (edge.sqrMagnitude > stretchiness * stretchiness * oldEdgeSqrLengths[j]) {
+                        //  make edge right length
+                        edge.Normalize();
+                        float randomNoise = 1; 
+                        if (addNoise) randomNoise = Random.value * 0.2f + 0.9f;
+                        float edgeStretchiness = stretchiness * randomNoise;
+                        edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
+
+                        //  move vertices so edge is not too long.
+                        current.MoveTo(vertices, skeletonVertices, adjacent.pos + edge, false);
+                        current.connectingEdges[j].UpdateEdgeLength();
+                    }
+                }
+            }
+
+            //moved.Add(current);
+            current.wasMoved = true;
+
+            //  Add adjacent, unmoved vertices into the queue for traversal
+            for (int j = 0; j < current.connectingEdges.Count; j++) {
+                //  Get adjacent vertex group
+                VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
+
+                //  Add it to the queue if it hasn't already been moved
+                if (!adjacent.enqueued && !adjacent.wasMoved) {
+                    vertexQueue.Enqueue(adjacent);
+                    adjacent.enqueued = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < meshGraph.groups.Count; i++) {
+            meshGraph.groups[i].wasMoved = false;
+            if (meshGraph.groups[i].enqueued) {
+                Debug.LogWarning("Vertex marked as still in queue.");
+                meshGraph.groups[i].enqueued = false;
+            }
+        }
+
+        //  Update the mesh
+        deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
+        deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
+        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
+        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
 
         //meshCollider.sharedMesh = mesh;
 

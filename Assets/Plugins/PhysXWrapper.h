@@ -1,10 +1,13 @@
 //#include <stdio.h>
 #include "physx/include/PxPhysicsAPI.h"
+#include "physx/include/PxImmediateMode.h"
+#include "physx/include/collision/PxCollisionDefs.h"
 #include "physx/source/foundation/include/PsFoundation.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include <math.h>
 
 #ifdef ON_MAC
 #define EXPORT_FUNC
@@ -20,6 +23,8 @@
 #define TRIGGER_BEGIN   (1 << 3)
 #define TRIGGER_SUSTAIN (1 << 4)
 #define TRIGGER_END     (1 << 5)
+#define CONTACT_MODIFY  (1 << 6)
+#define HAS_GHOST       (1 << 7)
 
 #define WHEEL_LAYER (1 << 1)
 
@@ -68,12 +73,22 @@ extern "C" {
         physx::PxAgain processTouches(const physx::PxRaycastHit* hits, physx::PxU32 hitCount);
     };
 
-    struct SceneUserData
-    {
-        SceneUserData() : wheelCount(0),
-                          suspensionBatchQuery(NULL) {
+    class SoftContactModifier : public physx::PxContactModifyCallback {
+    public:
+        void onContactModify(physx::PxContactModifyPair* const pairs, physx::PxU32 pairCount);
+    };
 
-        }
+    //  This struct was taken from the NVIDIA PhysX example immediate mode snippet. See NvidiaDisclaimer.txt
+    struct PersistentContactPair {
+        physx::PxCache cache;
+        physx::PxU8* frictions;
+        physx::PxU32 nbFrictions;
+    };
+
+    struct SceneUserData {
+        SceneUserData() : wheelCount(0),
+                          suspensionBatchQuery(NULL),
+                          ghostScene(NULL) {}
 
         std::vector<physx::PxVehicleWheels*> vehicles;
         physx::PxU32 wheelCount;
@@ -81,29 +96,44 @@ extern "C" {
         std::vector<physx::PxVehicleWheelQueryResult> queryResults;
         std::vector<physx::PxRaycastQueryResult> raycastResults;
         std::vector<physx::PxRaycastHit> raycastHits;
-    };
 
-    struct ActorUserData
-    {
-        ActorUserData() : scene(NULL) {
-            
-        }
+        physx::PxScene* ghostScene;
+        std::vector<physx::PxRigidDynamic*> hauntedBodies;
+
+        // std::vector<physx::PxConstraint*> constraints;
+        // std::vector<PersistentContactPair> contactCache;
+    };
+    std::vector<physx::PxActor*> actorBuffer;
+
+    struct ActorUserData {
+        ActorUserData() : scene(NULL),
+                          ghostBody(NULL),
+                          isGhost(false),
+                          ghostVelocityBlend(0) {}
 
         physx::PxScene* scene;
         std::vector<physx::PxWheelQueryResult> queryResults;
+
+        // physx::PxVec3 preSimLinVelocity;
+        // physx::PxVec3 preSimAngVelocity;
+
+        bool isGhost;
+        physx::PxRigidDynamic* ghostBody;
+        physx::PxReal ghostVelocityBlend;
     };
 
-    struct ShapeUserData
-    {
-        ShapeUserData()
-            : isWheel(false),
-            wheelId(0xffffffff)
-        {
-        }
+    struct ShapeUserData {
+        ShapeUserData() : maxImpulse(100),
+                          minImpulse(0.0001f),
+                          penForMaxImpulse(0.5f),
+                          penExp(3) {}
 
-        bool isWheel;
-        physx::PxU32 wheelId;
+        physx::PxReal maxImpulse;
+        physx::PxReal minImpulse;
+        physx::PxReal penForMaxImpulse;
+        physx::PxU32 penExp;
     };
+
 
     EXPORT_FUNC void RegisterDebugLog(DebugLog dl);
 
@@ -127,12 +157,14 @@ extern "C" {
     EXPORT_FUNC physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot);
 
     EXPORT_FUNC physx::PxShape* CreateShape(physx::PxGeometry* geometry, physx::PxMaterial* mat, physx::PxReal contactOffset);
+    EXPORT_FUNC void SetShapeSoftness(physx::PxShape* shape, physx::PxReal maxImpulse, physx::PxReal minImpulse, physx::PxReal penForMaxImpulse, physx::PxU32 penExp);
     EXPORT_FUNC void SetShapeLocalTransform(physx::PxShape* shape, physx::PxTransform* transform);
     EXPORT_FUNC void SetShapeSimulationFlag(physx::PxShape* shape, bool value);
     EXPORT_FUNC void SetShapeTriggerFlag(physx::PxShape* shape, bool value);
     EXPORT_FUNC void SetShapeSceneQueryFlag(physx::PxShape* shape, bool value);
 
     EXPORT_FUNC physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose);
+    EXPORT_FUNC physx::PxRigidDynamic* CreateGhostRigidBody(physx::PxRigidDynamic* baseBody, physx::PxReal blend);
     EXPORT_FUNC physx::PxRigidStatic* CreateStaticRigidBody(physx::PxTransform* pose);
 
     EXPORT_FUNC void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
@@ -193,11 +225,13 @@ extern "C" {
 
     EXPORT_FUNC void SetRigidBodyFlag(physx::PxRigidBody* body, physx::PxRigidBodyFlag::Enum flag, bool value);
     EXPORT_FUNC void SetRigidBodyDominanceGroup(physx::PxRigidBody* body, physx::PxDominanceGroup group);
+    EXPORT_FUNC void SetRigidBodyMaxLinearVelocity(physx::PxRigidBody* body, physx::PxReal velocity);
     EXPORT_FUNC void SetRigidBodyMaxDepenetrationVelocity(physx::PxRigidBody* body, physx::PxReal velocity);
 
     EXPORT_FUNC void AddActorToScene(physx::PxScene* scene, physx::PxActor* actor);
 
     EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time);
+    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time);
 
     EXPORT_FUNC physx::PxTransform* GetCentreOfMass(physx::PxRigidBody* body);
 
@@ -222,7 +256,7 @@ extern "C" {
     EXPORT_FUNC physx::PxContactStreamIterator* GetContactPointIterator(physx::PxContactPair* pairs, int i);
     EXPORT_FUNC bool NextContactPatch(physx::PxContactStreamIterator* iter);
     EXPORT_FUNC bool NextContactPoint(physx::PxContactStreamIterator* iter);
-    EXPORT_FUNC void GetContactPointData(physx::PxContactStreamIterator* iter, int j, physx::PxContactPair* pairs, int i, physx::PxVec3* point, physx::PxVec3* normal, physx::PxVec3* impulse);
+    EXPORT_FUNC physx::PxReal GetContactPointData(physx::PxContactStreamIterator* iter, int j, physx::PxContactPair* pairs, int i, physx::PxVec3* point, physx::PxVec3* normal, physx::PxVec3* impulse);
 
     EXPORT_FUNC physx::PxReal GetSuspensionCompression(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
     EXPORT_FUNC void GetWheelTransform(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum, physx::PxVec3* position, physx::PxQuat* rotation);
@@ -235,6 +269,8 @@ extern "C" {
     EXPORT_FUNC bool GetGroundHitIsGrounded(physx::PxVehicleWheels* vehicle, physx::PxU32 wheelNum);
 
     EXPORT_FUNC void GetTransformComponents(physx::PxTransform* transform, physx::PxVec3* position, physx::PxQuat* rotation);
+
+    EXPORT_FUNC physx::PxReal GetClosestPointOnShape(physx::PxShape* shape, physx::PxVec3* position, physx::PxVec3* closestPoint);
 
     EXPORT_FUNC void DestroyActor(physx::PxActor* actor);
     EXPORT_FUNC void DestroyVehicle(physx::PxVehicleNoDrive* vehicle);

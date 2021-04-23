@@ -17,8 +17,11 @@ public class PhysXBoxCollider : PhysXCollider
     }
 
     void OnDrawGizmosSelected() {
+        Vector3 oldScale = transform.localScale;
+        transform.localScale = Vector3.one;
         Gizmos.matrix = transform.localToWorldMatrix;
         Gizmos.DrawWireCube(offset, new Vector3(x, y, z));
         Gizmos.matrix = Matrix4x4.identity;
+        transform.localScale = oldScale;
     }
 }

@@ -28,7 +28,8 @@ namespace PhysX {
             CONTACT_SUSTAIN = (1 << 1),
             CONTACT_END = (1 << 2),
             TRIGGER_BEGIN = (1 << 3),
-            TRIGGER_END = (1 << 5)
+            TRIGGER_END = (1 << 5),
+            CONTACT_MODIFY = (1 << 6)
         }
 
         #if UNITY_WEBGL
@@ -84,6 +85,9 @@ namespace PhysX {
         public static extern IntPtr CreateShape(IntPtr geometry, IntPtr mat, float contactOffset);
 
         [DllImport(dllName)]
+        public static extern void SetShapeSoftness(IntPtr shape, float maxImpulse, float minImpulse, float penForMaxImpulse, int penExp);
+
+        [DllImport(dllName)]
         public static extern void SetShapeLocalTransform(IntPtr shape, IntPtr transform);
 
         [DllImport(dllName)]
@@ -97,6 +101,9 @@ namespace PhysX {
 
         [DllImport(dllName)]
         public static extern IntPtr CreateDynamicRigidBody(IntPtr pose);
+
+        [DllImport(dllName)]
+        public static extern IntPtr CreateGhostRigidBody(IntPtr baseBody, float blend);
 
         [DllImport(dllName)]
         public static extern IntPtr CreateStaticRigidBody(IntPtr pose);
@@ -246,10 +253,16 @@ namespace PhysX {
         public static extern void SetRigidBodyMaxDepenetrationVelocity(IntPtr body, float velocity);
 
         [DllImport(dllName)]
+        public static extern void SetRigidBodyMaxLinearVelocity(IntPtr body, float velocity);
+
+        [DllImport(dllName)]
         public static extern void AddActorToScene(IntPtr scene, IntPtr actor);
 
         [DllImport(dllName)]
         public static extern void StepPhysics(IntPtr scene, float time);
+
+        [DllImport(dllName)]
+        public static extern void StepGhostPhysics(IntPtr scene, float time);
 
         [DllImport(dllName)]
         public static extern IntPtr GetCentreOfMass(IntPtr rigidBody);
@@ -303,7 +316,7 @@ namespace PhysX {
         public static extern bool NextContactPoint(IntPtr iter);
 
         [DllImport(dllName)]
-        public static extern void GetContactPointData(IntPtr iter, int j, IntPtr pairs, int i, [Out] PhysXVec3 point, [Out] PhysXVec3 normal, [Out] PhysXVec3 impulse);
+        public static extern float GetContactPointData(IntPtr iter, int j, IntPtr pairs, int i, [Out] PhysXVec3 point, [Out] PhysXVec3 normal, [Out] PhysXVec3 impulse);
 
         [DllImport(dllName)]
         public static extern float GetSuspensionCompression(IntPtr vehicle, int wheelNum);
@@ -334,6 +347,9 @@ namespace PhysX {
 
         [DllImport(dllName)]
         public static extern void GetTransformComponents(IntPtr transform, [Out] PhysXVec3 position, [Out] PhysXQuat rotation);
+
+        [DllImport(dllName)]
+        public static extern float GetClosestPointOnShape(IntPtr shape, [In] PhysXVec3 position, [Out] PhysXVec3 closestPoint);
 
         [DllImport(dllName)]
         public static extern void DestroyActor(IntPtr actor);

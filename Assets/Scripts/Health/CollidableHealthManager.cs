@@ -53,7 +53,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     public void CollisionEnter() {}
 
     public void CollisionEnter(PhysXCollision collision) {
-        if (myPhotonView.IsMine) {
+        if (myPhotonView.IsMine && collision.contactCount > 0) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
             if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
