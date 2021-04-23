@@ -14,7 +14,7 @@ public class PhysXSceneManager : MonoBehaviour
 
     private static IntPtr scene = IntPtr.Zero;
 
-    private static Dictionary<IntPtr, PhysXBody> bodies = new Dictionary<IntPtr, PhysXBody>();
+    private static Dictionary<long, PhysXBody> bodies = new Dictionary<long, PhysXBody>();
     private List<PhysXBody> preRegisteredBodies = new List<PhysXBody>();
 
     private static List<PhysXCollision> ongoingCollisions = new List<PhysXCollision>();
@@ -66,18 +66,18 @@ public class PhysXSceneManager : MonoBehaviour
         }
         else {
             body.Setup();
-            bodies.Add(body.physXBody, body);
+            bodies.Add(body.physXBody.ToInt64(), body);
             PhysXLib.AddActorToScene(scene, body.physXBody);
             body.PostSceneInsertionSetup();
         }
     }
 
     public void RemoveActor(PhysXBody body) {
-        bodies.Remove(body.physXBody);
+        bodies.Remove(body.physXBody.ToInt64());
     }
 
     public static PhysXBody GetBodyFromPointer(IntPtr pointer) {
-        return bodies[pointer];
+        return bodies[pointer.ToInt64()];
     }
 
     public void Simulate() {
@@ -91,7 +91,7 @@ public class PhysXSceneManager : MonoBehaviour
         foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
             collision.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
-            if (bodies.TryGetValue(collision.self, out body)) body.FireCollisionEvents(collision);
+            if (bodies.TryGetValue(collision.self.ToInt64(), out body)) body.FireCollisionEvents(collision);
             PhysXCollision.ReleaseCollision(collision);
         }
         PhysXSceneManager.ongoingCollisions.Clear();
@@ -99,7 +99,7 @@ public class PhysXSceneManager : MonoBehaviour
         foreach (PhysXTrigger trigger in PhysXSceneManager.ongoingTriggers) {
             trigger.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
-            if (bodies.TryGetValue(trigger.self, out body)) body.FireTriggerEvents(trigger);
+            if (bodies.TryGetValue(trigger.self.ToInt64(), out body)) body.FireTriggerEvents(trigger);
             PhysXTrigger.ReleaseTrigger(trigger);
         }
         PhysXSceneManager.ongoingTriggers.Clear();

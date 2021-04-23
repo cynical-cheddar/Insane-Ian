@@ -62,9 +62,6 @@ namespace GraphBending {
                 }
             }
 
-            Debug.Log(groups.Count);
-            Debug.Log(skeleton.vertices.Length);
-
             for (int i = 0; i < skeleton.vertices.Length; i++) {
                 float minSqrDist = float.MaxValue;
                 int targetGroup = -1;
@@ -76,7 +73,7 @@ namespace GraphBending {
                     }
                 }
 
-                Debug.Log(groups[targetGroup].skeletonVertexIndex);
+                if (groups[targetGroup].skeletonVertexIndex != -1) Debug.LogError("Duplicate skeleton vertex");
                 groups[targetGroup].skeletonVertexIndex = i;
             }
         }
