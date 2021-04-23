@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Gamestate;
 
 public class HotPotatoManager : MonoBehaviour
 {
@@ -17,9 +18,13 @@ public class HotPotatoManager : MonoBehaviour
 
     private int myDriverId;
     private int myGunnerId;
-    
-    
-  
+
+    private GamestateTracker gamestateTracker;
+
+    private void Start() {
+        gamestateTracker = FindObjectOfType<GamestateTracker>();
+    }
+
     public void pickupPotato()
     {
         NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
@@ -95,5 +100,8 @@ public class HotPotatoManager : MonoBehaviour
         vhm.HealObject(5);
         dam.AdjustDriverUltimateProgress(5);
         gwm.AdjustGunnerUltimateProgress(5);
+        TeamEntry team = gamestateTracker.teams.Get((short)vhm.teamId);
+        team.checkpoint++;
+        team.Increment();
     }
 }
