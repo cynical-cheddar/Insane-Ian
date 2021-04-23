@@ -91,7 +91,7 @@ public class PhysXSceneManager : MonoBehaviour
         foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
             collision.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
-            if (bodies.TryGetValue(collision.self, out body)) {
+            if (bodies.TryGetValue(collision.self.ToInt64(), out body)) {
                 try {
                     body.FireCollisionEvents(collision);
                 }
@@ -106,7 +106,7 @@ public class PhysXSceneManager : MonoBehaviour
         foreach (PhysXTrigger trigger in PhysXSceneManager.ongoingTriggers) {
             trigger.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
-            if (bodies.TryGetValue(trigger.self, out body)) {
+            if (bodies.TryGetValue(trigger.self.ToInt64(), out body)) {
                 try {
                     body.FireTriggerEvents(trigger);
                 }
