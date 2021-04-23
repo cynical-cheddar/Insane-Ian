@@ -119,8 +119,8 @@ namespace PhysX {
             impulse /= contactCount;
         }
 
-        internal void PopulateWithUnityObjects(Dictionary<IntPtr, PhysXBody> bodies) {
-            PhysXBody body = bodies[otherActor];
+        internal void PopulateWithUnityObjects(Dictionary<long, PhysXBody> bodies) {
+            PhysXBody body = bodies[otherActor.ToInt64()];
             rigidBody = body as PhysXRigidBody;
             gameObject = body.gameObject;
 
