@@ -178,7 +178,15 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         if (botDriver && PhotonNetwork.IsMasterClient) EnableMonobehaviours(aiDriverScripts);
         // otherwise, find the driver player by their nickname. Tell their client to turn on player driver controls
         //Debug.Log("My local name is " + PhotonNetwork.LocalPlayer.NickName);
-        GetComponent<TeamNameSetup>().SetupTeamName("Team " + teamId);
+        TeamEntry team = gamestateTracker.teams.Get((short)teamId);
+        if (team.name == null) {
+            PlayerEntry driver = gamestateTracker.players.Get(team.driverId);
+            PlayerEntry gunner = gamestateTracker.players.Get(team.gunnerId);
+            GetComponent<TeamNameSetup>().SetupTeamName($"{driver.name} + {gunner.name}");
+            driver.Release();
+            gunner.Release();
+       } else GetComponent<TeamNameSetup>().SetupTeamName("Team " + teamId);
+
 
         if (PhotonNetwork.LocalPlayer.ActorNumber == driverId)
         {

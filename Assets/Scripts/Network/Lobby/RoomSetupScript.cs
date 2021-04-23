@@ -20,6 +20,7 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
     public Button hostGameButton;
     public TextMeshProUGUI hostGameButtonText;
     string gameVersion = "0.9";
+    public Text roomNameInUseText;
     private void Start()
     {
         //Random rnd = new Random();
@@ -35,6 +36,10 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
             PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.NickName = "host";
         }
+
+        if (PhotonNetwork.InLobby) {
+            EnableHostGameButton();
+        }
     }
     
     public override void OnDisconnected(DisconnectCause cause)
@@ -49,9 +54,13 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinLobby(TypedLobby.Default);
     }
 
-    public override void OnJoinedLobby() {
+    void EnableHostGameButton() {
         hostGameButtonText.text = "Host Game";
         hostGameButton.interactable = true;
+    }
+
+    public override void OnJoinedLobby() {
+        EnableHostGameButton();
     }
 
     public void SetMaxPlayers(int newMaxPlayers)
@@ -89,6 +98,7 @@ public class RoomSetupScript : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         Debug.LogError("OnCreateRoomFailed got called. This can happen if the room exists (even if not visible). Try another room name.");
+        roomNameInUseText.gameObject.SetActive(true);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
