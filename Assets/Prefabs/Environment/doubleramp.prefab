@@ -1,37 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &6580979823518399130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 147096285285775941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7586241689750916693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 147096285285775941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b70393a1ebd9245eda71ab4f0b5976c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ownLayers: 1
-  collisionLayers: 3
-  material: {fileID: 0}
-  _trigger: 0
-  offset: {x: 0, y: 0, z: 0}
-  mesh: {fileID: -1614671836874630292, guid: 179e2d0ed56c91a49a2d0f6f185fdf5b, type: 3}
-  convex: 1
-  scale: {x: 10, y: 10, z: 10}
 --- !u!114 &1803145309398628193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,6 +17,7 @@ MonoBehaviour:
   material: {fileID: 0}
   _trigger: 0
   offset: {x: 0, y: 0, z: 0}
+  collisionSoftener: {fileID: 0}
   mesh: {fileID: -1614671836874630292, guid: 179e2d0ed56c91a49a2d0f6f185fdf5b, type: 3}
   convex: 1
   scale: {x: 1.9479241, y: 1.63, z: 1.8831617}
@@ -186,12 +155,6 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 8463452834714425367, guid: 25809567eaffdd64fafa7be4cd256c41, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 25809567eaffdd64fafa7be4cd256c41, type: 3}
---- !u!1 &147096285285775941 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 556714640852900000, guid: 25809567eaffdd64fafa7be4cd256c41,
-    type: 3}
-  m_PrefabInstance: {fileID: 410758091717944037}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &666893274380542207 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 932818692997874202, guid: 25809567eaffdd64fafa7be4cd256c41,
@@ -272,6 +235,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8463452834714425367, guid: 25809567eaffdd64fafa7be4cd256c41, type: 3}
+    - {fileID: 2903491134957184379, guid: 25809567eaffdd64fafa7be4cd256c41, type: 3}
+    - {fileID: 838417198987960303, guid: 25809567eaffdd64fafa7be4cd256c41, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 25809567eaffdd64fafa7be4cd256c41, type: 3}
 --- !u!1 &4378315307368195327 stripped
 GameObject:
