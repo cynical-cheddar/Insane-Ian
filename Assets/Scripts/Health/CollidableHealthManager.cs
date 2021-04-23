@@ -78,16 +78,6 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 
             damage = damage / rammingDamageResistance;
             
-            
-            if (GetComponent<COMDropper>() != null && !resetting) {
-                Debug.LogWarning("Whatever this is has not been ported to the new PhysX system");
-                // Might not be needed anymore as COM is no longer dropped?
-                // resetting = true;
-                // Rigidbody rb = GetComponent<Rigidbody>();
-                // StartCoroutine(ResetPreviousCOM(rb.centerOfMass, 1f));
-                // rb.centerOfMass = Vector3.zero;
-            }
-            
             if (otherVehicleManager != null) {
                 Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
                 rammingDetails.damage = damage;

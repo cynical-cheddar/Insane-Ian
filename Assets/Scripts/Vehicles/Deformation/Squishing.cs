@@ -39,7 +39,6 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
         if (deformableMeshes != null && deformableMeshes.Count > 0) {
             Gizmos.matrix = deformableMeshes[0].transform.localToWorldMatrix;
-            Gizmos.DrawWireMesh(deformableMeshes[0].collisionSkeleton);
         }
         // Gizmos.DrawCube(Vector3.zero, new Vector3(1, 1, 0.1f));
         Gizmos.color = Color.white;
@@ -54,18 +53,14 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
         deformableMeshes[0].Subdivide(deformableMeshes[0].maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
-        skeletonVertices = new List<Vector3>(deformableMeshes[0].collisionSkeleton.vertices);
 
         //  Group similar vertices.
-        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, deformableMeshes[0].collisionSkeleton, groupRadius);
+        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, groupRadius);
         foreach (VertexGroup group in meshGraph.groups) {
             if (group.skeletonVertexIndex >= 0) {
                 skeletonVertices[group.skeletonVertexIndex] = group.pos;
             }
         }
-
-        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
-        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
 
         originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().sharedMesh);
         collisionResolver = Instantiate(collisionResolver);
@@ -176,8 +171,6 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         //  Update the mesh
         deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
-        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
-        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
     }
 
     private bool IsBeyondCollisionSurface(Vector3 surfaceNormal, Vector3 surfacePoint, Vector3 vertex) {
@@ -327,8 +320,6 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         //  Update the mesh
         deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
-        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
-        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
     }
 
     public void CollideMesh(PhysXCollider collider, Vector3 collisionForce, bool addNoise) {
@@ -421,9 +412,6 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         //  Update the mesh
         deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
-        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
-        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
-
         //meshCollider.sharedMesh = mesh;
 
     }
