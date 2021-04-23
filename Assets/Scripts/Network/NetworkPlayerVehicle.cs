@@ -106,6 +106,8 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
 
         teamId = (int)info.photonView.InstantiationData[0];
 
+        gameObject.name = gameObject.name + teamId;
+
         MonoBehaviour[] scripts = GetComponentsInChildren<MonoBehaviour>(true);
         List<MonoBehaviour> playerDriverScriptsList = new List<MonoBehaviour>();
         List<MonoBehaviour> playerGunnerScriptsList = new List<MonoBehaviour>();

@@ -11,13 +11,19 @@ public class PhysXRigidBody : PhysXBody
 
     //public IntPtr physXBody { get; private set; }
     private IntPtr vehicle = IntPtr.Zero;
+    private IntPtr ghostBody = IntPtr.Zero;
 
     public uint vehicleId { get; private set; } = 0;
 
     public bool kinematic = false;
+
+    public bool useGravity = true;
     public float mass = 1;
     public float linearDamping = 0;
     public float angularDamping = 0;
+    public float maxVelocity = float.MaxValue - 1;
+
+    public float ghostBlend = 0.8f;
 
     private PhysXVec3 physXVelocity = new PhysXVec3(Vector3.zero);
     private Vector3 _velocity;
@@ -82,8 +88,8 @@ public class PhysXRigidBody : PhysXBody
         PhysXLib.SetRigidBodyFlag(physXBody, PhysXLib.PhysXRigidBodyFlag.eKINEMATIC, kinematic);
         if (kinematic) PhysXLib.SetRigidBodyDominanceGroup(physXBody, 1);
 
-        PhysXLib.SetRigidBodyMaxDepenetrationVelocity(physXBody, 10);
-
+        PhysXLib.SetRigidBodyMaxDepenetrationVelocity(physXBody, Physics.defaultMaxDepenetrationVelocity);
+        PhysXLib.SetRigidBodyMaxLinearVelocity(physXBody, maxVelocity);
 
         wheels = new List<PhysXWheelCollider>(GetComponentsInChildren<PhysXWheelCollider>(true));
         PhysXCollider[] colliders = GetComponentsInChildren<PhysXCollider>(true);
@@ -92,11 +98,11 @@ public class PhysXRigidBody : PhysXBody
             vehicleId = currentVehicleId;
             currentVehicleId++;
         }
-        //Debug.Log(vehicleId);
 
         foreach (PhysXCollider collider in colliders) {
             collider.Setup(this, vehicleId);
         }
+        //Debug.Log(vehicleId);
         
         PhysXLib.SetRigidBodyMassAndInertia(physXBody, mass, new PhysXVec3(Vector3.zero));
         PhysXLib.SetRigidBodyDamping(physXBody, linearDamping, angularDamping);
@@ -138,6 +144,11 @@ public class PhysXRigidBody : PhysXBody
         PhysXLib.SetRigidBodyMassPose(physXBody, newCentre);
 
         if (vehicle != IntPtr.Zero) PhysXLib.UpdateVehicleCentreOfMass(oldCentre, newCentre, vehicle);
+
+        if (GetComponentInChildren<CollisionSoftener>() != null) {
+            Debug.Log("made ghost body");
+            ghostBody = PhysXLib.CreateGhostRigidBody(physXBody, ghostBlend);
+        }
     }
 
     public override void UpdatePositionAndVelocity() {
@@ -188,8 +199,22 @@ public class PhysXRigidBody : PhysXBody
         PhysXLib.AddTorque(physXBody, physXForce, forceModeInt);
     }
 
+    public void AddGhostImpulse(Vector3 force, Vector3 position) {
+        physXForce.FromVector(force);
+        physXForcePos.FromVector(position);
+        PhysXLib.AddForceAtPosition(ghostBody, physXForce, physXForcePos, (int)ForceMode.Impulse);
+    }
+
     protected override void OnDestroy() {
-        base.OnDestroy();
         if (vehicle != IntPtr.Zero) PhysXLib.DestroyVehicle(vehicle);
+        base.OnDestroy();
+    }
+
+    
+
+    private void FixedUpdate() {
+        if(!useGravity){
+            AddForce(-Physics.gravity, ForceMode.Acceleration);
+        }
     }
 }

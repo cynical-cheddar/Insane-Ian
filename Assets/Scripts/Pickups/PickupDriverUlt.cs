@@ -11,6 +11,7 @@ public class PickupDriverUlt : PickupItem
     public override void TriggerEnter(PhysXCollider other)
     {
         Debug.Log("AAAAAAAAA");
+        Debug.Log("driver ult pickup");
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
 
@@ -36,12 +37,13 @@ public class PickupDriverUlt : PickupItem
         DriverAbilityManager dam = otherpv.gameObject.GetComponent<DriverAbilityManager>();
 
 
-
-        if (!dam.usingUltimate)
-        {
-            dam.AdjustDriverUltimateProgress(ultIncrease);
-            this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(),
-                npv.GetGunnerID());
+        if (dam != null) {
+            if (!dam.usingUltimate) {
+                dam.AdjustDriverUltimateProgress(ultIncrease);
+                this.GetComponent<PhotonView>().RPC(nameof(PunPickup), RpcTarget.AllViaServer, npv.GetDriverID(),
+                    npv.GetGunnerID());
+            }
         }
+        
     }
 }

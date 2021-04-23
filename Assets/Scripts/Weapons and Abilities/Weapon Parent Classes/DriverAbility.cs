@@ -240,6 +240,7 @@ public class DriverAbility : Equipment
         abilityActivated = true;
        // Debug.Log("Activate driver ability");
         abilityPhotonView.RPC(nameof(ActivationEffects_RPC), RpcTarget.All);
+        targetOverlay.SetActive(false);
     }
 
     public virtual void DeactivateAbility()
