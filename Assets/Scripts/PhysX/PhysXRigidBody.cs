@@ -16,6 +16,8 @@ public class PhysXRigidBody : PhysXBody
     public uint vehicleId { get; private set; } = 0;
 
     public bool kinematic = false;
+
+    public bool useGravity = true;
     public float mass = 1;
     public float linearDamping = 0;
     public float angularDamping = 0;
@@ -206,5 +208,13 @@ public class PhysXRigidBody : PhysXBody
     protected override void OnDestroy() {
         if (vehicle != IntPtr.Zero) PhysXLib.DestroyVehicle(vehicle);
         base.OnDestroy();
+    }
+
+    
+
+    private void FixedUpdate() {
+        if(!useGravity){
+            AddForce(-Physics.gravity, ForceMode.Acceleration);
+        }
     }
 }

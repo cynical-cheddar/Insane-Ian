@@ -40,11 +40,7 @@ namespace PhysX {
 
         public PhysXRigidBody rigidBody { get; private set; }
 
-        public Transform transform {
-            get {
-                return rigidBody.transform;
-            }
-        }
+        public Transform transform { get; private set; }
 
         public PhysXContactPoint GetContact(int index) {
             return contactPoints[index];
@@ -123,6 +119,7 @@ namespace PhysX {
             PhysXBody body = bodies[otherActor.ToInt64()];
             rigidBody = body as PhysXRigidBody;
             gameObject = body.gameObject;
+            transform = body.transform;
 
             IntPtr currentShape = IntPtr.Zero;
             PhysXCollider currentCollider = null;
