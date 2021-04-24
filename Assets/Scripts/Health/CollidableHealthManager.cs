@@ -78,14 +78,16 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 
             damage = damage / rammingDamageResistance;
             
-            if (otherVehicleManager != null) {
-                Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
-                rammingDetails.damage = damage;
-                
-                TakeDamage(rammingDetails);
-            }
-            else {
-                TakeDamage(damage);
+            if(damage > 5){
+                if (otherVehicleManager != null) {
+                    Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
+                    rammingDetails.damage = damage;
+                    
+                    TakeDamage(rammingDetails);
+                }
+                else {
+                    TakeDamage(damage);
+                }
             }
             timeSinceLastRam= 0f;
         }
