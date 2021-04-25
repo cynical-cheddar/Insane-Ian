@@ -105,6 +105,10 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
 
     public void CollisionEnter(PhysXCollision other)
     {
+
+    }
+
+    public void CrashCollisionCamera(PhysXCollision other){
         if (currentSpeed > 2)
         {
             if (other.transform.root.CompareTag("Player"))

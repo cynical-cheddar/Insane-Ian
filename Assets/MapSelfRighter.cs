@@ -15,7 +15,7 @@ public class MapSelfRighter : MonoBehaviour, ICollisionStayEvent
     float timer = 0f;
 
     public void CollisionStay(PhysXCollision col) {
-        Debug.LogError("resetting pos up " + col.gameObject + " transform is: " + col.transform.root);
+     //   Debug.LogError("resetting pos up " + col.gameObject + " transform is: " + col.transform.root);
         timer += Time.unscaledDeltaTime;
 
 

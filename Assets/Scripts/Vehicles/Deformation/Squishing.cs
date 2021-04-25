@@ -9,6 +9,20 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 {
     public bool requiresData { get { return true; } }
 
+    PhysXWheelCollider frWheel;
+    VertexGroup frWheelVertexGroup;
+    PhysXWheelCollider flWheel;
+
+    VertexGroup flWheelVertexGroup;
+
+    PhysXWheelCollider rrWheel;
+
+    VertexGroup rrWheelVertexGroup;
+
+    PhysXWheelCollider rlWheel;
+
+    VertexGroup rlWheelVertexGroup;
+
     private List<Vector3> vertices;
     private List<Vector3> skeletonVertices = null;
     private MeshGraph meshGraph;
@@ -29,6 +43,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
     private Vector3 gizmoSurfaceNormal = Vector3.forward;
     private Vector3 gizmoSurfacePoint;
 
+
+InterfaceCarDrive4W interfaceCar;
     Mesh originalMesh;
 
     void OnDrawGizmos() {
@@ -53,6 +69,9 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
     // Start is called before the first frame update.
     void Start() {
         myRb = GetComponent<PhysXRigidBody>();
+        
+        
+
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
         deformableMeshes[0].Subdivide(deformableMeshes[0].maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
@@ -69,6 +88,20 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         collisionResolver = Instantiate(collisionResolver);
         resolverBody = collisionResolver.GetComponent<PhysXBody>();
         resolverBody.position = new Vector3(0, 10000, 0);
+
+        if(GetComponent<InterfaceCarDrive4W>()!=null){
+        interfaceCar = GetComponent<InterfaceCarDrive4W>();
+            if(interfaceCar!=null){
+                frWheel = interfaceCar.frontRightW;
+                frWheelVertexGroup = NearestVertexTo(frWheel.transform.position);
+                flWheel = interfaceCar.frontLeftW;
+                flWheelVertexGroup = NearestVertexTo(flWheel.transform.position);
+                rrWheel = interfaceCar.rearRightW;
+                rrWheelVertexGroup = NearestVertexTo(rrWheel.transform.position);
+                rlWheel = interfaceCar.rearLeftW;
+                rlWheelVertexGroup = NearestVertexTo(rlWheel.transform.position);
+            }
+        }
     }
 
     public void ResetMesh()
@@ -249,6 +282,12 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
                 }
 
                 DissipateDeformation(true);
+                if(interfaceCar!=null){
+                    frWheel.transform.localPosition = frWheelVertexGroup.pos;
+                    flWheel.transform.localPosition = flWheelVertexGroup.pos;
+                    rrWheel.transform.localPosition = rrWheelVertexGroup.pos;
+                    rlWheel.transform.localPosition = rlWheelVertexGroup.pos;
+                }
             
 
             // Vector3 collisionNormal = collision.GetContact(0).normal;
@@ -429,4 +468,33 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         //meshCollider.sharedMesh = mesh;
 
     }
+
+
+    public VertexGroup NearestVertexTo(Vector3 point)
+    {
+        // convert point to local space
+        point = transform.InverseTransformPoint(point);
+
+
+
+        float minDistanceSqr = Mathf.Infinity;
+        VertexGroup nearestVertex = meshGraph.groups[0];
+        // scan all vertices to find nearest
+        foreach (VertexGroup vertex in meshGraph.groups)
+        {
+            Vector3 diff = point-vertex.pos;
+            float distSqr = diff.sqrMagnitude;
+            if (distSqr < minDistanceSqr)
+            {
+                minDistanceSqr = distSqr;
+                nearestVertex = vertex;
+            }
+        }
+
+        return nearestVertex;
+
+
+    }
+
+
 }
