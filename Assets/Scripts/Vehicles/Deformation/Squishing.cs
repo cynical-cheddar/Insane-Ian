@@ -4,6 +4,7 @@ using UnityEngine;
 using GraphBending;
 using System.Linq;
 using PhysX;
+using System.Runtime.CompilerServices;
 
 public class Squishing : MonoBehaviour, ICollisionStayEvent
 {
@@ -119,7 +120,7 @@ InterfaceCarDrive4W interfaceCar;
     VertexGroup GetClosestVertexGroup(Vector3 pos) {
         VertexGroup closest = meshGraph.groups[0];
         float closestDist = (vertices[closest.vertexIndices[0]] - pos).sqrMagnitude;
-        for (int i = 1; i < meshGraph.groups.Count; i++) {
+        for (int i = 1; i < meshGraph.groups.Length; i++) {
             float newDist = (vertices[meshGraph.groups[i].vertexIndices[0]] - pos).sqrMagnitude;
             if (newDist < closestDist) {
                 closestDist = newDist;
@@ -196,7 +197,7 @@ InterfaceCarDrive4W interfaceCar;
             }
         }
 
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
+        for (int i = 0; i < meshGraph.groups.Length; i++) {
             meshGraph.groups[i].wasMoved = false;
             if (meshGraph.groups[i].enqueued) {
                 Debug.LogWarning("Vertex marked as still in queue.");
@@ -209,6 +210,7 @@ InterfaceCarDrive4W interfaceCar;
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsBeyondCollisionSurface(Vector3 surfaceNormal, Vector3 surfacePoint, Vector3 vertex) {
         Vector3 relativePosition = vertex - surfacePoint;
         return Vector3.Dot(relativePosition, surfaceNormal) < 0;
@@ -255,39 +257,39 @@ InterfaceCarDrive4W interfaceCar;
             gizmoSurfacePoint = collisionSurfacePoint;
             float multiplier = 0.2f;
             float addition = 0.9f;
-            if(collision.collider.gameObject.CompareTag("DustGround")){
+            if (collision.collider.gameObject.CompareTag("DustGround")) {
                 addition = 0f;
                 multiplier = 0.05f;
             }
-            for (int i = 0; i < meshGraph.groups.Count; i++) {
-                    VertexGroup current = meshGraph.groups[i];
-                    Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
+            for (int i = 0; i < meshGraph.groups.Length; i++) {
+                VertexGroup current = meshGraph.groups[i];
+                Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
 
-                    if (IsBeyondCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex)) {
-                        if (isInconvenient || collision.collider.ClosestPoint(vertex) == vertex) {
-                            Vector3 deformation = DeformationFromCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex);
-                            deformation = transform.InverseTransformDirection(deformation);
-                            // Debug.Log(deformation);
+                if (IsBeyondCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex)) {
+                    if (isInconvenient || collision.collider.ClosestPoint(vertex) == vertex) {
+                        Vector3 deformation = DeformationFromCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex);
+                        deformation = transform.InverseTransformDirection(deformation);
+                        // Debug.Log(deformation);
 
-                            //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
-                            deformation *= Random.value * multiplier +addition;
+                        //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
+                        deformation *= Random.value * multiplier +addition;
 
-                            current.MoveBy(vertices, skeletonVertices, deformation, false);
-                            current.wasMoved = true;
-                            //moved.Add(current);
-                            vertexQueue.Enqueue(current);
-                            current.enqueued = true;
-                        }
+                        current.MoveBy(vertices, skeletonVertices, deformation, false);
+                        current.wasMoved = true;
+                        //moved.Add(current);
+                        vertexQueue.Enqueue(current);
+                        current.enqueued = true;
                     }
                 }
+            }
 
-                DissipateDeformation(true);
-                if(interfaceCar!=null){
-                    frWheel.transform.localPosition = frWheelVertexGroup.pos;
-                    flWheel.transform.localPosition = flWheelVertexGroup.pos;
-                    rrWheel.transform.localPosition = rrWheelVertexGroup.pos;
-                    rlWheel.transform.localPosition = rlWheelVertexGroup.pos;
-                }
+            DissipateDeformation(false);
+            if(interfaceCar!=null){
+                frWheel.transform.localPosition = frWheelVertexGroup.pos;
+                flWheel.transform.localPosition = flWheelVertexGroup.pos;
+                rrWheel.transform.localPosition = rrWheelVertexGroup.pos;
+                rlWheel.transform.localPosition = rlWheelVertexGroup.pos;
+            }
             
 
             // Vector3 collisionNormal = collision.GetContact(0).normal;
@@ -322,6 +324,8 @@ InterfaceCarDrive4W interfaceCar;
                 oldEdgeSqrLengths.Add(current.connectingEdges[j].sqrLength);
             }
 
+            float sqrStretchiness = stretchiness * stretchiness;
+
             for (int j = 0; j < current.connectingEdges.Count; j++) {
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
@@ -331,7 +335,7 @@ InterfaceCarDrive4W interfaceCar;
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
-                    if (edge.sqrMagnitude > stretchiness * stretchiness * oldEdgeSqrLengths[j]) {
+                    if (edge.sqrMagnitude > sqrStretchiness * oldEdgeSqrLengths[j]) {
                         //  make edge right length
                         edge.Normalize();
                         float randomNoise = 1; 
@@ -342,6 +346,21 @@ InterfaceCarDrive4W interfaceCar;
                         //  move vertices so edge is not too long.
                         current.MoveTo(vertices, skeletonVertices, adjacent.pos + edge, false);
                         current.connectingEdges[j].UpdateEdgeLength();
+                        current.wasMoved = true;
+                    }
+                }
+            }
+
+            if (current.wasMoved) {
+                //  Add adjacent, unmoved vertices into the queue for traversal
+                for (int j = 0; j < current.connectingEdges.Count; j++) {
+                    //  Get adjacent vertex group
+                    VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
+
+                    //  Add it to the queue if it hasn't already been moved
+                    if (!adjacent.enqueued && !adjacent.wasMoved) {
+                        vertexQueue.Enqueue(adjacent);
+                        adjacent.enqueued = true;
                     }
                 }
             }
@@ -349,20 +368,9 @@ InterfaceCarDrive4W interfaceCar;
             //moved.Add(current);
             current.wasMoved = true;
 
-            //  Add adjacent, unmoved vertices into the queue for traversal
-            for (int j = 0; j < current.connectingEdges.Count; j++) {
-                //  Get adjacent vertex group
-                VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
-
-                //  Add it to the queue if it hasn't already been moved
-                if (!adjacent.enqueued && !adjacent.wasMoved) {
-                    vertexQueue.Enqueue(adjacent);
-                    adjacent.enqueued = true;
-                }
-            }
         }
 
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
+        for (int i = 0; i < meshGraph.groups.Length; i++) {
             meshGraph.groups[i].wasMoved = false;
             if (meshGraph.groups[i].enqueued) {
                 Debug.LogWarning("Vertex marked as still in queue.");
@@ -382,7 +390,7 @@ InterfaceCarDrive4W interfaceCar;
 
         //  Make a queue (it breadth first traversal time)
 
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
+        for (int i = 0; i < meshGraph.groups.Length; i++) {
             VertexGroup current = meshGraph.groups[i];
             Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
 
@@ -404,6 +412,8 @@ InterfaceCarDrive4W interfaceCar;
             }
         }
 
+        float sqrStretchiness = stretchiness * stretchiness;
+
         // Move each vertex, making sure that it doesn't stretch too far from its neighbours
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
@@ -423,7 +433,7 @@ InterfaceCarDrive4W interfaceCar;
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
-                    if (edge.sqrMagnitude > stretchiness * stretchiness * oldEdgeSqrLengths[j]) {
+                    if (edge.sqrMagnitude > sqrStretchiness * oldEdgeSqrLengths[j]) {
                         //  make edge right length
                         edge.Normalize();
                         float randomNoise = 1; 
@@ -454,7 +464,7 @@ InterfaceCarDrive4W interfaceCar;
             }
         }
 
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
+        for (int i = 0; i < meshGraph.groups.Length; i++) {
             meshGraph.groups[i].wasMoved = false;
             if (meshGraph.groups[i].enqueued) {
                 Debug.LogWarning("Vertex marked as still in queue.");
