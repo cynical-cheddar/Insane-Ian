@@ -229,7 +229,7 @@ using Random = UnityEngine.Random;
                 }
 
             //front right angle sensor
-            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask)) {
+            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier -= 0.5f;
@@ -237,14 +237,14 @@ using Random = UnityEngine.Random;
 
             //front left sensor
             sensorStartPos -= transform.right * (frontSideSensorPosition * 2);
-            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask)) {
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 1f;
             }
 
             //front left angle sensor
-            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask)) {
+            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 0.5f;
@@ -252,7 +252,7 @@ using Random = UnityEngine.Random;
 
             //front center sensor
             if (avoidMultiplier == 0) {
-                if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask)) {
+                if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                     if (!terrainTags.Contains(hit.collider.tag)) {
                         Debug.DrawLine(sensorStartPos, hit.point);
                         avoiding = true;
