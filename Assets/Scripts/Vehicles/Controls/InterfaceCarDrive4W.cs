@@ -293,8 +293,13 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
                 // if new ground type, set new stiffness
                 if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
                     wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
+                    Debug.Log("Dust");
+                } else if (hit.collider.CompareTag("RoadGround") && wheelStructs[i].surface != "RoadGround") {
+                    wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
+                    Debug.Log("Road");
                 } else {
                     wheelStructs[i] = new wheelStruct(8f, "0", wheelStructs[i].collider);
+                    Debug.Log("None");
                 }
             }
         }
