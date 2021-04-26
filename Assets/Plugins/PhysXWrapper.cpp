@@ -883,7 +883,7 @@ extern "C" {
             physx::PxRigidDynamic* baseBody = sceneUserData->hauntedBodies[i];
             physx::PxRigidDynamic* ghostBody = ((ActorUserData*)baseBody->userData)->ghostBody;
 
-            if (ghostBody != NULL && ((ActorUserData*)baseBody->userData)->ghostBodyEnabled) {
+            if (ghostBody != NULL) {
                 ghostBody->setLinearVelocity(baseBody->getLinearVelocity());
                 ghostBody->setAngularVelocity(baseBody->getAngularVelocity());
                 ghostBody->setGlobalPose(baseBody->getGlobalPose());
