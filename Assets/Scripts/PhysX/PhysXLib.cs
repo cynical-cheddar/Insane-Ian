@@ -109,6 +109,9 @@ namespace PhysX {
         public static extern IntPtr CreateStaticRigidBody(IntPtr pose);
 
         [DllImport(dllName)]
+        public static extern void SetGhostBodyEnabled(IntPtr baseBody, bool enabled);
+
+        [DllImport(dllName)]
         public static extern IntPtr SetCollisionFilterData(IntPtr shape, UInt32 w0, UInt32 w1, UInt32 w2, UInt32 w3);
 
         [DllImport(dllName)]
