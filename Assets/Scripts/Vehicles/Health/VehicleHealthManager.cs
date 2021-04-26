@@ -32,6 +32,8 @@ public class VehicleHealthManager : CollidableHealthManager
     IDrivable carDriver;
     NetworkPlayerVehicle npv;
     InterfaceCarDrive4W icd4;
+
+    protected AnnouncerManager announcerManager;
     public int teamId {
         get {
             return npv.teamId;
@@ -68,6 +70,7 @@ public class VehicleHealthManager : CollidableHealthManager
         inputDriver = GetComponent<InputDriver>();
         myPhotonView = GetComponent<PhotonView>();
         npv = GetComponent<NetworkPlayerVehicle>();
+        announcerManager = FindObjectOfType<AnnouncerManager>();
 
         
 
@@ -224,8 +227,12 @@ public class VehicleHealthManager : CollidableHealthManager
         // Update gamestate
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
-        hpm.removePotato();
+        bool hadPotato = hpm.removePotato();
+        if(!hadPotato) announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.onKilled, npv.GetDriverID(), npv.GetGunnerID());
+        
         team.Release();
+
+        
         // update my deaths
         if (updateDeath)
         {

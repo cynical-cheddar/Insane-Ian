@@ -9,12 +9,28 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 {
     public bool requiresData { get { return true; } }
 
+    PhysXWheelCollider frWheel;
+    VertexGroup frWheelVertexGroup;
+    PhysXWheelCollider flWheel;
+
+    VertexGroup flWheelVertexGroup;
+
+    PhysXWheelCollider rrWheel;
+
+    VertexGroup rrWheelVertexGroup;
+
+    PhysXWheelCollider rlWheel;
+
+    VertexGroup rlWheelVertexGroup;
+
     private List<Vector3> vertices;
     private List<Vector3> skeletonVertices = null;
     private MeshGraph meshGraph;
     public GameObject testMarker;
     public GameObject collisionResolver;
     private PhysXBody resolverBody;
+
+    private PhysXRigidBody myRb;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
     public float stretchiness = 1000000.1f;
@@ -27,6 +43,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
     private Vector3 gizmoSurfaceNormal = Vector3.forward;
     private Vector3 gizmoSurfacePoint;
 
+
+InterfaceCarDrive4W interfaceCar;
     Mesh originalMesh;
 
     void OnDrawGizmos() {
@@ -39,7 +57,6 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
         if (deformableMeshes != null && deformableMeshes.Count > 0) {
             Gizmos.matrix = deformableMeshes[0].transform.localToWorldMatrix;
-            Gizmos.DrawWireMesh(deformableMeshes[0].collisionSkeleton);
         }
         // Gizmos.DrawCube(Vector3.zero, new Vector3(1, 1, 0.1f));
         Gizmos.color = Color.white;
@@ -51,26 +68,40 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
     // Start is called before the first frame update.
     void Start() {
+        myRb = GetComponent<PhysXRigidBody>();
+        
+        
+
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
         deformableMeshes[0].Subdivide(deformableMeshes[0].maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
-        skeletonVertices = new List<Vector3>(deformableMeshes[0].collisionSkeleton.vertices);
 
         //  Group similar vertices.
-        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, deformableMeshes[0].collisionSkeleton, groupRadius);
+        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, groupRadius);
         foreach (VertexGroup group in meshGraph.groups) {
             if (group.skeletonVertexIndex >= 0) {
                 skeletonVertices[group.skeletonVertexIndex] = group.pos;
             }
         }
 
-        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
-        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
-
         originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().sharedMesh);
         collisionResolver = Instantiate(collisionResolver);
         resolverBody = collisionResolver.GetComponent<PhysXBody>();
         resolverBody.position = new Vector3(0, 10000, 0);
+
+        if(GetComponent<InterfaceCarDrive4W>()!=null){
+        interfaceCar = GetComponent<InterfaceCarDrive4W>();
+            if(interfaceCar!=null){
+                frWheel = interfaceCar.frontRightW;
+                frWheelVertexGroup = NearestVertexTo(frWheel.transform.position);
+                flWheel = interfaceCar.frontLeftW;
+                flWheelVertexGroup = NearestVertexTo(flWheel.transform.position);
+                rrWheel = interfaceCar.rearRightW;
+                rrWheelVertexGroup = NearestVertexTo(rrWheel.transform.position);
+                rlWheel = interfaceCar.rearLeftW;
+                rlWheelVertexGroup = NearestVertexTo(rlWheel.transform.position);
+            }
+        }
     }
 
     public void ResetMesh()
@@ -176,8 +207,6 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         //  Update the mesh
         deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
-        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
-        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
     }
 
     private bool IsBeyondCollisionSurface(Vector3 surfaceNormal, Vector3 surfacePoint, Vector3 vertex) {
@@ -194,7 +223,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
     //  This breaks if this is on a kinematic object (big sad)
     public void CollisionStay(PhysXCollision collision) {
-        if (collision.contactCount > 0) {
+        if ((collision.contactCount > 0 && collision.gameObject.CompareTag("Player")) || (collision.contactCount > 0 && collision.gameObject.CompareTag("DustGround") && myRb.velocity.magnitude > 4)) {
+            
             bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
 
             Vector3 collisionSurfaceNormal = Vector3.zero;
@@ -207,10 +237,14 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
                 collisionSurfaceNormal += contactPoint.normal;
                 collisionSurfacePoint += contactPoint.point;
+
+
                 // collisionSurfaceNormal += contactPoint.normal * impulseMagnitude;
                 // collisionSurfacePoint += contactPoint.point * impulseMagnitude;
                 // sumImpulseMagnitudes += impulseMagnitude;
             }
+
+
 
             collisionSurfaceNormal /= collision.contactCount;
             collisionSurfacePoint /= collision.contactCount;
@@ -219,30 +253,42 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
             gizmoSurfaceNormal = collisionSurfaceNormal;
             gizmoSurfacePoint = collisionSurfacePoint;
-
+            float multiplier = 0.2f;
+            float addition = 0.9f;
+            if(collision.collider.gameObject.CompareTag("DustGround")){
+                addition = 0f;
+                multiplier = 0.05f;
+            }
             for (int i = 0; i < meshGraph.groups.Count; i++) {
-                VertexGroup current = meshGraph.groups[i];
-                Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
+                    VertexGroup current = meshGraph.groups[i];
+                    Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
 
-                if (IsBeyondCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex)) {
-                    if (isInconvenient || collision.collider.ClosestPoint(vertex) == vertex) {
-                        Vector3 deformation = DeformationFromCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex);
-                        deformation = transform.InverseTransformDirection(deformation);
-                        // Debug.Log(deformation);
+                    if (IsBeyondCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex)) {
+                        if (isInconvenient || collision.collider.ClosestPoint(vertex) == vertex) {
+                            Vector3 deformation = DeformationFromCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex);
+                            deformation = transform.InverseTransformDirection(deformation);
+                            // Debug.Log(deformation);
 
-                        //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
-                        deformation *= Random.value * 0.2f + 0.9f;
+                            //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
+                            deformation *= Random.value * multiplier +addition;
 
-                        current.MoveBy(vertices, skeletonVertices, deformation, false);
-                        current.wasMoved = true;
-                        //moved.Add(current);
-                        vertexQueue.Enqueue(current);
-                        current.enqueued = true;
+                            current.MoveBy(vertices, skeletonVertices, deformation, false);
+                            current.wasMoved = true;
+                            //moved.Add(current);
+                            vertexQueue.Enqueue(current);
+                            current.enqueued = true;
+                        }
                     }
                 }
-            }
 
-            DissipateDeformation(true);
+                DissipateDeformation(true);
+                if(interfaceCar!=null){
+                    frWheel.transform.localPosition = frWheelVertexGroup.pos;
+                    flWheel.transform.localPosition = flWheelVertexGroup.pos;
+                    rrWheel.transform.localPosition = rrWheelVertexGroup.pos;
+                    rlWheel.transform.localPosition = rlWheelVertexGroup.pos;
+                }
+            
 
             // Vector3 collisionNormal = collision.GetContact(0).normal;
             // Vector3 collisionForce = collision.impulse;
@@ -327,8 +373,6 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         //  Update the mesh
         deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
-        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
-        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
     }
 
     public void CollideMesh(PhysXCollider collider, Vector3 collisionForce, bool addNoise) {
@@ -421,10 +465,36 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         //  Update the mesh
         deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
-        deformableMeshes[0].collisionSkeleton.SetVertices(skeletonVertices);
-        deformableMeshes[0].collisionSkeleton.RecalculateNormals();
-
         //meshCollider.sharedMesh = mesh;
 
     }
+
+
+    public VertexGroup NearestVertexTo(Vector3 point)
+    {
+        // convert point to local space
+        point = transform.InverseTransformPoint(point);
+
+
+
+        float minDistanceSqr = Mathf.Infinity;
+        VertexGroup nearestVertex = meshGraph.groups[0];
+        // scan all vertices to find nearest
+        foreach (VertexGroup vertex in meshGraph.groups)
+        {
+            Vector3 diff = point-vertex.pos;
+            float distSqr = diff.sqrMagnitude;
+            if (distSqr < minDistanceSqr)
+            {
+                minDistanceSqr = distSqr;
+                nearestVertex = vertex;
+            }
+        }
+
+        return nearestVertex;
+
+
+    }
+
+
 }

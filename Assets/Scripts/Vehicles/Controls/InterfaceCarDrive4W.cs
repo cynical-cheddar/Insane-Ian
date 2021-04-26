@@ -307,14 +307,25 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             if (angle > 120) {
                 // at severe angles, offset center of mass from center so if stuck on roof, can rotate over
                 carRB.centreOfMass = new Vector3(-1f, -3f, 0);
+                
+                upsideDownTime+= Time.deltaTime;
+                if(upsideDownTime > 1.5f){
+                    SelfRighting();
+                }
+
+              //  carRB.AddTorque(transform.forward, ForceMode.VelocityChange);
             } else {
+                upsideDownTime= 0f;
                 carRB.centreOfMass = new Vector3(0, -2.5f, 0);
+
+                
             }
         } else if (!isDead)
             carRB.centreOfMass = new Vector3(0, 0, 0);
 
     }
 
+    float upsideDownTime = 0f;
     void FixedUpdate() {
         getSurface();
         EngineNoise();
@@ -322,6 +333,13 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         AntiRoll(rearLeftW, rearRightW);
         AutoRight();
         Particles();
+    }
+
+    void SelfRighting(){
+        upsideDownTime= 0f;
+        Vector3 eulerAngles = transform.rotation.eulerAngles;
+        carRB.GetComponent<PhysXBody>().rotation = Quaternion.Euler(eulerAngles.x, eulerAngles.y, 0);
+        
     }
 
 

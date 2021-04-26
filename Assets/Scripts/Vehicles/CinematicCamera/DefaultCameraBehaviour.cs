@@ -7,6 +7,15 @@ public class DefaultCameraBehaviour : BaseCameraBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         // setup
+
+        foreach (var param in animator.parameters)
+        {
+        if (param.type == AnimatorControllerParameterType.Trigger)
+            {
+                animator.ResetTrigger(param.name);
+            }
+        }
+
         StartState(animator);
     }
     

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace GraphBending {
     public class MeshGraph {
         public List<VertexGroup> groups {get;}
-        public MeshGraph(Mesh mesh, Mesh skeleton, float groupRadius) {
+        public MeshGraph(Mesh mesh, float groupRadius) {
             groups = new List<VertexGroup>();
             List<Vector3> vertices = new List<Vector3>(mesh.vertices);
 
@@ -60,21 +60,6 @@ namespace GraphBending {
                         groupC.connectingEdges.Add(edge);
                     }
                 }
-            }
-
-            for (int i = 0; i < skeleton.vertices.Length; i++) {
-                float minSqrDist = float.MaxValue;
-                int targetGroup = -1;
-                for (int j = 0; j < groups.Count; j++) {
-                    float sqrDist = (skeleton.vertices[i] - groups[j].pos).sqrMagnitude;
-                    if (sqrDist < minSqrDist) {
-                        targetGroup = j;
-                        minSqrDist = sqrDist;
-                    }
-                }
-
-                if (groups[targetGroup].skeletonVertexIndex != -1) Debug.LogError("Duplicate skeleton vertex");
-                groups[targetGroup].skeletonVertexIndex = i;
             }
         }
 

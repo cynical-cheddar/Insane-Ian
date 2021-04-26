@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
 public class StartGameCountdownTimer : MonoBehaviour
 {
 
@@ -10,8 +10,14 @@ public class StartGameCountdownTimer : MonoBehaviour
     public Animation two;
     public Animation one;
     public Animation fight;
+
+    AnnouncerManager announcerManager;
     void Start()
     {
+        announcerManager = FindObjectOfType<AnnouncerManager>();
+        if(PhotonNetwork.IsMasterClient){
+            announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.matchStart);
+        }
         prepare.Play();
         Invoke(nameof(playThree), 1f);
         Invoke(nameof(playTwo), 2f);

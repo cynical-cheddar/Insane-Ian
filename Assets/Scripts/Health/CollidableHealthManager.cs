@@ -22,6 +22,8 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
         public float collisionResistance;
     }
 
+    DriverCrashDetector driverCrashDetector;
+
     public float defaultCollisionResistance = 1;
     public GameObject audioSourcePrefab = null;
     public float crashSoundsSmallDamageThreshold = 5f;
@@ -44,6 +46,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     protected float timeSinceLastRam = 0f;
     protected new void Start(){
         baseCollisionResistance = deathForce / maxHealth;
+        
         base.Start();
     }
     protected void Update(){
@@ -53,6 +56,8 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     public void CollisionEnter() {}
 
     public void CollisionEnter(PhysXCollision collision) {
+        driverCrashDetector = GetComponent<DriverCrashDetector>();
+        
         if (myPhotonView.IsMine && collision.contactCount > 0) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
@@ -78,24 +83,17 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 
             damage = damage / rammingDamageResistance;
             
-            
-            if (GetComponent<COMDropper>() != null && !resetting) {
-                Debug.LogWarning("Whatever this is has not been ported to the new PhysX system");
-                // Might not be needed anymore as COM is no longer dropped?
-                // resetting = true;
-                // Rigidbody rb = GetComponent<Rigidbody>();
-                // StartCoroutine(ResetPreviousCOM(rb.centerOfMass, 1f));
-                // rb.centerOfMass = Vector3.zero;
-            }
-            
-            if (otherVehicleManager != null) {
-                Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
-                rammingDetails.damage = damage;
-                
-                TakeDamage(rammingDetails);
-            }
-            else {
-                TakeDamage(damage);
+            if(damage > 5){
+                if (otherVehicleManager != null) {
+                    driverCrashDetector.CrashCollisionCamera(collision);
+                    Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
+                    rammingDetails.damage = damage;
+                    
+                    TakeDamage(rammingDetails);
+                }
+                else {
+                    TakeDamage(damage);
+                }
             }
             timeSinceLastRam= 0f;
         }

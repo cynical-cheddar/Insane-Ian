@@ -11,6 +11,8 @@ using Cinemachine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+
+    public float gamespeed = 1f;
     public int maxPlayerPairs = 24;
     
     public List<Transform> spawnPoints;
@@ -39,7 +41,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private GameObject startCountdownInstance;
     
     
-    
+    private void Awake() {
+        Time.timeScale = gamespeed;
+        Time.fixedDeltaTime = Time.timeScale * .02f;
+    }
     
     // called on the master client when the game is fully set up
     void GameFullySetupMaster()
