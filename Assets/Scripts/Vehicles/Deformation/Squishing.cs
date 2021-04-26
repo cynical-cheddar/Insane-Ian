@@ -6,7 +6,7 @@ using System.Linq;
 using PhysX;
 using System.Runtime.CompilerServices;
 
-public class Squishing : MonoBehaviour, ICollisionStayEvent
+public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEvent
 {
     public bool requiresData { get { return true; } }
 
@@ -65,6 +65,18 @@ InterfaceCarDrive4W interfaceCar;
 
         // transform.position = oldTransormPosition;
         // transform.rotation = oldTransormRotation;
+    }
+
+    public void CollisionEnter(){}
+
+    public void CollisionEnter(PhysXCollision other){
+        if(other.gameObject.CompareTag("DustGround")){
+            myRb.ghostEnabled = false;
+        }
+        else{
+        
+            myRb.ghostEnabled = true;
+        }
     }
 
     // Start is called before the first frame update.
