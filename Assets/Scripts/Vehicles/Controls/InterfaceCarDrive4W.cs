@@ -251,6 +251,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position, ForceMode.Force);
 
         }
+        PhysXWheelHit.ReleaseWheelHit(lHit);
+        PhysXWheelHit.ReleaseWheelHit(rHit);
     }
     private void Particles() {
         PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
@@ -295,13 +297,14 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
                     wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
                     Debug.Log("Dust");
                 } else if (hit.collider.CompareTag("RoadGround") && wheelStructs[i].surface != "RoadGround") {
-                    wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
+                    wheelStructs[i] = new wheelStruct(5f, "RoadGround", wheelStructs[i].collider);
                     Debug.Log("Road");
                 } else {
                     wheelStructs[i] = new wheelStruct(8f, "0", wheelStructs[i].collider);
                     Debug.Log("None");
                 }
             }
+            PhysXWheelHit.ReleaseWheelHit(hit);
         }
     }
     private void AutoRight() {
