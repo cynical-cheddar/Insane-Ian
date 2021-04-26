@@ -24,6 +24,8 @@ public class MapSelfRighter : MonoBehaviour, ICollisionStayEvent
             Transform car = col.transform.root;
             car.transform.position = car.transform.position + Vector3.up * 3;
             car.GetComponent<PhysXBody>().position = car.transform.position + Vector3.up * 3;
+            car.GetComponent<PhysXRigidBody>().velocity = Vector3.zero; 
+            
         }
     }
 

@@ -79,7 +79,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             //Debug.Log(damage);
     
             // instantiate damage sound over network
-            if(damage > crashSoundsSmallDamageThreshold && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            if((damage > crashSoundsSmallDamageThreshold || otherVehicleManager!=null ) && timeSinceLastRam > 0.05f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
 
             damage = damage / rammingDamageResistance;
             
