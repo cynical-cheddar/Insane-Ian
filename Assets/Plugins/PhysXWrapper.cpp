@@ -565,6 +565,7 @@ extern "C" {
     EXPORT_FUNC physx::PxRigidDynamic* CreateGhostRigidBody(physx::PxRigidDynamic* baseBody, physx::PxReal blend) {
         physx::PxRigidDynamic* ghostBody = gPhysics->createRigidDynamic(baseBody->getGlobalPose());
         ((ActorUserData*)baseBody->userData)->ghostBody = ghostBody;
+        ((ActorUserData*)baseBody->userData)->ghostBodyEnabled = true;
         ((ActorUserData*)baseBody->userData)->ghostVelocityBlend = blend;
 
         ghostBody->setSolverIterationCounts(10, 3);
@@ -586,6 +587,10 @@ extern "C" {
         AddActorToScene(sceneUserData->ghostScene, ghostBody);
 
         return ghostBody;
+    }
+
+    EXPORT_FUNC void SetGhostBodyEnabled(physx::PxRigidDynamic* baseBody, bool enabled) {
+        ((ActorUserData*)baseBody->userData)->ghostBodyEnabled = enabled;
     }
 
     EXPORT_FUNC physx::PxRigidStatic* CreateStaticRigidBody(physx::PxTransform* pose) {
@@ -878,7 +883,7 @@ extern "C" {
             physx::PxRigidDynamic* baseBody = sceneUserData->hauntedBodies[i];
             physx::PxRigidDynamic* ghostBody = ((ActorUserData*)baseBody->userData)->ghostBody;
 
-            if (ghostBody != NULL) {
+            if (ghostBody != NULL && ((ActorUserData*)baseBody->userData)->ghostBodyEnabled) {
                 ghostBody->setLinearVelocity(baseBody->getLinearVelocity());
                 ghostBody->setAngularVelocity(baseBody->getAngularVelocity());
                 ghostBody->setGlobalPose(baseBody->getGlobalPose());
@@ -901,7 +906,7 @@ extern "C" {
             physx::PxRigidDynamic* ghostBody = actorUserData->ghostBody;
             physx::PxReal velocityBlend = actorUserData->ghostVelocityBlend;
 
-            if (ghostBody != NULL) {
+            if (ghostBody != NULL && actorUserData->ghostBodyEnabled) {
                 physx::PxVec3 linearVelocity = ghostBody->getLinearVelocity() * velocityBlend;
                 physx::PxVec3 angularVelocity = ghostBody->getAngularVelocity() * velocityBlend;
                 linearVelocity += baseBody->getLinearVelocity() * (1.f - velocityBlend);

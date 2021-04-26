@@ -73,6 +73,17 @@ public class PhysXRigidBody : PhysXBody
         }
     }
 
+    private bool _ghostEnabled = false;
+    public bool ghostEnabled {
+        get {
+            return _ghostEnabled;
+        }
+        set {
+            _ghostEnabled = value;
+            PhysXLib.SetGhostBodyEnabled(physXBody, _ghostEnabled);
+        }
+    }
+
     public override void Setup() {
         physXPosition.FromVector(transform.position);
         physXRotation.FromQuaternion(transform.rotation);
@@ -148,6 +159,7 @@ public class PhysXRigidBody : PhysXBody
         if (GetComponentInChildren<CollisionSoftener>() != null) {
             Debug.Log("made ghost body");
             ghostBody = PhysXLib.CreateGhostRigidBody(physXBody, ghostBlend);
+            _ghostEnabled = true;
         }
     }
 

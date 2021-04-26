@@ -107,8 +107,9 @@ extern "C" {
 
     struct ActorUserData {
         ActorUserData() : scene(NULL),
-                          ghostBody(NULL),
                           isGhost(false),
+                          ghostBody(NULL),
+                          ghostBodyEnabled(false),
                           ghostVelocityBlend(0) {}
 
         physx::PxScene* scene;
@@ -119,6 +120,7 @@ extern "C" {
 
         bool isGhost;
         physx::PxRigidDynamic* ghostBody;
+        bool ghostBodyEnabled;
         physx::PxReal ghostVelocityBlend;
     };
 
@@ -166,6 +168,8 @@ extern "C" {
     EXPORT_FUNC physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose);
     EXPORT_FUNC physx::PxRigidDynamic* CreateGhostRigidBody(physx::PxRigidDynamic* baseBody, physx::PxReal blend);
     EXPORT_FUNC physx::PxRigidStatic* CreateStaticRigidBody(physx::PxTransform* pose);
+
+    EXPORT_FUNC void SetGhostBodyEnabled(physx::PxRigidDynamic* baseBody, bool enabled);
 
     EXPORT_FUNC void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
 
