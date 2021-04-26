@@ -19,7 +19,12 @@ public class HotPotatoManager : MonoBehaviour
     private int myGunnerId;
     
     
-  
+    TelecastManager telecastManager;
+
+    private void Start() {
+        telecastManager = FindObjectOfType<TelecastManager>();
+    }
+
     public void pickupPotato()
     {
         NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
@@ -32,6 +37,7 @@ public class HotPotatoManager : MonoBehaviour
         InvokeRepeating("buffs", 2f, 2f);
         GetComponent<PhotonView>().RPC(nameof(PickupPotatoEffects), RpcTarget.All);
 
+        telecastManager.PickupPotato(npv);
 
         AnnouncerManager a = FindObjectOfType<AnnouncerManager>();
         a.PlayAnnouncerLine(a.announcerShouts.potatoPickup, myDriverId, myGunnerId);
@@ -60,10 +66,15 @@ public class HotPotatoManager : MonoBehaviour
 
             CancelInvoke("buffs");
             Vector3 pos = gameObject.transform.position + new Vector3(0.0f, 1.5f, 0.0f);
-            PhotonNetwork.Instantiate("HotPotatoGO", pos, Quaternion.identity, 0);
+            GameObject potato = PhotonNetwork.Instantiate("HotPotatoGO", pos, Quaternion.identity, 0);
+            Invoke(nameof(dropTelecast), 0.05f);
             return true;
         }
         return false;
+    }
+
+    void dropTelecast(){
+        telecastManager.DropPotato();
     }
 
     void ReactivatePickupPotato()
