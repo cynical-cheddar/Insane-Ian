@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 3532385492771764088}
   - component: {fileID: 480291377967036637}
   - component: {fileID: 2400032944572369943}
-  - component: {fileID: 5667130347695821548}
+  - component: {fileID: 7129466413657751278}
+  - component: {fileID: 7008645380826144641}
   m_Layer: 0
   m_Name: corrugatedIron
   m_TagString: Untagged
@@ -83,16 +84,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5667130347695821548
-BoxCollider:
+--- !u!114 &7129466413657751278
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4201398098160201154}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.010002362, y: 0, z: 0.010001458}
-  m_Center: {x: 0, y: 0, z: 0.00000072759576}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7008645380826144641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4201398098160201154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  collisionSoftener: {fileID: 0}
+  x: 10
+  y: 1
+  z: 18.4

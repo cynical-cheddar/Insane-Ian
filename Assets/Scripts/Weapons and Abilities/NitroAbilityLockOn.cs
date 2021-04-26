@@ -137,7 +137,7 @@ public class NitroAbilityLockOn : DriverAbility
             timeSinceLastFire = 0;
             UseCharge(chargeUsedPerFire);
 
-            if (target!=transform.root) Debug.LogError("Lock on nitro needs porting");//StartCoroutine(CrashIntoTarget());
+            if (target!=transform.root) StartCoroutine(CrashIntoTarget());
             else GetComponentInParent<PhysXRigidBody>().velocity = transform.forward * rammingSpeed;
             
             if (currentCharge == 0) Invoke(nameof(DeactivateAbility), cooldown);

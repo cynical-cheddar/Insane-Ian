@@ -15,4 +15,13 @@ public class PhysXSphereCollider : PhysXCollider
 
         base.Setup(attachedRigidBody, vehicleId);
     }
+
+    void OnDrawGizmosSelected() {
+        Vector3 oldScale = transform.localScale;
+        transform.localScale = Vector3.one;
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.DrawWireSphere(offset, radius);
+        Gizmos.matrix = Matrix4x4.identity;
+        transform.localScale = oldScale;
+    }
 }

@@ -96,7 +96,7 @@ public class ProjectileWeapon : Weapon
 
         GameObject obj = projectilePrefab;
       //  StopProjectileCollisionsWithSelf(obj);
-        GameObject projectile = Instantiate(obj, barrelTransform.position, barrelTransform.rotation);
+        GameObject projectile = Instantiate(obj, barrelEndMuzzleTransform.position, barrelEndMuzzleTransform.rotation);
        // StopProjectileCollisionsWithSelf(projectile);
         
         ProjectileScript projScript = projectile.GetComponent<ProjectileScript>();

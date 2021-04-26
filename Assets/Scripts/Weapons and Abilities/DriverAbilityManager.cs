@@ -4,17 +4,19 @@ using System.Collections.Generic;
 using Gamestate;
 using Photon.Pun;
 using UnityEngine;
-
+using PhysX;
 
 
 
 [VehicleScript(ScriptType.playerDriverScript)]
 // [VehicleScript(ScriptType.playerDriverScript)]
 
-public class DriverAbilityManager : MonoBehaviour, IPunObservable
+public class DriverAbilityManager : MonoBehaviour, IPunObservable, ICollisionEnterEvent
 {
 
+
     public DriverAbility abilityPrimary;
+    public DriverAbilitySmall abilitySecondary;
 
     public float driverUltimateProgress;
 
@@ -51,7 +53,17 @@ public class DriverAbilityManager : MonoBehaviour, IPunObservable
     // driver keeps track of this
     
     
+    public void CollisionEnter() {}
 
+    public void CollisionEnter(PhysXCollision collision) {
+            if (collision.gameObject.GetComponent<VehicleHealthManager>() != null)
+            {
+                abilityPrimary.JustCollided();
+            }
+        else if(collision.gameObject.layer == 6)abilityPrimary.JustCollided();
+    }
+
+    public bool requiresData { get { return true; } }
     
     public void SetupDriverAbilityManager()
     {
@@ -70,6 +82,7 @@ public class DriverAbilityManager : MonoBehaviour, IPunObservable
             AdjustDriverUltimateProgress(0);
         }
         abilityPrimary.SetupAbility();
+        abilitySecondary.SetupAbility();
 
         gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
         
@@ -131,11 +144,7 @@ public class DriverAbilityManager : MonoBehaviour, IPunObservable
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.GetComponent<VehicleHealthManager>() != null)
-        {
-            abilityPrimary.JustCollided();
-        }
-        else if(other.gameObject.layer == 6)abilityPrimary.JustCollided();
+
     }
 
     [PunRPC]
@@ -156,11 +165,28 @@ public class DriverAbilityManager : MonoBehaviour, IPunObservable
             abilityPrimary.SetLockOn(false);
         }
 
+
+        if(driverUltimateProgress >= maxDriverUltimateProgress && isDriver){
+            abilitySecondary.SetLockOn(false);
+        }
+
+        else if(abilitySecondary.CanUseAbility() && isDriver){
+            abilitySecondary.SetLockOn(true);
+        }
+         else if(!abilitySecondary.CanUseAbility() &&isDriver){
+            abilitySecondary.SetLockOn(false);
+        }
+        
+
         // if the ability is sustained, just burn it out
         if (isDriver && usingUltimate && !pauseableAbility)
         {
             FirePrimaryAbility();
             abilityPrimary.SetLockOn(false);
+        }
+
+        if(isDriver && Input.GetKeyDown(KeyCode.E) && abilitySecondary.CanUseAbility()){
+            if(abilitySecondary!=null) abilitySecondary.Fire();
         }
         
         // if we can pause the ability (ie hold down space)

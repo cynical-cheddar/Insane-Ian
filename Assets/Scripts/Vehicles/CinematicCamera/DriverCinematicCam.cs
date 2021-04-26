@@ -15,6 +15,7 @@ public class DriverCinematicCam : MonoBehaviour
     private DriverCrashDetector _driverCrashDetector;
     
     public CinemachineVirtualCamera defaultCam;
+    CinemachineBasicMultiChannelPerlin defaultCamCinemachineBasicMultiChannelPerlin;
     
     public CinemachineVirtualCamera environmentCrashLeft;
     public CinemachineVirtualCamera environmentCrashCentre;
@@ -43,6 +44,34 @@ public class DriverCinematicCam : MonoBehaviour
     public FovSpeedState minSpeedState;
     public FovSpeedState maxSpeedState;
     
+    float shakeTimerMax = 0.5f;
+    float shakeTimerCur = 0;
+
+    float cameraShakeAmplitude = 1f;
+
+    public void ShakeCams(float intensity, float time){
+        shakeTimerMax = time;
+        shakeTimerCur = 0;
+        cameraShakeAmplitude = intensity;
+        defaultCamCinemachineBasicMultiChannelPerlin.m_AmplitudeGain = intensity;
+    }
+
+    private void Update() {
+        shakeTimerCur += Time.deltaTime;
+        if (shakeTimerCur <= shakeTimerMax)
+        {
+                defaultCamCinemachineBasicMultiChannelPerlin.m_AmplitudeGain =
+                    Mathf.Lerp(cameraShakeAmplitude, 0f, (shakeTimerCur / shakeTimerMax));
+        }
+
+       speed = _driverCrashDetector.currentSensorReport.speed;
+        SetCamFovs();
+    }
+
+    void Awake() {
+        defaultCamCinemachineBasicMultiChannelPerlin = defaultCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+    }
+
     void Start()
     {
         SetCam(defaultCam);
@@ -125,18 +154,21 @@ public class DriverCinematicCam : MonoBehaviour
         carCrashFrontLeft.enabled = false;
         carCrashFrontRight.enabled = false;
 
+        /*
+
         if (cam == carCrashBackLeft) carCrashBackLeft.m_LookAt = GetCrashTarget();
         if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = GetCrashTarget();
         if (cam == carCrashFrontLeft) carCrashFrontLeft.m_LookAt = GetCrashTarget();
         if (cam == carCrashFrontRight) carCrashFrontRight.m_LookAt = GetCrashTarget();
+
+        */
+
+        if (cam == carCrashBackLeft) carCrashBackLeft.m_LookAt = transform.root;
+        if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = transform.root;
+        if (cam == carCrashFrontLeft) carCrashFrontLeft.m_LookAt = transform.root;
+        if (cam == carCrashFrontRight) carCrashFrontRight.m_LookAt = transform.root;
         
         cam.enabled = true;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        speed = _driverCrashDetector.currentSensorReport.speed;
-        SetCamFovs();
-    }
 }
