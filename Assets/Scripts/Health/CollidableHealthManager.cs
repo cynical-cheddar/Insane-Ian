@@ -44,9 +44,11 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     public float rammingDamageMultiplier = 1f;
     
     protected float timeSinceLastRam = 0f;
+
+    protected PhysXRigidBody myRb;
     protected new void Start(){
         baseCollisionResistance = deathForce / maxHealth;
-        
+        myRb = GetComponent<PhysXRigidBody>();
         base.Start();
     }
     protected void Update(){
@@ -57,8 +59,11 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 
     public void CollisionEnter(PhysXCollision collision) {
         driverCrashDetector = GetComponent<DriverCrashDetector>();
-        
-        if (myPhotonView.IsMine && collision.contactCount > 0) {
+        float dSpeed = myRb.velocity.magnitude;
+        if(collision.rigidBody != null){
+           dSpeed = (myRb.velocity - collision.rigidBody.velocity).magnitude;
+        }
+        if (myPhotonView.IsMine && collision.contactCount > 0 && dSpeed > 1.5) {
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
             if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
@@ -79,14 +84,17 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             //Debug.Log(damage);
     
             // instantiate damage sound over network
-            if((damage > crashSoundsSmallDamageThreshold || otherVehicleManager!=null ) && timeSinceLastRam > 0.05f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            if((damage > crashSoundsSmallDamageThreshold || otherVehicleManager!=null ) && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
 
             damage = damage / rammingDamageResistance;
+
+
             
             if(damage > 5){
                 if (otherVehicleManager != null) {
                     driverCrashDetector.CrashCollisionCamera(collision);
                     Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
+                    
                     rammingDetails.damage = damage;
                     
                     TakeDamage(rammingDetails);

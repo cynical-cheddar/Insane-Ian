@@ -109,8 +109,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
     }
 
     public void CrashCollisionCamera(PhysXCollision other){
-        if (currentSpeed > 2)
-        {
+
             if (other.transform.root.CompareTag("Player"))
             {
             currentSensorReport.crashed = true;
@@ -138,7 +137,9 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
             
             
                 currentSensorReport.lastCrashedPlayer = other.transform.root;
-              //  GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontLeftEnum);
+
+              
+                GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontLeftEnum);
              //   if(lastTargetPoint!=null) Destroy(lastTargetPoint);
               //  Vector3 point = contactPoints[0].point;
              //   lastTargetPoint = Instantiate(new GameObject(), point, Quaternion.identity);
@@ -150,7 +151,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
             }
 
             
-        }
+        
     }
 
     private GameObject lastTargetPoint;
@@ -172,7 +173,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
     {
         //return;
         crashTimer += Time.deltaTime;
-        if(crashTimer > 0.3){
+        if(crashTimer > 0.6){
             currentSensorReport.crashed = false;
            // GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.defaultCamEnum);
         }

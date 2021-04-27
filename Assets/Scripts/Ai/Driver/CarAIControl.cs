@@ -176,10 +176,10 @@ using Random = UnityEngine.Random;
 
                 if (stuckTimer > 1 && !inThreePointTurn)
                 {
-                    int rand = Random.Range(0, 1);
-                    StartCoroutine(ThreePointTurn());
+                    int rand = Random.Range(0, 2);
+                    if(rand == 0)StartCoroutine(ThreePointTurn());
                     
-                   // else if(rand==2)StartCoroutine(ThreePointTurn2());
+                    else if(rand==1)StartCoroutine(ThreePointTurn2());
                 }
 
                
