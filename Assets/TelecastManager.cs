@@ -39,12 +39,23 @@ public class TelecastManager : MonoBehaviour
     
     public void DropPotato(){
         GetComponent<PhotonView>().RPC(nameof(DropPotato_RPC), RpcTarget.All);
-        
     }
     [PunRPC]
     void DropPotato_RPC(){
         potatoPickedUp = false;
         vcam.m_Follow = defaultPos;
-        vcam.m_LookAt = FindObjectOfType<PickupHotPotato>().transform;
+        if(FindObjectOfType<PickupHotPotato>() != null){
+            vcam.m_LookAt = FindObjectOfType<PickupHotPotato>().transform;
+        }
+        else{
+            PlayerTransformTracker playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
+            foreach(PlayerTransformTracker.VehicleTransformTeamIdPair pair in playerTransformTracker.vehicleTransformPairs){
+                Transform vehicle = pair.vehicleTransform;
+                bool potato = vehicle.GetComponent<HotPotatoManager>().isPotato;
+                if(potato){
+                    vcam.m_LookAt =vehicle;
+                }
+            }
+        }
     }
 }

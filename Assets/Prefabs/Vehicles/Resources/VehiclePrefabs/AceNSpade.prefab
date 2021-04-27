@@ -755,7 +755,10 @@ MonoBehaviour:
     width: 45
     height: 100
     collisionResistance: 0.25
-  rammingDamageMultiplier: 1
+  rammingDamageMultiplier: 2
+  maxCollisionRate: 0.2
+  collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
+    type: 3}
   smokeL: {fileID: 4379431541776012586}
   smokeM: {fileID: 4591674434279139610}
   smokeH: {fileID: 2501163460094449356}
@@ -775,7 +778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 35
+  maxSpeed: 22
   frontLeftW: {fileID: 6284213321502439188}
   frontRightW: {fileID: 8854317719780993745}
   rearLeftW: {fileID: 5955917007552040847}
@@ -787,8 +790,8 @@ MonoBehaviour:
   rearRightT: {fileID: 1837069385729047062}
   carRB: {fileID: 6942342458153007772}
   carTransform: {fileID: 486267010860937132}
-  maxSteerAngle: 20
-  motorTorque: 3500
+  maxSteerAngle: 30
+  motorTorque: 5300
   brakeTorque: 6000
   brakeForce: 16000
   steerRateLerp: 0.07
@@ -959,7 +962,7 @@ MonoBehaviour:
   playerSensorMultiplier: 3
   playerLayer: 8
   drawDebugLines: 0
-  sensorLayerMask: 0
+  sensorLayerMask: 12
   slowRange:
     speed: 5
     sensorLength: 15
@@ -1011,7 +1014,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ownLayers: 9
   collisionLayers: 1
-  material: {fileID: 13400000, guid: 4e2a18fdb7d20fa40bafb75ae73783d7, type: 2}
+  material: {fileID: 13400000, guid: b6f1b175b2999a348b7a71035768ebaf, type: 2}
   _trigger: 0
   offset: {x: 0, y: 0, z: 0}
   collisionSoftener: {fileID: 0}

@@ -24,6 +24,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public string defaultPlayerVehiclePrefabName;
 
+    public List<string> defaultPlayerVehiclePrefabNames = new List<string>();
+
     private int loadedPlayers = 0;
     private int instantiatedPlayerIndex = 0;
 
@@ -260,7 +262,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         List<string> vehicleNames = gamestateTracker.GetComponent<GamestateVehicleLookup>().sortedVehicleNames;
 
-        string vehiclePrefabName = defaultPlayerVehiclePrefabName;
+        string vehiclePrefabName = defaultPlayerVehiclePrefabNames[Random.Range(0, defaultPlayerVehiclePrefabNames.Count)];
         
         
         if (selected) {

@@ -125,11 +125,16 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
             ((IDrivable)this).StopBrake();
-            rearLeftW.motorTorque = -motorTorque;
-            rearRightW.motorTorque = -motorTorque;
-            if (is4WD) {
-                frontLeftW.motorTorque = -motorTorque;
-                frontRightW.motorTorque = -motorTorque;
+            if (carRB.velocity.magnitude < maxSpeed) {
+                rearLeftW.motorTorque = -motorTorque;
+                rearRightW.motorTorque = -motorTorque;
+                if (is4WD) {
+                    frontLeftW.motorTorque = -motorTorque;
+                    frontRightW.motorTorque = -motorTorque;
+                }
+            }
+            else{
+                ((IDrivable)this).Brake();
             }
         } else {
             ((IDrivable)this).Brake();

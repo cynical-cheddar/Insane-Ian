@@ -24,6 +24,45 @@ public class HotPotatoManager : MonoBehaviour
     private void Start() {
         telecastManager = FindObjectOfType<TelecastManager>();
     }
+    float slowdownTimer = 0f;
+    bool isSlowedDown = false;
+
+    public void SlowedCollision(){
+        if(!isSlowedDown){
+            slowdownTimer = 0.7f;
+            isSlowedDown = true;
+            Time.timeScale = 0.3f;
+            Time.fixedDeltaTime = Time.timeScale * .02f;
+            Debug.LogError("SlowedCollisionDone");
+            StartCoroutine(WaitForNextSlowMo(2f));
+            done = false;
+        }
+    }
+
+    IEnumerator WaitForNextSlowMo(float t){
+        yield return new WaitForSecondsRealtime(t);
+        isSlowedDown = false;
+    }
+
+
+
+
+
+    bool done = false;
+
+    private void FixedUpdate() {
+        if(slowdownTimer >= 0){
+            slowdownTimer -= Time.fixedUnscaledDeltaTime;
+        }
+
+        else if (!done && slowdownTimer < 0){
+            done = true;
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = Time.timeScale * .02f;
+        }
+    }
+
+    [PunRPC]
 
     public void pickupPotato()
     {
@@ -67,7 +106,7 @@ public class HotPotatoManager : MonoBehaviour
             CancelInvoke("buffs");
             Vector3 pos = gameObject.transform.position + new Vector3(0.0f, 1.5f, 0.0f);
             GameObject potato = PhotonNetwork.Instantiate("HotPotatoGO", pos, Quaternion.identity, 0);
-            Invoke(nameof(dropTelecast), 0.05f);
+            dropTelecast();
             return true;
         }
         return false;
@@ -102,9 +141,9 @@ public class HotPotatoManager : MonoBehaviour
     }
     private void buffs()
     {
-        Debug.Log("HERE");
+   
         vhm.HealObject(5);
-        dam.AdjustDriverUltimateProgress(5);
+        dam.AdjustDriverUltimateProgress(10);
         gwm.AdjustGunnerUltimateProgress(5);
     }
 }

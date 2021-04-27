@@ -1735,7 +1735,7 @@ MonoBehaviour:
   penForUnitImpulseScale: 1
   maxImpulseScale: 1.1
   velocityScale: 3
-  velocityOffset: 7
+  velocityOffset: 100
   maxPenExp: 2
 --- !u!1 &2422599075921859443
 GameObject:
@@ -5355,7 +5355,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
   crashSoundsLarge:
   - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
-  crashMasterVolume: 1
+  crashMasterVolume: 0.6
   environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
@@ -5370,7 +5370,16 @@ MonoBehaviour:
     width: 45
     height: 100
     collisionResistance: 0.25
+  - show: 1
+    rotationEuler: {x: 180, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+    width: 118.6
+    height: 51.6
+    collisionResistance: 0.2
   rammingDamageMultiplier: 2
+  maxCollisionRate: 0.1
+  collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
+    type: 3}
   smokeL: {fileID: 7980490870927354312}
   smokeM: {fileID: 999066652688031655}
   smokeH: {fileID: 7727078123409898187}
@@ -5390,7 +5399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 30
+  maxSpeed: 20
   frontLeftW: {fileID: 7732862198026377299}
   frontRightW: {fileID: 6669228716959149968}
   rearLeftW: {fileID: 402507813730753170}
@@ -5402,8 +5411,8 @@ MonoBehaviour:
   rearRightT: {fileID: 8050138925847587874}
   carRB: {fileID: 1518582629338567789}
   carTransform: {fileID: 8103896753619876248}
-  maxSteerAngle: 20
-  motorTorque: 3500
+  maxSteerAngle: 30
+  motorTorque: 5000
   brakeTorque: 8000
   brakeForce: 16000
   steerRateLerp: 0.07

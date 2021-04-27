@@ -36,6 +36,9 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     protected float baseCollisionResistance = 1;
     public float environmentCollisionResistance = 1;
 
+    protected HotPotatoManager hotPotatoManager;
+    protected bool hasHotPotatoManager =false;
+
     [Header("Collision area 0 should be front")]
     public List<CollisionArea> collisionAreas = new List<CollisionArea>();
 
@@ -46,28 +49,47 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     protected float timeSinceLastRam = 0f;
 
     protected PhysXRigidBody myRb;
+
+    protected NetworkPlayerVehicle collisionNpv;
+
+    public float maxCollisionRate = 0.2f;
+    float collisionTimer = 0f;
+
+    public GameObject collisionSparks;
     protected new void Start(){
         baseCollisionResistance = deathForce / maxHealth;
         myRb = GetComponent<PhysXRigidBody>();
+        if(GetComponent<HotPotatoManager>()!=null){
+            hasHotPotatoManager = true;
+            hotPotatoManager = GetComponent<HotPotatoManager>();
+            collisionNpv = GetComponent<NetworkPlayerVehicle>();
+            driverCrashDetector = GetComponent<DriverCrashDetector>();
+        }
+        
         base.Start();
     }
     protected void Update(){
         timeSinceLastRam += Time.deltaTime;
+        collisionTimer -= Time.deltaTime;
     }
 
     public void CollisionEnter() {}
 
     public void CollisionEnter(PhysXCollision collision) {
-        driverCrashDetector = GetComponent<DriverCrashDetector>();
+        
         float dSpeed = myRb.velocity.magnitude;
+
+        float impulse = collision.impulse.magnitude;
+
         if(collision.rigidBody != null){
            dSpeed = (myRb.velocity - collision.rigidBody.velocity).magnitude;
         }
-        if (myPhotonView.IsMine && collision.contactCount > 0 && dSpeed > 1.5) {
+        if (myPhotonView.IsMine && collision.contactCount > 0 && dSpeed > 1.5 && collisionTimer < 0) {
+            collisionTimer = maxCollisionRate;
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
             if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
-            collisionForce /= Time.fixedDeltaTime;
+           // collisionForce /= Time.fixedDeltaTime;
             collisionForce = transform.InverseTransformDirection(collisionForce);
 
             VehicleHealthManager otherVehicleManager = collision.gameObject.GetComponent<VehicleHealthManager>();
@@ -78,21 +100,39 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             }
             collisionPoint /= collision.contactCount;
 
-            Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
+
+
+
+            Vector3 contactDirection = transform.InverseTransformPoint(collision.GetContact(0).point);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-            if(otherVehicleManager!=null)damage  *= otherVehicleManager.rammingDamageMultiplier;
+            
             //Debug.Log(damage);
     
+
+
+
+
             // instantiate damage sound over network
             if((damage > crashSoundsSmallDamageThreshold || otherVehicleManager!=null ) && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
 
             damage = damage / rammingDamageResistance;
 
-
+            if(myPhotonView.IsMine && hasHotPotatoManager && otherVehicleManager != null){
+                        if(collisionNpv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber || collisionNpv.GetGunnerID() == PhotonNetwork.LocalPlayer.ActorNumber){
+                            Debug.LogError("Slow down should happen");
+                           hotPotatoManager.SlowedCollision();
+                        }
+                        if(collisionSparks!=null){
+                            GameObject a = Instantiate(collisionSparks, collisionPoint, Quaternion.identity);
+                            a.transform.parent = transform;
+                        }
+                    }
             
             if(damage > 5){
                 if (otherVehicleManager != null) {
+                    
                     driverCrashDetector.CrashCollisionCamera(collision);
+                    if(otherVehicleManager!=null)damage  *= otherVehicleManager.rammingDamageMultiplier;
                     Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
                     
                     rammingDetails.damage = damage;
