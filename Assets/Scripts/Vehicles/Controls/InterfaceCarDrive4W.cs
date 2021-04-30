@@ -264,8 +264,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         bool rGrounded = rearRightW.GetGroundHit(rHit);
         var lDustEmmissiom = leftDust.emission;
         var rDustEmmissiom = rightDust.emission;
-        var lCaveEmmissiom = leftDust.emission;
-        var rCaveEmmissiom = rightDust.emission;
+        var lCaveEmmissiom = leftGravel.emission;
+        var rCaveEmmissiom = rightGravel.emission;
 
         // left rear dust emission
         if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
