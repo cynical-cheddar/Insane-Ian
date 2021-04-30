@@ -14,7 +14,7 @@ public class PlinthManager : MonoBehaviour {
     GamestateTracker gamestateTracker;
     readonly ScoringHelper scoringHelper = new ScoringHelper();
     List<TeamEntry> sortedTeams;
-    public string returnToMenuScene = "menu";
+    public string returnToMenuScene = "MainMenu";
 
     // Start is called before the first frame update
     void Start() {
@@ -41,22 +41,31 @@ public class PlinthManager : MonoBehaviour {
         }
     }
 
+    string GetTeamName(TeamEntry team) {
+        string name;
+        if (team.name == null) {
+            PlayerEntry driver = gamestateTracker.players.Get(team.driverId);
+            PlayerEntry gunner = gamestateTracker.players.Get(team.gunnerId);
+            name = $"{driver.name} + {gunner.name}";
+            driver.Release();
+            gunner.Release();
+        } else name = team.name;
+        return name;
+    }
+
     void UpdateText() {
         // Sort teams by score
         sortedTeams = scoringHelper.SortTeams(gamestateTracker);
 
         if (PhotonNetwork.IsMasterClient) SpawnPlayerVehicles();
 
-        plinthTexts[0].text = sortedTeams[0].name;
-        if (sortedTeams.Count > 1) plinthTexts[1].text = sortedTeams[1].name;
-        if (sortedTeams.Count > 2) plinthTexts[2].text = sortedTeams[2].name;
+        plinthTexts[0].text = GetTeamName(sortedTeams[0]);
+        if (sortedTeams.Count > 1) plinthTexts[1].text = GetTeamName(sortedTeams[1]);
+        if (sortedTeams.Count > 2) plinthTexts[2].text = GetTeamName(sortedTeams[2]);
 
         string newText = "";
         foreach (TeamEntry team in sortedTeams) {
-            string name;
-            if (team.name == null) name = $"Team {team.id}";
-            else name = team.name;
-            newText += $"{name} -- Score: {scoringHelper.CalcScore(team)} -- K/D/A: {team.kills}/{team.deaths}/{team.assists}\n";
+            newText += $"{GetTeamName(team)} -- Score: {scoringHelper.CalcScore(team)} -- K/D: {team.kills}/{team.deaths} -- Gubbins: {team.checkpoint}\n";
         }
         scoreboardText.text = newText;
     }
