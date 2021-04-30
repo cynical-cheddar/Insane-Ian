@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GraphBending;
+using UnityEngine.SceneManagement;
 public class MeshstateTracker : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -26,7 +27,7 @@ public class MeshstateTracker : MonoBehaviour
     public Mesh bikeMeshFilter;
 
     void Start(){
-
+        DontDestroyOnLoad(gameObject);
         Invoke(nameof(LateStart), 1f);
     }
 
@@ -46,6 +47,8 @@ public class MeshstateTracker : MonoBehaviour
 
         DeformableMesh.Subdivide(maxEdgeLength, bikeMeshFilter);
         bikeMeshGraph = new MeshGraph(bikeMeshFilter, groupRadius);
+
+        SceneManager.LoadScene("MainMenu");
     }
 
     public MeshGraph GetMyMeshGraph(MeshTypes meshType){
