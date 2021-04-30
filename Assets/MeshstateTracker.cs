@@ -33,25 +33,25 @@ public class MeshstateTracker : MonoBehaviour
 
     void LateStart()
     {
-        DeformableMesh.Subdivide(maxEdgeLength, interceptorMeshFilter);
+        //DeformableMesh.Subdivide(maxEdgeLength, interceptorMeshFilter);
         interceptorMeshGraph = new MeshGraph(interceptorMeshFilter, groupRadius);
 
         System.GC.Collect();
         Debug.Log("IanMeshDone");
 
-        DeformableMesh.Subdivide(maxEdgeLength, aceMeshFilter);
+        //DeformableMesh.Subdivide(maxEdgeLength, aceMeshFilter);
         aceMeshGraph = new MeshGraph(aceMeshFilter, groupRadius);
 
         System.GC.Collect();
         Debug.Log("AceMeshDone");
 
-        DeformableMesh.Subdivide(maxEdgeLength, bomberMeshFilter);
+        //DeformableMesh.Subdivide(maxEdgeLength, bomberMeshFilter);
         bomberMeshGraph = new MeshGraph(bomberMeshFilter, groupRadius);
 
         System.GC.Collect();
         Debug.Log("BomberMeshDone");
 
-        DeformableMesh.Subdivide(maxEdgeLength, bikeMeshFilter);
+        //DeformableMesh.Subdivide(maxEdgeLength, bikeMeshFilter);
         bikeMeshGraph = new MeshGraph(bikeMeshFilter, groupRadius);
 
         System.GC.Collect();
