@@ -56,9 +56,12 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     private float volume = 0;
     [Space(5)]
 
-    [Header("Dust Trail")]
-    public ParticleSystem leftPS;
-    public ParticleSystem rightPS;
+    [Header("Particle Trails")]
+    public ParticleSystem leftDust;
+    public ParticleSystem rightDust;
+    [Space(2)]
+    public ParticleSystem leftGravel;
+    public ParticleSystem rightGravel;
 
     [Space(5)]
     [Header("Additional parameters")]
@@ -256,35 +259,51 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position, ForceMode.Force);
 
         }
+        PhysXWheelHit.ReleaseWheelHit(lHit);
+        PhysXWheelHit.ReleaseWheelHit(rHit);
     }
     private void Particles() {
         PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
         PhysXWheelHit rHit = PhysXWheelHit.GetWheelHit();
         bool lGrounded = rearLeftW.GetGroundHit(lHit);
         bool rGrounded = rearRightW.GetGroundHit(rHit);
-        var lEmission = leftPS.emission;
-        var rEmission = rightPS.emission;
+        var lDustEmmissiom = leftDust.emission;
+        var rDustEmmissiom = rightDust.emission;
+        var lCaveEmmissiom = leftGravel.emission;
+        var rCaveEmmissiom = rightGravel.emission;
 
         // left rear dust emission
         if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (lHit.collider.CompareTag("DustGround")) {
-                lEmission.enabled = true;
+                lDustEmmissiom.enabled = true;
+                lCaveEmmissiom.enabled = false;
+            } else if (lHit.collider.CompareTag("CaveGround")) {
+                lDustEmmissiom.enabled = false;
+                lCaveEmmissiom.enabled = true;
             } else {
-                lEmission.enabled = false;
+                lDustEmmissiom.enabled = false;
+                lCaveEmmissiom.enabled = false;
             }
         } else {
-            lEmission.enabled = false;
+            lDustEmmissiom.enabled = false;
+            lCaveEmmissiom.enabled = false;
         }
 
         // right rear dust emission
         if (rGrounded && (Mathf.Abs(rearRightW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (rHit.collider.CompareTag("DustGround")) {
-                rEmission.enabled = true;
+                rDustEmmissiom.enabled = true;
+                rCaveEmmissiom.enabled = false;
+            } else if (rHit.collider.CompareTag("CaveGround")) {
+                rDustEmmissiom.enabled = false;
+                rCaveEmmissiom.enabled = true;
             } else {
-                rEmission.enabled = false;
+                rDustEmmissiom.enabled = false;
+                rCaveEmmissiom.enabled = false;
             }
         } else {
-            rEmission.enabled = false;
+            rDustEmmissiom.enabled = false;
+            rCaveEmmissiom.enabled = false;
         }
 
         PhysXWheelHit.ReleaseWheelHit(lHit);
@@ -298,10 +317,19 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
                 // if new ground type, set new stiffness
                 if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
                     wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
+                    Debug.Log("Dust");
+                } else if (hit.collider.CompareTag("RoadGround") && wheelStructs[i].surface != "RoadGround") {
+                    wheelStructs[i] = new wheelStruct(5f, "RoadGround", wheelStructs[i].collider);
+                    Debug.Log("Road");
+                } else if (hit.collider.CompareTag("CaveGround") && wheelStructs[i].surface != "CaveGround") {
+                    wheelStructs[i] = new wheelStruct(5f, "CaveGround", wheelStructs[i].collider);
+                    Debug.Log("Cave");
                 } else {
                     wheelStructs[i] = new wheelStruct(8f, "0", wheelStructs[i].collider);
+                    Debug.Log("None");
                 }
             }
+            PhysXWheelHit.ReleaseWheelHit(hit);
         }
     }
     private void AutoRight() {
