@@ -520,7 +520,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 5a18556e9985d2c45afe1ca4c8dc8fc2, type: 3}
+  m_Texture: {fileID: 2800000, guid: 49146441a0b1c264a844866598f5749e, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -544,7 +544,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
       propertyPath: Loop
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
       propertyPath: m_Volume
@@ -640,6 +640,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1685484985, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
+    - {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
 --- !u!1 &380114157 stripped
 GameObject:
@@ -1334,17 +1335,17 @@ PrefabInstance:
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.5
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.51
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.5
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
@@ -1791,7 +1792,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!82 &1182453791
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1804,7 +1805,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2566f6ab704b81b4385538e5af685e6e, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1914,6 +1915,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fd5a5a9e7db3bb489cafc4329b3216d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneNames:
+  - MainMenu
+  - gameSetup
+  instanceName: lobby
 --- !u!1001 &1354866595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2716,17 +2721,17 @@ PrefabInstance:
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.5
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.5
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.5
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
@@ -2766,12 +2771,12 @@ PrefabInstance:
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -0.1848
       objectReference: {fileID: 0}
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 14.000008
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4076270728432729497, guid: 0c0d847242adf2a4ba614fe4248c18c2,
         type: 3}
