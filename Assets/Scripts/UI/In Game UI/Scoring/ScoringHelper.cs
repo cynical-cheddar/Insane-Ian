@@ -6,9 +6,9 @@ using Gamestate;
 public class ScoringHelper {
 
     int killValue = 10;
-    int deathValue = -5;
+    int deathValue = 0;
     int assistValue = 5;
-    int checkpointValue = 10;
+    int checkpointValue = 1;
 
     public int CalcScore(TeamEntry team) {
         Debug.Log(" scoreboard calc score called");

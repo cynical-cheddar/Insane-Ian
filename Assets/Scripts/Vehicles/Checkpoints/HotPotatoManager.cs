@@ -23,15 +23,14 @@ public class HotPotatoManager : MonoBehaviour
 
     private void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
+        telecastManager = FindObjectOfType<TelecastManager>();
     }
 
     
     
     TelecastManager telecastManager;
 
-    private void Start() {
-        telecastManager = FindObjectOfType<TelecastManager>();
-    }
+
     float slowdownTimer = 0f;
     bool isSlowedDown = false;
 
