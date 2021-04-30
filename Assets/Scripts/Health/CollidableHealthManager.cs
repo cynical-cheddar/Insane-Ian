@@ -89,7 +89,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             Vector3 collisionNormal = collision.GetContact(0).normal;
             Vector3 collisionForce = collision.impulse;
             if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
-           // collisionForce /= Time.fixedDeltaTime;
+            collisionForce /= Time.fixedDeltaTime;
             collisionForce = transform.InverseTransformDirection(collisionForce);
 
             VehicleHealthManager otherVehicleManager = collision.gameObject.GetComponent<VehicleHealthManager>();
@@ -103,10 +103,10 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 
 
 
-            Vector3 contactDirection = transform.InverseTransformPoint(collision.GetContact(0).point);
+            Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
-            
-            //Debug.Log(damage);
+           
+           
     
 
 
@@ -116,6 +116,8 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             if((damage > crashSoundsSmallDamageThreshold || otherVehicleManager!=null ) && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
 
             damage = damage / rammingDamageResistance;
+
+          //  Debug.Log("collision damage taken: " + damage + " by " + gameObject.name);
 
             if(myPhotonView.IsMine && hasHotPotatoManager && otherVehicleManager != null){
                         if(collisionNpv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber || collisionNpv.GetGunnerID() == PhotonNetwork.LocalPlayer.ActorNumber){
