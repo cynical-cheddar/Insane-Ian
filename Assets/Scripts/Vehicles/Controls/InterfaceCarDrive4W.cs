@@ -56,9 +56,12 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     private float volume = 0;
     [Space(5)]
 
-    [Header("Dust Trail")]
-    public ParticleSystem leftPS;
-    public ParticleSystem rightPS;
+    [Header("Particle Trails")]
+    public ParticleSystem leftDust;
+    public ParticleSystem rightDust;
+    [Space(2)]
+    public ParticleSystem leftGravel;
+    public ParticleSystem rightGravel;
 
     [Space(5)]
     [Header("Additional parameters")]
@@ -259,29 +262,43 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         PhysXWheelHit rHit = PhysXWheelHit.GetWheelHit();
         bool lGrounded = rearLeftW.GetGroundHit(lHit);
         bool rGrounded = rearRightW.GetGroundHit(rHit);
-        var lEmission = leftPS.emission;
-        var rEmission = rightPS.emission;
+        var lDustEmmissiom = leftDust.emission;
+        var rDustEmmissiom = rightDust.emission;
+        var lCaveEmmissiom = leftDust.emission;
+        var rCaveEmmissiom = rightDust.emission;
 
         // left rear dust emission
         if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (lHit.collider.CompareTag("DustGround")) {
-                lEmission.enabled = true;
+                lDustEmmissiom.enabled = true;
+                lCaveEmmissiom.enabled = false;
+            } else if (lHit.collider.CompareTag("CaveGround")) {
+                lDustEmmissiom.enabled = false;
+                lCaveEmmissiom.enabled = true;
             } else {
-                lEmission.enabled = false;
+                lDustEmmissiom.enabled = false;
+                lCaveEmmissiom.enabled = false;
             }
         } else {
-            lEmission.enabled = false;
+            lDustEmmissiom.enabled = false;
+            lCaveEmmissiom.enabled = false;
         }
 
         // right rear dust emission
         if (rGrounded && (Mathf.Abs(rearRightW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (rHit.collider.CompareTag("DustGround")) {
-                rEmission.enabled = true;
+                rDustEmmissiom.enabled = true;
+                rCaveEmmissiom.enabled = false;
+            } else if (rHit.collider.CompareTag("CaveGround")) {
+                rDustEmmissiom.enabled = false;
+                rCaveEmmissiom.enabled = true;
             } else {
-                rEmission.enabled = false;
+                rDustEmmissiom.enabled = false;
+                rCaveEmmissiom.enabled = false;
             }
         } else {
-            rEmission.enabled = false;
+            rDustEmmissiom.enabled = false;
+            rCaveEmmissiom.enabled = false;
         }
 
         PhysXWheelHit.ReleaseWheelHit(lHit);
