@@ -11,6 +11,8 @@ using Cinemachine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+
+    public float gamespeed = 1f;
     public int maxPlayerPairs = 24;
     
     public List<Transform> spawnPoints;
@@ -21,6 +23,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public string roomName = "room";
 
     public string defaultPlayerVehiclePrefabName;
+
+    public List<string> defaultPlayerVehiclePrefabNames = new List<string>();
 
     private int loadedPlayers = 0;
     private int instantiatedPlayerIndex = 0;
@@ -39,7 +43,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private GameObject startCountdownInstance;
     
     
-    
+    private void Awake() {
+        Time.timeScale = gamespeed;
+        Time.fixedDeltaTime = Time.timeScale * .02f;
+    }
     
     // called on the master client when the game is fully set up
     void GameFullySetupMaster()
@@ -255,7 +262,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         List<string> vehicleNames = gamestateTracker.GetComponent<GamestateVehicleLookup>().sortedVehicleNames;
 
-        string vehiclePrefabName = defaultPlayerVehiclePrefabName;
+        string vehiclePrefabName = defaultPlayerVehiclePrefabNames[Random.Range(0, defaultPlayerVehiclePrefabNames.Count)];
         
         
         if (selected) {

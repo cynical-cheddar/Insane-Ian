@@ -105,8 +105,11 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
 
     public void CollisionEnter(PhysXCollision other)
     {
-        if (currentSpeed > slowRange.speed)
-        {
+
+    }
+
+    public void CrashCollisionCamera(PhysXCollision other){
+
             if (other.transform.root.CompareTag("Player"))
             {
             currentSensorReport.crashed = true;
@@ -133,29 +136,35 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
             
             
             
-                //currentSensorReport.lastCrashedPlayer = other.transform.root;
-                if(lastTargetPoint!=null) Destroy(lastTargetPoint);
-                Vector3 point = contactPoints[0].point;
-                lastTargetPoint = Instantiate(new GameObject(), point, Quaternion.identity);
-                lastTargetPoint.transform.parent = transform.root;
-                currentSensorReport.lastCrashedPlayer = lastTargetPoint.transform;
+                currentSensorReport.lastCrashedPlayer = other.transform.root;
 
+              
+                GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontLeftEnum);
+             //   if(lastTargetPoint!=null) Destroy(lastTargetPoint);
+              //  Vector3 point = contactPoints[0].point;
+             //   lastTargetPoint = Instantiate(new GameObject(), point, Quaternion.identity);
+             //   lastTargetPoint.transform.parent = transform.root;
+              //  currentSensorReport.lastCrashedPlayer = lastTargetPoint.transform;
+
+             // StartCoroutine(SetCrashedFalse());
+                crashTimer = 0f;
             }
 
-            StartCoroutine(SetCrashedFalse());
-        }
+            
+        
     }
 
     private GameObject lastTargetPoint;
     
-
+    float crashTimer = 0;
 
     IEnumerator SetCrashedFalse()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.3f);
         
         currentSensorReport.crashed = false;
-        currentSensorReport.lastCrashedPlayer = transform.root;
+        //currentSensorReport.lastCrashedPlayer = transform.root;
+      //  GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.defaultCamEnum);
     }
 
     private Vector3 vel = Vector3.zero;
@@ -163,7 +172,11 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
     private void FixedUpdate()
     {
         //return;
-
+        crashTimer += Time.deltaTime;
+        if(crashTimer > 0.6){
+            currentSensorReport.crashed = false;
+           // GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.defaultCamEnum);
+        }
         vel = myRb.velocity;
         localVel = transform.InverseTransformDirection(vel);
         

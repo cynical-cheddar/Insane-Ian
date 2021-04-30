@@ -23,18 +23,23 @@ public class CollisionSoftener : MonoBehaviour, ICollisionStayEvent
         collider = GetComponent<PhysXCollider>();
     }
 
-    void FixedUpdate() {
-        velocity = rigidBody.velocity.magnitude;
-        velocity -= velocityOffset;
-        if (velocity < 0) velocity = 0;
-    }
+
 
     public void CollisionStay() {}
 
     public void CollisionStay(PhysXCollision collision) {
         // float penCoefficientA = (penForMaxImpulseScale - penForUnitImpulseScale * maxImpulseScale) / (penForUnitImpulseScale * penForUnitImpulseScale * penForMaxImpulseScale - penForUnitImpulseScale * penForMaxImpulseScale * penForMaxImpulseScale);
         // float penCoefficientB = maxImpulseScale / penForMaxImpulseScale - penCoefficientA * penForMaxImpulseScale;
-        
+        if(collision.rigidBody != null){
+            velocity = (rigidBody.velocity - collision.rigidBody.velocity).magnitude;
+        }
+        else{
+            velocity = rigidBody.velocity.magnitude;
+        }
+        velocity -= velocityOffset;
+        if (velocity < 0) velocity = 0;
+
+
         float penExp = velocityScale / velocity;
         if (penExp > maxPenExp) penExp = maxPenExp;
 

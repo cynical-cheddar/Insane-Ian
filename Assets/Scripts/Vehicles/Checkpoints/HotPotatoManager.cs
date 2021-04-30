@@ -23,7 +23,53 @@ public class HotPotatoManager : MonoBehaviour
 
     private void Start() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
+        telecastManager = FindObjectOfType<TelecastManager>();
     }
+
+    
+    
+    TelecastManager telecastManager;
+
+
+    float slowdownTimer = 0f;
+    bool isSlowedDown = false;
+
+    public void SlowedCollision(){
+        if(!isSlowedDown){
+            slowdownTimer = 0.7f;
+            isSlowedDown = true;
+            Time.timeScale = 0.3f;
+            Time.fixedDeltaTime = Time.timeScale * .02f;
+            Debug.LogError("SlowedCollisionDone");
+            StartCoroutine(WaitForNextSlowMo(2f));
+            done = false;
+        }
+    }
+
+    IEnumerator WaitForNextSlowMo(float t){
+        yield return new WaitForSecondsRealtime(t);
+        isSlowedDown = false;
+    }
+
+
+
+
+
+    bool done = false;
+
+    private void FixedUpdate() {
+        if(slowdownTimer >= 0){
+            slowdownTimer -= Time.fixedUnscaledDeltaTime;
+        }
+
+        else if (!done && slowdownTimer < 0){
+            done = true;
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = Time.timeScale * .02f;
+        }
+    }
+
+    [PunRPC]
 
     public void pickupPotato()
     {
@@ -37,6 +83,7 @@ public class HotPotatoManager : MonoBehaviour
         InvokeRepeating("buffs", 2f, 2f);
         GetComponent<PhotonView>().RPC(nameof(PickupPotatoEffects), RpcTarget.All);
 
+        telecastManager.PickupPotato(npv);
 
         AnnouncerManager a = FindObjectOfType<AnnouncerManager>();
         a.PlayAnnouncerLine(a.announcerShouts.potatoPickup, myDriverId, myGunnerId);
@@ -65,10 +112,15 @@ public class HotPotatoManager : MonoBehaviour
 
             CancelInvoke("buffs");
             Vector3 pos = gameObject.transform.position + new Vector3(0.0f, 1.5f, 0.0f);
-            PhotonNetwork.Instantiate("HotPotatoGO", pos, Quaternion.identity, 0);
+            GameObject potato = PhotonNetwork.Instantiate("HotPotatoGO", pos, Quaternion.identity, 0);
+            dropTelecast();
             return true;
         }
         return false;
+    }
+
+    void dropTelecast(){
+        telecastManager.DropPotato();
     }
 
     void ReactivatePickupPotato()
@@ -96,9 +148,9 @@ public class HotPotatoManager : MonoBehaviour
     }
     private void buffs()
     {
-        Debug.Log("HERE");
+   
         vhm.HealObject(5);
-        dam.AdjustDriverUltimateProgress(5);
+        dam.AdjustDriverUltimateProgress(10);
         gwm.AdjustGunnerUltimateProgress(5);
         TeamEntry team = gamestateTracker.teams.Get((short)vhm.teamId);
         team.checkpoint++;

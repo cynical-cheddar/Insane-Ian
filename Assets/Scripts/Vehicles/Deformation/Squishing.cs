@@ -4,10 +4,25 @@ using UnityEngine;
 using GraphBending;
 using System.Linq;
 using PhysX;
+using System.Runtime.CompilerServices;
 
-public class Squishing : MonoBehaviour, ICollisionStayEvent
+public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEvent
 {
     public bool requiresData { get { return true; } }
+
+    PhysXWheelCollider frWheel;
+    VertexGroup frWheelVertexGroup;
+    PhysXWheelCollider flWheel;
+
+    VertexGroup flWheelVertexGroup;
+
+    PhysXWheelCollider rrWheel;
+
+    VertexGroup rrWheelVertexGroup;
+
+    PhysXWheelCollider rlWheel;
+
+    VertexGroup rlWheelVertexGroup;
 
     private List<Vector3> vertices;
     private List<Vector3> skeletonVertices = null;
@@ -15,6 +30,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
     public GameObject testMarker;
     public GameObject collisionResolver;
     private PhysXBody resolverBody;
+
+    private PhysXRigidBody myRb;
     public float vertexWeight = 1;
     public float groupRadius = 0.05f;
     public float stretchiness = 1000000.1f;
@@ -27,6 +44,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
     private Vector3 gizmoSurfaceNormal = Vector3.forward;
     private Vector3 gizmoSurfacePoint;
 
+
+InterfaceCarDrive4W interfaceCar;
     Mesh originalMesh;
 
     void OnDrawGizmos() {
@@ -48,8 +67,24 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         // transform.rotation = oldTransormRotation;
     }
 
+    public void CollisionEnter(){}
+
+    public void CollisionEnter(PhysXCollision other){
+        if(other.gameObject.CompareTag("DustGround")){
+            myRb.ghostEnabled = false;
+        }
+        else{
+        
+            myRb.ghostEnabled = true;
+        }
+    }
+
     // Start is called before the first frame update.
     void Start() {
+        myRb = GetComponent<PhysXRigidBody>();
+        
+        
+
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
         deformableMeshes[0].Subdivide(deformableMeshes[0].maxEdgeLength);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
@@ -66,6 +101,20 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         collisionResolver = Instantiate(collisionResolver);
         resolverBody = collisionResolver.GetComponent<PhysXBody>();
         resolverBody.position = new Vector3(0, 10000, 0);
+
+        if(GetComponent<InterfaceCarDrive4W>()!=null){
+        interfaceCar = GetComponent<InterfaceCarDrive4W>();
+            if(interfaceCar!=null){
+                frWheel = interfaceCar.frontRightW;
+                frWheelVertexGroup = NearestVertexTo(frWheel.transform.position);
+                flWheel = interfaceCar.frontLeftW;
+                flWheelVertexGroup = NearestVertexTo(flWheel.transform.position);
+                rrWheel = interfaceCar.rearRightW;
+                rrWheelVertexGroup = NearestVertexTo(rrWheel.transform.position);
+                rlWheel = interfaceCar.rearLeftW;
+                rlWheelVertexGroup = NearestVertexTo(rlWheel.transform.position);
+            }
+        }
     }
 
     public void ResetMesh()
@@ -83,7 +132,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
     VertexGroup GetClosestVertexGroup(Vector3 pos) {
         VertexGroup closest = meshGraph.groups[0];
         float closestDist = (vertices[closest.vertexIndices[0]] - pos).sqrMagnitude;
-        for (int i = 1; i < meshGraph.groups.Count; i++) {
+        for (int i = 1; i < meshGraph.groups.Length; i++) {
             float newDist = (vertices[meshGraph.groups[i].vertexIndices[0]] - pos).sqrMagnitude;
             if (newDist < closestDist) {
                 closestDist = newDist;
@@ -160,7 +209,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
             }
         }
 
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
+        for (int i = 0; i < meshGraph.groups.Length; i++) {
             meshGraph.groups[i].wasMoved = false;
             if (meshGraph.groups[i].enqueued) {
                 Debug.LogWarning("Vertex marked as still in queue.");
@@ -173,6 +222,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsBeyondCollisionSurface(Vector3 surfaceNormal, Vector3 surfacePoint, Vector3 vertex) {
         Vector3 relativePosition = vertex - surfacePoint;
         return Vector3.Dot(relativePosition, surfaceNormal) < 0;
@@ -187,7 +237,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
     //  This breaks if this is on a kinematic object (big sad)
     public void CollisionStay(PhysXCollision collision) {
-        if (collision.contactCount > 0) {
+        if ((collision.contactCount > 0 && collision.gameObject.CompareTag("Player")) || (collision.contactCount > 0 && collision.gameObject.CompareTag("DustGround") && myRb.velocity.magnitude > 4)) {
+            
             bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
 
             Vector3 collisionSurfaceNormal = Vector3.zero;
@@ -200,10 +251,14 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
                 collisionSurfaceNormal += contactPoint.normal;
                 collisionSurfacePoint += contactPoint.point;
+
+
                 // collisionSurfaceNormal += contactPoint.normal * impulseMagnitude;
                 // collisionSurfacePoint += contactPoint.point * impulseMagnitude;
                 // sumImpulseMagnitudes += impulseMagnitude;
             }
+
+
 
             collisionSurfaceNormal /= collision.contactCount;
             collisionSurfacePoint /= collision.contactCount;
@@ -212,8 +267,13 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
             gizmoSurfaceNormal = collisionSurfaceNormal;
             gizmoSurfacePoint = collisionSurfacePoint;
-
-            for (int i = 0; i < meshGraph.groups.Count; i++) {
+            float multiplier = 0.2f;
+            float addition = 0.9f;
+            if (collision.collider.gameObject.CompareTag("DustGround")) {
+                addition = 0f;
+                multiplier = 0.05f;
+            }
+            for (int i = 0; i < meshGraph.groups.Length; i++) {
                 VertexGroup current = meshGraph.groups[i];
                 Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
 
@@ -224,7 +284,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
                         // Debug.Log(deformation);
 
                         //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
-                        deformation *= Random.value * 0.2f + 0.9f;
+                        deformation *= Random.value * multiplier +addition;
 
                         current.MoveBy(vertices, skeletonVertices, deformation, false);
                         current.wasMoved = true;
@@ -235,7 +295,14 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
                 }
             }
 
-            DissipateDeformation(true);
+            DissipateDeformation(false);
+            if(interfaceCar!=null){
+                frWheel.transform.localPosition = frWheelVertexGroup.pos;
+                flWheel.transform.localPosition = flWheelVertexGroup.pos;
+                rrWheel.transform.localPosition = rrWheelVertexGroup.pos;
+                rlWheel.transform.localPosition = rlWheelVertexGroup.pos;
+            }
+            
 
             // Vector3 collisionNormal = collision.GetContact(0).normal;
             // Vector3 collisionForce = collision.impulse;
@@ -269,6 +336,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
                 oldEdgeSqrLengths.Add(current.connectingEdges[j].sqrLength);
             }
 
+            float sqrStretchiness = stretchiness * stretchiness;
+
             for (int j = 0; j < current.connectingEdges.Count; j++) {
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
@@ -278,7 +347,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
-                    if (edge.sqrMagnitude > stretchiness * stretchiness * oldEdgeSqrLengths[j]) {
+                    if (edge.sqrMagnitude > sqrStretchiness * oldEdgeSqrLengths[j]) {
                         //  make edge right length
                         edge.Normalize();
                         float randomNoise = 1; 
@@ -289,6 +358,21 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
                         //  move vertices so edge is not too long.
                         current.MoveTo(vertices, skeletonVertices, adjacent.pos + edge, false);
                         current.connectingEdges[j].UpdateEdgeLength();
+                        current.wasMoved = true;
+                    }
+                }
+            }
+
+            if (current.wasMoved) {
+                //  Add adjacent, unmoved vertices into the queue for traversal
+                for (int j = 0; j < current.connectingEdges.Count; j++) {
+                    //  Get adjacent vertex group
+                    VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
+
+                    //  Add it to the queue if it hasn't already been moved
+                    if (!adjacent.enqueued && !adjacent.wasMoved) {
+                        vertexQueue.Enqueue(adjacent);
+                        adjacent.enqueued = true;
                     }
                 }
             }
@@ -296,20 +380,9 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
             //moved.Add(current);
             current.wasMoved = true;
 
-            //  Add adjacent, unmoved vertices into the queue for traversal
-            for (int j = 0; j < current.connectingEdges.Count; j++) {
-                //  Get adjacent vertex group
-                VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
-
-                //  Add it to the queue if it hasn't already been moved
-                if (!adjacent.enqueued && !adjacent.wasMoved) {
-                    vertexQueue.Enqueue(adjacent);
-                    adjacent.enqueued = true;
-                }
-            }
         }
 
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
+        for (int i = 0; i < meshGraph.groups.Length; i++) {
             meshGraph.groups[i].wasMoved = false;
             if (meshGraph.groups[i].enqueued) {
                 Debug.LogWarning("Vertex marked as still in queue.");
@@ -329,7 +402,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
 
         //  Make a queue (it breadth first traversal time)
 
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
+        for (int i = 0; i < meshGraph.groups.Length; i++) {
             VertexGroup current = meshGraph.groups[i];
             Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
 
@@ -351,6 +424,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
             }
         }
 
+        float sqrStretchiness = stretchiness * stretchiness;
+
         // Move each vertex, making sure that it doesn't stretch too far from its neighbours
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
@@ -370,7 +445,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
-                    if (edge.sqrMagnitude > stretchiness * stretchiness * oldEdgeSqrLengths[j]) {
+                    if (edge.sqrMagnitude > sqrStretchiness * oldEdgeSqrLengths[j]) {
                         //  make edge right length
                         edge.Normalize();
                         float randomNoise = 1; 
@@ -401,7 +476,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
             }
         }
 
-        for (int i = 0; i < meshGraph.groups.Count; i++) {
+        for (int i = 0; i < meshGraph.groups.Length; i++) {
             meshGraph.groups[i].wasMoved = false;
             if (meshGraph.groups[i].enqueued) {
                 Debug.LogWarning("Vertex marked as still in queue.");
@@ -415,4 +490,33 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent
         //meshCollider.sharedMesh = mesh;
 
     }
+
+
+    public VertexGroup NearestVertexTo(Vector3 point)
+    {
+        // convert point to local space
+        point = transform.InverseTransformPoint(point);
+
+
+
+        float minDistanceSqr = Mathf.Infinity;
+        VertexGroup nearestVertex = meshGraph.groups[0];
+        // scan all vertices to find nearest
+        foreach (VertexGroup vertex in meshGraph.groups)
+        {
+            Vector3 diff = point-vertex.pos;
+            float distSqr = diff.sqrMagnitude;
+            if (distSqr < minDistanceSqr)
+            {
+                minDistanceSqr = distSqr;
+                nearestVertex = vertex;
+            }
+        }
+
+        return nearestVertex;
+
+
+    }
+
+
 }
