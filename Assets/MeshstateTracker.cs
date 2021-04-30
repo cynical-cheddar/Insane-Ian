@@ -35,18 +35,61 @@ public class MeshstateTracker : MonoBehaviour
     {
         DeformableMesh.Subdivide(maxEdgeLength, interceptorMeshFilter);
         interceptorMeshGraph = new MeshGraph(interceptorMeshFilter, groupRadius);
-        
+
+        System.GC.Collect();
+        Debug.Log("IanMeshDone");
 
         DeformableMesh.Subdivide(maxEdgeLength, aceMeshFilter);
         aceMeshGraph = new MeshGraph(aceMeshFilter, groupRadius);
 
+        System.GC.Collect();
+        Debug.Log("AceMeshDone");
 
         DeformableMesh.Subdivide(maxEdgeLength, bomberMeshFilter);
         bomberMeshGraph = new MeshGraph(bomberMeshFilter, groupRadius);
 
+        System.GC.Collect();
+        Debug.Log("BomberMeshDone");
 
         DeformableMesh.Subdivide(maxEdgeLength, bikeMeshFilter);
         bikeMeshGraph = new MeshGraph(bikeMeshFilter, groupRadius);
+
+        System.GC.Collect();
+        Debug.Log("BikeMeshDone");
+
+        SceneManager.LoadScene("MainMenu");
+
+        //StartCoroutine(nameof(LoadMeshes));
+    }
+
+    IEnumerator LoadMeshes() {
+        DeformableMesh.Subdivide(maxEdgeLength, interceptorMeshFilter);
+        interceptorMeshGraph = new MeshGraph(interceptorMeshFilter, groupRadius);
+
+        System.GC.Collect();
+
+        yield return new WaitForSecondsRealtime(5f);
+
+        DeformableMesh.Subdivide(maxEdgeLength, aceMeshFilter);
+        aceMeshGraph = new MeshGraph(aceMeshFilter, groupRadius);
+
+        System.GC.Collect();
+
+        yield return new WaitForSecondsRealtime(5f);
+
+        DeformableMesh.Subdivide(maxEdgeLength, bomberMeshFilter);
+        bomberMeshGraph = new MeshGraph(bomberMeshFilter, groupRadius);
+
+        System.GC.Collect();
+
+        yield return new WaitForSecondsRealtime(5f);
+
+        DeformableMesh.Subdivide(maxEdgeLength, bikeMeshFilter);
+        bikeMeshGraph = new MeshGraph(bikeMeshFilter, groupRadius);
+
+        System.GC.Collect();
+
+        yield return new WaitForSecondsRealtime(5f);
 
         SceneManager.LoadScene("MainMenu");
     }
