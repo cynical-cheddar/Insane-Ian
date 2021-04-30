@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 
 public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEvent
 {
+
+    public MeshstateTracker.MeshTypes meshType;
     public bool requiresData { get { return true; } }
 
     PhysXWheelCollider frWheel;
@@ -26,7 +28,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
 
     private List<Vector3> vertices;
     private List<Vector3> skeletonVertices = null;
-    private MeshGraph meshGraph;
+    MeshGraph meshGraph;
     public GameObject testMarker;
     public GameObject collisionResolver;
     private PhysXBody resolverBody;
@@ -79,23 +81,23 @@ InterfaceCarDrive4W interfaceCar;
         }
     }
 
+    MeshstateTracker meshstateTracker;
+
     // Start is called before the first frame update.
     void Start() {
         myRb = GetComponent<PhysXRigidBody>();
         
-        
+        meshstateTracker = FindObjectOfType<MeshstateTracker>();
 
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
-        deformableMeshes[0].Subdivide(deformableMeshes[0].maxEdgeLength);
+        DeformableMesh.Subdivide(deformableMeshes[0].maxEdgeLength, deformableMeshes[0].GetMeshFilter().mesh);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
 
         //  Group similar vertices.
-        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, groupRadius);
-        foreach (VertexGroup group in meshGraph.groups) {
-            if (group.skeletonVertexIndex >= 0) {
-                skeletonVertices[group.skeletonVertexIndex] = group.pos;
-            }
-        }
+        meshGraph = meshstateTracker.GetMyMeshGraph(meshType);
+
+
+
 
         originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().sharedMesh);
         collisionResolver = Instantiate(collisionResolver);
