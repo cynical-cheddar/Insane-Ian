@@ -134,11 +134,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 19933.955
-    damper: 4784.1494
+    spring: 19933.957
+    damper: 4784.15
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.1336857
+  m_ForceAppPointDistance: 1.1336856
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -210,8 +210,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 17567.887
-    damper: 4216.293
+    spring: 17567.89
+    damper: 4216.2935
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.0836856
@@ -429,7 +429,7 @@ MonoBehaviour:
   defaultCollisionResistance: 1
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
-  crashSoundsSmallDamageThreshold: 5
+  crashSoundsSmallDamageThreshold: 10
   crashSoundsLargeDamageThreshold: 35
   crashSoundsSmall:
   - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
@@ -444,14 +444,17 @@ MonoBehaviour:
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 60
     height: 90
-    collisionResistance: 3
+    collisionResistance: 1.5
   - show: 1
     rotationEuler: {x: -90, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 45
     height: 100
     collisionResistance: 0.25
-  rammingDamageMultiplier: 1
+  rammingDamageMultiplier: 2
+  maxCollisionRate: 0.1
+  collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
+    type: 3}
   smokeL: {fileID: 4801286924815763789}
   smokeM: {fileID: 8294307631849071861}
   smokeH: {fileID: 4346642078529571559}
@@ -471,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 30
+  maxSpeed: 20
   frontLeftW: {fileID: 7680774883726322773}
   frontRightW: {fileID: 8667618495887502101}
   rearLeftW: {fileID: 2562023814304180516}
@@ -483,8 +486,8 @@ MonoBehaviour:
   rearRightT: {fileID: 2314892249510951072}
   carRB: {fileID: 7973353849594462523}
   carTransform: {fileID: 486267010860937132}
-  maxSteerAngle: 20
-  motorTorque: 3000
+  maxSteerAngle: 30
+  motorTorque: 5000
   brakeTorque: 8000
   brakeForce: 16000
   steerRateLerp: 0.07
@@ -657,9 +660,9 @@ MonoBehaviour:
   playerSensorMultiplier: 3
   playerLayer: 8
   drawDebugLines: 0
-  sensorLayerMask: 0
+  sensorLayerMask: 12
   slowRange:
-    speed: 5
+    speed: 2
     sensorLength: 15
   fastRange:
     speed: 35
@@ -729,7 +732,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ownLayers: 9
   collisionLayers: 1
-  material: {fileID: 13400000, guid: 4e2a18fdb7d20fa40bafb75ae73783d7, type: 2}
+  material: {fileID: 13400000, guid: b6f1b175b2999a348b7a71035768ebaf, type: 2}
   _trigger: 0
   offset: {x: 0, y: 0, z: 0}
   collisionSoftener: {fileID: 0}
@@ -794,8 +797,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 17566.047
-    damper: 4215.8516
+    spring: 17566.045
+    damper: 4215.851
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.0836856
@@ -870,11 +873,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 19932.115
-    damper: 4783.708
+    spring: 19932.113
+    damper: 4783.7075
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.1336857
+  m_ForceAppPointDistance: 1.1336856
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:

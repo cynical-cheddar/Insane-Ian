@@ -474,13 +474,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 181668696771271372}
-  m_LocalRotation: {x: 0.10452846, y: 0, z: 0, w: 0.9945219}
-  m_LocalPosition: {x: 0, y: 0, z: 0.5}
+  m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
+  m_LocalPosition: {x: 0, y: 0.322, z: 0.005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 892455210417671647}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 12, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 15, y: 0, z: 0}
 --- !u!114 &1606253011132901790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,14 +494,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownLayers: 1
-  collisionLayers: 3
+  collisionLayers: -1
   material: {fileID: 0}
   _trigger: 0
   offset: {x: 0, y: 0.2, z: 0}
   collisionSoftener: {fileID: 6826209321616548787}
-  x: 1.5
+  x: 2
   y: 1
-  z: 3.5
+  z: 4
 --- !u!114 &6826209321616548787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1628,7 +1628,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2383815510042803831}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: b6f1b175b2999a348b7a71035768ebaf, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -1737,7 +1737,7 @@ MonoBehaviour:
   penForUnitImpulseScale: 1
   maxImpulseScale: 1.1
   velocityScale: 3
-  velocityOffset: 7
+  velocityOffset: 100
   maxPenExp: 2
 --- !u!1 &2422599075921859443
 GameObject:
@@ -1853,11 +1853,11 @@ MonoBehaviour:
   collisionLayers: 3
   material: {fileID: 0}
   _trigger: 0
-  offset: {x: 0, y: 0.2, z: 0}
+  offset: {x: 0, y: 0, z: 0}
   collisionSoftener: {fileID: 0}
-  x: 0.3
-  y: 0.5
-  z: 0.3
+  x: 0.5
+  y: 0.9
+  z: 0.9
 --- !u!114 &1365989865410576961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2573,11 +2573,11 @@ MonoBehaviour:
   collisionLayers: 3
   material: {fileID: 0}
   _trigger: 0
-  offset: {x: 0, y: 0.2, z: 0}
+  offset: {x: 0, y: 0, z: 0}
   collisionSoftener: {fileID: 0}
-  x: 0.3
-  y: 0.5
-  z: 0.3
+  x: 0.5
+  y: 0.9
+  z: 0.9
 --- !u!114 &4227790670678975204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2674,11 +2674,11 @@ MonoBehaviour:
   collisionLayers: 3
   material: {fileID: 0}
   _trigger: 0
-  offset: {x: 0, y: 0.2, z: 0}
+  offset: {x: 0, y: 0, z: 0}
   collisionSoftener: {fileID: 0}
-  x: 0.3
-  y: 0.5
-  z: 0.3
+  x: 0.5
+  y: 0.9
+  z: 0.9
 --- !u!114 &5578530839028017078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3497,11 +3497,11 @@ MonoBehaviour:
   collisionLayers: 3
   material: {fileID: 0}
   _trigger: 0
-  offset: {x: 0, y: 0.2, z: 0}
+  offset: {x: 0, y: 0.02, z: 0}
   collisionSoftener: {fileID: 0}
-  x: 0.3
-  y: 0.5
-  z: 0.3
+  x: 0.5
+  y: 0.9
+  z: 0.9
 --- !u!114 &5407116507220450376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5350,14 +5350,14 @@ MonoBehaviour:
   defaultCollisionResistance: 1
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
-  crashSoundsSmallDamageThreshold: 5
+  crashSoundsSmallDamageThreshold: 10
   crashSoundsLargeDamageThreshold: 35
   crashSoundsSmall:
   - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
   - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
   crashSoundsLarge:
   - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
-  crashMasterVolume: 1
+  crashMasterVolume: 0.6
   environmentCollisionResistance: 2
   collisionAreas:
   - show: 1
@@ -5365,14 +5365,23 @@ MonoBehaviour:
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 60
     height: 90
-    collisionResistance: 3
+    collisionResistance: 1.5
   - show: 1
     rotationEuler: {x: -90, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 45
     height: 100
-    collisionResistance: 0.25
-  rammingDamageMultiplier: 1
+    collisionResistance: 0.5
+  - show: 1
+    rotationEuler: {x: 180, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+    width: 118.6
+    height: 51.6
+    collisionResistance: 0.5
+  rammingDamageMultiplier: 2
+  maxCollisionRate: 0.1
+  collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
+    type: 3}
   smokeL: {fileID: 7980490870927354312}
   smokeM: {fileID: 999066652688031655}
   smokeH: {fileID: 7727078123409898187}
@@ -5392,7 +5401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 30
+  maxSpeed: 20
   frontLeftW: {fileID: 7732862198026377299}
   frontRightW: {fileID: 6669228716959149968}
   rearLeftW: {fileID: 402507813730753170}
@@ -5404,8 +5413,8 @@ MonoBehaviour:
   rearRightT: {fileID: 8050138925847587874}
   carRB: {fileID: 1518582629338567789}
   carTransform: {fileID: 8103896753619876248}
-  maxSteerAngle: 20
-  motorTorque: 3500
+  maxSteerAngle: 30
+  motorTorque: 5000
   brakeTorque: 8000
   brakeForce: 16000
   steerRateLerp: 0.07
@@ -5465,7 +5474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60e9ca8dc93a33e4894a3a36014fa8d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensorLayerMask: 0
+  sensorLayerMask: 1
   m_CautiousSpeedFactor: 0.05
   m_CautiousMaxAngle: 50
   m_CautiousMaxDistance: 100
@@ -5490,7 +5499,7 @@ MonoBehaviour:
   frontSensorPosition: {x: 0, y: 0.2, z: 0.5}
   frontSideSensorPosition: 0.2
   frontSensorAngle: 30
-  yeaaahhhhh: 1
+  yeaaahhhhh: 0
 --- !u!114 &3259053200411725802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5580,7 +5589,7 @@ MonoBehaviour:
   drawDebugLines: 0
   sensorLayerMask: 12
   slowRange:
-    speed: 5
+    speed: 2
     sensorLength: 15
   fastRange:
     speed: 35
