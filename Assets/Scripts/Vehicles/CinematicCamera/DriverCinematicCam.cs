@@ -134,7 +134,7 @@ public class DriverCinematicCam : MonoBehaviour
 
     Transform GetCrashTarget()
     {
-       Transform t = _driverCrashDetector.currentSensorReport.lastCrashedPlayer;
+        Transform t = _driverCrashDetector.currentSensorReport.lastCrashedPlayer;
         return t;
     }
 

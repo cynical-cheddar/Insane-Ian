@@ -70,6 +70,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
     private List<float> timeList = new List<float>();
    // [SerializeField]
     public CurrentSensorReportStruct currentSensorReport;
+    private NetworkPlayerVehicle npv;
     
     
     
@@ -92,10 +93,10 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
 
     private void Start()
     {
-      //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
-       // return;
+        //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
+        // return;
 
-       
+        npv = GetComponent<NetworkPlayerVehicle>();
         myRb = GetComponent<PhysXRigidBody>();
         currentSensorReport = new CurrentSensorReportStruct();
         currentSensorReport.lastCrashedPlayer = transform.root;
@@ -136,10 +137,12 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
             
             
             
-                currentSensorReport.lastCrashedPlayer = other.transform.root;
+            currentSensorReport.lastCrashedPlayer = other.transform.root;
 
-              
+            
+            if (!npv.botDriver) {
                 GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontLeftEnum);
+            }
              //   if(lastTargetPoint!=null) Destroy(lastTargetPoint);
               //  Vector3 point = contactPoints[0].point;
              //   lastTargetPoint = Instantiate(new GameObject(), point, Quaternion.identity);
