@@ -8,6 +8,7 @@ public class PhysXMeshCollider : PhysXCollider
     public Mesh mesh = null;
     public bool convex = true;
     public Vector3 scale = Vector3.one;
+    private Mesh meshMesh = null;
 
     // Start is called before the first frame update
     public override void Setup(PhysXBody attachedRigidBody, uint vehicleId)
@@ -46,11 +47,21 @@ public class PhysXMeshCollider : PhysXCollider
             else {
                 geom = PhysXLib.CreateMeshGeometry(vertexArray, mesh.triangles, mesh.triangles.Length);
             }
+            meshMesh = Instantiate(mesh);
 
             shape = PhysXLib.CreateShape(geom, physXMaterial, 0.02f);
 
 
             base.Setup(attachedRigidBody, vehicleId);
         }
+    }
+
+    void OnDrawGizmosSelected() {
+        Vector3 oldScale = transform.localScale;
+        transform.localScale = Vector3.one;
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.DrawWireMesh(meshMesh, offset, Quaternion.identity, scale);
+        Gizmos.matrix = Matrix4x4.identity;
+        transform.localScale = oldScale;
     }
 }

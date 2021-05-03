@@ -77,7 +77,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         loadingScreenInstance = Instantiate(loadingScreenPrefab, transform.position, Quaternion.identity);
         Invoke(nameof(Begin), 2f);
-        Invoke(nameof(TestPhysics), 4f);
+        // Invoke(nameof(TestPhysics), 4f);
     }
 
     void Begin()
