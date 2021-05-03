@@ -87,7 +87,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         
     }
     void TestPhysics(){
-        if(testCube.position.y > testCubeHeightThreshold){
+        if(testCube.position.y > testCubeHeightThreshold || testSphere.position.y > testSphereHeightThreshold){
             GetComponent<PhotonView>().RPC(nameof(RequestReset), RpcTarget.AllBufferedViaServer);
         }
     }
