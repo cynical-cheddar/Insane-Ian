@@ -84,7 +84,7 @@ public class AnnouncerManager : MonoBehaviour
     // works out which announcer clip to play, then sends rpcs to everyone else telling em to play the correct synced clip
     public void PlayAnnouncerLine(AnnouncerClipsToPlay clipSelection, int driverId, int gunnerId)
     {
-            return;
+        //    return;
         AnnouncerShoutsTags shoutTag = GetShoutTag(clipSelection);
 
         int myClipIndex = -1;
@@ -104,7 +104,7 @@ public class AnnouncerManager : MonoBehaviour
     
     public void PlayAnnouncerLine(AnnouncerClipsToPlay clipSelection)
     {
-         return;
+       // return;
         AnnouncerShoutsTags shoutTag = GetShoutTag(clipSelection);
 
         int myClipIndex = -1;

@@ -1593,7 +1593,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 892455210417671647}
-  - component: {fileID: 7201703610145671160}
   - component: {fileID: 3536252686268543108}
   - component: {fileID: 54385526708505908}
   - component: {fileID: 5243177350810918475}
@@ -1621,20 +1620,6 @@ Transform:
   m_Father: {fileID: 8103896753619876248}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &7201703610145671160
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2383815510042803831}
-  m_Material: {fileID: 13400000, guid: b6f1b175b2999a348b7a71035768ebaf, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -839344556246454297, guid: 44fa16960c7e3d94d9fc2e7b18e69226, type: 3}
 --- !u!33 &3536252686268543108
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5058,11 +5043,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22198.057
-    damper: 5327.5337
+    spring: 0
+    damper: 0
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.203964
+  m_ForceAppPointDistance: 1.2039646
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -5134,11 +5119,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27869.652
-    damper: 6688.7173
+    spring: 27869.354
+    damper: 6688.645
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2539641
+  m_ForceAppPointDistance: 1.2539647
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -5177,7 +5162,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8103896753619876248}
-  - component: {fileID: 8126532692333351774}
   - component: {fileID: 8209469192128401362}
   - component: {fileID: 8104481329884975997}
   - component: {fileID: 8104481329884975994}
@@ -5230,22 +5214,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &8126532692333351774
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8105189967758323200}
-  serializedVersion: 2
-  m_Mass: 4000
-  m_Drag: 0.05
-  m_AngularDrag: 0.2
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &8209469192128401362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5579,7 +5547,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8105189967758323200}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 679291833f0445940b0a438799115d3c, type: 3}
   m_Name: 
@@ -5704,11 +5672,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 22130.348
-    damper: 5311.283
+    spring: 22130.648
+    damper: 5311.3555
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.203964
+  m_ForceAppPointDistance: 1.2039646
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -5780,11 +5748,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 27801.947
-    damper: 6672.4673
+    spring: 27801.959
+    damper: 6672.4707
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.2539641
+  m_ForceAppPointDistance: 1.2539647
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -7214,6 +7182,10 @@ PrefabInstance:
       propertyPath: raycastLayers
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 375321652, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 657969082931476739, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
       propertyPath: viewIdField
@@ -7354,7 +7326,8 @@ PrefabInstance:
       propertyPath: raycastLayers
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8699825132817194847, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}
 --- !u!4 &5016711106861025696 stripped
 Transform:
@@ -7362,6 +7335,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6105702706626209109}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6744777223263837270 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 657969082931476739, guid: c08dd695c7a00924cb5237b8fd04570b,
+    type: 3}
+  m_PrefabInstance: {fileID: 6105702706626209109}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &857002540758851031 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6872351220289337474, guid: c08dd695c7a00924cb5237b8fd04570b,
@@ -7390,18 +7375,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0620b082a2099ef4d947dad37fd0b882, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6744777223263837270 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 657969082931476739, guid: c08dd695c7a00924cb5237b8fd04570b,
-    type: 3}
-  m_PrefabInstance: {fileID: 6105702706626209109}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &6795075884254278142

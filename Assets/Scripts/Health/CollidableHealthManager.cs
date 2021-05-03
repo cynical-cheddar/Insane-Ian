@@ -76,7 +76,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     public void CollisionEnter() {}
 
     public void CollisionEnter(PhysXCollision collision) {
-        
+        Debug.Log("crashed into: " + collision.gameObject);
         float dSpeed = myRb.velocity.magnitude;
 
         float impulse = collision.impulse.magnitude;
@@ -113,7 +113,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 
 
             // instantiate damage sound over network
-            if((damage > crashSoundsSmallDamageThreshold || otherVehicleManager!=null ) && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            if((damage > crashSoundsSmallDamageThreshold || (otherVehicleManager!=null) ) && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
 
             damage = damage / rammingDamageResistance;
 

@@ -129,7 +129,7 @@ public class TimerBehaviour : MonoBehaviour
     public void EndGame() {
         if (!gameOverLoading && PhotonNetwork.IsMasterClient) {
   
-            announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.matchEnd);
+          //  announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.matchEnd);
 
             gameOverLoading = true;
             PhotonNetwork.LoadLevel("GameOver");

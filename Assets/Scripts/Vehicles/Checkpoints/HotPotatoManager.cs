@@ -41,7 +41,7 @@ public class HotPotatoManager : MonoBehaviour
             Time.timeScale = 0.3f;
             Time.fixedDeltaTime = Time.timeScale * .02f;
             Debug.LogError("SlowedCollisionDone");
-            StartCoroutine(WaitForNextSlowMo(2f));
+            StartCoroutine(WaitForNextSlowMo(3f));
             done = false;
         }
     }

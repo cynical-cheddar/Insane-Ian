@@ -8,9 +8,12 @@ using Photon.Realtime;
 using Gamestate;
 using System.Linq;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+
+    
 
     public float gamespeed = 1f;
     public int maxPlayerPairs = 24;
@@ -42,7 +45,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public GameObject startCountdownPrefab;
     private GameObject startCountdownInstance;
     
-    
+    public Transform testCube;
+    public Transform testSphere;
+    public float testCubeHeightThreshold =  -8.3f;
+
+    public float testSphereHeightThreshold =  -7f;
+
     private void Awake() {
         Time.timeScale = gamespeed;
         Time.fixedDeltaTime = Time.timeScale * .02f;
@@ -68,13 +76,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         loadingScreenInstance = Instantiate(loadingScreenPrefab, transform.position, Quaternion.identity);
-        Invoke(nameof(Begin), 1f);
+        Invoke(nameof(Begin), 2f);
+        Invoke(nameof(TestPhysics), 4f);
     }
 
     void Begin()
     {
         
         GetComponent<PhotonView>().RPC(nameof(LoadedMap), RpcTarget.AllBufferedViaServer);
+        
+    }
+    void TestPhysics(){
+        if(testCube.position.y > testCubeHeightThreshold){
+            GetComponent<PhotonView>().RPC(nameof(RequestReset), RpcTarget.AllBufferedViaServer);
+        }
     }
 
     [PunRPC]
@@ -86,6 +101,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             GetComponent<PhotonView>().RPC(nameof(AllPlayersLoaded), RpcTarget.AllViaServer);
         }
+        
+    }
+    [PunRPC]
+    void RequestReset(){
+        if(PhotonNetwork.IsMasterClient){
+            Debug.LogError("Physics is gonna be ffed up, reloading scene");
+            PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
+        }
+        
     }
 
     [PunRPC]
@@ -120,6 +144,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+        
         //SynchroniseSchemaBeforeSpawn();
         // change back
         StartCoroutine(SpawnPlayers());
@@ -143,6 +168,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     IEnumerator SpawnPlayers()
     { 
         spawningPlayersScreenInstance = Instantiate(spawningPlayersScreenPrefab, transform.position, Quaternion.identity);
+        yield return new WaitForSecondsRealtime(0.1f);
+        if(FindObjectOfType<MakeTheMap>() != null) FindObjectOfType<MakeTheMap>().MakeMap();
+        yield return new WaitForSecondsRealtime(0.1f);
+        
         if (PhotonNetwork.IsMasterClient)
         {
             GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -181,6 +210,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void StartCountdown()
     {
+        
         startCountdownInstance = Instantiate(startCountdownPrefab, transform.position, transform.rotation);
     }
     
