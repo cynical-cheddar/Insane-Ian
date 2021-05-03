@@ -54,15 +54,17 @@ public class DriverAbility : Equipment
     public AudioClip targetChangeAudioclip;
     public void SetLockOn(bool set)
     {
-        allowLockOn = set;
+        if (allowLockOn != set) {
+            allowLockOn = set;
 
-        if (set == false)
-        {
-            targetOverlay.SetActive(false);
-        }
-        else
-        {
-            targetOverlay.SetActive(true);
+            if (set == false)
+            {
+                targetOverlay.SetActive(false);
+            }
+            else
+            {
+                targetOverlay.SetActive(true);
+            }
         }
     }
 
