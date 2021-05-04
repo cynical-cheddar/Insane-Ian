@@ -28,15 +28,12 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
 
     private List<Vector3> vertices;
     MeshGraph meshGraph;
-    public GameObject testMarker;
     public GameObject collisionResolver;
     private PhysXBody resolverBody;
 
     private PhysXRigidBody myRb;
     public float vertexWeight = 1;
-    public float groupRadius = 0.05f;
     public float stretchiness = 1000000.1f;
-    public float collisionResistance = 200;
     public float minPenetration = 0.2f;
     //public float maxEdgeLength = 0.6f;
     private List<DeformableMesh> deformableMeshes = null;
@@ -48,27 +45,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     private Vector3 gizmoSurfacePoint;
 
 
-InterfaceCarDrive4W interfaceCar;
+    InterfaceCarDrive4W interfaceCar;
     Mesh originalMesh;
-
-    // void OnDrawGizmos() {
-    //     Gizmos.color = new Color(1, 0, 1);
-    //     // Vector3 oldTransormPosition = transform.position;
-    //     // Quaternion oldTransormRotation = transform.rotation;
-
-    //     // transform.position = gizmoSurfacePoint;
-    //     // transform.rotation = Quaternion.LookRotation(gizmoSurfaceNormal, Vector3.up);
-
-    //     if (deformableMeshes != null && deformableMeshes.Count > 0) {
-    //         Gizmos.matrix = deformableMeshes[0].transform.localToWorldMatrix;
-    //     }
-    //     // Gizmos.DrawCube(Vector3.zero, new Vector3(1, 1, 0.1f));
-    //     Gizmos.color = Color.white;
-    //     Gizmos.matrix = Matrix4x4.identity;
-
-    //     // transform.position = oldTransormPosition;
-    //     // transform.rotation = oldTransormRotation;
-    // }
 
     public void CollisionEnter(){}
 
@@ -80,9 +58,6 @@ InterfaceCarDrive4W interfaceCar;
             myRb.ghostEnabled = true;
         }
     }
-
-    // float maxColls = 10;
-    // float curCols = 0;
 
     MeshstateTracker meshstateTracker;
 
@@ -99,26 +74,21 @@ InterfaceCarDrive4W interfaceCar;
         //  Group similar vertices.
         meshGraph = meshstateTracker.GetMyMeshGraph(meshType);
 
-
-
-
         originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().sharedMesh);
         collisionResolver = Instantiate(collisionResolver);
         resolverBody = collisionResolver.GetComponent<PhysXBody>();
         resolverBody.position = new Vector3(0, 10000, 0);
 
-        if(GetComponent<InterfaceCarDrive4W>()!=null){
         interfaceCar = GetComponent<InterfaceCarDrive4W>();
-            if(interfaceCar!=null){
-                frWheel = interfaceCar.frontRightW;
-                frWheelVertexGroup = NearestVertexTo(frWheel.transform.position);
-                flWheel = interfaceCar.frontLeftW;
-                flWheelVertexGroup = NearestVertexTo(flWheel.transform.position);
-                rrWheel = interfaceCar.rearRightW;
-                rrWheelVertexGroup = NearestVertexTo(rrWheel.transform.position);
-                rlWheel = interfaceCar.rearLeftW;
-                rlWheelVertexGroup = NearestVertexTo(rlWheel.transform.position);
-            }
+        if (interfaceCar!=null) {
+            frWheel = interfaceCar.frontRightW;
+            frWheelVertexGroup = NearestVertexTo(frWheel.transform.position);
+            flWheel = interfaceCar.frontLeftW;
+            flWheelVertexGroup = NearestVertexTo(flWheel.transform.position);
+            rrWheel = interfaceCar.rearRightW;
+            rrWheelVertexGroup = NearestVertexTo(rrWheel.transform.position);
+            rlWheel = interfaceCar.rearLeftW;
+            rlWheelVertexGroup = NearestVertexTo(rlWheel.transform.position);
         }
     }
 
@@ -233,6 +203,7 @@ InterfaceCarDrive4W interfaceCar;
         return Vector3.Dot(relativePosition, surfaceNormal) < 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Vector3 DeformationFromCollisionSurface(Vector3 surfaceNormal, Vector3 surfacePoint, Vector3 vertex) {
         float distBeyondPlane = Vector3.Dot(-surfaceNormal, vertex) - Vector3.Dot(-surfaceNormal, surfacePoint);
         return surfaceNormal * distBeyondPlane;
@@ -387,128 +358,24 @@ InterfaceCarDrive4W interfaceCar;
         }
     }
 
-    public void CollideMesh(PhysXCollider collider, Vector3 collisionForce, bool addNoise) {
-        
-
-        //List<VertexGroup> moved = new List<VertexGroup>();
-
-        //  Make a queue (it breadth first traversal time)
-
-        for (int i = 0; i < meshGraph.groups.Length; i++) {
-            VertexGroup current = meshGraph.groups[i];
-            Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
-
-            if (collider.ClosestPoint(vertex) == vertex) {
-                Vector3 deformation = collisionForce;
-                deformation /= vertexWeight;
-
-                if (deformation.sqrMagnitude > 0.25f) {
-                    deformation.Normalize();
-                    deformation *= 0.5f;
-                }
-                if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
-
-                current.MoveBy(vertices, deformation, false);
-                current.wasMoved = true;
-                //moved.Add(current);
-                vertexQueue.Enqueue(current);
-                current.enqueued = true;
-            }
-        }
-
-        float sqrStretchiness = stretchiness * stretchiness;
-
-        // Move each vertex, making sure that it doesn't stretch too far from its neighbours
-        while (vertexQueue.Count > 0) {
-            VertexGroup current = vertexQueue.Dequeue();
-            current.enqueued = false;
-
-            oldEdgeSqrLengths.Clear();
-            for (int j = 0; j < current.connectingEdges.Count; j++) {
-                oldEdgeSqrLengths.Add(current.connectingEdges[j].sqrLength);
-            }
-
-            for (int j = 0; j < current.connectingEdges.Count; j++) {
-                VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
-
-                //  Check if adjacent vertex has been moved.
-                //if (moved.Contains(adjacent)) {
-                if (adjacent.wasMoved) {
-                    //  Get vector of edge between vertices.
-                    Vector3 edge = current.pos - adjacent.pos;
-                    //  ohno edge too long
-                    if (edge.sqrMagnitude > sqrStretchiness * oldEdgeSqrLengths[j]) {
-                        //  make edge right length
-                        edge.Normalize();
-                        float randomNoise = 1; 
-                        if (addNoise) randomNoise = Random.value * 0.2f + 0.9f;
-                        float edgeStretchiness = stretchiness * randomNoise;
-                        edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
-
-                        //  move vertices so edge is not too long.
-                        current.MoveTo(vertices, adjacent.pos + edge, false);
-                        current.connectingEdges[j].UpdateEdgeLength();
-                    }
-                }
-            }
-
-            //moved.Add(current);
-            current.wasMoved = true;
-
-            //  Add adjacent, unmoved vertices into the queue for traversal
-            for (int j = 0; j < current.connectingEdges.Count; j++) {
-                //  Get adjacent vertex group
-                VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
-
-                //  Add it to the queue if it hasn't already been moved
-                if (!adjacent.enqueued && !adjacent.wasMoved) {
-                    vertexQueue.Enqueue(adjacent);
-                    adjacent.enqueued = true;
-                }
-            }
-        }
-
-        for (int i = 0; i < meshGraph.groups.Length; i++) {
-            meshGraph.groups[i].wasMoved = false;
-            if (meshGraph.groups[i].enqueued) {
-                Debug.LogWarning("Vertex marked as still in queue.");
-                meshGraph.groups[i].enqueued = false;
-            }
-        }
-
-        //  Update the mesh
-        deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
-        deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
-        //meshCollider.sharedMesh = mesh;
-
-    }
-
-
     public VertexGroup NearestVertexTo(Vector3 point)
     {
         // convert point to local space
         point = transform.InverseTransformPoint(point);
 
-
-
         float minDistanceSqr = Mathf.Infinity;
         VertexGroup nearestVertex = meshGraph.groups[0];
+
         // scan all vertices to find nearest
-        foreach (VertexGroup vertex in meshGraph.groups)
-        {
-            Vector3 diff = point-vertex.pos;
+        foreach (VertexGroup vertex in meshGraph.groups) {
+            Vector3 diff = point - vertex.pos;
             float distSqr = diff.sqrMagnitude;
-            if (distSqr < minDistanceSqr)
-            {
+            if (distSqr < minDistanceSqr) {
                 minDistanceSqr = distSqr;
                 nearestVertex = vertex;
             }
         }
 
         return nearestVertex;
-
-
     }
-
-
 }
