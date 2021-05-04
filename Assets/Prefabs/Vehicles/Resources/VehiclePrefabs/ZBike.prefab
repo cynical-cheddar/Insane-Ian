@@ -837,7 +837,11 @@ MonoBehaviour:
     collisionResistance: 0.25
   rammingDamageMultiplier: 1
   maxCollisionRate: 0.2
-  collisionSparks: {fileID: 0}
+  collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
+    type: 3}
+  markedTeamDamageIncrease: 3
+  markedGameObjectPrefab: {fileID: 6714836046950906657, guid: ea3036c1d4454c347873033257223dea,
+    type: 3}
   smokeL: {fileID: 5252987278975861231}
   smokeM: {fileID: 9134874198540071001}
   smokeH: {fileID: 3376690708232957355}
@@ -6299,6 +6303,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BikeGunnerHardpoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008072967346153098, guid: 8eb5d13a026809f4b950b385874bce5c,
+        type: 3}
+      propertyPath: raycastLayers
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5148687277270274191, guid: 8eb5d13a026809f4b950b385874bce5c,
         type: 3}
