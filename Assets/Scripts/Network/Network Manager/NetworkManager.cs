@@ -61,8 +61,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         
         // remove overlay
-        GetComponent<PhotonView>().RPC(nameof(RemoveSpawningPlayersCanvas), RpcTarget.AllBuffered);
-        GetComponent<PhotonView>().RPC(nameof(StartCountdown), RpcTarget.AllBuffered);
+        GetComponent<PhotonView>().RPC(nameof(RemoveSpawningPlayersCanvas), RpcTarget.AllBufferedViaServer);
+        GetComponent<PhotonView>().RPC(nameof(StartCountdown), RpcTarget.AllBufferedViaServer);
         // start scoreboard stuff
         
         // activate all cars in time
@@ -76,7 +76,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         loadingScreenInstance = Instantiate(loadingScreenPrefab, transform.position, Quaternion.identity);
-        Invoke(nameof(Begin), 2f);
+        Invoke(nameof(Begin), 3f);
         // Invoke(nameof(TestPhysics), 4f);
     }
 
@@ -99,7 +99,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         loadedPlayers += 1;
         if (loadedPlayers == PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient)
         {
-            GetComponent<PhotonView>().RPC(nameof(AllPlayersLoaded), RpcTarget.AllViaServer);
+            GetComponent<PhotonView>().RPC(nameof(AllPlayersLoaded), RpcTarget.AllBufferedViaServer);
         }
         
     }
@@ -168,9 +168,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     IEnumerator SpawnPlayers()
     { 
         spawningPlayersScreenInstance = Instantiate(spawningPlayersScreenPrefab, transform.position, Quaternion.identity);
-        yield return new WaitForSecondsRealtime(0.1f);
+      //  yield return new WaitForSecondsRealtime(0.5f);
         if(FindObjectOfType<MakeTheMap>() != null) FindObjectOfType<MakeTheMap>().MakeMap();
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return new WaitForSecondsRealtime(1f);
         
         if (PhotonNetwork.IsMasterClient)
         {
@@ -203,7 +203,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         NetworkPlayerVehicle[] npvs = FindObjectsOfType<NetworkPlayerVehicle>();
         foreach (NetworkPlayerVehicle npv in npvs)
         {
-            npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBuffered);
+            npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBufferedViaServer);
         }
     }
 
