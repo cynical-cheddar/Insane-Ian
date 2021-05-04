@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 
 public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEvent
 {
+
+    public MeshstateTracker.MeshTypes meshType;
     public bool requiresData { get { return true; } }
 
     PhysXWheelCollider frWheel;
@@ -25,8 +27,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     VertexGroup rlWheelVertexGroup;
 
     private List<Vector3> vertices;
-    private List<Vector3> skeletonVertices = null;
-    private MeshGraph meshGraph;
+    MeshGraph meshGraph;
     public GameObject testMarker;
     public GameObject collisionResolver;
     private PhysXBody resolverBody;
@@ -40,6 +41,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     private List<DeformableMesh> deformableMeshes = null;
     private List<float> oldEdgeSqrLengths = new List<float>();
     private Queue<VertexGroup> vertexQueue = new Queue<VertexGroup>();
+    private bool dissipationNeeded = false;
 
     private Vector3 gizmoSurfaceNormal = Vector3.forward;
     private Vector3 gizmoSurfacePoint;
@@ -70,32 +72,34 @@ InterfaceCarDrive4W interfaceCar;
     public void CollisionEnter(){}
 
     public void CollisionEnter(PhysXCollision other){
-        if(other.gameObject.CompareTag("DustGround")){
+        if (other.gameObject.CompareTag("DustGround")) {
             myRb.ghostEnabled = false;
         }
-        else{
-        
+        else {
             myRb.ghostEnabled = true;
         }
     }
+
+    float maxColls = 10;
+    float curCols = 0;
+
+    MeshstateTracker meshstateTracker;
 
     // Start is called before the first frame update.
     void Start() {
         myRb = GetComponent<PhysXRigidBody>();
         
-        
+        meshstateTracker = FindObjectOfType<MeshstateTracker>();
 
         deformableMeshes = new List<DeformableMesh>(GetComponentsInChildren<DeformableMesh>());
-        deformableMeshes[0].Subdivide(deformableMeshes[0].maxEdgeLength);
+        DeformableMesh.Subdivide(deformableMeshes[0].maxEdgeLength, deformableMeshes[0].GetMeshFilter().mesh);
         vertices = new List<Vector3>(deformableMeshes[0].GetMeshFilter().mesh.vertices);
 
         //  Group similar vertices.
-        meshGraph = new MeshGraph(deformableMeshes[0].GetMeshFilter().mesh, groupRadius);
-        foreach (VertexGroup group in meshGraph.groups) {
-            if (group.skeletonVertexIndex >= 0) {
-                skeletonVertices[group.skeletonVertexIndex] = group.pos;
-            }
-        }
+        meshGraph = meshstateTracker.GetMyMeshGraph(meshType);
+
+
+
 
         originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().sharedMesh);
         collisionResolver = Instantiate(collisionResolver);
@@ -169,7 +173,7 @@ InterfaceCarDrive4W interfaceCar;
             deformation.Normalize();
             deformation *= Mathf.Clamp(deformationForce / vertexWeight, 0, 0.5f);
 
-            current.MoveBy(vertices, skeletonVertices, deformation, false);
+            current.MoveBy(vertices, deformation, false);
 
             for (int j = 0; j < current.connectingEdges.Count; j++) {
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
@@ -188,7 +192,7 @@ InterfaceCarDrive4W interfaceCar;
                         edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
 
                         //  move vertices so edge is not too long.
-                        current.MoveTo(vertices, skeletonVertices, adjacent.pos + edge, false);
+                        current.MoveTo(vertices, adjacent.pos + edge, false);
                         current.connectingEdges[j].UpdateEdgeLength();
                     }
                 }
@@ -237,13 +241,14 @@ InterfaceCarDrive4W interfaceCar;
 
     //  This breaks if this is on a kinematic object (big sad)
     public void CollisionStay(PhysXCollision collision) {
-        if ((collision.contactCount > 0 && collision.gameObject.CompareTag("Player")) || (collision.contactCount > 0 && collision.gameObject.CompareTag("DustGround") && myRb.velocity.magnitude > 4)) {
+        if(curCols <= maxColls){
+        if ((collision.contactCount > 0 && collision.gameObject.CompareTag("Player") && collision.impulse.magnitude > 20) || (collision.contactCount > 0 && collision.gameObject.CompareTag("DustGround") && myRb.velocity.magnitude > 4)) {
             
             bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
 
             Vector3 collisionSurfaceNormal = Vector3.zero;
             Vector3 collisionSurfacePoint = Vector3.zero;
-            float sumImpulseMagnitudes = 0;
+            // float sumImpulseMagnitudes = 0;
 
             for (int i = 0; i < collision.contactCount; i++) {
                 PhysXContactPoint contactPoint = collision.GetContact(i);
@@ -265,43 +270,56 @@ InterfaceCarDrive4W interfaceCar;
             // collisionSurfaceNormal /= sumImpulseMagnitudes;
             // collisionSurfacePoint /= sumImpulseMagnitudes;
 
+            collisionSurfaceNormal = transform.InverseTransformDirection(collisionSurfaceNormal);
+            collisionSurfacePoint = transform.InverseTransformPoint(collisionSurfacePoint);
+
             gizmoSurfaceNormal = collisionSurfaceNormal;
             gizmoSurfacePoint = collisionSurfacePoint;
-            float multiplier = 0.2f;
-            float addition = 0.9f;
-            if (collision.collider.gameObject.CompareTag("DustGround")) {
-                addition = 0f;
-                multiplier = 0.05f;
-            }
-            for (int i = 0; i < meshGraph.groups.Length; i++) {
-                VertexGroup current = meshGraph.groups[i];
-                Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
 
-                if (IsBeyondCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex)) {
-                    if (isInconvenient || collision.collider.ClosestPoint(vertex) == vertex) {
-                        Vector3 deformation = DeformationFromCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex);
-                        deformation = transform.InverseTransformDirection(deformation);
-                        // Debug.Log(deformation);
+            // float multiplier = 0.2f;
+            // float addition = 0.9f;
+            if (!collision.collider.gameObject.CompareTag("DustGround")) {
+                Vector3 oldPosition = collision.body.position;
+                Quaternion oldRotation = collision.body.rotation;
+                collision.body.position = transform.InverseTransformPoint(collision.body.position);
+                collision.body.rotation = Quaternion.Inverse(transform.rotation) * collision.body.rotation;
+                // addition = 0f;
+                // multiplier = 0.05f;
 
-                        //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
-                        deformation *= Random.value * multiplier +addition;
+                VertexGroup[] groups = meshGraph.groups;
+                for (int i = 0; i < groups.Length; i++) {
+                    VertexGroup current = groups[i];
+                    // Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
+                    Vector3 vertex = current.pos;
 
-                        current.MoveBy(vertices, skeletonVertices, deformation, false);
-                        current.wasMoved = true;
-                        //moved.Add(current);
-                        vertexQueue.Enqueue(current);
-                        current.enqueued = true;
+                    if (IsBeyondCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex)) {
+                        // Debug.Log(isInconvenient);
+                        if (isInconvenient || collision.collider.ClosestPoint(vertex) == vertex) {
+                            Vector3 deformation = DeformationFromCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex);
+                            // deformation = transform.InverseTransformDirection(deformation);
+                            // Debug.Log(deformation);
+
+                            //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
+                            // deformation *= Random.value * multiplier +addition;
+
+                            current.MoveBy(vertices, deformation, false);
+                            current.wasMoved = true;
+                            //moved.Add(current);
+                            if (!current.enqueued) {
+                                vertexQueue.Enqueue(current);
+                                current.enqueued = true;
+                            }
+                        }
                     }
                 }
-            }
 
-            DissipateDeformation(false);
-            if(interfaceCar!=null){
-                frWheel.transform.localPosition = frWheelVertexGroup.pos;
-                flWheel.transform.localPosition = flWheelVertexGroup.pos;
-                rrWheel.transform.localPosition = rrWheelVertexGroup.pos;
-                rlWheel.transform.localPosition = rlWheelVertexGroup.pos;
+                collision.body.position = oldPosition;
+                collision.body.rotation = oldRotation;
+
+                // DissipateDeformation(false);
+                dissipationNeeded = true;
             }
+            
             
 
             // Vector3 collisionNormal = collision.GetContact(0).normal;
@@ -323,6 +341,15 @@ InterfaceCarDrive4W interfaceCar;
             //         CollideMesh(collision.collider, collisionForce, true);
             //     }
             // }
+        }
+    }
+    }
+
+    void Update() {
+        if(curCols >= 0) curCols -= Time.unscaledDeltaTime * 6;
+        if (dissipationNeeded) {
+            DissipateDeformation(false);
+            dissipationNeeded = false;
         }
     }
 
@@ -356,7 +383,7 @@ InterfaceCarDrive4W interfaceCar;
                         edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
 
                         //  move vertices so edge is not too long.
-                        current.MoveTo(vertices, skeletonVertices, adjacent.pos + edge, false);
+                        current.MoveTo(vertices, adjacent.pos + edge, false);
                         current.connectingEdges[j].UpdateEdgeLength();
                         current.wasMoved = true;
                     }
@@ -393,6 +420,13 @@ InterfaceCarDrive4W interfaceCar;
         //  Update the mesh
         deformableMeshes[0].GetMeshFilter().mesh.SetVertices(vertices);
         deformableMeshes[0].GetMeshFilter().mesh.RecalculateNormals();
+
+        if (interfaceCar!=null) {
+            frWheel.transform.localPosition = frWheelVertexGroup.pos;
+            flWheel.transform.localPosition = flWheelVertexGroup.pos;
+            rrWheel.transform.localPosition = rrWheelVertexGroup.pos;
+            rlWheel.transform.localPosition = rlWheelVertexGroup.pos;
+        }
     }
 
     public void CollideMesh(PhysXCollider collider, Vector3 collisionForce, bool addNoise) {
@@ -416,7 +450,7 @@ InterfaceCarDrive4W interfaceCar;
                 }
                 if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
 
-                current.MoveBy(vertices, skeletonVertices, deformation, false);
+                current.MoveBy(vertices, deformation, false);
                 current.wasMoved = true;
                 //moved.Add(current);
                 vertexQueue.Enqueue(current);
@@ -454,7 +488,7 @@ InterfaceCarDrive4W interfaceCar;
                         edge *= edgeStretchiness * Mathf.Sqrt(oldEdgeSqrLengths[j]);
 
                         //  move vertices so edge is not too long.
-                        current.MoveTo(vertices, skeletonVertices, adjacent.pos + edge, false);
+                        current.MoveTo(vertices, adjacent.pos + edge, false);
                         current.connectingEdges[j].UpdateEdgeLength();
                     }
                 }

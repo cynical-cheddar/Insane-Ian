@@ -20,6 +20,8 @@ public class PlayerGunnerController : MonoBehaviour {
 
     uint rigidbodyVehicleId = 0;
 
+    CinemachineTransposer cinemachineTransposer;
+
     // Start is called before the first frame update
     void Start() {
       //  Debug.LogWarning("Player Gunner Controller has not been ported to the new PhysX system");
@@ -30,6 +32,8 @@ public class PlayerGunnerController : MonoBehaviour {
         if (gunnerPhotonView == null) gunnerPhotonView = GetComponent<PhotonView>();
 
         rigidbodyVehicleId = transform.root.GetComponentInChildren<PhysXRigidBody>().vehicleId;
+
+        cinemachineTransposer = camera.GetCinemachineComponent<CinemachineTransposer>();
     }
 
     void OnEnable() {
@@ -47,6 +51,8 @@ public class PlayerGunnerController : MonoBehaviour {
     void FixedUpdate() {
 
     }
+
+    
 
     void Update() {
         // fire 1
@@ -93,7 +99,7 @@ public class PlayerGunnerController : MonoBehaviour {
         turretController.ChangeTargetPitch(-(cameraSensitivity * Input.GetAxis("Mouse Y") * Time.deltaTime));
         turretController.UpdateTargeterRotation();
 
-        CinemachineTransposer cinemachineTransposer = camera.GetCinemachineComponent<CinemachineTransposer>();
+       
         float newy = Mathf.Max(cinemachineTransposer.m_FollowOffset.y - Input.mouseScrollDelta.y * 0.2f, 1.5f);
         float newz = Mathf.Min(cinemachineTransposer.m_FollowOffset.z + Input.mouseScrollDelta.y * 0.6f, -3f);
 

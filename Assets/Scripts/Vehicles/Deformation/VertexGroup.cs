@@ -10,7 +10,6 @@ namespace GraphBending {
             vertexIndices.Add(vertexIndex);
             wasMoved = false;
             enqueued = false;
-            skeletonVertexIndex = -1;
             UpdatePos(vertices);
         }
 
@@ -29,30 +28,24 @@ namespace GraphBending {
             }
         }
 
-        public void MoveTo(List<Vector3> vertices, List<Vector3> skeletonVertices, Vector3 pos) {
-            MoveTo(vertices, skeletonVertices, pos, true);
+        public void MoveTo(List<Vector3> vertices, Vector3 pos) {
+            MoveTo(vertices, pos, true);
         }
 
-        public void MoveTo(List<Vector3> vertices, List<Vector3> skeletonVertices, Vector3 pos, bool updateEdgeLengths) {
+        public void MoveTo(List<Vector3> vertices, Vector3 pos, bool updateEdgeLengths) {
             foreach (int index in vertexIndices) {
                 vertices[index] = pos;
-            }
-            if (skeletonVertexIndex >= 0) {
-                skeletonVertices[skeletonVertexIndex] = pos;
             }
             UpdatePos(vertices, updateEdgeLengths);
         }
 
-        public void MoveBy(List<Vector3> vertices, List<Vector3> skeletonVertices, Vector3 shift) {
-            MoveBy(vertices, skeletonVertices, shift, true);
+        public void MoveBy(List<Vector3> vertices, Vector3 shift) {
+            MoveBy(vertices, shift, true);
         }
 
-        public void MoveBy(List<Vector3> vertices, List<Vector3> skeletonVertices, Vector3 shift, bool updateEdgeLengths) {
+        public void MoveBy(List<Vector3> vertices, Vector3 shift, bool updateEdgeLengths) {
             foreach (int index in vertexIndices) {
                 vertices[index] += shift;
-            }
-            if (skeletonVertexIndex >= 0) {
-                skeletonVertices[skeletonVertexIndex] += shift;
             }
             UpdatePos(vertices, updateEdgeLengths);
         }
@@ -65,7 +58,6 @@ namespace GraphBending {
         }
 
         public List<int> vertexIndices;
-        public int skeletonVertexIndex;
 
         public List<Edge> connectingEdges;
         public Vector3 pos;

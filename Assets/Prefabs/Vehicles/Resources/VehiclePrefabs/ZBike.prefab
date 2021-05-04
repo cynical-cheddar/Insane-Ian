@@ -518,8 +518,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 10359.812
-    damper: 2486.3547
+    spring: 10359.738
+    damper: 2486.3372
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.3904235
@@ -594,11 +594,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 11459.641
-    damper: 2750.314
+    spring: 11459.694
+    damper: 2750.3267
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3094177
+  m_ForceAppPointDistance: 1.3094176
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -836,6 +836,8 @@ MonoBehaviour:
     height: 100
     collisionResistance: 0.25
   rammingDamageMultiplier: 1
+  maxCollisionRate: 0.2
+  collisionSparks: {fileID: 0}
   smokeL: {fileID: 5252987278975861231}
   smokeM: {fileID: 9134874198540071001}
   smokeH: {fileID: 3376690708232957355}
@@ -896,6 +898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e287627b0b4c44acfb2a1a33cc55d209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshType: 3
   testMarker: {fileID: 0}
   collisionResolver: {fileID: 5371136353021480069, guid: 96f0f3bcd3a964af2a2bb99056c778e5,
     type: 3}
@@ -1013,7 +1016,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 482493435927083060}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 679291833f0445940b0a438799115d3c, type: 3}
   m_Name: 
@@ -1178,11 +1181,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 8829.389
-    damper: 2119.0532
+    spring: 8829.422
+    damper: 2119.0615
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3244171
+  m_ForceAppPointDistance: 1.324417
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1254,8 +1257,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 19351.152
-    damper: 4644.277
+    spring: 19351.146
+    damper: 4644.2754
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.3904235
