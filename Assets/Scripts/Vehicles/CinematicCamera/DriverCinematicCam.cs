@@ -101,17 +101,19 @@ public class DriverCinematicCam : MonoBehaviour
 
     public void SetCam(Cams cam)
     {
-        if(cam == Cams.defaultCamEnum) SetCam(defaultCam);
-        if(cam == Cams.environmentCrashLeftEnum) SetCam(environmentCrashLeft);
-        if(cam == Cams.environmentCrashCentreEnum) SetCam(environmentCrashCentre);
-        if(cam == Cams.environmentCrashRightEnum) SetCam(environmentCrashRight);
-        if(cam == Cams.environmentWarning1LeftEnum) SetCam(environmentWarning1Left);
-        if(cam == Cams.environmentWarning1CentreEnum) SetCam(environmentWarning1Centre);
-        if(cam == Cams.environmentWarning1RightEnum) SetCam(environmentWarning1Right);
-        if(cam == Cams.carCrashBackLeftEnum) SetCam(carCrashBackLeft);
-        if(cam == Cams.carCrashBackRightEnum) SetCam(carCrashBackRight);
-        if(cam == Cams.carCrashFrontLeftEnum) SetCam(carCrashFrontLeft);
-        if(cam == Cams.carCrashFrontRightEnum) SetCam(carCrashFrontRight);
+        if(this.enabled){
+            if(cam == Cams.defaultCamEnum) SetCam(defaultCam);
+            if(cam == Cams.environmentCrashLeftEnum) SetCam(environmentCrashLeft);
+            if(cam == Cams.environmentCrashCentreEnum) SetCam(environmentCrashCentre);
+            if(cam == Cams.environmentCrashRightEnum) SetCam(environmentCrashRight);
+            if(cam == Cams.environmentWarning1LeftEnum) SetCam(environmentWarning1Left);
+            if(cam == Cams.environmentWarning1CentreEnum) SetCam(environmentWarning1Centre);
+            if(cam == Cams.environmentWarning1RightEnum) SetCam(environmentWarning1Right);
+            if(cam == Cams.carCrashBackLeftEnum) SetCam(carCrashBackLeft);
+            if(cam == Cams.carCrashBackRightEnum) SetCam(carCrashBackRight);
+            if(cam == Cams.carCrashFrontLeftEnum) SetCam(carCrashFrontLeft);
+            if(cam == Cams.carCrashFrontRightEnum) SetCam(carCrashFrontRight);
+        }
     }
 
 

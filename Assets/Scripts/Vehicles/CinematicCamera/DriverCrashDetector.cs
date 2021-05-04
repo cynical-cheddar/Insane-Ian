@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Cinemachine;
 using PhysX;
+using Photon.Pun;
 
 [VehicleScript(ScriptType.playerDriverScript)]
 
@@ -140,7 +141,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
             currentSensorReport.lastCrashedPlayer = other.transform.root;
 
             
-            if (!npv.botDriver) {
+            if (npv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber) {
                 GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontLeftEnum);
             }
              //   if(lastTargetPoint!=null) Destroy(lastTargetPoint);
@@ -167,7 +168,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
         
         currentSensorReport.crashed = false;
         //currentSensorReport.lastCrashedPlayer = transform.root;
-      //  GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.defaultCamEnum);
+
     }
 
     private Vector3 vel = Vector3.zero;
@@ -178,7 +179,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
         crashTimer += Time.deltaTime;
         if(crashTimer > 0.6){
             currentSensorReport.crashed = false;
-           // GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.defaultCamEnum);
+
         }
         vel = myRb.velocity;
         localVel = transform.InverseTransformDirection(vel);
