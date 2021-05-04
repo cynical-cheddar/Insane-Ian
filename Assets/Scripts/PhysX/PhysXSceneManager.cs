@@ -87,7 +87,7 @@ public class PhysXSceneManager : MonoBehaviour
             body.UpdatePositionAndVelocity();
         }
 
-        collisionCallbackMarker.Begin();        
+        collisionCallbackMarker.Begin();      
         foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
             collision.PopulateWithUnityObjects(bodies);
             PhysXBody body = null;
