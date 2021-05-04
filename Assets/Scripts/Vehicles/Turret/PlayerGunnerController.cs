@@ -1,6 +1,8 @@
 using Cinemachine;
 using Photon.Pun;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using PhysX;
 
@@ -52,6 +54,9 @@ public class PlayerGunnerController : MonoBehaviour {
 
     }
 
+
+    int markedTeam = 0;
+    int lastMarkedTeam = 0;
     
 
     void Update() {
@@ -64,6 +69,36 @@ public class PlayerGunnerController : MonoBehaviour {
                      else targetHitpoint = CalculateTargetingHitpoint(barrelTransform);
 
                      gunnerWeaponManager.FireCurrentWeaponGroup(targetHitpoint);
+                 }
+             }
+         }
+        // jank ram damage thing
+         if(Input.GetButtonDown("Fire2")){
+             Debug.Log("mark fire btn press");
+             if (gunnerPhotonView.IsMine) {
+                 Debug.Log("mark fire");
+                 VehicleHealthManager hitvm = GetVehicleHealthManagerRaycast(cam);
+                 if(hitvm!=null){
+                     Debug.Log("mark hitvm not null");
+                     NetworkPlayerVehicle npv =  GetComponentInParent<NetworkPlayerVehicle>();
+                     int teamId = npv.teamId;
+                     int driverId = npv.GetDriverID();
+                     int gunnerId = npv.GetGunnerID();
+                     // remove last mark
+                     if(lastMarkedTeam != 0){
+                        FindObjectOfType<PlayerTransformTracker>().GetVehicleTransformFromTeamId(lastMarkedTeam).GetComponent<PhotonView>().RPC(nameof(CollidableHealthManager.RemoveMarkedTeam_RPC), RpcTarget.All, lastMarkedTeam, driverId, gunnerId);
+                        
+                     }
+                     // add new mark
+                     hitvm.GetComponent<PhotonView>().RPC(nameof(CollidableHealthManager.MarkTeam_RPC), RpcTarget.All, teamId, driverId, gunnerId);
+                     lastMarkedTeam = hitvm.gameObject.GetComponent<NetworkPlayerVehicle>().teamId;
+                     Debug.Log("mark done");
+                 }
+                 if(hitvm == null){
+                     Debug.Log("mark is null");
+                 }
+                 if(hitvm.transform == transform.root){
+                     Debug.Log("mark is me");
                  }
              }
          }
@@ -129,6 +164,22 @@ public class PlayerGunnerController : MonoBehaviour {
         }
 
         return hp;
+    }
+
+    VehicleHealthManager GetVehicleHealthManagerRaycast(Transform sourceTransform){
+        Ray ray = new Ray(sourceTransform.position, sourceTransform.forward);
+     //   RaycastHit hit; //From camera to hitpoint, not as curent
+        Transform hitTransform;
+        Vector3 hitVector;
+        hitTransform = FindClosestHitObject(ray, out hitVector);
+        Debug.Log("mark hittransform: " + hitTransform.gameObject);
+        if(hitTransform.root.GetComponent<VehicleHealthManager>()!=null){
+            VehicleHealthManager vm = hitTransform.root.GetComponent<VehicleHealthManager>();
+            if(vm.GetComponent<NetworkPlayerVehicle>().GetGunnerID() != PhotonNetwork.LocalPlayer.ActorNumber){
+                return vm;
+            }
+        }
+        return null;
     }
     protected Transform FindClosestHitObject(Ray ray, out Vector3 hitPoint) {
 

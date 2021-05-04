@@ -56,6 +56,10 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     float collisionTimer = 0f;
 
     public GameObject collisionSparks;
+
+    protected List<int> markedByTeams = new List<int>();
+
+    public float markedTeamDamageIncrease = 3f;
     protected new void Start(){
         baseCollisionResistance = deathForce / maxHealth;
         myRb = GetComponent<PhysXRigidBody>();
@@ -68,6 +72,27 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
         
         base.Start();
     }
+
+    public GameObject markedGameObjectPrefab;
+    protected GameObject markedGameObjectInstance;
+
+    [PunRPC]
+    public void MarkTeam_RPC(int team, int driver, int gunner){
+        markedByTeams.Add(team);
+        if(PhotonNetwork.LocalPlayer.ActorNumber == driver || PhotonNetwork.LocalPlayer.ActorNumber == gunner){
+            markedGameObjectInstance = Instantiate(markedGameObjectPrefab, transform.position, transform.rotation);
+            markedGameObjectInstance.transform.parent = transform;
+        }
+    }
+
+    [PunRPC]
+    public void RemoveMarkedTeam_RPC(int team, int driver, int gunner){
+        markedByTeams.Remove(team);
+        if(PhotonNetwork.LocalPlayer.ActorNumber == driver || PhotonNetwork.LocalPlayer.ActorNumber == gunner){
+            Destroy(markedGameObjectInstance);
+        }
+    }
+
     protected void Update(){
         timeSinceLastRam += Time.deltaTime;
         collisionTimer -= Time.deltaTime;
@@ -142,6 +167,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
                     Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
                     
                     rammingDetails.damage = damage;
+                    if(markedByTeams.Contains(rammingDetails.sourceTeamId)) rammingDetails.damage *= markedTeamDamageIncrease;
                     
                     TakeDamage(rammingDetails);
                 }

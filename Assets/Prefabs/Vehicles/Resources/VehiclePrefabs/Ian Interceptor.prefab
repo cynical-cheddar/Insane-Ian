@@ -5253,6 +5253,9 @@ MonoBehaviour:
   maxCollisionRate: 0.1
   collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
     type: 3}
+  markedTeamDamageIncrease: 3
+  markedGameObjectPrefab: {fileID: 6714836046950906657, guid: ea3036c1d4454c347873033257223dea,
+    type: 3}
   smokeL: {fileID: 7980490870927354312}
   smokeM: {fileID: 999066652688031655}
   smokeH: {fileID: 7727078123409898187}
@@ -5371,7 +5374,7 @@ MonoBehaviour:
   frontSensorPosition: {x: 0, y: 0.2, z: 0.5}
   frontSideSensorPosition: 0.2
   frontSensorAngle: 30
-  yeaaahhhhh: 0
+  yeaaahhhhh: 1
 --- !u!114 &3259053200411725802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7170,6 +7173,11 @@ PrefabInstance:
         type: 3}
       propertyPath: raycastLayers
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216684595439082224, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: raycastLayers
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8699825132817194847, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}
