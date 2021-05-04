@@ -169,7 +169,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     { 
         spawningPlayersScreenInstance = Instantiate(spawningPlayersScreenPrefab, transform.position, Quaternion.identity);
       //  yield return new WaitForSecondsRealtime(0.5f);
-        if(FindObjectOfType<MakeTheMap>() != null) FindObjectOfType<MakeTheMap>().MakeMap();
+      //  if(FindObjectOfType<MakeTheMap>() != null) FindObjectOfType<MakeTheMap>().MakeMap();
         yield return new WaitForSecondsRealtime(1f);
         
         if (PhotonNetwork.IsMasterClient)

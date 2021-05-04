@@ -26,6 +26,17 @@ public class HotPotatoManager : MonoBehaviour
         telecastManager = FindObjectOfType<TelecastManager>();
     }
 
+    public void RemovePotatoNoDrop_RPC(){
+        isPotato = false;
+
+
+            GetComponent<PhotonView>().RPC(nameof(RemovePotato_RPC), RpcTarget.AllBuffered);
+
+
+            CancelInvoke("buffs");
+
+    }
+
     
     
     TelecastManager telecastManager;
@@ -83,7 +94,7 @@ public class HotPotatoManager : MonoBehaviour
         InvokeRepeating("buffs", 2f, 2f);
         GetComponent<PhotonView>().RPC(nameof(PickupPotatoEffects), RpcTarget.All);
 
-        telecastManager.PickupPotato(npv);
+     //   telecastManager.PickupPotato(npv);
 
         AnnouncerManager a = FindObjectOfType<AnnouncerManager>();
         a.PlayAnnouncerLine(a.announcerShouts.potatoPickup, myDriverId, myGunnerId);

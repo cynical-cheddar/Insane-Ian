@@ -202,7 +202,7 @@ using Random = UnityEngine.Random;
                     {
 
                     }
-                    else
+                    else if(interfaceCarDrive.isDead == false)
                     {
                         NormalDriving();
                     }
