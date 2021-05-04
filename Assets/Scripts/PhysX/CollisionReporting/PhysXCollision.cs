@@ -38,6 +38,7 @@ namespace PhysX {
             }
         }
 
+        public PhysXBody body { get; private set; }
         public PhysXRigidBody rigidBody { get; private set; }
 
         public Transform transform { get; private set; }
@@ -116,7 +117,7 @@ namespace PhysX {
         }
 
         internal void PopulateWithUnityObjects(Dictionary<long, PhysXBody> bodies) {
-            PhysXBody body = bodies[otherActor.ToInt64()];
+            body = bodies[otherActor.ToInt64()];
             rigidBody = body as PhysXRigidBody;
             gameObject = body.gameObject;
             transform = body.transform;
