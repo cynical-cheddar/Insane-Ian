@@ -8,7 +8,7 @@ public class PhysXMeshCollider : PhysXCollider
     public Mesh mesh = null;
     public bool convex = true;
     public Vector3 scale = Vector3.one;
-    private Mesh meshMesh = null;
+    // private Mesh meshMesh = null;
 
     // Start is called before the first frame update
     public override void Setup(PhysXBody attachedRigidBody, uint vehicleId)
@@ -20,9 +20,9 @@ public class PhysXMeshCollider : PhysXCollider
             Debug.LogError("Collider mesh: " + mesh.name + " is not readable");
         }
         else {
-            meshMesh = Instantiate(mesh);
-            meshMesh.Clear();
-            List<Vector3> meshMeshVertices = new List<Vector3>();
+            // meshMesh = Instantiate(mesh);
+            // meshMesh.Clear();
+            // List<Vector3> meshMeshVertices = new List<Vector3>();
 
             IntPtr vertexArray = PhysXLib.CreateVectorArray();
 
@@ -57,36 +57,36 @@ public class PhysXMeshCollider : PhysXCollider
 
             shape = PhysXLib.CreateShape(geom, physXMaterial, 0.02f);
 
-            if (!convex) {
-                int vertexCount = PhysXLib.GetMeshVertexCount(geom);
-                int triCount = PhysXLib.GetMeshTriangleCount(geom);
-                IntPtr usedVertices = PhysXLib.CreateVectorArray();
-                int[] usedTris = new int[triCount * 3];
-                PhysXLib.GetMeshGeometry(geom, usedVertices, usedTris);
+            // if (!convex) {
+            //     int vertexCount = PhysXLib.GetMeshVertexCount(geom);
+            //     int triCount = PhysXLib.GetMeshTriangleCount(geom);
+            //     IntPtr usedVertices = PhysXLib.CreateVectorArray();
+            //     int[] usedTris = new int[triCount * 3];
+            //     PhysXLib.GetMeshGeometry(geom, usedVertices, usedTris);
 
-                for (int i = 0; i < vertexCount; i++) {
-                    PhysXLib.GetVectorFromArray(usedVertices, physXVertex, i);
-                    meshMeshVertices.Add(physXVertex.ToVector());
-                }
-                meshMesh.SetVertices(meshMeshVertices);
-                meshMesh.triangles = usedTris;
-                meshMesh.RecalculateNormals();
-            }
+            //     for (int i = 0; i < vertexCount; i++) {
+            //         PhysXLib.GetVectorFromArray(usedVertices, physXVertex, i);
+            //         meshMeshVertices.Add(physXVertex.ToVector());
+            //     }
+            //     meshMesh.SetVertices(meshMeshVertices);
+            //     meshMesh.triangles = usedTris;
+            //     meshMesh.RecalculateNormals();
+            // }
 
             base.Setup(attachedRigidBody, vehicleId);
         }
     }
 
-    void OnDrawGizmos() {
-        if (meshMesh != null) {
-            Vector3 oldScale = transform.localScale;
-            transform.localScale = Vector3.one;
-            Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.color = new Color(1, 0, 1, 0.3f);
-            Gizmos.DrawMesh(meshMesh, offset, Quaternion.identity, scale);
-            Gizmos.color = Color.white;
-            Gizmos.matrix = Matrix4x4.identity;
-            transform.localScale = oldScale;
-        }
-    }
+    // void OnDrawGizmos() {
+    //     if (meshMesh != null) {
+    //         Vector3 oldScale = transform.localScale;
+    //         transform.localScale = Vector3.one;
+    //         Gizmos.matrix = transform.localToWorldMatrix;
+    //         Gizmos.color = new Color(1, 0, 1, 0.3f);
+    //         Gizmos.DrawMesh(meshMesh, offset, Quaternion.identity, scale);
+    //         Gizmos.color = Color.white;
+    //         Gizmos.matrix = Matrix4x4.identity;
+    //         transform.localScale = oldScale;
+    //     }
+    // }
 }
