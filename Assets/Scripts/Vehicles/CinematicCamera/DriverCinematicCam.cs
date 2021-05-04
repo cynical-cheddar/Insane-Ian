@@ -157,21 +157,21 @@ public class DriverCinematicCam : MonoBehaviour
         carCrashFrontRight.enabled = false;
 
         
-
+        
         if (cam == carCrashBackLeft) carCrashBackLeft.m_LookAt = GetCrashTarget();
-        if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = GetCrashTarget();
+        if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = transform.root;
         if (cam == carCrashFrontLeft) carCrashFrontLeft.m_LookAt = GetCrashTarget();
         if (cam == carCrashFrontRight) carCrashFrontRight.m_LookAt = GetCrashTarget();
-
+        
         
 
         /*
-
         if (cam == carCrashBackLeft) carCrashBackLeft.m_LookAt = transform.root;
         if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = transform.root;
         if (cam == carCrashFrontLeft) carCrashFrontLeft.m_LookAt = transform.root;
         if (cam == carCrashFrontRight) carCrashFrontRight.m_LookAt = transform.root;
         */
+        
         cam.enabled = true;
     }
 

@@ -110,7 +110,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
 
     }
 
-    public void CrashCollisionCamera(PhysXCollision other){
+    public void CrashCollisionCamera(PhysXCollision other, bool small){
 
             if (other.transform.root.CompareTag("Player"))
             {
@@ -141,8 +141,11 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
             currentSensorReport.lastCrashedPlayer = other.transform.root;
 
             
-            if (npv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber) {
+            if (npv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber && !small) {
                 GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontLeftEnum);
+            }
+            if (npv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber && small) {
+                GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontRightEnum);
             }
              //   if(lastTargetPoint!=null) Destroy(lastTargetPoint);
               //  Vector3 point = contactPoints[0].point;

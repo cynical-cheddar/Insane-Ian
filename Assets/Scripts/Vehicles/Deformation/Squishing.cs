@@ -80,6 +80,9 @@ InterfaceCarDrive4W interfaceCar;
         }
     }
 
+    float maxColls = 10;
+    float curCols = 0;
+
     MeshstateTracker meshstateTracker;
 
     // Start is called before the first frame update.
@@ -238,7 +241,8 @@ InterfaceCarDrive4W interfaceCar;
 
     //  This breaks if this is on a kinematic object (big sad)
     public void CollisionStay(PhysXCollision collision) {
-        if ((collision.contactCount > 0 && collision.gameObject.CompareTag("Player")) || (collision.contactCount > 0 && collision.gameObject.CompareTag("DustGround") && myRb.velocity.magnitude > 4)) {
+        if(curCols <= maxColls){
+        if ((collision.contactCount > 0 && collision.gameObject.CompareTag("Player") && collision.impulse.magnitude > 20) || (collision.contactCount > 0 && collision.gameObject.CompareTag("DustGround") && myRb.velocity.magnitude > 4)) {
             
             bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
 
@@ -339,8 +343,10 @@ InterfaceCarDrive4W interfaceCar;
             // }
         }
     }
+    }
 
     void Update() {
+        if(curCols >= 0) curCols -= Time.unscaledDeltaTime * 6;
         if (dissipationNeeded) {
             DissipateDeformation(false);
             dissipationNeeded = false;

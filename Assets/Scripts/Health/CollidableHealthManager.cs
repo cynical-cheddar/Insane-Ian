@@ -113,13 +113,13 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 
 
             // instantiate damage sound over network
-            if((damage > crashSoundsSmallDamageThreshold || (otherVehicleManager!=null) ) && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            if((damage > crashSoundsSmallDamageThreshold || (otherVehicleManager!=null) ) && timeSinceLastRam > 0.25f) PlayDamageSoundNetwork(damage);
 
             damage = damage / rammingDamageResistance;
 
           //  Debug.Log("collision damage taken: " + damage + " by " + gameObject.name);
 
-            if(myPhotonView.IsMine && hasHotPotatoManager && otherVehicleManager != null){
+            if(myPhotonView.IsMine && hasHotPotatoManager && otherVehicleManager != null  && timeSinceLastRam > 0.25f){
                         if(collisionNpv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber || collisionNpv.GetGunnerID() == PhotonNetwork.LocalPlayer.ActorNumber){
                             Debug.LogError("Slow down should happen");
                            hotPotatoManager.SlowedCollision();
@@ -128,12 +128,16 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
                             GameObject a = Instantiate(collisionSparks, collisionPoint, Quaternion.identity);
                             a.transform.parent = transform;
                         }
+
+                        if(damage > 4) driverCrashDetector.CrashCollisionCamera(collision, false);
+
+                        else driverCrashDetector.CrashCollisionCamera(collision, true);
                     }
             
             if(damage > 5){
                 if (otherVehicleManager != null) {
                     
-                    driverCrashDetector.CrashCollisionCamera(collision);
+                    
                     if(otherVehicleManager!=null)damage  *= otherVehicleManager.rammingDamageMultiplier;
                     Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
                     
@@ -145,8 +149,9 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
                     TakeDamage(damage);
                 }
             }
-            timeSinceLastRam= 0f;
+            
         }
+        if(collision.rigidBody!=null) timeSinceLastRam= 0f;
     }
 
     protected IEnumerator ResetPreviousCOM(Vector3 com, float t)
