@@ -37,6 +37,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     public float groupRadius = 0.05f;
     public float stretchiness = 1000000.1f;
     public float collisionResistance = 200;
+    public float minPenetration = 0.2f;
     //public float maxEdgeLength = 0.6f;
     private List<DeformableMesh> deformableMeshes = null;
     private List<float> oldEdgeSqrLengths = new List<float>();
@@ -50,24 +51,24 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
 InterfaceCarDrive4W interfaceCar;
     Mesh originalMesh;
 
-    void OnDrawGizmos() {
-        Gizmos.color = new Color(1, 0, 1);
-        // Vector3 oldTransormPosition = transform.position;
-        // Quaternion oldTransormRotation = transform.rotation;
+    // void OnDrawGizmos() {
+    //     Gizmos.color = new Color(1, 0, 1);
+    //     // Vector3 oldTransormPosition = transform.position;
+    //     // Quaternion oldTransormRotation = transform.rotation;
 
-        // transform.position = gizmoSurfacePoint;
-        // transform.rotation = Quaternion.LookRotation(gizmoSurfaceNormal, Vector3.up);
+    //     // transform.position = gizmoSurfacePoint;
+    //     // transform.rotation = Quaternion.LookRotation(gizmoSurfaceNormal, Vector3.up);
 
-        if (deformableMeshes != null && deformableMeshes.Count > 0) {
-            Gizmos.matrix = deformableMeshes[0].transform.localToWorldMatrix;
-        }
-        // Gizmos.DrawCube(Vector3.zero, new Vector3(1, 1, 0.1f));
-        Gizmos.color = Color.white;
-        Gizmos.matrix = Matrix4x4.identity;
+    //     if (deformableMeshes != null && deformableMeshes.Count > 0) {
+    //         Gizmos.matrix = deformableMeshes[0].transform.localToWorldMatrix;
+    //     }
+    //     // Gizmos.DrawCube(Vector3.zero, new Vector3(1, 1, 0.1f));
+    //     Gizmos.color = Color.white;
+    //     Gizmos.matrix = Matrix4x4.identity;
 
-        // transform.position = oldTransormPosition;
-        // transform.rotation = oldTransormRotation;
-    }
+    //     // transform.position = oldTransormPosition;
+    //     // transform.rotation = oldTransormRotation;
+    // }
 
     public void CollisionEnter(){}
 
@@ -80,8 +81,8 @@ InterfaceCarDrive4W interfaceCar;
         }
     }
 
-    float maxColls = 10;
-    float curCols = 0;
+    // float maxColls = 10;
+    // float curCols = 0;
 
     MeshstateTracker meshstateTracker;
 
@@ -239,72 +240,53 @@ InterfaceCarDrive4W interfaceCar;
 
     public void CollisionStay() {}
 
-    //  This breaks if this is on a kinematic object (big sad)
     public void CollisionStay(PhysXCollision collision) {
-        if(curCols <= maxColls){
-        if ((collision.contactCount > 0 && collision.gameObject.CompareTag("Player") && collision.impulse.magnitude > 20) || (collision.contactCount > 0 && collision.gameObject.CompareTag("DustGround") && myRb.velocity.magnitude > 4)) {
-            
-            bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
-
-            Vector3 collisionSurfaceNormal = Vector3.zero;
-            Vector3 collisionSurfacePoint = Vector3.zero;
-            // float sumImpulseMagnitudes = 0;
-
-            for (int i = 0; i < collision.contactCount; i++) {
-                PhysXContactPoint contactPoint = collision.GetContact(i);
-                float impulseMagnitude = contactPoint.impulse.magnitude;
-
-                collisionSurfaceNormal += contactPoint.normal;
-                collisionSurfacePoint += contactPoint.point;
-
-
-                // collisionSurfaceNormal += contactPoint.normal * impulseMagnitude;
-                // collisionSurfacePoint += contactPoint.point * impulseMagnitude;
-                // sumImpulseMagnitudes += impulseMagnitude;
-            }
-
-
-
-            collisionSurfaceNormal /= collision.contactCount;
-            collisionSurfacePoint /= collision.contactCount;
-            // collisionSurfaceNormal /= sumImpulseMagnitudes;
-            // collisionSurfacePoint /= sumImpulseMagnitudes;
-
-            collisionSurfaceNormal = transform.InverseTransformDirection(collisionSurfaceNormal);
-            collisionSurfacePoint = transform.InverseTransformPoint(collisionSurfacePoint);
-
-            gizmoSurfaceNormal = collisionSurfaceNormal;
-            gizmoSurfacePoint = collisionSurfacePoint;
-
-            // float multiplier = 0.2f;
-            // float addition = 0.9f;
+        if (collision.contactCount > 0 && collision.GetContact(0).separation < -minPenetration) {
             if (!collision.collider.gameObject.CompareTag("DustGround")) {
+            
+                bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
+
+                Vector3 collisionSurfaceNormal = Vector3.zero;
+                Vector3 collisionSurfacePoint = Vector3.zero;
+
+                for (int i = 0; i < collision.contactCount; i++) {
+                    PhysXContactPoint contactPoint = collision.GetContact(i);
+                    float impulseMagnitude = contactPoint.impulse.magnitude;
+
+                    collisionSurfaceNormal += contactPoint.normal;
+                    collisionSurfacePoint += contactPoint.point;
+                }
+
+
+
+                collisionSurfaceNormal /= collision.contactCount;
+                collisionSurfacePoint /= collision.contactCount;
+
+                collisionSurfaceNormal = transform.InverseTransformDirection(collisionSurfaceNormal);
+                collisionSurfacePoint = transform.InverseTransformPoint(collisionSurfacePoint);
+
+                gizmoSurfaceNormal = collisionSurfaceNormal;
+                gizmoSurfacePoint = collisionSurfacePoint;
+
                 Vector3 oldPosition = collision.body.position;
                 Quaternion oldRotation = collision.body.rotation;
                 collision.body.position = transform.InverseTransformPoint(collision.body.position);
                 collision.body.rotation = Quaternion.Inverse(transform.rotation) * collision.body.rotation;
-                // addition = 0f;
-                // multiplier = 0.05f;
 
                 VertexGroup[] groups = meshGraph.groups;
                 for (int i = 0; i < groups.Length; i++) {
                     VertexGroup current = groups[i];
-                    // Vector3 vertex = transform.TransformPoint(vertices[current.vertexIndices[0]]);
                     Vector3 vertex = current.pos;
 
                     if (IsBeyondCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex)) {
-                        // Debug.Log(isInconvenient);
                         if (isInconvenient || collision.collider.ClosestPoint(vertex) == vertex) {
                             Vector3 deformation = DeformationFromCollisionSurface(collisionSurfaceNormal, collisionSurfacePoint, vertex);
-                            // deformation = transform.InverseTransformDirection(deformation);
-                            // Debug.Log(deformation);
 
-                            //if (addNoise) deformation *= Random.value * 0.2f + 0.9f;
-                            // deformation *= Random.value * multiplier +addition;
+                            // if (addNoise) deformation *= Random.value * multiplier + addition;
 
                             current.MoveBy(vertices, deformation, false);
                             current.wasMoved = true;
-                            //moved.Add(current);
+
                             if (!current.enqueued) {
                                 vertexQueue.Enqueue(current);
                                 current.enqueued = true;
@@ -316,37 +298,13 @@ InterfaceCarDrive4W interfaceCar;
                 collision.body.position = oldPosition;
                 collision.body.rotation = oldRotation;
 
-                // DissipateDeformation(false);
                 dissipationNeeded = true;
             }
-            
-            
-
-            // Vector3 collisionNormal = collision.GetContact(0).normal;
-            // Vector3 collisionForce = collision.impulse;
-            // if (Vector3.Dot(collisionForce, collisionNormal) < 0) collisionForce = -collisionForce;
-            // collisionForce /= Time.fixedDeltaTime;
-            // collisionForce /= collisionResistance;
-            // collisionForce = transform.InverseTransformDirection(collisionForce);
-
-            // if (collisionForce.sqrMagnitude >= 0.01f) {
-            //     if (collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex) {
-            //         resolverBody.position = collision.GetContact(0).point;
-            //         resolverBody.rotation = Quaternion.LookRotation(-collision.GetContact(0).normal);
-            //         PhysXCollider collider = collisionResolver.GetComponent<PhysXBoxCollider>();
-            //         CollideMesh(collider, collisionForce, true);
-            //         resolverBody.position = new Vector3(0, 10000, 0);
-            //     }
-            //     else {
-            //         CollideMesh(collision.collider, collisionForce, true);
-            //     }
-            // }
         }
-    }
     }
 
     void Update() {
-        if(curCols >= 0) curCols -= Time.unscaledDeltaTime * 6;
+        // if(curCols >= 0) curCols -= Time.unscaledDeltaTime * 6;
         if (dissipationNeeded) {
             DissipateDeformation(false);
             dissipationNeeded = false;
