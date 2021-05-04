@@ -518,8 +518,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 10359.738
-    damper: 2486.3372
+    spring: 10359.812
+    damper: 2486.3547
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.3904235
@@ -594,11 +594,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 11459.694
-    damper: 2750.3267
+    spring: 11459.641
+    damper: 2750.314
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.3094176
+  m_ForceAppPointDistance: 1.3094177
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -638,7 +638,6 @@ GameObject:
   m_Component:
   - component: {fileID: 486267010860937132}
   - component: {fileID: 436422559543559530}
-  - component: {fileID: 514719669995493862}
   - component: {fileID: 482347747890627913}
   - component: {fileID: 482347747890627918}
   - component: {fileID: 1687947272586705584}
@@ -709,22 +708,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &514719669995493862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482493435927083060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61682be5314d0440b9e67529196ac1a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  naturalFrequency: 5
-  dampingRatio: 0.6
-  forceShift: 0.03
-  setSuspensionDistance: 0
 --- !u!114 &482347747890627913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -899,13 +882,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshType: 3
-  testMarker: {fileID: 0}
   collisionResolver: {fileID: 5371136353021480069, guid: 96f0f3bcd3a964af2a2bb99056c778e5,
     type: 3}
   vertexWeight: 5
-  groupRadius: 0.05
   stretchiness: 1.1
-  collisionResistance: 20000
+  minPenetration: 0.05
 --- !u!114 &-1867219719089959166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1181,11 +1162,11 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 8829.422
-    damper: 2119.0615
+    spring: 8829.389
+    damper: 2119.0532
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
-  m_ForceAppPointDistance: 1.324417
+  m_ForceAppPointDistance: 1.3244171
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -1257,8 +1238,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.55
   m_SuspensionSpring:
-    spring: 19351.146
-    damper: 4644.2754
+    spring: 19351.152
+    damper: 4644.277
     targetPosition: 0.7
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 1.3904235
@@ -5964,15 +5945,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ae988ca85ffc842a018ede235b751e, type: 3}
---- !u!4 &5578836788935599258 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 72ae988ca85ffc842a018ede235b751e,
-    type: 3}
-  m_PrefabInstance: {fileID: 3443794370202449}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &6025161322645792008 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: 72ae988ca85ffc842a018ede235b751e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3443794370202449}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5578836788935599258 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 72ae988ca85ffc842a018ede235b751e,
     type: 3}
   m_PrefabInstance: {fileID: 3443794370202449}
   m_PrefabAsset: {fileID: 0}
@@ -6276,15 +6257,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 454a50181e171464f916e4251afe0e44, type: 3}
---- !u!4 &6203694012459253885 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 454a50181e171464f916e4251afe0e44,
-    type: 3}
-  m_PrefabInstance: {fileID: 1979275176359276470}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &5252987278975861231 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: 454a50181e171464f916e4251afe0e44,
+    type: 3}
+  m_PrefabInstance: {fileID: 1979275176359276470}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6203694012459253885 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 454a50181e171464f916e4251afe0e44,
     type: 3}
   m_PrefabInstance: {fileID: 1979275176359276470}
   m_PrefabAsset: {fileID: 0}
@@ -6532,15 +6513,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf74d7bb773103d48848243c7b82f7f1, type: 3}
---- !u!4 &6932228827569861067 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: cf74d7bb773103d48848243c7b82f7f1,
-    type: 3}
-  m_PrefabInstance: {fileID: 3266244422982475264}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &9134874198540071001 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: cf74d7bb773103d48848243c7b82f7f1,
+    type: 3}
+  m_PrefabInstance: {fileID: 3266244422982475264}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6932228827569861067 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: cf74d7bb773103d48848243c7b82f7f1,
     type: 3}
   m_PrefabInstance: {fileID: 3266244422982475264}
   m_PrefabAsset: {fileID: 0}
@@ -6768,15 +6749,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7935690737e43b54c8e1f5d97875ad7c, type: 3}
---- !u!4 &8691389000655318348 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
-    type: 3}
-  m_PrefabInstance: {fileID: 3890611603886998151}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &7381306278998879454 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: 7935690737e43b54c8e1f5d97875ad7c,
+    type: 3}
+  m_PrefabInstance: {fileID: 3890611603886998151}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8691389000655318348 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 7935690737e43b54c8e1f5d97875ad7c,
     type: 3}
   m_PrefabInstance: {fileID: 3890611603886998151}
   m_PrefabAsset: {fileID: 0}
@@ -6935,15 +6916,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d81031a3f75ded4da67eed23984b1b9, type: 3}
---- !u!1 &4036733053461866557 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7484011151301161624, guid: 0d81031a3f75ded4da67eed23984b1b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 6906788097744312997}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4036733053461866556 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7484011151301161625, guid: 0d81031a3f75ded4da67eed23984b1b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 6906788097744312997}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4036733053461866557 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7484011151301161624, guid: 0d81031a3f75ded4da67eed23984b1b9,
     type: 3}
   m_PrefabInstance: {fileID: 6906788097744312997}
   m_PrefabAsset: {fileID: 0}

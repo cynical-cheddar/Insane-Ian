@@ -5,9 +5,11 @@ using GraphBending;
 using System.Linq;
 using PhysX;
 using System.Runtime.CompilerServices;
+using Unity.Profiling;
 
 public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEvent
 {
+    static readonly ProfilerMarker meshDeformationMarker = new ProfilerMarker("MeshDeformation");
 
     public MeshstateTracker.MeshTypes meshType;
     public bool requiresData { get { return true; } }
@@ -212,8 +214,10 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     public void CollisionStay() {}
 
     public void CollisionStay(PhysXCollision collision) {
+
         if (collision.contactCount > 0 && collision.GetContact(0).separation < -minPenetration) {
             if (!collision.collider.gameObject.CompareTag("DustGround")) {
+                meshDeformationMarker.Begin();
             
                 bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
 
@@ -270,6 +274,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
                 collision.body.rotation = oldRotation;
 
                 dissipationNeeded = true;
+
+                meshDeformationMarker.End();
             }
         }
     }
@@ -298,7 +304,6 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Check if adjacent vertex has been moved.
-                //if (moved.Contains(adjacent)) {
                 if (adjacent.wasMoved) {
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
@@ -335,13 +340,12 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
 
             //moved.Add(current);
             current.wasMoved = true;
-
         }
 
         for (int i = 0; i < meshGraph.groups.Length; i++) {
             meshGraph.groups[i].wasMoved = false;
             if (meshGraph.groups[i].enqueued) {
-                Debug.LogWarning("Vertex marked as still in queue.");
+                Debug.LogWarning("Vertex marked as still in queue. Queue length: " + vertexQueue.Count);
                 meshGraph.groups[i].enqueued = false;
             }
         }
