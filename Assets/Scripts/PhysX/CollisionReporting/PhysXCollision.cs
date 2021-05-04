@@ -113,7 +113,7 @@ namespace PhysX {
                 }
             }
 
-            impulse /= contactCount;
+            // impulse /= contactCount;
         }
 
         internal void PopulateWithUnityObjects(Dictionary<long, PhysXBody> bodies) {
