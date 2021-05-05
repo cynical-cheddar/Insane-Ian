@@ -5,8 +5,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Gamestate;
+using System.Runtime.InteropServices;
 
 public class PlinthManager : MonoBehaviour {
+
+    [DllImport("__Internal")]
+    private static extern void unmute();
+
     public List<TextMesh> plinthTexts;
     public List<Transform> spawnpoints;
     public TextMesh scoreboardText;
@@ -18,6 +23,7 @@ public class PlinthManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        unmute();
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Wait for the host to finish loading first
         //Invoke(nameof(UpdateText), 0.1f);
