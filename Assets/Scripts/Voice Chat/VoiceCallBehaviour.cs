@@ -16,7 +16,16 @@ public class VoiceCallBehaviour : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void callA(string id);
 
+    [DllImport("__Internal")]
+    private static extern void mute(string id);
+
+    [DllImport("__Internal")]
+    private static extern void muteAll();
+
     GamestateTracker gamestateTracker;
+    bool teammateIsBot;
+
+    public PhotonView myPhotonView;
 
     private void Start() {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -41,6 +50,43 @@ public class VoiceCallBehaviour : MonoBehaviour
                 callA(callerID);
             }
             player.Release();
+        }
+    }
+
+    public void SeparateIntoTeams() {
+        myPhotonView.RPC(nameof(SeparateIntoTeams_RPC), RpcTarget.All);
+    }
+
+
+    [PunRPC]
+    void SeparateIntoTeams_RPC() {
+        PlayerEntry self = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
+        TeamEntry team = gamestateTracker.teams.Get(self.teamId);
+        short teammateID = 0;
+        if (team.gunnerId == self.id) {
+            PlayerEntry partner = gamestateTracker.players.Get(team.driverId);
+            if (partner.isBot) {
+                teammateIsBot = true;
+            } else {
+                teammateID = partner.id;
+            }
+            partner.Release();
+        }
+        if (team.driverId == self.id) {
+            PlayerEntry partner = gamestateTracker.players.Get(team.gunnerId);
+            if (partner.isBot) {
+                teammateIsBot = true;
+            } else {
+                teammateID = partner.id;
+            }
+            partner.Release();
+        }
+        self.Release();
+        if (!teammateIsBot) {
+            string vcID = PhotonNetwork.CurrentRoom.Name + teammateID.ToString();
+            mute(vcID);
+        } else {
+            muteAll();
         }
     }
 }
