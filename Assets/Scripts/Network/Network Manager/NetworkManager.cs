@@ -205,8 +205,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBufferedViaServer);
         }
-        arrowBehaviour = FindObjectOfType<ArrowBehaviour>();
-        if (arrowBehaviour != null) arrowBehaviour.ReadyUp();
+        if (FindObjectOfType<ArrowBehaviour>() != null) {
+            arrowBehaviour = FindObjectOfType<ArrowBehaviour>();
+            arrowBehaviour.ReadyUp();
+        }
     }
 
     [PunRPC]
