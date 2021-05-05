@@ -63,8 +63,8 @@ MonoBehaviour:
   kinematic: 0
   useGravity: 1
   mass: 500
-  linearDamping: 0
-  angularDamping: 0
+  linearDamping: 0.6
+  angularDamping: 0.6
   maxVelocity: 3.4028235e+38
   ghostBlend: 0.8
   _centreOfMass: {x: 4.84, y: -2, z: 0.78}
@@ -113,6 +113,10 @@ MonoBehaviour:
   environmentCollisionResistance: 1
   collisionAreas: []
   rammingDamageMultiplier: 1
+  maxCollisionRate: 0.2
+  collisionSparks: {fileID: 0}
+  markedTeamDamageIncrease: 3
+  markedGameObjectPrefab: {fileID: 0}
   wreckPrefab: {fileID: 3030104684564936446, guid: 8315aa94b077264418f5d91f99a811dc,
     type: 3}
 --- !u!114 &8160504352115653886
