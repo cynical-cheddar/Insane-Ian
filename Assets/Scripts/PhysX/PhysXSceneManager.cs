@@ -22,7 +22,7 @@ public class PhysXSceneManager : MonoBehaviour
 
     public PhysicMaterial defaultMaterial;
 
-    public bool doPhysics = false;
+    public bool doPhysics = true;
 
     void Awake() {
         if (sceneManagerExists) {
