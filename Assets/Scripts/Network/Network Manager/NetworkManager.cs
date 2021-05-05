@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
 
-    
+    ArrowBehaviour arrowBehaviour;
 
     public float gamespeed = 1f;
     public int maxPlayerPairs = 24;
@@ -204,6 +204,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         foreach (NetworkPlayerVehicle npv in npvs)
         {
             npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBufferedViaServer);
+        }
+        if (FindObjectOfType<ArrowBehaviour>() != null) {
+            arrowBehaviour = FindObjectOfType<ArrowBehaviour>();
+            arrowBehaviour.ReadyUp();
         }
     }
 
