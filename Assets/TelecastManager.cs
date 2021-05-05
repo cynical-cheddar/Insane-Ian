@@ -8,7 +8,7 @@ public class TelecastManager : MonoBehaviour
 {
 
     Camera telecastCam;
-    RawImage rawImage;
+    //RawImage rawImage;
 
     public CinemachineVirtualCamera vcam;
     public Transform defaultPos;
@@ -21,7 +21,7 @@ public class TelecastManager : MonoBehaviour
     void Start()
     {
       //  telecastCam = FindObjectOfType<TelecastCam>().GetComponent<Camera>();
-        rawImage = FindObjectOfType<TelecastImage>().GetComponent<RawImage>();
+        //rawImage = FindObjectOfType<TelecastImage>().GetComponent<RawImage>();
         playerTransformTracker = FindObjectOfType<PlayerTransformTracker>();
     }
 

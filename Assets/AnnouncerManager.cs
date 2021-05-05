@@ -50,14 +50,7 @@ public class AnnouncerManager : MonoBehaviour
 
     Queue<AudioClip> clipQueue;
     
-    void Update()
-    {
-        
-        if (announcerAudioSource.isPlaying == false && clipQueue.Count > 0) {
-            announcerAudioSource.clip = clipQueue.Dequeue();
-            announcerAudioSource.Play();
-        }
-    }
+
         
 
     AnnouncerClipsToPlay GetAnnouncerClipsToPlay(AnnouncerShoutsTags shoutTag){

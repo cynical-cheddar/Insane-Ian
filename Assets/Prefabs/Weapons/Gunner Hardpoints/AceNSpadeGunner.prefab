@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -256,6 +256,7 @@ MonoBehaviour:
   barrelTransform: {fileID: 2168710133248794437}
   gunnerPhotonView: {fileID: 6320076578653847547}
   maxZoomOut: 6
+  raycastLayers: 0
 --- !u!114 &6320076578653847547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -958,7 +959,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fb098ab6bc2e14041ac9b83ecd71dcce, type: 2}
+  - {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1075,6 +1076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c65593f099372042a0836a022c88fd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raycastLayers: 0
   weaponName: Browning MG
   isUltimate: 0
   returnToFirstWeaponGroupOnEmpty: 0
@@ -1151,6 +1153,7 @@ MonoBehaviour:
   hitscanRange: 1000
   useRapidFireOptimisation: 1
   stopFireFxLoopThreshold: 0.22
+  bulletHoles: []
 --- !u!1 &3994514176323361218
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,7 +1213,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1291,7 +1294,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1372,7 +1375,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6d6bef8f86011474fbda0de70ac1ab99, type: 2}
+  - {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1582,7 +1585,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6d6bef8f86011474fbda0de70ac1ab99, type: 2}
+  - {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1663,7 +1666,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1862,6 +1865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9b6bc1ae0572bf458792bfee0c6f184, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raycastLayers: 0
   weaponName: beamWeapon
   isUltimate: 1
   returnToFirstWeaponGroupOnEmpty: 1
@@ -2004,7 +2008,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 271e6f56bd89e2f4b915ea5fbb781e2a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2121,6 +2125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3bb3a17f6d556044bb2aac16000ec25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raycastLayers: 0
   weaponName: Flak Cannon
   isUltimate: 1
   returnToFirstWeaponGroupOnEmpty: 1
