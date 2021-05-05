@@ -22,6 +22,8 @@ public class PhysXSceneManager : MonoBehaviour
 
     public PhysicMaterial defaultMaterial;
 
+    public bool doPhysics = false;
+
     void Awake() {
         if (sceneManagerExists) {
             Debug.Log("PhysX Scene Manager already exists");
@@ -81,45 +83,47 @@ public class PhysXSceneManager : MonoBehaviour
     }
 
     public void Simulate() {
-        PhysXLib.StepPhysics(scene, Time.fixedDeltaTime);
+        if (doPhysics) {
+            PhysXLib.StepPhysics(scene, Time.fixedDeltaTime);
 
-        foreach (PhysXBody body in bodies.Values) {
-            body.UpdatePositionAndVelocity();
-        }
-
-        collisionCallbackMarker.Begin();      
-        foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
-            collision.PopulateWithUnityObjects(bodies);
-            PhysXBody body = null;
-            if (bodies.TryGetValue(collision.self.ToInt64(), out body)) {
-                try {
-                    body.FireCollisionEvents(collision);
-                }
-                catch (Exception e) {
-                    Debug.LogError("Exception: " + e.Message + "\n" + e.StackTrace);
-                }
+            foreach (PhysXBody body in bodies.Values) {
+                body.UpdatePositionAndVelocity();
             }
-            PhysXCollision.ReleaseCollision(collision);
-        }
-        PhysXSceneManager.ongoingCollisions.Clear();
 
-        foreach (PhysXTrigger trigger in PhysXSceneManager.ongoingTriggers) {
-            trigger.PopulateWithUnityObjects(bodies);
-            PhysXBody body = null;
-            if (bodies.TryGetValue(trigger.self.ToInt64(), out body)) {
-                try {
-                    body.FireTriggerEvents(trigger);
+            collisionCallbackMarker.Begin();      
+            foreach (PhysXCollision collision in PhysXSceneManager.ongoingCollisions) {
+                collision.PopulateWithUnityObjects(bodies);
+                PhysXBody body = null;
+                if (bodies.TryGetValue(collision.self.ToInt64(), out body)) {
+                    try {
+                        body.FireCollisionEvents(collision);
+                    }
+                    catch (Exception e) {
+                        Debug.LogError("Exception: " + e.Message + "\n" + e.StackTrace);
+                    }
                 }
-                catch (Exception e) {
-                    Debug.LogError("Exception: " + e.Message + "\n" + e.StackTrace);
-                }
+                PhysXCollision.ReleaseCollision(collision);
             }
-            PhysXTrigger.ReleaseTrigger(trigger);
-        }
-        PhysXSceneManager.ongoingTriggers.Clear();
-        collisionCallbackMarker.End();
+            PhysXSceneManager.ongoingCollisions.Clear();
 
-        PhysXLib.StepGhostPhysics(scene, Time.fixedDeltaTime);
+            foreach (PhysXTrigger trigger in PhysXSceneManager.ongoingTriggers) {
+                trigger.PopulateWithUnityObjects(bodies);
+                PhysXBody body = null;
+                if (bodies.TryGetValue(trigger.self.ToInt64(), out body)) {
+                    try {
+                        body.FireTriggerEvents(trigger);
+                    }
+                    catch (Exception e) {
+                        Debug.LogError("Exception: " + e.Message + "\n" + e.StackTrace);
+                    }
+                }
+                PhysXTrigger.ReleaseTrigger(trigger);
+            }
+            PhysXSceneManager.ongoingTriggers.Clear();
+            collisionCallbackMarker.End();
+
+            PhysXLib.StepGhostPhysics(scene, Time.fixedDeltaTime);
+        }
     }
 
     [MonoPInvokeCallback(typeof(PhysXLib.CollisionCallback))]
