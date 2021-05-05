@@ -347,8 +347,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
             if (meshGraph.groups[i].enqueued) {
                 string meshName;
                 if (meshType == MeshstateTracker.MeshTypes.interceptor) meshName = "interceptor";
-                else if (meshType == MeshstateTracker.MeshTypes.interceptor) meshName = "interceptor";
-                else if (meshType == MeshstateTracker.MeshTypes.interceptor) meshName = "interceptor";
+                else if (meshType == MeshstateTracker.MeshTypes.ace) meshName = "ace";
+                else if (meshType == MeshstateTracker.MeshTypes.bomber) meshName = "bomber";
                 else meshName = "bike";
                 Debug.LogWarning("Vertex group " + i + " marked as still in queue. mesh: " + meshName);
                 meshGraph.groups[i].enqueued = false;
