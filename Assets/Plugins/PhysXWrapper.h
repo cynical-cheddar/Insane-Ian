@@ -153,8 +153,13 @@ extern "C" {
     EXPORT_FUNC physx::PxGeometry* CreateSphereGeometry(float radius);
     EXPORT_FUNC std::vector<physx::PxVec3>* CreateVectorArray();
     EXPORT_FUNC void AddVectorToArray(std::vector<physx::PxVec3>* vectorArray, physx::PxVec3* vector);
-    EXPORT_FUNC physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray);
-    EXPORT_FUNC physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount);
+    EXPORT_FUNC physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxVec3* scale);
+    EXPORT_FUNC physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount, physx::PxVec3* scale);
+
+    EXPORT_FUNC physx::PxU32 GetMeshVertexCount(physx::PxTriangleMeshGeometry *mesh);
+    EXPORT_FUNC physx::PxU32 GetMeshTriangleCount(physx::PxTriangleMeshGeometry *mesh);
+    EXPORT_FUNC void GetMeshGeometry(physx::PxTriangleMeshGeometry *mesh, std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices);
+    EXPORT_FUNC void GetVectorFromArray(std::vector<physx::PxVec3>* vectorArray, physx::PxVec3* vector, physx::PxU32 index);
 
     EXPORT_FUNC physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot);
 

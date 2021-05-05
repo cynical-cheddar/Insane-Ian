@@ -91,6 +91,11 @@ using Random = UnityEngine.Random;
             m_Driving = true;
             WaypointCircuit wpc = FindObjectOfType<WaypointCircuit>();
             if (wpc != null) circuitFound = true;
+
+            
+        }
+        private void Start() {
+         //   StartCoroutine(SlowUpdate());
         }
 
         IEnumerator ThreePointTurn()
@@ -161,9 +166,7 @@ using Random = UnityEngine.Random;
 
         private void FixedUpdate()
         {
-         //   return;
-
-            if (circuitFound)
+         if (circuitFound)
             {
                 if (myRb.velocity.magnitude < 1)
                 {
@@ -199,13 +202,16 @@ using Random = UnityEngine.Random;
                     {
 
                     }
-                    else
+                    else if(interfaceCarDrive.isDead == false)
                     {
                         NormalDriving();
                     }
                 }
             }
+
+            
         }
+
 
         bool SensorsManouvre()
         {
