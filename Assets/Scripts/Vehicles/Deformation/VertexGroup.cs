@@ -8,8 +8,8 @@ namespace GraphBending {
             connectingEdges = new List<Edge>();
             connectingEdgeLengths = new List<float>();
             vertexIndices.Add(vertexIndex);
-            wasMoved = false;
-            enqueued = false;
+            wasMoved = 0;
+            enqueued = 0;
             UpdatePos(vertices);
         }
 
@@ -57,12 +57,30 @@ namespace GraphBending {
             return false;
         }
 
+        public void SetEnqueued(int teamId, bool value) {
+            if (value) enqueued |= (1 << teamId);
+            else enqueued &= ~(1 << teamId);
+        }
+
+        public bool GetEnqueued(int teamId) {
+            return (enqueued & (1 << teamId)) != 0;
+        }
+
+        public void SetWasMoved(int teamId, bool value) {
+            if (value) wasMoved |= (1 << teamId);
+            else wasMoved &= ~(1 << teamId);
+        }
+
+        public bool GetWasMoved(int teamId) {
+            return (wasMoved & (1 << teamId)) != 0;
+        }
+
         public List<int> vertexIndices;
 
         public List<Edge> connectingEdges;
         public Vector3 pos;
-        public bool wasMoved;
-        public bool enqueued;
+        private int wasMoved;
+        private int enqueued;
         public List<float> connectingEdgeLengths;
     }
 }

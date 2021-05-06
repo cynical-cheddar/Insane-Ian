@@ -35,8 +35,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public GameObject loadingScreenPrefab;
 
     private GameObject loadingScreenInstance;
-    
-    
+
+    PhysXSceneManager physXSceneManager;
 
     public GameObject spawningPlayersScreenPrefab;
     
@@ -75,6 +75,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        physXSceneManager = FindObjectOfType<PhysXSceneManager>();
+        physXSceneManager.doPhysics = false;
         loadingScreenInstance = Instantiate(loadingScreenPrefab, transform.position, Quaternion.identity);
         Invoke(nameof(Begin), 3f);
         // Invoke(nameof(TestPhysics), 4f);
@@ -205,6 +207,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBufferedViaServer);
         }
+        photonView.RPC(nameof(ActivateArrow_RPC), RpcTarget.All);
+        physXSceneManager.doPhysics = true;
+    }
+
+    [PunRPC]
+    void ActivateArrow_RPC() {
         if (FindObjectOfType<ArrowBehaviour>() != null) {
             arrowBehaviour = FindObjectOfType<ArrowBehaviour>();
             arrowBehaviour.ReadyUp();
