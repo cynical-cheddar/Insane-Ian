@@ -16,6 +16,7 @@ Shader "Unlit/Shader No Border"
         _RimThreshold("Rim Threshold", Range(0, 1)) = 0.1
 
         _NumberOfSections("Number Of Sections", Int) = 5
+        _IsSeeThrough("Is see through", Int) = 0
     }
     SubShader
     {
