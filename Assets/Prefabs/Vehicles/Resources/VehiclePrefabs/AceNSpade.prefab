@@ -72,6 +72,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6738805023899308356}
   - component: {fileID: 8854317719780993745}
+  - component: {fileID: 6611296880094681695}
+  - component: {fileID: 1009577719694402689}
   m_Layer: 8
   m_Name: frwheelCollider
   m_TagString: Untagged
@@ -123,6 +125,44 @@ MonoBehaviour:
   asymptoteSidewaysTireLoad: 2
   autoCalculateSpringStrength: 1
   _asymptoteSidewaysStiffness: 15
+--- !u!114 &6611296880094681695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 237190866979122501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: -0.2, z: 0}
+  collisionSoftener: {fileID: 0}
+  x: 0.2
+  y: 0.5
+  z: 0.2
+--- !u!114 &1009577719694402689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 237190866979122501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f99843a0c2ca4816b4d57f410bf32e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  penForUnitImpulseScale: 0.001
+  maxImpulseScale: 1.001
+  velocityScale: 1
+  velocityOffset: 100
+  maxPenExp: 1
 --- !u!1 &396772447270424121
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,7 +458,6 @@ GameObject:
   - component: {fileID: 8430652160507680859}
   - component: {fileID: 6406057325838665789}
   - component: {fileID: 7601505587869675759}
-  - component: {fileID: 4443958165396357167}
   - component: {fileID: 6942342458153007772}
   - component: {fileID: 5186423232709554915}
   m_Layer: 8
@@ -799,27 +838,6 @@ MonoBehaviour:
   dam: {fileID: 1233716553736572939}
   vhm: {fileID: 4472829264442319257}
   gwm: {fileID: 3675163470867060579}
---- !u!114 &4443958165396357167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482493435927083060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b70393a1ebd9245eda71ab4f0b5976c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ownLayers: 9
-  collisionLayers: 1
-  material: {fileID: 13400000, guid: b6f1b175b2999a348b7a71035768ebaf, type: 2}
-  _trigger: 0
-  offset: {x: 0, y: 0, z: 0}
-  collisionSoftener: {fileID: 0}
-  mesh: {fileID: 4513800942318437437, guid: 6f578f6ef18c1c047811047c66d5e305, type: 3}
-  convex: 1
-  scale: {x: 0.9, y: 0.9, z: 0.9}
 --- !u!114 &6942342458153007772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1009,6 +1027,8 @@ GameObject:
   m_Component:
   - component: {fileID: 860206251260777281}
   - component: {fileID: 2152480262730069359}
+  - component: {fileID: 5825232490239289777}
+  - component: {fileID: 9207350359044201355}
   m_Layer: 8
   m_Name: rrwheelCollider
   m_TagString: Untagged
@@ -1060,6 +1080,44 @@ MonoBehaviour:
   asymptoteSidewaysTireLoad: 2
   autoCalculateSpringStrength: 1
   _asymptoteSidewaysStiffness: 15
+--- !u!114 &5825232490239289777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785332179745892198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: -0.2, z: 0}
+  collisionSoftener: {fileID: 0}
+  x: 0.2
+  y: 0.5
+  z: 0.2
+--- !u!114 &9207350359044201355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785332179745892198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f99843a0c2ca4816b4d57f410bf32e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  penForUnitImpulseScale: 0.001
+  maxImpulseScale: 1.001
+  velocityScale: 1
+  velocityOffset: 100
+  maxPenExp: 1
 --- !u!1 &882628041250587832
 GameObject:
   m_ObjectHideFlags: 0
@@ -1188,6 +1246,42 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3637806244638297207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342157877777193081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8e167f3cef174267a88f6d3deb03eb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  collisionSoftener: {fileID: 0}
+  radius: 0.6
+--- !u!114 &7319837865113463898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342157877777193081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f99843a0c2ca4816b4d57f410bf32e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  penForUnitImpulseScale: 0.001
+  maxImpulseScale: 1.001
+  velocityScale: 1
+  velocityOffset: 100
+  maxPenExp: 1
 --- !u!1 &1719201640821206574
 GameObject:
   m_ObjectHideFlags: 0
@@ -3213,6 +3307,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8972168486823763536}
   - component: {fileID: 5955917007552040847}
+  - component: {fileID: 964734285059144652}
+  - component: {fileID: 3871874594108533587}
   m_Layer: 8
   m_Name: rlwheelCollider
   m_TagString: Untagged
@@ -3264,6 +3360,44 @@ MonoBehaviour:
   asymptoteSidewaysTireLoad: 2
   autoCalculateSpringStrength: 1
   _asymptoteSidewaysStiffness: 15
+--- !u!114 &964734285059144652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4239398983359201285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: -0.2, z: 0}
+  collisionSoftener: {fileID: 0}
+  x: 0.2
+  y: 0.5
+  z: 0.2
+--- !u!114 &3871874594108533587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4239398983359201285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f99843a0c2ca4816b4d57f410bf32e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  penForUnitImpulseScale: 0.001
+  maxImpulseScale: 1.001
+  velocityScale: 1
+  velocityOffset: 100
+  maxPenExp: 1
 --- !u!1 &4280277218433676167
 GameObject:
   m_ObjectHideFlags: 0
@@ -4178,6 +4312,8 @@ GameObject:
   - component: {fileID: 5177461137156990640}
   - component: {fileID: 8505176767584885504}
   - component: {fileID: 4470597139450955903}
+  - component: {fileID: 4540399993298117744}
+  - component: {fileID: 3503550775711321196}
   m_Layer: 8
   m_Name: BodyMesh
   m_TagString: Untagged
@@ -4268,6 +4404,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxEdgeLength: 0.6
+--- !u!114 &4540399993298117744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6331007742089996355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f99843a0c2ca4816b4d57f410bf32e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  penForUnitImpulseScale: 1
+  maxImpulseScale: 1.1
+  velocityScale: 3
+  velocityOffset: 8
+  maxPenExp: 2
+--- !u!114 &3503550775711321196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6331007742089996355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b70393a1ebd9245eda71ab4f0b5976c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 13400000, guid: 4e2a18fdb7d20fa40bafb75ae73783d7, type: 2}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  collisionSoftener: {fileID: 0}
+  mesh: {fileID: -485743578430441126, guid: ec69d3674bed6344a898e4391c2f60bd, type: 3}
+  convex: 1
+  scale: {x: 1, y: 1, z: 1}
 --- !u!1 &6342096949747636394
 GameObject:
   m_ObjectHideFlags: 0
@@ -4421,6 +4595,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5186048851694457886}
   - component: {fileID: 6284213321502439188}
+  - component: {fileID: 7062388572880749820}
+  - component: {fileID: 6990688143627793429}
   m_Layer: 8
   m_Name: flwheelCollider
   m_TagString: Untagged
@@ -4472,6 +4648,44 @@ MonoBehaviour:
   asymptoteSidewaysTireLoad: 2
   autoCalculateSpringStrength: 1
   _asymptoteSidewaysStiffness: 15
+--- !u!114 &7062388572880749820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869152498952495226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: -0.2, z: 0}
+  collisionSoftener: {fileID: 0}
+  x: 0.2
+  y: 0.5
+  z: 0.2
+--- !u!114 &6990688143627793429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869152498952495226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f99843a0c2ca4816b4d57f410bf32e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  penForUnitImpulseScale: 0.001
+  maxImpulseScale: 1.001
+  velocityScale: 1
+  velocityOffset: 100
+  maxPenExp: 1
 --- !u!1 &7045325943111906760
 GameObject:
   m_ObjectHideFlags: 0
@@ -6015,11 +6229,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -6383594138712707759, guid: 58e62011db6f136458c47fc21d688ddc,
         type: 3}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2751421822731409831, guid: a206521bc6d08364393b512d26ce2129, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a206521bc6d08364393b512d26ce2129, type: 3}
---- !u!4 &9041700681131049748 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5742616343557024269, guid: a206521bc6d08364393b512d26ce2129,
+--- !u!1 &1342157877777193081 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2335961399836946784, guid: a206521bc6d08364393b512d26ce2129,
     type: 3}
   m_PrefabInstance: {fileID: 3660104879095474457}
   m_PrefabAsset: {fileID: 0}
@@ -6047,6 +6262,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &9041700681131049748 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5742616343557024269, guid: a206521bc6d08364393b512d26ce2129,
+    type: 3}
+  m_PrefabInstance: {fileID: 3660104879095474457}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3890611603886998151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6372,12 +6593,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 024602fdce83fd64f946f93fa8d2c723, type: 3}
---- !u!4 &5623734961053636220 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8233079871269306834, guid: 024602fdce83fd64f946f93fa8d2c723,
-    type: 3}
-  m_PrefabInstance: {fileID: 4344359158294845358}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &9115653176604837873 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4812955914607808607, guid: 024602fdce83fd64f946f93fa8d2c723,
@@ -6390,6 +6605,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 286a291bdbaddcc448363a263434bf78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &5623734961053636220 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8233079871269306834, guid: 024602fdce83fd64f946f93fa8d2c723,
+    type: 3}
+  m_PrefabInstance: {fileID: 4344359158294845358}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4445019983079566938
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6459,15 +6680,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ae988ca85ffc842a018ede235b751e, type: 3}
---- !u!4 &8128958307668246929 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 72ae988ca85ffc842a018ede235b751e,
-    type: 3}
-  m_PrefabInstance: {fileID: 4445019983079566938}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &7943912479382061059 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: 72ae988ca85ffc842a018ede235b751e,
+    type: 3}
+  m_PrefabInstance: {fileID: 4445019983079566938}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8128958307668246929 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 72ae988ca85ffc842a018ede235b751e,
     type: 3}
   m_PrefabInstance: {fileID: 4445019983079566938}
   m_PrefabAsset: {fileID: 0}
@@ -6540,15 +6761,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d81031a3f75ded4da67eed23984b1b9, type: 3}
---- !u!1 &4258766399270976573 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7484011151301161624, guid: 0d81031a3f75ded4da67eed23984b1b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 6685207737874534053}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4258766399270976572 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7484011151301161625, guid: 0d81031a3f75ded4da67eed23984b1b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 6685207737874534053}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4258766399270976573 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7484011151301161624, guid: 0d81031a3f75ded4da67eed23984b1b9,
     type: 3}
   m_PrefabInstance: {fileID: 6685207737874534053}
   m_PrefabAsset: {fileID: 0}
