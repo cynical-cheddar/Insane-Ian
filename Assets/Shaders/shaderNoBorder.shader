@@ -16,7 +16,6 @@ Shader "Unlit/Shader No Border"
         _RimThreshold("Rim Threshold", Range(0, 1)) = 0.1
 
         _NumberOfSections("Number Of Sections", Int) = 5
-        _IsSeeThrough("Is see through", Int) = 0
     }
     SubShader
     {
@@ -38,6 +37,7 @@ Shader "Unlit/Shader No Border"
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
+
 
             struct appdata
             {
@@ -73,9 +73,8 @@ Shader "Unlit/Shader No Border"
             float _RimAmount;
             float _RimThreshold;
 
-
+            int _IsSeeThrough;
             int _NumberOfSections;
-
 
             v2f vert (appdata v)
             {
