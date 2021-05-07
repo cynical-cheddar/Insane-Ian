@@ -103,6 +103,7 @@ public class HotPotatoManager : MonoBehaviour
     [PunRPC]
     void PickupPotatoEffects()
     {
+        isPotato = true;
         potatoEffects = GetComponentInChildren<PotatoEffects>();
         potatoEffects.ActivatePotatoEffects(myDriverId, myGunnerId);
     }
@@ -142,6 +143,7 @@ public class HotPotatoManager : MonoBehaviour
     [PunRPC]
     void RemovePotato_RPC()
     {
+        isPotato = false;
         PhotonView otherpv = GetComponent<PhotonView>();
         NetworkPlayerVehicle npv = otherpv.GetComponentInParent<NetworkPlayerVehicle>();
         HealthManager hm = otherpv.gameObject.GetComponentInChildren<HealthManager>();

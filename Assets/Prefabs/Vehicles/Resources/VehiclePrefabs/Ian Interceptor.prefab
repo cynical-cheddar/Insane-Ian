@@ -5106,19 +5106,19 @@ MonoBehaviour:
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 60
     height: 90
-    collisionResistance: 1.5
+    collisionResistance: 2.3
   - show: 1
     rotationEuler: {x: -90, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 45
     height: 100
-    collisionResistance: 0.5
+    collisionResistance: 1.3
   - show: 1
     rotationEuler: {x: 180, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 118.6
     height: 51.6
-    collisionResistance: 0.5
+    collisionResistance: 1.3
   rammingDamageMultiplier: 2
   maxCollisionRate: 0.1
   collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
@@ -6800,6 +6800,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8103896753619876248}
     m_Modifications:
+    - target: {fileID: 375321650, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}
+      propertyPath: fireRate
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 375321650, guid: c08dd695c7a00924cb5237b8fd04570b, type: 3}
       propertyPath: reloadTime
       value: 1
