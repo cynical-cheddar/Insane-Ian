@@ -202,7 +202,9 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
             GetComponent<TeamNameSetup>().SetupTeamName("");
         }
 
+        PhysXSceneManager physXSceneManager = FindObjectOfType<PhysXSceneManager>();
 
+        physXSceneManager.doPhysics = true;
 
         //Debug.Log("GOT HERE2");
         Debug.Log("Spawn success");
