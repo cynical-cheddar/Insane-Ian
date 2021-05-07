@@ -274,10 +274,10 @@ namespace PhysX {
         public static extern void AddActorToScene(IntPtr scene, IntPtr actor);
 
         [DllImport(dllName)]
-        public static extern void StepPhysics(IntPtr scene, float time);
+        public static extern void StepPhysics(IntPtr scene, float time, IntPtr scratchMem, int scratchMemSize);
 
         [DllImport(dllName)]
-        public static extern void StepGhostPhysics(IntPtr scene, float time);
+        public static extern void StepGhostPhysics(IntPtr scene, float time, IntPtr scratchMem, int scratchMemSize);
 
         [DllImport(dllName)]
         public static extern IntPtr GetCentreOfMass(IntPtr rigidBody);

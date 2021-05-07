@@ -101,7 +101,7 @@ namespace Gamestate {
                     }
                 }
             }
-            foundEntry.Lock();
+            if (foundEntry != null) foundEntry.Lock();
 
             return foundEntry;
         }
@@ -109,14 +109,14 @@ namespace Gamestate {
         public T Read(short id) {
             T foundEntry = null;
             
-                foreach (T entry in entries) {
-                    if (entry.id == id) {
-                        foundEntry = entry;
-                        break;
-                    }
+            foreach (T entry in entries) {
+                if (entry.id == id) {
+                    foundEntry = entry;
+                    break;
                 }
+            }
 
-                return foundEntry;
+            return foundEntry;
         }
         public T ReadAtIndex(short index) {
             T foundEntry = null;
@@ -136,7 +136,7 @@ namespace Gamestate {
                     foundEntry = entries[index];
                 }
             }
-            foundEntry.Lock();
+            if (foundEntry != null) foundEntry.Lock();
 
             return foundEntry;
         }
