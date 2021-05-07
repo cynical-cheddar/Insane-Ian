@@ -101,8 +101,8 @@
             debug: 3,
             config: {
 				'iceServers': [
-					{urls: 'stun:35.246.90.102'},
-					{urls: 'turn:35.246.90.102', username: 'turn', credential: 'turn'}
+					{urls: 'stun:34.105.165.49'},
+					{urls: 'turn:34.105.165.49', username: 'turn', credential: 'turn'}
 				],
 				sdpSemantics: 'unified-plan'
 			}
@@ -142,7 +142,7 @@
                     var audio = document.createElement('audio');
                     audio.srcObject = remoteStream;
 					audio.autoplay = true;
-					audios.push(audio);
+					audios.push([audio, call.peer]);
                 });
         });
     };
@@ -156,14 +156,33 @@
                     var audio = document.createElement('audio');
                     audio.srcObject = remoteStream;
 					audio.autoplay = true;
-					audios.push(audio);
+					audios.push([audio, callerID]);
                 });
             })
             .catch((err) => {
                 console.error('Failed to get local stream', err);
             });
     };
-	  
+	
+	function muteAllButOne(teammateID) {
+		audios.forEach(audioObject => {
+			if (teammateID != audioObject[1]) {
+				audioObject[0].pause();
+			}
+		});
+	};	
+	
+	function unmuteEveryone() {
+		audios.forEach(audioObject => {
+			audioObject[0].play();
+		});
+	};
+	
+	function muteEveryone() {
+		audios.forEach(audioObject => {
+			audioObject[0].pause();
+		});
+	};
 	  
     </script>
 			

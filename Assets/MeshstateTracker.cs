@@ -95,10 +95,10 @@ public class MeshstateTracker : MonoBehaviour
     }
 
     public MeshGraph GetMyMeshGraph(MeshTypes meshType){
-        if(meshType == MeshTypes.interceptor) return interceptorMeshGraph;
-        if(meshType == MeshTypes.ace) return aceMeshGraph;
-        if(meshType == MeshTypes.bomber) return bomberMeshGraph;
-        if(meshType == MeshTypes.bike) return bikeMeshGraph;
-        else{ return interceptorMeshGraph;}
+        if (meshType == MeshTypes.interceptor) return interceptorMeshGraph;
+        if (meshType == MeshTypes.ace) return aceMeshGraph;
+        if (meshType == MeshTypes.bomber) return bomberMeshGraph;
+        if (meshType == MeshTypes.bike) return bikeMeshGraph;
+        else { return interceptorMeshGraph; }
     }
 }
