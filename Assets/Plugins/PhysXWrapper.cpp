@@ -901,7 +901,7 @@ extern "C" {
         ((ActorUserData*)actor->userData)->scene = scene;
     }
 
-    EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time) {
+    EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time, void* scratchMem, physx::PxU32 scratchMemSize) {
         SceneUserData* sceneUserData = ((SceneUserData*)scene->userData);
 
         physx::PxU32 vehicleCount = sceneUserData->vehicles.size();
@@ -928,13 +928,13 @@ extern "C" {
             }
         }
 
-        scene->simulate(time);
+        scene->simulate(time, NULL, scratchMem, scratchMemSize);
         scene->fetchResults(true);
     }
 
-    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time) {
+    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time, void* scratchMem, physx::PxU32 scratchMemSize) {
         SceneUserData* sceneUserData = ((SceneUserData*)scene->userData);
-        sceneUserData->ghostScene->simulate(time);
+        sceneUserData->ghostScene->simulate(time, NULL, scratchMem, scratchMemSize);
         sceneUserData->ghostScene->fetchResults(true);
 
         for (int i = 0; i < sceneUserData->hauntedBodies.size(); i++) {
