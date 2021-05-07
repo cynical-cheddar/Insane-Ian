@@ -67,7 +67,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             hasHotPotatoManager = true;
             hotPotatoManager = GetComponent<HotPotatoManager>();
             collisionNpv = GetComponent<NetworkPlayerVehicle>();
-            driverCrashDetector = GetComponent<DriverCrashDetector>();
+            if (collisionNpv != null && !collisionNpv.botDriver) driverCrashDetector = GetComponent<DriverCrashDetector>();
         }
         
         base.Start();
@@ -101,7 +101,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     public void CollisionEnter() {}
 
     public void CollisionEnter(PhysXCollision collision) {
-        Debug.Log("crashed into: " + collision.gameObject);
+        // Debug.Log("crashed into: " + collision.gameObject);
         float dSpeed = myRb.velocity.magnitude;
 
         float impulse = collision.impulse.magnitude;
@@ -125,39 +125,29 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             }
             collisionPoint /= collision.contactCount;
 
-
-
-
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
            
-           
-    
-
-
-
-
             // instantiate damage sound over network
             if((damage > crashSoundsSmallDamageThreshold || (otherVehicleManager!=null) ) && timeSinceLastRam > 0.25f) PlayDamageSoundNetwork(damage);
 
             damage = damage / rammingDamageResistance;
 
-          //  Debug.Log("collision damage taken: " + damage + " by " + gameObject.name);
+            if (myPhotonView.IsMine && hasHotPotatoManager && otherVehicleManager != null  && timeSinceLastRam > 0.25f){
+                if (collisionNpv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber || collisionNpv.GetGunnerID() == PhotonNetwork.LocalPlayer.ActorNumber){
+                    // Debug.LogError("Slow down should happen");
+                    hotPotatoManager.SlowedCollision();
+                }
+                if(collisionSparks!=null){
+                    GameObject a = Instantiate(collisionSparks, collisionPoint, Quaternion.identity);
+                    a.transform.parent = transform;
+                }
 
-            if(myPhotonView.IsMine && hasHotPotatoManager && otherVehicleManager != null  && timeSinceLastRam > 0.25f){
-                        if(collisionNpv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber || collisionNpv.GetGunnerID() == PhotonNetwork.LocalPlayer.ActorNumber){
-                            Debug.LogError("Slow down should happen");
-                           hotPotatoManager.SlowedCollision();
-                        }
-                        if(collisionSparks!=null){
-                            GameObject a = Instantiate(collisionSparks, collisionPoint, Quaternion.identity);
-                            a.transform.parent = transform;
-                        }
-
-                        if(damage > 4) driverCrashDetector.CrashCollisionCamera(collision, false);
-
-                        else driverCrashDetector.CrashCollisionCamera(collision, true);
-                    }
+                if (collisionNpv != null && !collisionNpv.botDriver) {
+                    if(damage > 4) driverCrashDetector.CrashCollisionCamera(collision, false);
+                    else driverCrashDetector.CrashCollisionCamera(collision, true);
+                }
+            }
             
             if(damage > 5){
                 if (otherVehicleManager != null) {

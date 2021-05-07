@@ -77,7 +77,7 @@ public class VehicleSelector : MonoBehaviour {
 
     void SetupButtons() {
         int maxVehicles = vehicleNames.Count;
-        for (int i = 0; i < maxVehicles; i++) {
+        for (int i = 0; i < vehicleButtons.Count; i++) {
             vehicleButtons[i].SetupButton(vehicleNames[i], (short)i, this);
         }
 

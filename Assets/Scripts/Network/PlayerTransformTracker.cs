@@ -70,7 +70,7 @@ public class PlayerTransformTracker : MonoBehaviour
 
              bool potatoDropped = false;
 
-            if(FindObjectOfType<PickupHotPotato>() != null) potatoDropped = true;
+
 
             int count = 0;
             int lastIndex = 0;
@@ -86,7 +86,7 @@ public class PlayerTransformTracker : MonoBehaviour
                 // find first one with potato
                 vehicleTransformPairs[lastIndex].vehicleTransform.GetComponent<PhotonView>().RPC(nameof(HotPotatoManager.RemovePotatoNoDrop_RPC),RpcTarget.All);
             }
-            else if (count >= 1 && potatoDropped){
+            else if (count >= 1 && FindObjectOfType<PickupHotPotato>() != null){
                 PhotonNetwork.Destroy(FindObjectOfType<PickupHotPotato>().gameObject);
             }
 

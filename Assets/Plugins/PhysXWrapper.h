@@ -239,8 +239,8 @@ extern "C" {
 
     EXPORT_FUNC void AddActorToScene(physx::PxScene* scene, physx::PxActor* actor);
 
-    EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time);
-    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time);
+    EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time, void* scratchMem, physx::PxU32 scratchMemSize);
+    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time, void* scratchMem, physx::PxU32 scratchMemSize);
 
     EXPORT_FUNC physx::PxTransform* GetCentreOfMass(physx::PxRigidBody* body);
 

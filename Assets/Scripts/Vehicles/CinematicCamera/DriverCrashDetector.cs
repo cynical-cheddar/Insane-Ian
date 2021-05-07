@@ -89,11 +89,10 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
         }
     }
 
-        public void CollisionEnter() {}
     public bool requiresData { get { return true; } }
+    public void CollisionEnter() {}
 
-    private void Start()
-    {
+    private void Start() {
         //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
         // return;
 
@@ -101,7 +100,6 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
         myRb = GetComponent<PhysXRigidBody>();
         currentSensorReport = new CurrentSensorReportStruct();
         currentSensorReport.lastCrashedPlayer = transform.root;
-        
     }
 
 

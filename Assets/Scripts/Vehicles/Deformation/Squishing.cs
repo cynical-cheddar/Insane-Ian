@@ -46,6 +46,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     private Vector3 gizmoSurfaceNormal = Vector3.forward;
     private Vector3 gizmoSurfacePoint;
 
+    private int teamId;
 
     InterfaceCarDrive4W interfaceCar;
     Mesh originalMesh;
@@ -76,7 +77,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
         //  Group similar vertices.
         meshGraph = meshstateTracker.GetMyMeshGraph(meshType);
 
-        originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().sharedMesh);
+        originalMesh = Instantiate(deformableMeshes[0].GetMeshFilter().mesh);
         collisionResolver = Instantiate(collisionResolver);
         resolverBody = collisionResolver.GetComponent<PhysXBody>();
         resolverBody.position = new Vector3(0, 10000, 0);
@@ -92,6 +93,8 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
             rlWheel = interfaceCar.rearLeftW;
             rlWheelVertexGroup = NearestVertexTo(rlWheel.transform.position);
         }
+
+        teamId = GetComponent<NetworkPlayerVehicle>().teamId;
     }
 
     public void ResetMesh()
@@ -127,12 +130,12 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
 
         //  Make a queue (it breadth first traversal time)
         vertexQueue.Enqueue(closest);
-        closest.enqueued = true;
+        closest.SetEnqueued(teamId, true);
 
         // Move each vertex, making sure that it doesn't stretch too far from its neighbours
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
-            current.enqueued = false;
+            current.SetEnqueued(teamId, false);
 
             oldEdgeSqrLengths.Clear();
             for (int j = 0; j < current.connectingEdges.Count; j++) {
@@ -152,7 +155,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Check if adjacent vertex has been moved.
-                if (adjacent.wasMoved) {
+                if (adjacent.GetWasMoved(teamId)) {
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
@@ -171,7 +174,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
                 }
             }
 
-            current.wasMoved = true;
+            current.SetWasMoved(teamId, true);
 
             //  Add adjacent, unmoved vertices into the queue for traversal
             for (int j = 0; j < current.connectingEdges.Count; j++) {
@@ -179,18 +182,18 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Add it to the queue if it hasn't already been moved
-                if (!adjacent.enqueued && !adjacent.wasMoved) {
+                if (!adjacent.GetEnqueued(teamId) && !adjacent.GetWasMoved(teamId)) {
                     vertexQueue.Enqueue(adjacent);
-                    adjacent.enqueued = true;
+                    adjacent.SetEnqueued(teamId, true);
                 }
             }
         }
 
         for (int i = 0; i < meshGraph.groups.Length; i++) {
-            meshGraph.groups[i].wasMoved = false;
-            if (meshGraph.groups[i].enqueued) {
+            meshGraph.groups[i].SetWasMoved(teamId, false);
+            if (meshGraph.groups[i].GetEnqueued(teamId)) {
                 Debug.LogWarning("Vertex marked as still in queue.");
-                meshGraph.groups[i].enqueued = false;
+                meshGraph.groups[i].SetEnqueued(teamId, false);
             }
         }
 
@@ -260,11 +263,12 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
                             // if (addNoise) deformation *= Random.value * multiplier + addition;
 
                             current.MoveBy(vertices, deformation, false);
-                            current.wasMoved = true;
+                            current.SetWasMoved(teamId, true);
 
-                            if (!current.enqueued) {
+                            if (!current.GetEnqueued(teamId)) {
                                 vertexQueue.Enqueue(current);
-                                current.enqueued = true;
+                                current.SetEnqueued(teamId, true);
+                                // Debug.Log("Vertex group " + current.vertexIndices[0] + " enqueued due to collision");
                             }
                         }
                     }
@@ -289,9 +293,14 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     }
 
     public void DissipateDeformation(bool addNoise) {
+        foreach (VertexGroup group in vertexQueue) {
+            // Debug.Log("Initial queue contains " + group.vertexIndices[0]);
+        }
+
         while (vertexQueue.Count > 0) {
             VertexGroup current = vertexQueue.Dequeue();
-            current.enqueued = false;
+            current.SetEnqueued(teamId, false);
+            // Debug.Log("Vertex group " + current.vertexIndices[0] + " dequeued");
 
             oldEdgeSqrLengths.Clear();
             for (int j = 0; j < current.connectingEdges.Count; j++) {
@@ -304,7 +313,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
                 VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                 //  Check if adjacent vertex has been moved.
-                if (adjacent.wasMoved) {
+                if (adjacent.GetWasMoved(teamId)) {
                     //  Get vector of edge between vertices.
                     Vector3 edge = current.pos - adjacent.pos;
                     //  ohno edge too long
@@ -319,34 +328,41 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
                         //  move vertices so edge is not too long.
                         current.MoveTo(vertices, adjacent.pos + edge, false);
                         current.connectingEdges[j].UpdateEdgeLength();
-                        current.wasMoved = true;
+                        current.SetWasMoved(teamId, true);
                     }
                 }
             }
 
-            if (current.wasMoved) {
+            if (current.GetWasMoved(teamId)) {
                 //  Add adjacent, unmoved vertices into the queue for traversal
                 for (int j = 0; j < current.connectingEdges.Count; j++) {
                     //  Get adjacent vertex group
                     VertexGroup adjacent = current.connectingEdges[j].OtherVertexGroup(current);
 
                     //  Add it to the queue if it hasn't already been moved
-                    if (!adjacent.enqueued && !adjacent.wasMoved) {
+                    if (!adjacent.GetEnqueued(teamId) && !adjacent.GetWasMoved(teamId)) {
                         vertexQueue.Enqueue(adjacent);
-                        adjacent.enqueued = true;
+                        adjacent.SetEnqueued(teamId, true);
+                        // Debug.Log("Vertex group " + adjacent.vertexIndices[0] + " enqueued");
                     }
                 }
             }
 
             //moved.Add(current);
-            current.wasMoved = true;
+            current.SetWasMoved(teamId, true);
         }
 
+        string meshName;
+        if (meshType == MeshstateTracker.MeshTypes.interceptor) meshName = "interceptor";
+        else if (meshType == MeshstateTracker.MeshTypes.ace) meshName = "ace";
+        else if (meshType == MeshstateTracker.MeshTypes.bomber) meshName = "bomber";
+        else meshName = "bike";
+
         for (int i = 0; i < meshGraph.groups.Length; i++) {
-            meshGraph.groups[i].wasMoved = false;
-            if (meshGraph.groups[i].enqueued) {
-                Debug.LogWarning("Vertex marked as still in queue. Queue length: " + vertexQueue.Count);
-                meshGraph.groups[i].enqueued = false;
+            meshGraph.groups[i].SetWasMoved(teamId, false);
+            if (meshGraph.groups[i].GetEnqueued(teamId)) {
+                Debug.LogWarning("Vertex group " + meshGraph.groups[i].vertexIndices[0] + " marked as still in queue. mesh: " + meshName);
+                meshGraph.groups[i].SetEnqueued(teamId, false);
             }
         }
 
