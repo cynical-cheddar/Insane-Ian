@@ -9,6 +9,7 @@ public class ArrowBehaviour : MonoBehaviour
 {
     List<HotPotatoManager> hpms;
     public bool isEnabled;
+    public float heightAboveCar = 7f;
     NetworkPlayerVehicle playerNPV;
     HotPotatoManager playerHPM;
     GamestateTracker gamestateTracker;
@@ -50,7 +51,7 @@ public class ArrowBehaviour : MonoBehaviour
                 meshRenderer.enabled = true;
                 Transform potatoTransform = GetPositionOfHotPotato();
                 transform.LookAt(potatoTransform);
-                transform.position = playerNPV.gameObject.transform.position + new Vector3(0f, 5f, 0f);
+                transform.position = playerNPV.gameObject.transform.position + new Vector3(0f, heightAboveCar, 0f);
             }
         }
     }
