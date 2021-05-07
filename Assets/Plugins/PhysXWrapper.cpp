@@ -224,6 +224,9 @@ physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, p
         pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
         pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
     }
+    else {
+        return physx::PxFilterFlag::eKILL;
+    }
 
     if ((dataA.word2 & CONTACT_BEGIN) || (dataB.word2 & CONTACT_BEGIN)) {
         pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
