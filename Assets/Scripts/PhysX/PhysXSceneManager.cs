@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,12 +25,19 @@ public class PhysXSceneManager : MonoBehaviour
 
     public bool doPhysics = true;
 
+    private IntPtr scratchMem = IntPtr.Zero;
+
+    public int scratchKilobytes = 512;
+
     void Awake() {
         if (sceneManagerExists) {
             Debug.Log("PhysX Scene Manager already exists");
             Destroy(gameObject);
             return;
         }
+
+        IntPtr unalignedMem = Marshal.AllocHGlobal(scratchKilobytes * 1024 + 15);
+        scratchMem = new IntPtr(16 * ((unalignedMem.ToInt64() + 15) / 16));
 
         sceneManagerExists = true;
 
@@ -84,7 +92,7 @@ public class PhysXSceneManager : MonoBehaviour
 
     public void Simulate() {
         if (doPhysics) {
-            PhysXLib.StepPhysics(scene, Time.fixedDeltaTime);
+            PhysXLib.StepPhysics(scene, Time.fixedDeltaTime, scratchMem, scratchKilobytes * 1024);
 
             foreach (PhysXBody body in bodies.Values) {
                 body.UpdatePositionAndVelocity();
@@ -122,7 +130,7 @@ public class PhysXSceneManager : MonoBehaviour
             PhysXSceneManager.ongoingTriggers.Clear();
             collisionCallbackMarker.End();
 
-            PhysXLib.StepGhostPhysics(scene, Time.fixedDeltaTime);
+            PhysXLib.StepGhostPhysics(scene, Time.fixedDeltaTime, scratchMem, scratchKilobytes * 1024);
         }
     }
 
