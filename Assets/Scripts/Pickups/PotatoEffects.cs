@@ -29,12 +29,18 @@ public class PotatoEffects : MonoBehaviour
 
     private int myDriverId = 0;
     private int myGunnerId = 0;
-    
+    private Shader regShader;
+    private Shader hpShader;
+    public Renderer rend;
+    private List<Material> mats = new List<Material>();
+
     private void Start()
     {
         animation = GetComponent<Animation>();
         Invoke(nameof(DelayedStart), 1f);
-        
+        regShader = Shader.Find("Shader No Border");
+        hpShader = Shader.Find("Hot Potato Shader");
+        rend.GetMaterials(mats);
     }
 
     void DelayedStart()
@@ -55,14 +61,22 @@ public class PotatoEffects : MonoBehaviour
         activatedLoopSource.Play();
         lightning1.enabled = true;
         lightning1.GetComponent<LineRenderer>().enabled = true;
-        
         lightning2.enabled = true;
         lightning2.GetComponent<LineRenderer>().enabled = true;
+
 
         if (driverId == PhotonNetwork.LocalPlayer.ActorNumber || gunnerId == PhotonNetwork.LocalPlayer.ActorNumber)
         {
             PotatoUi pui = FindObjectOfType<PotatoUi>();
             pui.SetText(true);
+        } else
+        {
+            foreach (var mat in mats)
+            {
+                mat.shader = hpShader;
+            }
+            
+
         }
     }
 
@@ -86,10 +100,18 @@ public class PotatoEffects : MonoBehaviour
         lightning2.enabled = false;
         lightning2.GetComponent<LineRenderer>().enabled = false;
 
+
+
         if (driverId == PhotonNetwork.LocalPlayer.ActorNumber || gunnerId == PhotonNetwork.LocalPlayer.ActorNumber)
         {
             PotatoUi pui = FindObjectOfType<PotatoUi>();
             pui.SetText(false);
+        } else
+        {
+            foreach (var mat in mats)
+            {
+                mat.shader = regShader;
+            }
         }
     }
 }

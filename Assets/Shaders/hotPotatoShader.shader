@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Hot Potato Shader"
+Shader "Unlit/Shader No Border"
 {
     Properties
     {
@@ -25,6 +25,7 @@ Shader "Hot Potato Shader"
 #include "UnityCG.cginc"
 #pragma vertex vert
 #pragma fragment frag
+            // make fog work
 #pragma multi_compile_fog
 #pragma multi_compile_fwdbase
 #pragma target 3.0
