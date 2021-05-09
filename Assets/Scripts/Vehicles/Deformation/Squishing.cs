@@ -6,7 +6,7 @@ using System.Linq;
 using PhysX;
 using System.Runtime.CompilerServices;
 using Unity.Profiling;
-
+using iRobi;
 public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEvent
 {
     static readonly ProfilerMarker meshDeformationMarker = new ProfilerMarker("MeshDeformation");
@@ -48,14 +48,25 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
 
     private int teamId;
 
+    public Texture2D decal;
+
+    float[] red = new float[]{0.2f,0.2f,0.2f,0.2f, 0.6f, 0.6f, 0.6f};
+    public MeshRenderer renderer;
+
     InterfaceCarDrive4W interfaceCar;
     Mesh originalMesh;
+
+    float cooldown = 2f;
 
     public void CollisionEnter(){}
 
     public void CollisionEnter(PhysXCollision other){
         if (other.gameObject.CompareTag("DustGround")) {
             myRb.ghostEnabled = false;
+        }
+        if(other.gameObject.CompareTag("Player") && cooldown < 0){
+            UVPaint.Create (gameObject, other.GetContact(0).point, Quaternion.Euler(30,270,0), decal, UVPaint.DecalColor(new Color(red[Random.Range(0, red.Length)],0,0,1)), UVPaint.DecalSize(1f));
+            cooldown = 0;
         }
         else {
             myRb.ghostEnabled = true;
@@ -220,6 +231,9 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
 
         if (collision.contactCount > 0 && collision.GetContact(0).separation < -minPenetration) {
             if (!collision.collider.gameObject.CompareTag("DustGround")) {
+
+                
+
                 meshDeformationMarker.Begin();
             
                 bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
@@ -290,6 +304,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
             DissipateDeformation(false);
             dissipationNeeded = false;
         }
+        cooldown -= Time.deltaTime;
     }
 
     public void DissipateDeformation(bool addNoise) {
