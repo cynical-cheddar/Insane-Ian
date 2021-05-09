@@ -60,6 +60,7 @@ public class VoiceCallBehaviour : MonoBehaviour
 
     [PunRPC]
     void SeparateIntoTeams_RPC() {
+        #if UNITY_WEBGL && !UNITY_EDITOR
         PlayerEntry self = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         TeamEntry team = gamestateTracker.teams.Get(self.teamId);
         short teammateID = 0;
@@ -88,5 +89,6 @@ public class VoiceCallBehaviour : MonoBehaviour
         } else {
             muteAll();
         }
+        #endif
     }
 }
