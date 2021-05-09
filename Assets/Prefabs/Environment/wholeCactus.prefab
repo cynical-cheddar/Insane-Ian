@@ -73,7 +73,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kinematic: 0
   useGravity: 1
-  mass: 80
+  mass: 100
   linearDamping: 0.6
   angularDamping: 0
   maxVelocity: 3.4028235e+38
@@ -91,9 +91,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bb0ce2585d3f81479a665517c4cae41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0.5
+  health: 1
   rammingDamageResistance: 1
-  defaultCollisionResistance: 1
+  defaultCollisionResistance: 0.1
   audioSourcePrefab: {fileID: 0}
   crashSoundsSmallDamageThreshold: 5
   crashSoundsLargeDamageThreshold: 40
@@ -102,7 +102,7 @@ MonoBehaviour:
   crashMasterVolume: 1
   environmentCollisionResistance: 1
   collisionAreas: []
-  rammingDamageMultiplier: 1
+  rammingDamageMultiplier: 3
   maxCollisionRate: 0.2
   collisionSparks: {fileID: 0}
   markedTeamDamageIncrease: 3

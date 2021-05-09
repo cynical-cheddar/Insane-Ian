@@ -14,12 +14,12 @@ public class ExplodingPropHealthManager : PropHealthManager
         Debug.LogWarning("I need to sort out overlap sphere stuff");
         return;
         GameObject temporaryDeathExplosionInstance = Instantiate(temporaryDeathExplosion, transform.position, transform.rotation);
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5);
-        foreach (Collider collider in hitColliders){
-            if(collider.gameObject.GetComponent<HealthManager>()!=null){
-                collider.gameObject.GetComponent<HealthManager>().TakeDamage(maxExplosionDamage);
-            }
-        }
+        //Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5);
+        //foreach (Collider collider in hitColliders){
+        //    if(collider.gameObject.GetComponent<HealthManager>()!=null){
+        //        collider.gameObject.GetComponent<HealthManager>().TakeDamage(maxExplosionDamage);
+        //    }
+        //}
     }
 
     protected override void Die() {
