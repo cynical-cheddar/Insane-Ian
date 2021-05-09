@@ -576,7 +576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f3c66f19f5195a45a45d6a0187bbca0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 22
+  maxSpeed: 10
   frontLeftW: {fileID: 6284213321502439188}
   frontRightW: {fileID: 8854317719780993745}
   rearLeftW: {fileID: 5955917007552040847}
@@ -837,7 +837,7 @@ MonoBehaviour:
   mass: 3000
   linearDamping: 0.1
   angularDamping: 0.6
-  maxVelocity: 45
+  maxVelocity: 12
   ghostBlend: 0.8
   _centreOfMass: {x: 0, y: 0, z: 0}
 --- !u!114 &5186423232709554915
@@ -6001,6 +6001,16 @@ PrefabInstance:
     - target: {fileID: 7575182284323385253, guid: a206521bc6d08364393b512d26ce2129,
         type: 3}
       propertyPath: bulletHoles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7575182284323385253, guid: a206521bc6d08364393b512d26ce2129,
+        type: 3}
+      propertyPath: useTracerHitCorrection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7575182284323385253, guid: a206521bc6d08364393b512d26ce2129,
+        type: 3}
+      propertyPath: useRapidFireOptimisation
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7575182284323385253, guid: a206521bc6d08364393b512d26ce2129,

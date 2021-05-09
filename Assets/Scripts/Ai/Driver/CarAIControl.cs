@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 
 
-    [VehicleScript(ScriptType.aiDriverScript)]
+    //[VehicleScript(ScriptType.aiDriverScript)]
     public class CarAIControl : MonoBehaviour
     {
         public enum BrakeCondition

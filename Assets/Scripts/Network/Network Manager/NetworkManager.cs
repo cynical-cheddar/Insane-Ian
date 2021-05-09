@@ -53,7 +53,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void Awake() {
         Time.timeScale = gamespeed;
-        Time.fixedDeltaTime = Time.timeScale * .02f;
+        Time.fixedDeltaTime = Time.timeScale * .04f;
     }
     
     // called on the master client when the game is fully set up
