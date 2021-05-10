@@ -225,6 +225,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             }
             else
             {
+                Debug.LogError("audioSourcePrefab has no AudioSource");
                 Destroy(gameObject);
             }
         }
