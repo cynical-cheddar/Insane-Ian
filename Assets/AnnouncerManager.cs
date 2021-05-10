@@ -9,7 +9,7 @@ using Gamestate;
 public class AnnouncerManager : MonoBehaviour
 {
 
-    public enum AnnouncerShoutsTags{potatoPickup, potatoDrop, onKilled, suicide, matchStart, threeMinutes, twoMinutes, oneMinute, thirtySeconds, tenSecondCountdown, matchEnd};
+    public enum AnnouncerShoutsTags{potatoPickup, potatoDrop, onKilled, suicide, matchStart, twoMinutes, oneMinute, thirtySeconds, tenSecondCountdown, matchEnd};
     private AudioSource announcerAudioSource;
 
     [Serializable]
@@ -23,7 +23,6 @@ public class AnnouncerManager : MonoBehaviour
 
         public AnnouncerClipsToPlay matchStart;
 
-        public AnnouncerClipsToPlay threeMinutes;
 
         public AnnouncerClipsToPlay twoMinutes;
 
@@ -59,7 +58,6 @@ public class AnnouncerManager : MonoBehaviour
         if(announcerShouts.matchStart.announcerShoutsTag == shoutTag) return announcerShouts.matchStart;
         if(announcerShouts.onKilled.announcerShoutsTag == shoutTag) return announcerShouts.onKilled;
         if(announcerShouts.suicide.announcerShoutsTag == shoutTag) return announcerShouts.suicide;
-        if(announcerShouts.threeMinutes.announcerShoutsTag == shoutTag) return announcerShouts.threeMinutes;
         if(announcerShouts.twoMinutes.announcerShoutsTag == shoutTag) return announcerShouts.twoMinutes;
         if(announcerShouts.oneMinute.announcerShoutsTag == shoutTag) return announcerShouts.oneMinute;
         if(announcerShouts.thirtySeconds.announcerShoutsTag == shoutTag) return announcerShouts.thirtySeconds;
