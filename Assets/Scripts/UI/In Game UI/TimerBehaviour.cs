@@ -35,6 +35,7 @@ public class TimerBehaviour : MonoBehaviour
     // Time in seconds
     [PunRPC]
     void SetTimer(float time) {
+        timerText.gameObject.SetActive(true);
         timer.timeLeft = time;
     }
 
