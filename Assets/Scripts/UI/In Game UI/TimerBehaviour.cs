@@ -13,7 +13,6 @@ public class TimerBehaviour : MonoBehaviour
     public Timer timer = new Timer();
     bool gameOverLoading = false;
 
-    bool threeMinTimerFired = false;
     bool twoMinTimerFired = false;
 
     bool oneMinTimerFired = false;
@@ -35,6 +34,7 @@ public class TimerBehaviour : MonoBehaviour
     // Time in seconds
     [PunRPC]
     void SetTimer(float time) {
+        timerText.gameObject.SetActive(true);
         timer.timeLeft = time;
     }
 
@@ -66,7 +66,6 @@ public class TimerBehaviour : MonoBehaviour
             thirtySecondsTimerFired = true;
             oneMinTimerFired = true;
             twoMinTimerFired = true;
-            threeMinTimerFired = true;
         }
 
         else if(timer.timeLeft < 30 && !thirtySecondsTimerFired && PhotonNetwork.IsMasterClient){
@@ -74,28 +73,19 @@ public class TimerBehaviour : MonoBehaviour
             thirtySecondsTimerFired = true;
             oneMinTimerFired = true;
             twoMinTimerFired = true;
-            threeMinTimerFired = true;
         }
 
         else if(timer.timeLeft < 60 && !oneMinTimerFired && PhotonNetwork.IsMasterClient){
             announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.oneMinute);
             oneMinTimerFired = true;
             twoMinTimerFired = true;
-            threeMinTimerFired = true;
         }
 
 
         else if(timer.timeLeft < 120 && !twoMinTimerFired && PhotonNetwork.IsMasterClient){
             announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.twoMinutes);
             twoMinTimerFired = true;
-            threeMinTimerFired = true;
-        }
-       else if(timer.timeLeft < 181 && !threeMinTimerFired && PhotonNetwork.IsMasterClient){
-            announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.threeMinutes);
-            threeMinTimerFired = true;
-        }
-        
-
+        }    
 
         int minutes = Mathf.FloorToInt(timer.timeLeft / 60f);
         int seconds = Mathf.FloorToInt(timer.timeLeft - minutes * 60f);
