@@ -10,14 +10,15 @@ public class DeformableMesh : MonoBehaviour
 
     void Update() {
         if (!Application.IsPlaying(gameObject)) {
-            Subdivide(maxEdgeLength);
+            GetMeshFilter();
+            Subdivide(maxEdgeLength, meshFilter.sharedMesh);
         }
     }
 
-    public void Subdivide(float maxEdgeLength) {
-        GetMeshFilter();
+    public static void Subdivide(float maxEdgeLength, Mesh mesh) {
+        
 
-        Mesh mesh = meshFilter.sharedMesh;
+       // Mesh mesh = meshFilter.sharedMesh;
         List<Vector3> vertices = new List<Vector3>(mesh.vertices);
         Dictionary<int, Dictionary<int, int>> splits = new Dictionary<int, Dictionary<int, int>>();
 
@@ -63,7 +64,7 @@ public class DeformableMesh : MonoBehaviour
         mesh.RecalculateNormals();
     }
 
-    private void Slice(int a, int b, int c, List<Vector3> vertices, List<int> tris, Dictionary<int, Dictionary<int, int>> splits) {
+    private static void Slice(int a, int b, int c, List<Vector3> vertices, List<int> tris, Dictionary<int, Dictionary<int, int>> splits) {
         int ai = tris[a];
         int bi = tris[b];
         int ci = tris[c];

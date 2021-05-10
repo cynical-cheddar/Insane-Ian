@@ -56,9 +56,12 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     private float volume = 0;
     [Space(5)]
 
-    [Header("Dust Trail")]
-    public ParticleSystem leftPS;
-    public ParticleSystem rightPS;
+    [Header("Particle Trails")]
+    public ParticleSystem leftDust;
+    public ParticleSystem rightDust;
+    [Space(2)]
+    public ParticleSystem leftGravel;
+    public ParticleSystem rightGravel;
 
     [Space(5)]
     [Header("Additional parameters")]
@@ -125,11 +128,16 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         //check if needing to reverse or brake first
         if (transform.InverseTransformDirection(carRB.velocity).z < 4) {
             ((IDrivable)this).StopBrake();
-            rearLeftW.motorTorque = -motorTorque;
-            rearRightW.motorTorque = -motorTorque;
-            if (is4WD) {
-                frontLeftW.motorTorque = -motorTorque;
-                frontRightW.motorTorque = -motorTorque;
+            if (carRB.velocity.magnitude < maxSpeed) {
+                rearLeftW.motorTorque = -motorTorque;
+                rearRightW.motorTorque = -motorTorque;
+                if (is4WD) {
+                    frontLeftW.motorTorque = -motorTorque;
+                    frontRightW.motorTorque = -motorTorque;
+                }
+            }
+            else{
+                ((IDrivable)this).Brake();
             }
         } else {
             ((IDrivable)this).Brake();
@@ -251,35 +259,51 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             carRB.AddForceAtPosition(right.transform.up * addedForce, right.transform.position, ForceMode.Force);
 
         }
+        PhysXWheelHit.ReleaseWheelHit(lHit);
+        PhysXWheelHit.ReleaseWheelHit(rHit);
     }
     private void Particles() {
         PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
         PhysXWheelHit rHit = PhysXWheelHit.GetWheelHit();
         bool lGrounded = rearLeftW.GetGroundHit(lHit);
         bool rGrounded = rearRightW.GetGroundHit(rHit);
-        var lEmission = leftPS.emission;
-        var rEmission = rightPS.emission;
+        var lDustEmmissiom = leftDust.emission;
+        var rDustEmmissiom = rightDust.emission;
+        var lCaveEmmissiom = leftGravel.emission;
+        var rCaveEmmissiom = rightGravel.emission;
 
         // left rear dust emission
         if (lGrounded && (Mathf.Abs(rearLeftW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (lHit.collider.CompareTag("DustGround")) {
-                lEmission.enabled = true;
+                lDustEmmissiom.enabled = true;
+                lCaveEmmissiom.enabled = false;
+            } else if (lHit.collider.CompareTag("CaveGround")) {
+                lDustEmmissiom.enabled = false;
+                lCaveEmmissiom.enabled = true;
             } else {
-                lEmission.enabled = false;
+                lDustEmmissiom.enabled = false;
+                lCaveEmmissiom.enabled = false;
             }
         } else {
-            lEmission.enabled = false;
+            lDustEmmissiom.enabled = false;
+            lCaveEmmissiom.enabled = false;
         }
 
         // right rear dust emission
         if (rGrounded && (Mathf.Abs(rearRightW.rpm) > 150 || carRB.velocity.magnitude > 5)) {
             if (rHit.collider.CompareTag("DustGround")) {
-                rEmission.enabled = true;
+                rDustEmmissiom.enabled = true;
+                rCaveEmmissiom.enabled = false;
+            } else if (rHit.collider.CompareTag("CaveGround")) {
+                rDustEmmissiom.enabled = false;
+                rCaveEmmissiom.enabled = true;
             } else {
-                rEmission.enabled = false;
+                rDustEmmissiom.enabled = false;
+                rCaveEmmissiom.enabled = false;
             }
         } else {
-            rEmission.enabled = false;
+            rDustEmmissiom.enabled = false;
+            rCaveEmmissiom.enabled = false;
         }
 
         PhysXWheelHit.ReleaseWheelHit(lHit);
@@ -293,10 +317,15 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
                 // if new ground type, set new stiffness
                 if (hit.collider.CompareTag("DustGround") && wheelStructs[i].surface != "DustGround") {
                     wheelStructs[i] = new wheelStruct(5f, "DustGround", wheelStructs[i].collider);
+                } else if (hit.collider.CompareTag("RoadGround") && wheelStructs[i].surface != "RoadGround") {
+                    wheelStructs[i] = new wheelStruct(5f, "RoadGround", wheelStructs[i].collider);
+                } else if (hit.collider.CompareTag("CaveGround") && wheelStructs[i].surface != "CaveGround") {
+                    wheelStructs[i] = new wheelStruct(5f, "CaveGround", wheelStructs[i].collider);
                 } else {
                     wheelStructs[i] = new wheelStruct(8f, "0", wheelStructs[i].collider);
                 }
             }
+            PhysXWheelHit.ReleaseWheelHit(hit);
         }
     }
     private void AutoRight() {
@@ -307,14 +336,25 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
             if (angle > 120) {
                 // at severe angles, offset center of mass from center so if stuck on roof, can rotate over
                 carRB.centreOfMass = new Vector3(-1f, -3f, 0);
+                
+                upsideDownTime+= Time.deltaTime;
+                if(upsideDownTime > 1.5f){
+                    SelfRighting();
+                }
+
+              //  carRB.AddTorque(transform.forward, ForceMode.VelocityChange);
             } else {
+                upsideDownTime= 0f;
                 carRB.centreOfMass = new Vector3(0, -2.5f, 0);
+
+                
             }
         } else if (!isDead)
             carRB.centreOfMass = new Vector3(0, 0, 0);
 
     }
 
+    float upsideDownTime = 0f;
     void FixedUpdate() {
         getSurface();
         EngineNoise();
@@ -322,6 +362,13 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         AntiRoll(rearLeftW, rearRightW);
         AutoRight();
         Particles();
+    }
+
+    void SelfRighting(){
+        upsideDownTime= 0f;
+        Vector3 eulerAngles = transform.rotation.eulerAngles;
+        carRB.GetComponent<PhysXBody>().rotation = Quaternion.Euler(eulerAngles.x, eulerAngles.y, 0);
+        
     }
 
 

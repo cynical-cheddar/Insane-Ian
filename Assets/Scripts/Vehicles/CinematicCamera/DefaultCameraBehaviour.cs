@@ -7,6 +7,15 @@ public class DefaultCameraBehaviour : BaseCameraBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         // setup
+
+        foreach (var param in animator.parameters)
+        {
+        if (param.type == AnimatorControllerParameterType.Trigger)
+            {
+                animator.ResetTrigger(param.name);
+            }
+        }
+
         StartState(animator);
     }
     
@@ -17,12 +26,18 @@ public class DefaultCameraBehaviour : BaseCameraBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (setCam)
+        {
+            _driverCinematicCam.SetCam(stateCam);
+        }
         
         Update_TimeoutTimer();
         Update_Lock();
         // do environmental crash trigger
         Update_CheckForCrash();
         Update_EnvironmentCrashDetectSensorActions();
+
+        
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state

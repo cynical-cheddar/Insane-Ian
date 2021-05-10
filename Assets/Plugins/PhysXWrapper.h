@@ -107,8 +107,9 @@ extern "C" {
 
     struct ActorUserData {
         ActorUserData() : scene(NULL),
-                          ghostBody(NULL),
                           isGhost(false),
+                          ghostBody(NULL),
+                          ghostBodyEnabled(false),
                           ghostVelocityBlend(0) {}
 
         physx::PxScene* scene;
@@ -119,6 +120,7 @@ extern "C" {
 
         bool isGhost;
         physx::PxRigidDynamic* ghostBody;
+        bool ghostBodyEnabled;
         physx::PxReal ghostVelocityBlend;
     };
 
@@ -151,8 +153,13 @@ extern "C" {
     EXPORT_FUNC physx::PxGeometry* CreateSphereGeometry(float radius);
     EXPORT_FUNC std::vector<physx::PxVec3>* CreateVectorArray();
     EXPORT_FUNC void AddVectorToArray(std::vector<physx::PxVec3>* vectorArray, physx::PxVec3* vector);
-    EXPORT_FUNC physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray);
-    EXPORT_FUNC physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount);
+    EXPORT_FUNC physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxVec3* scale);
+    EXPORT_FUNC physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount, physx::PxVec3* scale);
+
+    EXPORT_FUNC physx::PxU32 GetMeshVertexCount(physx::PxTriangleMeshGeometry *mesh);
+    EXPORT_FUNC physx::PxU32 GetMeshTriangleCount(physx::PxTriangleMeshGeometry *mesh);
+    EXPORT_FUNC void GetMeshGeometry(physx::PxTriangleMeshGeometry *mesh, std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices);
+    EXPORT_FUNC void GetVectorFromArray(std::vector<physx::PxVec3>* vectorArray, physx::PxVec3* vector, physx::PxU32 index);
 
     EXPORT_FUNC physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot);
 
@@ -166,6 +173,8 @@ extern "C" {
     EXPORT_FUNC physx::PxRigidDynamic* CreateDynamicRigidBody(physx::PxTransform* pose);
     EXPORT_FUNC physx::PxRigidDynamic* CreateGhostRigidBody(physx::PxRigidDynamic* baseBody, physx::PxReal blend);
     EXPORT_FUNC physx::PxRigidStatic* CreateStaticRigidBody(physx::PxTransform* pose);
+
+    EXPORT_FUNC void SetGhostBodyEnabled(physx::PxRigidDynamic* baseBody, bool enabled);
 
     EXPORT_FUNC void SetCollisionFilterData(physx::PxShape* shape, physx::PxU32 w0, physx::PxU32 w1, physx::PxU32 w2, physx::PxU32 w3);
 
@@ -230,8 +239,8 @@ extern "C" {
 
     EXPORT_FUNC void AddActorToScene(physx::PxScene* scene, physx::PxActor* actor);
 
-    EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time);
-    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time);
+    EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time, void* scratchMem, physx::PxU32 scratchMemSize);
+    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time, void* scratchMem, physx::PxU32 scratchMemSize);
 
     EXPORT_FUNC physx::PxTransform* GetCentreOfMass(physx::PxRigidBody* body);
 

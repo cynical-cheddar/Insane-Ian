@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Cinemachine;
 using PhysX;
+using Photon.Pun;
 
 [VehicleScript(ScriptType.playerDriverScript)]
 
@@ -70,6 +71,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
     private List<float> timeList = new List<float>();
    // [SerializeField]
     public CurrentSensorReportStruct currentSensorReport;
+    private NetworkPlayerVehicle npv;
     
     
     
@@ -87,26 +89,27 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
         }
     }
 
-        public void CollisionEnter() {}
     public bool requiresData { get { return true; } }
+    public void CollisionEnter() {}
 
-    private void Start()
-    {
-      //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
-       // return;
+    private void Start() {
+        //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
+        // return;
 
-       
+        npv = GetComponent<NetworkPlayerVehicle>();
         myRb = GetComponent<PhysXRigidBody>();
         currentSensorReport = new CurrentSensorReportStruct();
         currentSensorReport.lastCrashedPlayer = transform.root;
-        
     }
 
 
     public void CollisionEnter(PhysXCollision other)
     {
-        if (currentSpeed > slowRange.speed)
-        {
+
+    }
+
+    public void CrashCollisionCamera(PhysXCollision other, bool small){
+
             if (other.transform.root.CompareTag("Player"))
             {
             currentSensorReport.crashed = true;
@@ -133,29 +136,40 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
             
             
             
-                //currentSensorReport.lastCrashedPlayer = other.transform.root;
-                if(lastTargetPoint!=null) Destroy(lastTargetPoint);
-                Vector3 point = contactPoints[0].point;
-                lastTargetPoint = Instantiate(new GameObject(), point, Quaternion.identity);
-                lastTargetPoint.transform.parent = transform.root;
-                currentSensorReport.lastCrashedPlayer = lastTargetPoint.transform;
+            currentSensorReport.lastCrashedPlayer = other.transform.root;
 
+            
+            if (npv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber && !small) {
+                GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontLeftEnum);
+            }
+            if (npv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber && small) {
+                GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontRightEnum);
+            }
+             //   if(lastTargetPoint!=null) Destroy(lastTargetPoint);
+              //  Vector3 point = contactPoints[0].point;
+             //   lastTargetPoint = Instantiate(new GameObject(), point, Quaternion.identity);
+             //   lastTargetPoint.transform.parent = transform.root;
+              //  currentSensorReport.lastCrashedPlayer = lastTargetPoint.transform;
+
+             // StartCoroutine(SetCrashedFalse());
+                crashTimer = 0f;
             }
 
-            StartCoroutine(SetCrashedFalse());
-        }
+            
+        
     }
 
     private GameObject lastTargetPoint;
     
-
+    float crashTimer = 0;
 
     IEnumerator SetCrashedFalse()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.3f);
         
         currentSensorReport.crashed = false;
-        currentSensorReport.lastCrashedPlayer = transform.root;
+        //currentSensorReport.lastCrashedPlayer = transform.root;
+
     }
 
     private Vector3 vel = Vector3.zero;
@@ -163,7 +177,11 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
     private void FixedUpdate()
     {
         //return;
+        crashTimer += Time.deltaTime;
+        if(crashTimer > 0.6){
+            currentSensorReport.crashed = false;
 
+        }
         vel = myRb.velocity;
         localVel = transform.InverseTransformDirection(vel);
         

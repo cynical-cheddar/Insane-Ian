@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Unlit/Shader No Border"
+Shader "Shader No Border"
 {
     Properties
     {
@@ -38,6 +38,7 @@ Shader "Unlit/Shader No Border"
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
 
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -72,9 +73,8 @@ Shader "Unlit/Shader No Border"
             float _RimAmount;
             float _RimThreshold;
 
-
+            int _IsSeeThrough;
             int _NumberOfSections;
-
 
             v2f vert (appdata v)
             {

@@ -3,22 +3,22 @@ using UnityEngine;
 
 namespace GraphBending {
     public class MeshGraph {
-        public List<VertexGroup> groups {get;}
+        public VertexGroup[] groups {get;}
         public MeshGraph(Mesh mesh, float groupRadius) {
-            groups = new List<VertexGroup>();
+            List<VertexGroup> groupList = new List<VertexGroup>();
             List<Vector3> vertices = new List<Vector3>(mesh.vertices);
 
             for (int i = 0; i < vertices.Count; i++) {
                 bool grouped = false;
 
                 //  Check if vertex is within grouping radius of any group
-                for (int j = 0; j < groups.Count; j++) {
-                    Vector3 distVector = vertices[i] - groups[j].pos;
+                for (int j = 0; j < groupList.Count; j++) {
+                    Vector3 distVector = vertices[i] - groupList[j].pos;
                     float sqrDistance = distVector.sqrMagnitude;
 
                     if (sqrDistance <= groupRadius * groupRadius) {
                         //  Add vertex to group
-                        groups[j].vertexIndices.Add(i);
+                        groupList[j].vertexIndices.Add(i);
                         grouped = true;
                         break;
                     }
@@ -26,7 +26,7 @@ namespace GraphBending {
 
                 // If no group found for vertex, create new group.
                 if (!grouped) {
-                    groups.Add(new VertexGroup(i, vertices));
+                    groupList.Add(new VertexGroup(i, vertices));
                 }
             }
 
@@ -35,9 +35,9 @@ namespace GraphBending {
                 int vertexIndexB = mesh.triangles[i + 1];
                 int vertexIndexC = mesh.triangles[i + 2];
 
-                VertexGroup groupA = FindGroupContainingVertex(vertexIndexA);
-                VertexGroup groupB = FindGroupContainingVertex(vertexIndexB);
-                VertexGroup groupC = FindGroupContainingVertex(vertexIndexC);
+                VertexGroup groupA = FindGroupContainingVertex(groupList, vertexIndexA);
+                VertexGroup groupB = FindGroupContainingVertex(groupList, vertexIndexB);
+                VertexGroup groupC = FindGroupContainingVertex(groupList, vertexIndexC);
 
                 if (groupA != groupB) {
                     if (!groupA.IsAdjacentTo(groupB)) {
@@ -61,11 +61,13 @@ namespace GraphBending {
                     }
                 }
             }
+
+            groups = groupList.ToArray();
         }
 
-        public VertexGroup FindGroupContainingVertex(int vertexIndex) {
-            for (int i = 0; i < groups.Count; i++) {
-                if (groups[i].vertexIndices.Contains(vertexIndex)) return groups[i];
+        private VertexGroup FindGroupContainingVertex(List<VertexGroup> groupList, int vertexIndex) {
+            for (int i = 0; i < groupList.Count; i++) {
+                if (groupList[i].vertexIndices.Contains(vertexIndex)) return groupList[i];
             }
             return null;
         }

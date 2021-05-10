@@ -6,6 +6,18 @@ var ExampleLibraryPlugin = {
 
     callA: function(recvID) {
         call(Pointer_stringify(recvID));
+    },
+
+    mute: function(teammateID) {
+        muteAllButOne(Pointer_stringify(teammateID));
+    },
+
+    unmute: function() {
+        unmuteEveryone();
+    },
+
+    muteAll: function() {
+        muteEveryone();
     }
 
 };

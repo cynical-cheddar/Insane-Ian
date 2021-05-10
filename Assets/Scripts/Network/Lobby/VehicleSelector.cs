@@ -3,11 +3,18 @@ using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class VehicleSelector : MonoBehaviour {
     // Start is called before the first frame update
 
     public Transform spawnPoint;
+
+    public TextMeshProUGUI displayName;
+    public TextMeshProUGUI speed;
+    public TextMeshProUGUI strength;
+    public TextMeshProUGUI weapon;
+    public TextMeshProUGUI ultimate;
 
     private bool priority = false;
     private short otherId = 0;
@@ -31,6 +38,23 @@ public class VehicleSelector : MonoBehaviour {
 
     public Button lockButton;
 
+    public GameObject statsPanel;
+
+    public struct textGui{
+        public string displayName;
+        public int speed; 
+        public int strength;
+        public string weapon;
+        public string ultimate;
+
+        public textGui(string displayName, int speed, int strength, string weapon, string ultimate){
+            this.displayName = displayName;
+            this.speed = speed;
+            this.strength= strength;
+            this.weapon = weapon;
+            this.ultimate = ultimate;
+            }
+    }
     // if you are the driver on the team, or a gunner with only a bot, then you may select the vehicle
 
     // whenever we select a vehicle, destroy the last one (if it exists), then spawn the new one
@@ -46,11 +70,12 @@ public class VehicleSelector : MonoBehaviour {
         }
     }
 
-    public void SelectVehicle(short vehicleId) {
+    public void SelectVehicle(short vehicleId, VehicleGuiData guiData) {
         // update the selected team vehicle in the gamestate tracker
         currentVehicleId = vehicleId;
         lockButton.interactable = true;
-        GetComponent<PhotonView>().RPC(nameof(DisplaySelectedVehicle_RPC), RpcTarget.All, vehicleId, otherId, (short)PhotonNetwork.LocalPlayer.ActorNumber);
+        textGui vehicleData = new textGui(guiData.displayName, guiData.speed, guiData.strength, guiData.weapon, guiData.ultimate);
+        GetComponent<PhotonView>().RPC(nameof(DisplaySelectedVehicle_RPC), RpcTarget.All, vehicleId, otherId, (short)PhotonNetwork.LocalPlayer.ActorNumber, JsonUtility.ToJson(vehicleData));
     }
 
     //  USED
@@ -63,21 +88,30 @@ public class VehicleSelector : MonoBehaviour {
     }
 
     [PunRPC]
-    void DisplaySelectedVehicle_RPC(short vehicleId, short otherPlayerId, short myId) {
+    void DisplaySelectedVehicle_RPC(short vehicleId, short otherPlayerId, short myId, string guiDataJSON) {
+
         if (otherPlayerId == PhotonNetwork.LocalPlayer.ActorNumber || myId == PhotonNetwork.LocalPlayer.ActorNumber) {
             currentVehicle = gamestateVehicleLookup.sortedVehicleNames[vehicleId];
             // destroy last vehicle
+            textGui guiData = JsonUtility.FromJson<textGui>(guiDataJSON);
+            Debug.Log("Display Selected");
             if (currentVehicleInstance != null) {
                 Destroy(currentVehicleInstance);
             }
             // spawn new vehicle
+            statsPanel.SetActive(true);
             currentVehicleInstance = Instantiate(Resources.Load(prefix + currentVehicle) as GameObject, spawnPoint.position, spawnPoint.rotation);
+            displayName.text = guiData.displayName;
+            speed.text = $"Speed: {guiData.speed}";
+            strength.text = $"Strength: {guiData.strength}";
+            weapon.text = $"Weapon: {guiData.weapon}";
+            ultimate.text = $"Ultimate: {guiData.ultimate}";
         }
     }
 
     void SetupButtons() {
         int maxVehicles = vehicleNames.Count;
-        for (int i = 0; i < maxVehicles; i++) {
+        for (int i = 0; i < vehicleButtons.Count; i++) {
             vehicleButtons[i].SetupButton(vehicleNames[i], (short)i, this);
         }
 

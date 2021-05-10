@@ -8,9 +8,14 @@ using Photon.Realtime;
 using Gamestate;
 using System.Linq;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+
+    ArrowBehaviour arrowBehaviour;
+
+    public float gamespeed = 1f;
     public int maxPlayerPairs = 24;
     
     public List<Transform> spawnPoints;
@@ -22,14 +27,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public string defaultPlayerVehiclePrefabName;
 
+    public List<string> defaultPlayerVehiclePrefabNames = new List<string>();
+
     private int loadedPlayers = 0;
     private int instantiatedPlayerIndex = 0;
 
     public GameObject loadingScreenPrefab;
 
     private GameObject loadingScreenInstance;
-    
-    
+
+    PhysXSceneManager physXSceneManager;
 
     public GameObject spawningPlayersScreenPrefab;
     
@@ -38,16 +45,24 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public GameObject startCountdownPrefab;
     private GameObject startCountdownInstance;
     
-    
-    
+    public Transform testCube;
+    public Transform testSphere;
+    public float testCubeHeightThreshold =  -8.3f;
+
+    public float testSphereHeightThreshold =  -7f;
+
+    private void Awake() {
+        Time.timeScale = gamespeed;
+        Time.fixedDeltaTime = Time.timeScale * .02f;
+    }
     
     // called on the master client when the game is fully set up
     void GameFullySetupMaster()
     {
         
         // remove overlay
-        GetComponent<PhotonView>().RPC(nameof(RemoveSpawningPlayersCanvas), RpcTarget.AllBuffered);
-        GetComponent<PhotonView>().RPC(nameof(StartCountdown), RpcTarget.AllBuffered);
+        GetComponent<PhotonView>().RPC(nameof(RemoveSpawningPlayersCanvas), RpcTarget.AllBufferedViaServer);
+        GetComponent<PhotonView>().RPC(nameof(StartCountdown), RpcTarget.AllBufferedViaServer);
         // start scoreboard stuff
         
         // activate all cars in time
@@ -60,14 +75,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        physXSceneManager = FindObjectOfType<PhysXSceneManager>();
+        physXSceneManager.doPhysics = false;
         loadingScreenInstance = Instantiate(loadingScreenPrefab, transform.position, Quaternion.identity);
-        Invoke(nameof(Begin), 1f);
+        Invoke(nameof(Begin), 3f);
+        // Invoke(nameof(TestPhysics), 4f);
     }
 
     void Begin()
     {
         
         GetComponent<PhotonView>().RPC(nameof(LoadedMap), RpcTarget.AllBufferedViaServer);
+        
+    }
+    void TestPhysics(){
+        if(testCube.position.y > testCubeHeightThreshold || testSphere.position.y > testSphereHeightThreshold){
+            GetComponent<PhotonView>().RPC(nameof(RequestReset), RpcTarget.AllBufferedViaServer);
+        }
     }
 
     [PunRPC]
@@ -77,8 +101,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         loadedPlayers += 1;
         if (loadedPlayers == PhotonNetwork.CurrentRoom.PlayerCount && PhotonNetwork.IsMasterClient)
         {
-            GetComponent<PhotonView>().RPC(nameof(AllPlayersLoaded), RpcTarget.AllViaServer);
+            GetComponent<PhotonView>().RPC(nameof(AllPlayersLoaded), RpcTarget.AllBufferedViaServer);
         }
+        
+    }
+    [PunRPC]
+    void RequestReset(){
+        if(PhotonNetwork.IsMasterClient){
+            Debug.LogError("Physics is gonna be ffed up, reloading scene");
+            PhotonNetwork.LoadLevel(SceneManager.GetActiveScene().name);
+        }
+        
     }
 
     [PunRPC]
@@ -113,14 +146,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     public void StartGame() {
         GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+        
         //SynchroniseSchemaBeforeSpawn();
         // change back
         StartCoroutine(SpawnPlayers());
-        timer = FindObjectOfType<TimerBehaviour>();
-        GlobalsEntry globals = gamestateTracker.globals;
-        float time = globals.timeLimit;
-        globals.Release();
-        if (timer != null) timer.HostStartTimer(time);
+        
+        
     }
 
     // spawn each player pair at a respective spawnpoint
@@ -136,6 +167,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     IEnumerator SpawnPlayers()
     { 
         spawningPlayersScreenInstance = Instantiate(spawningPlayersScreenPrefab, transform.position, Quaternion.identity);
+      //  yield return new WaitForSecondsRealtime(0.5f);
+      //  if(FindObjectOfType<MakeTheMap>() != null) FindObjectOfType<MakeTheMap>().MakeMap();
+        yield return new WaitForSecondsRealtime(1f);
+        
         if (PhotonNetwork.IsMasterClient)
         {
             GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -167,13 +202,31 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         NetworkPlayerVehicle[] npvs = FindObjectsOfType<NetworkPlayerVehicle>();
         foreach (NetworkPlayerVehicle npv in npvs)
         {
-            npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBuffered);
+            npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBufferedViaServer);
+        }
+        photonView.RPC(nameof(ActivateArrow_RPC), RpcTarget.All);
+        physXSceneManager.doPhysics = true;
+
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+        GlobalsEntry globals = gamestateTracker.globals;
+        float time = globals.timeLimit;
+        globals.Release();
+        timer = FindObjectOfType<TimerBehaviour>();
+        if (timer != null) timer.HostStartTimer(time);
+    }
+
+    [PunRPC]
+    void ActivateArrow_RPC() {
+        if (FindObjectOfType<ArrowBehaviour>() != null) {
+            arrowBehaviour = FindObjectOfType<ArrowBehaviour>();
+            arrowBehaviour.ReadyUp();
         }
     }
 
     [PunRPC]
     void StartCountdown()
     {
+        
         startCountdownInstance = Instantiate(startCountdownPrefab, transform.position, transform.rotation);
     }
     
@@ -255,21 +308,28 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         List<string> vehicleNames = gamestateTracker.GetComponent<GamestateVehicleLookup>().sortedVehicleNames;
 
-        string vehiclePrefabName = defaultPlayerVehiclePrefabName;
-        
-        
+        string vehiclePrefabName;
+
         if (selected) {
             vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[vehicle];
+        } else {
+            int randomVehicleNumber = Random.Range(0, defaultPlayerVehiclePrefabNames.Count);
+            vehiclePrefabName = defaultPlayerVehiclePrefabNames[randomVehicleNumber];
+            TeamEntry teamEntryAgain = gamestateTracker.teams.Get((short)teamId);
+            teamEntryAgain.vehicle = (short)randomVehicleNumber;
+            teamEntryAgain.hasSelectedVehicle = true;
+            teamEntryAgain.Commit();
         }
 
         object[] instantiationData = new object[]{teamId};
 
         //Put strong brakes on for spawn
         var spawnedVehicle = PhotonNetwork.Instantiate(vehiclePrefabName, sp.position, sp.rotation, 0, instantiationData);
+        /*
         PhysXWheelCollider[] wheelColliders = spawnedVehicle.GetComponentsInChildren<PhysXWheelCollider>();
         foreach (PhysXWheelCollider wc in wheelColliders) {
             wc.brakeTorque = 10000;
-        }
+        }*/
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

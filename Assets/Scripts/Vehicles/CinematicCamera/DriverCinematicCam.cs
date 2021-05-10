@@ -101,17 +101,19 @@ public class DriverCinematicCam : MonoBehaviour
 
     public void SetCam(Cams cam)
     {
-        if(cam == Cams.defaultCamEnum) SetCam(defaultCam);
-        if(cam == Cams.environmentCrashLeftEnum) SetCam(environmentCrashLeft);
-        if(cam == Cams.environmentCrashCentreEnum) SetCam(environmentCrashCentre);
-        if(cam == Cams.environmentCrashRightEnum) SetCam(environmentCrashRight);
-        if(cam == Cams.environmentWarning1LeftEnum) SetCam(environmentWarning1Left);
-        if(cam == Cams.environmentWarning1CentreEnum) SetCam(environmentWarning1Centre);
-        if(cam == Cams.environmentWarning1RightEnum) SetCam(environmentWarning1Right);
-        if(cam == Cams.carCrashBackLeftEnum) SetCam(carCrashBackLeft);
-        if(cam == Cams.carCrashBackRightEnum) SetCam(carCrashBackRight);
-        if(cam == Cams.carCrashFrontLeftEnum) SetCam(carCrashFrontLeft);
-        if(cam == Cams.carCrashFrontRightEnum) SetCam(carCrashFrontRight);
+        if(this.enabled){
+            if(cam == Cams.defaultCamEnum) SetCam(defaultCam);
+            if(cam == Cams.environmentCrashLeftEnum) SetCam(environmentCrashLeft);
+            if(cam == Cams.environmentCrashCentreEnum) SetCam(environmentCrashCentre);
+            if(cam == Cams.environmentCrashRightEnum) SetCam(environmentCrashRight);
+            if(cam == Cams.environmentWarning1LeftEnum) SetCam(environmentWarning1Left);
+            if(cam == Cams.environmentWarning1CentreEnum) SetCam(environmentWarning1Centre);
+            if(cam == Cams.environmentWarning1RightEnum) SetCam(environmentWarning1Right);
+            if(cam == Cams.carCrashBackLeftEnum) SetCam(carCrashBackLeft);
+            if(cam == Cams.carCrashBackRightEnum) SetCam(carCrashBackRight);
+            if(cam == Cams.carCrashFrontLeftEnum) SetCam(carCrashFrontLeft);
+            if(cam == Cams.carCrashFrontRightEnum) SetCam(carCrashFrontRight);
+        }
     }
 
 
@@ -134,7 +136,7 @@ public class DriverCinematicCam : MonoBehaviour
 
     Transform GetCrashTarget()
     {
-       Transform t = _driverCrashDetector.currentSensorReport.lastCrashedPlayer;
+        Transform t = _driverCrashDetector.currentSensorReport.lastCrashedPlayer;
         return t;
     }
 
@@ -154,19 +156,21 @@ public class DriverCinematicCam : MonoBehaviour
         carCrashFrontLeft.enabled = false;
         carCrashFrontRight.enabled = false;
 
-        /*
-
+        
+        
         if (cam == carCrashBackLeft) carCrashBackLeft.m_LookAt = GetCrashTarget();
-        if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = GetCrashTarget();
+        if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = transform.root;
         if (cam == carCrashFrontLeft) carCrashFrontLeft.m_LookAt = GetCrashTarget();
         if (cam == carCrashFrontRight) carCrashFrontRight.m_LookAt = GetCrashTarget();
+        
+        
 
-        */
-
+        /*
         if (cam == carCrashBackLeft) carCrashBackLeft.m_LookAt = transform.root;
         if (cam == carCrashBackRight) carCrashBackRight.m_LookAt = transform.root;
         if (cam == carCrashFrontLeft) carCrashFrontLeft.m_LookAt = transform.root;
         if (cam == carCrashFrontRight) carCrashFrontRight.m_LookAt = transform.root;
+        */
         
         cam.enabled = true;
     }

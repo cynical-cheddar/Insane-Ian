@@ -134,6 +134,10 @@ MonoBehaviour:
   environmentCollisionResistance: 1
   collisionAreas: []
   rammingDamageMultiplier: 1
+  maxCollisionRate: 0.2
+  collisionSparks: {fileID: 0}
+  markedTeamDamageIncrease: 3
+  markedGameObjectPrefab: {fileID: 0}
   wreckPrefab: {fileID: 0}
   maxExplosionDamage: 50
   temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
@@ -151,9 +155,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kinematic: 0
+  useGravity: 1
   mass: 100
-  linearDamping: 0
-  angularDamping: 0
+  linearDamping: 0.6
+  angularDamping: 0.6
+  maxVelocity: 3.4028235e+38
+  ghostBlend: 0.8
   _centreOfMass: {x: 0, y: 0, z: 0}
 --- !u!114 &658289406774261459
 MonoBehaviour:
@@ -172,6 +179,7 @@ MonoBehaviour:
   material: {fileID: 0}
   _trigger: 0
   offset: {x: 0, y: 0, z: 0}
+  collisionSoftener: {fileID: 0}
   x: 2.2
   y: 4
   z: 2.2

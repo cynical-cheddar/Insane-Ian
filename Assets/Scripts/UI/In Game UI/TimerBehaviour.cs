@@ -35,6 +35,7 @@ public class TimerBehaviour : MonoBehaviour
     // Time in seconds
     [PunRPC]
     void SetTimer(float time) {
+        timerText.gameObject.SetActive(true);
         timer.timeLeft = time;
     }
 
@@ -129,7 +130,7 @@ public class TimerBehaviour : MonoBehaviour
     public void EndGame() {
         if (!gameOverLoading && PhotonNetwork.IsMasterClient) {
   
-            announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.matchEnd);
+          //  announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.matchEnd);
 
             gameOverLoading = true;
             PhotonNetwork.LoadLevel("GameOver");

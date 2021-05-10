@@ -91,6 +91,11 @@ using Random = UnityEngine.Random;
             m_Driving = true;
             WaypointCircuit wpc = FindObjectOfType<WaypointCircuit>();
             if (wpc != null) circuitFound = true;
+
+            
+        }
+        private void Start() {
+         //   StartCoroutine(SlowUpdate());
         }
 
         IEnumerator ThreePointTurn()
@@ -161,9 +166,7 @@ using Random = UnityEngine.Random;
 
         private void FixedUpdate()
         {
-         //   return;
-
-            if (circuitFound)
+         if (circuitFound)
             {
                 if (myRb.velocity.magnitude < 1)
                 {
@@ -176,10 +179,10 @@ using Random = UnityEngine.Random;
 
                 if (stuckTimer > 1 && !inThreePointTurn)
                 {
-                    int rand = Random.Range(0, 1);
-                    StartCoroutine(ThreePointTurn());
+                    int rand = Random.Range(0, 2);
+                    if(rand == 0)StartCoroutine(ThreePointTurn());
                     
-                   // else if(rand==2)StartCoroutine(ThreePointTurn2());
+                    else if(rand==1)StartCoroutine(ThreePointTurn2());
                 }
 
                
@@ -199,13 +202,16 @@ using Random = UnityEngine.Random;
                     {
 
                     }
-                    else
+                    else if(interfaceCarDrive.isDead == false)
                     {
                         NormalDriving();
                     }
                 }
             }
+
+            
         }
+
 
         bool SensorsManouvre()
         {
@@ -229,7 +235,7 @@ using Random = UnityEngine.Random;
                 }
 
             //front right angle sensor
-            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask)) {
+            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier -= 0.5f;
@@ -237,14 +243,14 @@ using Random = UnityEngine.Random;
 
             //front left sensor
             sensorStartPos -= transform.right * (frontSideSensorPosition * 2);
-            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask)) {
+            if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 1f;
             }
 
             //front left angle sensor
-            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask)) {
+            else if (PhysXRaycast.Fire(sensorStartPos, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                 Debug.DrawLine(sensorStartPos, hit.point);
                     avoiding = true;
                     avoidMultiplier += 0.5f;
@@ -252,7 +258,7 @@ using Random = UnityEngine.Random;
 
             //front center sensor
             if (avoidMultiplier == 0) {
-                if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask)) {
+                if (PhysXRaycast.Fire(sensorStartPos, transform.forward, hit, sensorLength, sensorLayerMask, myRb.vehicleId)) {
                     if (!terrainTags.Contains(hit.collider.tag)) {
                         Debug.DrawLine(sensorStartPos, hit.point);
                         avoiding = true;
