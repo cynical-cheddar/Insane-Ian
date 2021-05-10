@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Gamestate;
 using System.Runtime.InteropServices;
+using TMPro;
 
 public class PlinthManager : MonoBehaviour {
 
@@ -14,7 +15,7 @@ public class PlinthManager : MonoBehaviour {
 
     public List<TextMesh> plinthTexts;
     public List<Transform> spawnpoints;
-    public TextMesh scoreboardText;
+    public TextMeshProUGUI scoreboardText;
     public string defaultVehiclePrefabName;
     GamestateTracker gamestateTracker;
     readonly ScoringHelper scoringHelper = new ScoringHelper();
