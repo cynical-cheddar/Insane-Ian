@@ -19,7 +19,7 @@ public class PropHealthManager : CollidableHealthManager
     [PunRPC]
     protected override void PlayDeathEffects_RPC()
     {
-        if(wreckPrefab!=null){
+        if (wreckPrefab != null) {
             Instantiate(wreckPrefab, transform.position, transform.rotation);  
         }
         PhotonNetwork.Destroy(gameObject);
