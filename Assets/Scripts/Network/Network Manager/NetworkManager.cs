@@ -150,11 +150,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         //SynchroniseSchemaBeforeSpawn();
         // change back
         StartCoroutine(SpawnPlayers());
-        timer = FindObjectOfType<TimerBehaviour>();
-        GlobalsEntry globals = gamestateTracker.globals;
-        float time = globals.timeLimit;
-        globals.Release();
-        if (timer != null) timer.HostStartTimer(time);
+        
+        
     }
 
     // spawn each player pair at a respective spawnpoint
@@ -209,6 +206,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
         photonView.RPC(nameof(ActivateArrow_RPC), RpcTarget.All);
         physXSceneManager.doPhysics = true;
+
+        GamestateTracker gamestateTracker = FindObjectOfType<GamestateTracker>();
+        GlobalsEntry globals = gamestateTracker.globals;
+        float time = globals.timeLimit;
+        globals.Release();
+        timer = FindObjectOfType<TimerBehaviour>();
+        if (timer != null) timer.HostStartTimer(time);
     }
 
     [PunRPC]
