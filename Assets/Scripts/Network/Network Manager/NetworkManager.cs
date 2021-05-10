@@ -308,11 +308,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         List<string> vehicleNames = gamestateTracker.GetComponent<GamestateVehicleLookup>().sortedVehicleNames;
 
-        string vehiclePrefabName = defaultPlayerVehiclePrefabNames[Random.Range(0, defaultPlayerVehiclePrefabNames.Count)];
-        
-        
+        string vehiclePrefabName;
+
         if (selected) {
             vehiclePrefabName = "VehiclePrefabs/" + vehicleNames[vehicle];
+        } else {
+            int randomVehicleNumber = Random.Range(0, defaultPlayerVehiclePrefabNames.Count);
+            vehiclePrefabName = defaultPlayerVehiclePrefabNames[randomVehicleNumber];
+            TeamEntry teamEntryAgain = gamestateTracker.teams.Get((short)teamId);
+            teamEntryAgain.vehicle = (short)randomVehicleNumber;
+            teamEntryAgain.hasSelectedVehicle = true;
+            teamEntryAgain.Commit();
         }
 
         object[] instantiationData = new object[]{teamId};
