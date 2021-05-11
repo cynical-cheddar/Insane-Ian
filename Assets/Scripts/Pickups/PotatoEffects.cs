@@ -34,13 +34,18 @@ public class PotatoEffects : MonoBehaviour
     public Renderer rend;
     private List<Material> mats = new List<Material>();
 
-    private void Start()
+    public void Setup()
     {
         animation = GetComponent<Animation>();
-        Invoke(nameof(DelayedStart), 1f);
+        // Invoke(nameof(DelayedStart), 1f);
         regShader = Shader.Find("Shader No Border");
-        hpShader = Shader.Find("Hot Potato Shader");
+        Debug.Log("regShader.name: " + regShader.name);
+        hpShader = Shader.Find("Unlit/Hot Potato Shader");
+        Debug.Log("hpShader.name: " + hpShader.name);
         rend.GetMaterials(mats);
+        NetworkPlayerVehicle npv = GetComponentInParent<NetworkPlayerVehicle>();
+        myDriverId = npv.GetDriverID();
+        myGunnerId = npv.GetGunnerID();
     }
 
     void DelayedStart()

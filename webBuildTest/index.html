@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
+	<audio autoplay></audio>
+	<script src="https://unpkg.com/peerjs@1.3.2/dist/peerjs.js"></script>
+
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas"></canvas>
       <div id="unity-loading-bar">
@@ -64,6 +67,7 @@
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
+		  window.unityInstance = unityInstance;
           loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
@@ -73,6 +77,105 @@
         });
       };
       document.body.appendChild(script);
+	  
+    var lastPeerId = null;
+    var peer = null; // own peer object
+	var audios = [];
+
+    function initialize(id) {
+        // Create own peer object with connection to shared PeerJS server
+        peer = new Peer(id, {
+            host: 'insane-ian-308116.ew.r.appspot.com',
+            secure: true,
+            port: 443,
+            key: 'peerjs',
+            debug: 3,
+            config: {
+				'iceServers': [
+					{urls: 'stun:34.105.165.49'},
+					{urls: 'turn:34.105.165.49', username: 'turn', credential: 'turn'}
+				],
+				sdpSemantics: 'unified-plan'
+			}
+        });
+
+        peer.on('open', (id) => {
+            // Workaround for peer.reconnect deleting previous id
+            if (peer.id === null) {
+                peer.id = lastPeerId;
+            } else {
+                lastPeerId = peer.id;
+            }
+        });
+
+        peer.on('disconnected', () => {
+            // Workaround for peer.reconnect deleting previous id
+            peer.id = lastPeerId;
+            peer._lastServerId = lastPeerId;
+            peer.reconnect();
+        });
+
+        peer.on('error', (err) => {
+            console.log(err);
+            alert('' + err);
+        });
+
+        // Handle incoming call
+        peer.on('call', (call) => {
+            navigator.mediaDevices.getUserMedia({audio: true, video: false})
+                .then((stream) => {
+                    call.answer(stream);
+                })
+                .catch((err) => {
+                    console.error('Failed to get local stream', err);
+                });
+                call.on('stream', (remoteStream) => {
+                    var audio = document.createElement('audio');
+                    audio.srcObject = remoteStream;
+					audio.autoplay = true;
+					audios.push([audio, call.peer]);
+                });
+        });
+    };
+
+    function call(recvID) {
+        var callerID = recvID;
+        navigator.mediaDevices.getUserMedia({audio: true, video: false})
+            .then((stream) => {
+                const call = peer.call(callerID, stream);
+                call.on('stream', (remoteStream) => {
+                    var audio = document.createElement('audio');
+                    audio.srcObject = remoteStream;
+					audio.autoplay = true;
+					audios.push([audio, callerID]);
+                });
+            })
+            .catch((err) => {
+                console.error('Failed to get local stream', err);
+            });
+    };
+	
+	function muteAllButOne(teammateID) {
+		audios.forEach(audioObject => {
+			if (teammateID != audioObject[1]) {
+				audioObject[0].pause();
+			}
+		});
+	};	
+	
+	function unmuteEveryone() {
+		audios.forEach(audioObject => {
+			audioObject[0].play();
+		});
+	};
+	
+	function muteEveryone() {
+		audios.forEach(audioObject => {
+			audioObject[0].pause();
+		});
+	};
+	  
     </script>
+			
   </body>
 </html>
