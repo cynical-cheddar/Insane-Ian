@@ -13,9 +13,9 @@ namespace Photon.Pun
 {
     using UnityEngine;
     
-    [AddComponentMenu("Photon Networking/Photon Transform View")]
+    [AddComponentMenu("Photon Networking/Physx Transform View")]
     [HelpURL("https://doc.photonengine.com/en-us/pun/v2/gameplay/synchronization-and-state")]
-    public class PhotonTransformView : MonoBehaviourPun, IPunObservable
+    public class PhysxTransformView : MonoBehaviourPun, IPunObservable
     {
         private float m_Distance;
         private float m_Angle;
