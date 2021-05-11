@@ -58,7 +58,21 @@ public class PlayerGunnerController : MonoBehaviour {
     int markedTeam = 0;
     int lastMarkedTeam = 0;
     
+    public AudioClip markAudioClip;
+    public GameObject audioSourcePrefab;
 
+    public GameObject markMuzzle;
+
+    [PunRPC]
+    void MarkAudioPlay_RPC(){
+        GameObject speaker = Instantiate(audioSourcePrefab, transform.position, Quaternion.identity);
+        GameObject mark = Instantiate(markMuzzle, barrelTransform.position, barrelTransform.rotation);
+        mark.transform.parent = transform;
+
+        Destroy(mark, 3f);
+        speaker.GetComponent<AudioSource>().PlayOneShot(markAudioClip);
+        Destroy(speaker, 3f);
+    }
     void Update() {
         // fire 1
          if (Input.GetButton("Fire1")) {
@@ -87,9 +101,9 @@ public class PlayerGunnerController : MonoBehaviour {
                      // remove last mark
                      if(lastMarkedTeam != 0){
                         FindObjectOfType<PlayerTransformTracker>().GetVehicleTransformFromTeamId(lastMarkedTeam).GetComponent<PhotonView>().RPC(nameof(CollidableHealthManager.RemoveMarkedTeam_RPC), RpcTarget.All, lastMarkedTeam, driverId, gunnerId);
-                        
                      }
                      // add new mark
+                     GetComponent<PhotonView>().RPC(nameof(MarkAudioPlay_RPC), RpcTarget.All);
                      hitvm.GetComponent<PhotonView>().RPC(nameof(CollidableHealthManager.MarkTeam_RPC), RpcTarget.All, teamId, driverId, gunnerId);
                      lastMarkedTeam = hitvm.gameObject.GetComponent<NetworkPlayerVehicle>().teamId;
                      Debug.Log("mark done");
@@ -166,21 +180,6 @@ public class PlayerGunnerController : MonoBehaviour {
         return hp;
     }
 
-    VehicleHealthManager GetVehicleHealthManagerRaycast(Transform sourceTransform){
-        Ray ray = new Ray(sourceTransform.position, sourceTransform.forward);
-     //   RaycastHit hit; //From camera to hitpoint, not as curent
-        Transform hitTransform;
-        Vector3 hitVector;
-        hitTransform = FindClosestHitObject(ray, out hitVector);
-        Debug.Log("mark hittransform: " + hitTransform.gameObject);
-        if(hitTransform.root.GetComponent<VehicleHealthManager>()!=null){
-            VehicleHealthManager vm = hitTransform.root.GetComponent<VehicleHealthManager>();
-            if(vm.GetComponent<NetworkPlayerVehicle>().GetGunnerID() != PhotonNetwork.LocalPlayer.ActorNumber){
-                return vm;
-            }
-        }
-        return null;
-    }
     protected Transform FindClosestHitObject(Ray ray, out Vector3 hitPoint) {
 
        // RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -207,6 +206,23 @@ public class PlayerGunnerController : MonoBehaviour {
         return closestHit;
 
     }
+
+    VehicleHealthManager GetVehicleHealthManagerRaycast(Transform sourceTransform){
+        Ray ray = new Ray(sourceTransform.position, sourceTransform.forward);
+     //   RaycastHit hit; //From camera to hitpoint, not as curent
+        Transform hitTransform;
+        Vector3 hitVector;
+        hitTransform = FindClosestHitObject(ray, out hitVector);
+        Debug.Log("mark hittransform: " + hitTransform.gameObject);
+        if(hitTransform.root.GetComponent<VehicleHealthManager>()!=null){
+            VehicleHealthManager vm = hitTransform.root.GetComponent<VehicleHealthManager>();
+            if(vm.GetComponent<NetworkPlayerVehicle>().GetGunnerID() != PhotonNetwork.LocalPlayer.ActorNumber){
+                return vm;
+            }
+        }
+        return null;
+    }
+    
 
     
 }
