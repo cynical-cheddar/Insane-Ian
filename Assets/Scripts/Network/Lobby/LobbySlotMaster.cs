@@ -72,7 +72,7 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                 {
 
                     
-                    GetComponent<PhotonView>().RPC(nameof(ChangeLobbyButtonActiveState_RPC), RpcTarget.OthersBuffered, i, false);
+                    
 
                     
                     
@@ -80,10 +80,15 @@ public class LobbySlotMaster : MonoBehaviourPunCallbacks
                     // new gamestate tracker stuff
                     // kick players
                     bool success = lobbyButtons[i].GetComponent<LobbyButtonScript>().TeamRemoveEntry();
-                    
+
+
+
                     //set active false 
-                    
-                    if(success) lobbyButtons[i].gameObject.SetActive(false);
+
+                    if (success) {
+                        lobbyButtons[i].gameObject.SetActive(false);
+                        GetComponent<PhotonView>().RPC(nameof(ChangeLobbyButtonActiveState_RPC), RpcTarget.OthersBuffered, i, false);
+                    }
                     
                     break;
                 }
