@@ -100,7 +100,7 @@ using Random = UnityEngine.Random;
 
         IEnumerator ThreePointTurn()
         {
-            Debug.Log("ThreePointTurn");
+            // Debug.Log("ThreePointTurn");
             inThreePointTurn = true;
             float elapsedTime = 0;
             float maxTime = 1.5f;

@@ -33,7 +33,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
         if (hitDetails.sourcePlayerId == gunnerId)
         {
             gunnerDamageDealt += hitDetails.damage;
-            Debug.Log("update damage dealt");
+            // Debug.Log("update damage dealt");
         }
     }
     
@@ -144,7 +144,8 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
-        Invoke(nameof(StartWeaponManager), 0.5f);
+        // Invoke(nameof(StartWeaponManager), 0.5f);
+        
     }
 
     public void StartWeaponManager()
@@ -160,7 +161,8 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
         
         
         
-        Invoke(nameof(SetupGunnerWeaponManager), 0.2f);
+        // Invoke(nameof(SetupGunnerWeaponManager), 0.2f);
+        SetupGunnerWeaponManager();
         
         
     }
