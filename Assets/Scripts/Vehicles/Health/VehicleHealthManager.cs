@@ -340,7 +340,7 @@ public class VehicleHealthManager : CollidableHealthManager
     }
 
     public void ResetProperties() {
-        Debug.Log("reset properties");
+        // Debug.Log("reset properties");
         isDead = false;
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, maxHealth);
@@ -355,7 +355,7 @@ public class VehicleHealthManager : CollidableHealthManager
         smokeL.Stop();
         smokeM.Stop();
         smokeH.Stop();
-        Debug.Log("Called");
+        // Debug.Log("Called");
 
         rb.linearDamping = defaultDrag;
         rb.angularDamping = defaultAngularDrag;

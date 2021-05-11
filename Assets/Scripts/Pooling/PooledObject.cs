@@ -9,18 +9,16 @@ public class PooledObject : MonoBehaviour
     public Action<PooledObject> Finished;
 
     // A component reference for fast access -- avoids calls to GetComponent<>().
-    private Rigidbody rb;
+    private PhysXRigidBody rb;
     private TrailRenderer tr;
 
     void Awake()
     {
-        Debug.LogWarning("Pooled Object has not been ported to the new PhysX system");
-        return;
-        if (GetComponent<Rigidbody>() != null) rb = GetComponent<Rigidbody>();
-        if (GetComponentInChildren<TrailRenderer>() != null)
-        {
+        // Debug.LogWarning("Pooled Object has not been ported to the new PhysX system");
+        // return;
+        if (GetComponent<PhysXRigidBody>() != null) rb = GetComponent<PhysXRigidBody>();
+        if (GetComponentInChildren<TrailRenderer>() != null) {
             tr = GetComponentInChildren<TrailRenderer>();
-            
         }
     }
 
