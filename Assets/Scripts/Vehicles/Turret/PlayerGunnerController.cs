@@ -91,7 +91,7 @@ public class PlayerGunnerController : MonoBehaviour {
              Debug.Log("mark fire btn press");
              if (gunnerPhotonView.IsMine) {
                  Debug.Log("mark fire");
-                 VehicleHealthManager hitvm = GetVehicleHealthManagerRaycast(cam);
+                 VehicleHealthManager hitvm = GetClosestVehicleHealthManager(cam);
                  if(hitvm!=null){
                      Debug.Log("mark hitvm not null");
                      NetworkPlayerVehicle npv =  GetComponentInParent<NetworkPlayerVehicle>();
@@ -221,6 +221,27 @@ public class PlayerGunnerController : MonoBehaviour {
             }
         }
         return null;
+    }
+
+    VehicleHealthManager GetClosestVehicleHealthManager(Transform sourceTransform){
+        VehicleHealthManager[] vehs = FindObjectsOfType<VehicleHealthManager>();
+
+        Vector3 dir = sourceTransform.forward;
+
+        float bestAngle = 180f;
+
+        VehicleHealthManager bestV = null;
+
+        foreach(VehicleHealthManager v in vehs){
+            float angle = Vector3.Angle(sourceTransform.forward, v.transform.position - sourceTransform.position);
+            if(angle < bestAngle && v != GetComponentInParent<VehicleHealthManager>()) {
+                bestAngle = angle;
+                bestV = v;
+            }
+        }
+
+
+        return bestV;
     }
     
 

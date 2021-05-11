@@ -105,6 +105,9 @@ public class HotPotatoManager : MonoBehaviour
     {
         isPotato = true;
         potatoEffects = GetComponentInChildren<PotatoEffects>();
+        NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
+        myGunnerId = npv.GetGunnerID();
+        myGunnerId = npv.GetGunnerID();
         potatoEffects.ActivatePotatoEffects(myDriverId, myGunnerId);
     }
     public bool removePotato()

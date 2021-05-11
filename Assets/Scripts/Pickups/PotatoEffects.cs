@@ -74,14 +74,13 @@ public class PotatoEffects : MonoBehaviour
         {
             PotatoUi pui = FindObjectOfType<PotatoUi>();
             pui.SetText(true);
-        } else
+        }
+         else
         {
             foreach (var mat in mats)
             {
                 mat.shader = hpShader;
             }
-            
-
         }
     }
 
@@ -111,7 +110,8 @@ public class PotatoEffects : MonoBehaviour
         {
             PotatoUi pui = FindObjectOfType<PotatoUi>();
             pui.SetText(false);
-        } else
+        }
+         else
         {
             foreach (var mat in mats)
             {

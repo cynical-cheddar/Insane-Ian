@@ -138,6 +138,9 @@ public class VehicleHealthManager : CollidableHealthManager
                 myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All); 
                 
             }
+            else if(PhotonNetwork.IsMasterClient && health <= 0 && !isDead){
+                hpm.canPickupPotato = false;
+            }
         }
     }
 
@@ -157,6 +160,9 @@ public class VehicleHealthManager : CollidableHealthManager
 
                 // TODO- update to take damage type parameter
                 myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
+            }
+            else if(PhotonNetwork.IsMasterClient && health <= 0 && !isDead){
+                hpm.canPickupPotato = false;
             }
         }
     }
