@@ -138,9 +138,6 @@ public class VehicleHealthManager : CollidableHealthManager
                 myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All); 
                 
             }
-            else if(PhotonNetwork.IsMasterClient && health <= 0 && !isDead){
-                hpm.canPickupPotato = false;
-            }
         }
     }
 
@@ -160,9 +157,6 @@ public class VehicleHealthManager : CollidableHealthManager
 
                 // TODO- update to take damage type parameter
                 myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
-            }
-            else if(PhotonNetwork.IsMasterClient && health <= 0 && !isDead){
-                hpm.canPickupPotato = false;
             }
         }
     }
@@ -344,7 +338,7 @@ public class VehicleHealthManager : CollidableHealthManager
     void ResetMesh_RPC() {
         GetComponent<Squishing>().ResetMesh();
     }
-
+    [PunRPC]
     public void ResetProperties() {
         // Debug.Log("reset properties");
         isDead = false;
@@ -370,11 +364,13 @@ public class VehicleHealthManager : CollidableHealthManager
         icd4.isDead = false;
         isDead = false;
         rb.centreOfMass = Vector3.zero;
-        TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
-        teamEntry.isDead = false;
-        teamEntry.Increment();
-        myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
-        GetComponentInChildren<DriverCinematicCam>().ResetCam();
+        if(myPhotonView.IsMine){
+            TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+            teamEntry.isDead = false;
+            teamEntry.Increment();
+            myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
+            GetComponentInChildren<DriverCinematicCam>().ResetCam();
+        }
     }
 
 }

@@ -258,6 +258,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     IEnumerator RespawnVehicle(float time, int teamId) {
         yield return new WaitForSecondsRealtime(time);
+
+
         StartCoroutine(ResetVehicle(teamId));
     }
 
@@ -266,7 +268,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         foreach (VehicleHealthManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
                 // Reset stats
-                vehicle.ResetProperties();
+                vehicle.GetComponent<PhotonView>().RPC(nameof(VehicleHealthManager.ResetProperties), RpcTarget.AllViaServer);
 
 
 
