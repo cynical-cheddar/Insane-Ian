@@ -268,9 +268,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         foreach (VehicleHealthManager vehicle in vehicles) {
             if (vehicle.teamId == teamId) {
                 // Reset stats
-                vehicle.GetComponent<PhotonView>().RPC(nameof(VehicleHealthManager.ResetProperties), RpcTarget.AllViaServer);
+                //vehicle.GetComponent<PhotonView>().RPC(nameof(VehicleHealthManager.ResetProperties), RpcTarget.AllViaServer);
 
-
+                vehicle.ResetProperties();
 
                 // Move to spawnpoint
                 vehicle.GetComponent<InputDriver>().enabled = true;

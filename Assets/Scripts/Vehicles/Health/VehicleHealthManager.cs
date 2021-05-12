@@ -227,6 +227,10 @@ public class VehicleHealthManager : CollidableHealthManager
     // Die is a LOCAL function that is only called by the driver when they get dead.
     protected void Die(bool updateDeath, bool updateKill) {
         // Update gamestate
+
+        networkManager.CallRespawnVehicle(5f, teamId);
+
+
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
         bool hadPotato = hpm.removePotato();
@@ -262,12 +266,6 @@ public class VehicleHealthManager : CollidableHealthManager
             teamEntry.kills += 1;
             teamEntry.Increment();
         }
-
-
-
-        networkManager.CallRespawnVehicle(5f, teamId);
-        
-
     }
 
     [PunRPC]
@@ -338,10 +336,15 @@ public class VehicleHealthManager : CollidableHealthManager
     void ResetMesh_RPC() {
         GetComponent<Squishing>().ResetMesh();
     }
+
     [PunRPC]
+    void SetIsDead_RPC(bool set){
+        isDead = set;
+    }
+
     public void ResetProperties() {
         // Debug.Log("reset properties");
-        isDead = false;
+
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, maxHealth);
         team.Release();
@@ -362,15 +365,15 @@ public class VehicleHealthManager : CollidableHealthManager
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         icd4.isDead = false;
-        isDead = false;
+
         rb.centreOfMass = Vector3.zero;
-        if(myPhotonView.IsMine){
-            TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
-            teamEntry.isDead = false;
-            teamEntry.Increment();
-            myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
-            GetComponentInChildren<DriverCinematicCam>().ResetCam();
-        }
+       
+        TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
+        teamEntry.isDead = false;
+        teamEntry.Increment();
+        myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
+        myPhotonView.RPC(nameof(SetIsDead_RPC), RpcTarget.All, false);
+        GetComponentInChildren<DriverCinematicCam>().ResetCam();
     }
 
 }
