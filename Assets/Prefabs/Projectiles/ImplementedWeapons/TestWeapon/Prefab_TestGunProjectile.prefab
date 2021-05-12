@@ -97,9 +97,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kinematic: 0
+  useGravity: 0
   mass: 100
   linearDamping: 0
   angularDamping: 0
+  maxVelocity: 3.4028235e+38
+  ghostBlend: 0.8
   _centreOfMass: {x: 0, y: 0, z: 0}
 --- !u!114 &8944980512677007925
 MonoBehaviour:
@@ -130,4 +133,5 @@ MonoBehaviour:
   material: {fileID: 0}
   _trigger: 0
   offset: {x: 0, y: 0, z: 0}
+  collisionSoftener: {fileID: 0}
   radius: 1

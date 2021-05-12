@@ -88,6 +88,11 @@ public class ProjectileScript : MonoBehaviour, ICollisionEnterEvent
 
         Vector3 hitPoint = collision.GetContact(0).point;
         VehicleHealthManager hitVm = collision.gameObject.GetComponentInParent<VehicleHealthManager>();
+        if(hitVm !=null){
+            if(hitVm.teamId == weaponDamageDetails.sourceTeamId){
+                Destroy(gameObject);
+            }
+        }
         if (isTrueProjectile) DamageCollisionHandler(hitVm, hitPoint);
         VisualCollisionHandler(impactNormal, hitVm != null);
 
