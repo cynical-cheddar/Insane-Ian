@@ -33,6 +33,7 @@ public class VehicleHealthManager : CollidableHealthManager
     NetworkPlayerVehicle npv;
     InterfaceCarDrive4W icd4;
 
+    int myTeam = 0;
     
 
     protected AnnouncerManager announcerManager;
@@ -74,7 +75,7 @@ public class VehicleHealthManager : CollidableHealthManager
         npv = GetComponent<NetworkPlayerVehicle>();
         announcerManager = FindObjectOfType<AnnouncerManager>();
 
-        
+
 
         _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
@@ -123,7 +124,7 @@ public class VehicleHealthManager : CollidableHealthManager
             JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
         lastHitDetails = weaponDamageDetails;
         float amount = weaponDamageDetails.damage;
-        if (health > 0) {
+        if (health > 0 && weaponDamageDetails.sourceTeamId != npv.teamId) {
             health -= amount;
             if (health > maxHealth) health = maxHealth;
             SetSmoke();
