@@ -30,7 +30,7 @@ public class ExplodingPropHealthManager : PropHealthManager, ICollisionEnterEven
 
 
     public new void CollisionEnter(PhysXCollision col){
-        if(col.collider.attachedRigidBody.velocity.magnitude > 3){
+        if (col.rigidBody != null && col.rigidBody.velocity.magnitude > 3) {
             
             Die();
             DriverCinematicCam cam = col.gameObject.transform.root.GetComponentInChildren<DriverCinematicCam>();
