@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 28537094817036427}
   - component: {fileID: 4020229866186258222}
   - component: {fileID: 1165955710486463460}
-  - component: {fileID: 5836503205771507924}
+  - component: {fileID: 7807750437627334072}
+  - component: {fileID: 4510747455001607485}
   m_Layer: 0
   m_Name: wideRockPile
   m_TagString: Untagged
@@ -82,17 +83,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5836503205771507924
-MeshCollider:
+--- !u!114 &7807750437627334072
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 805778173341852209}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 503615604727818694, guid: 46e53bc4d15af274985d93420cd216d8, type: 3}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e60ba81418e3d47608b67b853fa82dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4510747455001607485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805778173341852209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b70393a1ebd9245eda71ab4f0b5976c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownLayers: 1
+  collisionLayers: 3
+  material: {fileID: 0}
+  _trigger: 0
+  offset: {x: 0, y: 0, z: 0}
+  collisionSoftener: {fileID: 0}
+  mesh: {fileID: 503615604727818694, guid: 46e53bc4d15af274985d93420cd216d8, type: 3}
+  convex: 1
+  scale: {x: 1, y: 1, z: 1}
