@@ -563,6 +563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 160
+  isDead: 0
   rammingDamageResistance: 1
   defaultCollisionResistance: 1
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
@@ -6247,6 +6248,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -6383594138712707759, guid: 58e62011db6f136458c47fc21d688ddc,
         type: 3}
+    - target: {fileID: 7575182284323385253, guid: a206521bc6d08364393b512d26ce2129,
+        type: 3}
+      propertyPath: baseDamage
+      value: 3.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7575182284323385253, guid: a206521bc6d08364393b512d26ce2129,
         type: 3}
       propertyPath: raycastLayers

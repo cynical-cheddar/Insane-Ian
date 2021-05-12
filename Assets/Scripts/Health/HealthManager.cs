@@ -17,7 +17,7 @@ public class HealthManager : MonoBehaviour
     
     protected Weapon.WeaponDamageDetails lastHitDetails;
     
-    protected bool isDead = false;
+    public bool isDead = false;
 
     public float rammingDamageResistance = 1f;
     

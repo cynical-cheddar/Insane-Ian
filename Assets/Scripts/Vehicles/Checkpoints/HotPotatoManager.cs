@@ -152,8 +152,8 @@ public class HotPotatoManager : MonoBehaviour
         HealthManager hm = otherpv.gameObject.GetComponentInChildren<HealthManager>();
         TeamNameSetup tns = otherpv.gameObject.GetComponentInParent<TeamNameSetup>();
         HotPotatoManager hpm = otherpv.gameObject.GetComponentInParent<HotPotatoManager>();
-
-
+        canPickupPotato = false;
+        Invoke(nameof(ReactivatePickupPotato), 5f);
         myDriverId = npv.GetDriverID();
         myGunnerId = npv.GetGunnerID();
         

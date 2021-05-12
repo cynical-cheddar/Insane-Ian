@@ -10,6 +10,8 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 {
     public bool requiresData { get { return true; } }
 
+    public void CollisionEnter() {}
+
     [Serializable]
     public struct CollisionArea {
         public bool show;
@@ -98,7 +100,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
         collisionTimer -= Time.deltaTime;
     }
 
-    public void CollisionEnter() {}
+    
 
     public void CollisionEnter(PhysXCollision collision) {
         // Debug.Log("crashed into: " + collision.gameObject);

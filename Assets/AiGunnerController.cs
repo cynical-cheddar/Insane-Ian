@@ -46,18 +46,15 @@ public class AiGunnerController : MonoBehaviour
 
     IEnumerator YesOrNoFire(){
         while (true){
-            int randNumber = Random.Range(0,6);
-            if(!shouldFire){
-                shouldFire = true;
-                yield return new WaitForSeconds(1f);
-            }
+            int randNumber = Random.Range(0,7);
+
             if(randNumber < 4){
                 shouldFire = false;
-                yield return new WaitForSeconds(randNumber);
+                yield return new WaitForSeconds(3f);
             }
-            if(randNumber >= 4){
+            else if(randNumber >= 4){
                 shouldFire = true;
-                yield return new WaitForSeconds(randNumber);
+                yield return new WaitForSeconds(3f);
             }
         }
     }
@@ -96,7 +93,7 @@ public class AiGunnerController : MonoBehaviour
                     Vector3 hitpoint = CalculateTargetingHitpoint(transform.position, target.position);
                     
                     if(hitpoint != Vector3.zero){
-                        gunnerWeaponManager.FireCurrentWeaponGroup(CalculateFireDeviation(target.position, 4f));
+                        gunnerWeaponManager.FireCurrentWeaponGroup(CalculateFireDeviation(target.position, 7f));
                         yield return new WaitForSeconds(gunnerWeaponManager.currentWeaponControlGroup.weapons[0].fireRate);
                     }
                     else yield return new WaitForSeconds(0.5f);

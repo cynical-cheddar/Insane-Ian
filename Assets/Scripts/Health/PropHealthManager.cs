@@ -12,8 +12,8 @@ public class PropHealthManager : CollidableHealthManager
         //Debug.Log("Dead prop");
         health = 0;
         isDead = true;
-        myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
-        
+        myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.AllViaServer);
+        PhotonNetwork.Destroy(gameObject);
     }
     
     [PunRPC]
@@ -22,6 +22,6 @@ public class PropHealthManager : CollidableHealthManager
         if (wreckPrefab != null) {
             Instantiate(wreckPrefab, transform.position, transform.rotation);  
         }
-        PhotonNetwork.Destroy(gameObject);
+        
     }
 }

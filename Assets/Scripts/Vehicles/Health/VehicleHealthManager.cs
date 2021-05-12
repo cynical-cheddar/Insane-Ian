@@ -33,6 +33,7 @@ public class VehicleHealthManager : CollidableHealthManager
     NetworkPlayerVehicle npv;
     InterfaceCarDrive4W icd4;
 
+    int myTeam = 0;
     
 
     protected AnnouncerManager announcerManager;
@@ -74,7 +75,7 @@ public class VehicleHealthManager : CollidableHealthManager
         npv = GetComponent<NetworkPlayerVehicle>();
         announcerManager = FindObjectOfType<AnnouncerManager>();
 
-        
+
 
         _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
@@ -123,7 +124,7 @@ public class VehicleHealthManager : CollidableHealthManager
             JsonUtility.FromJson<Weapon.WeaponDamageDetails>(weaponDetailsJson);
         lastHitDetails = weaponDamageDetails;
         float amount = weaponDamageDetails.damage;
-        if (health > 0) {
+        if (health > 0 && weaponDamageDetails.sourceTeamId != npv.teamId) {
             health -= amount;
             if (health > maxHealth) health = maxHealth;
             SetSmoke();
@@ -137,9 +138,6 @@ public class VehicleHealthManager : CollidableHealthManager
                 // TODO- update to take damage type parameter
                 myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All); 
                 
-            }
-            else if(PhotonNetwork.IsMasterClient && health <= 0 && !isDead){
-                hpm.canPickupPotato = false;
             }
         }
     }
@@ -160,9 +158,6 @@ public class VehicleHealthManager : CollidableHealthManager
 
                 // TODO- update to take damage type parameter
                 myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
-            }
-            else if(PhotonNetwork.IsMasterClient && health <= 0 && !isDead){
-                hpm.canPickupPotato = false;
             }
         }
     }
@@ -233,6 +228,10 @@ public class VehicleHealthManager : CollidableHealthManager
     // Die is a LOCAL function that is only called by the driver when they get dead.
     protected void Die(bool updateDeath, bool updateKill) {
         // Update gamestate
+
+        networkManager.CallRespawnVehicle(5f, teamId);
+
+
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, 0f);
         bool hadPotato = hpm.removePotato();
@@ -268,12 +267,6 @@ public class VehicleHealthManager : CollidableHealthManager
             teamEntry.kills += 1;
             teamEntry.Increment();
         }
-
-
-
-        networkManager.CallRespawnVehicle(5f, teamId);
-        
-
     }
 
     [PunRPC]
@@ -345,9 +338,14 @@ public class VehicleHealthManager : CollidableHealthManager
         GetComponent<Squishing>().ResetMesh();
     }
 
+    [PunRPC]
+    void SetIsDead_RPC(bool set){
+        isDead = set;
+    }
+
     public void ResetProperties() {
         // Debug.Log("reset properties");
-        isDead = false;
+
         TeamEntry team = gamestateTracker.teams.Get((short)teamId);
         myPhotonView.RPC(nameof(SetGunnerHealth_RPC), RpcTarget.All, maxHealth);
         team.Release();
@@ -368,12 +366,14 @@ public class VehicleHealthManager : CollidableHealthManager
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         icd4.isDead = false;
-        isDead = false;
+
         rb.centreOfMass = Vector3.zero;
+       
         TeamEntry teamEntry = gamestateTracker.teams.Get((short)teamId);
         teamEntry.isDead = false;
         teamEntry.Increment();
         myPhotonView.RPC(nameof(ResetMesh_RPC), RpcTarget.AllBuffered);
+        myPhotonView.RPC(nameof(SetIsDead_RPC), RpcTarget.All, false);
         GetComponentInChildren<DriverCinematicCam>().ResetCam();
     }
 
