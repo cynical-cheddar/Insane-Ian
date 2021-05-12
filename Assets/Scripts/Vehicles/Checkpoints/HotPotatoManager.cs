@@ -26,6 +26,17 @@ public class HotPotatoManager : MonoBehaviour
         telecastManager = FindObjectOfType<TelecastManager>();
     }
 
+    public void RemovePotatoNoDrop_RPC(){
+        isPotato = false;
+
+
+            GetComponent<PhotonView>().RPC(nameof(RemovePotato_RPC), RpcTarget.AllBuffered);
+
+
+            CancelInvoke("buffs");
+
+    }
+
     
     
     TelecastManager telecastManager;
@@ -40,8 +51,8 @@ public class HotPotatoManager : MonoBehaviour
             isSlowedDown = true;
             Time.timeScale = 0.3f;
             Time.fixedDeltaTime = Time.timeScale * .02f;
-            Debug.LogError("SlowedCollisionDone");
-            StartCoroutine(WaitForNextSlowMo(2f));
+            // Debug.LogError("SlowedCollisionDone");
+            StartCoroutine(WaitForNextSlowMo(3f));
             done = false;
         }
     }
@@ -83,7 +94,7 @@ public class HotPotatoManager : MonoBehaviour
         InvokeRepeating("buffs", 2f, 2f);
         GetComponent<PhotonView>().RPC(nameof(PickupPotatoEffects), RpcTarget.All);
 
-        telecastManager.PickupPotato(npv);
+     //   telecastManager.PickupPotato(npv);
 
         AnnouncerManager a = FindObjectOfType<AnnouncerManager>();
         a.PlayAnnouncerLine(a.announcerShouts.potatoPickup, myDriverId, myGunnerId);
@@ -92,7 +103,11 @@ public class HotPotatoManager : MonoBehaviour
     [PunRPC]
     void PickupPotatoEffects()
     {
+        isPotato = true;
         potatoEffects = GetComponentInChildren<PotatoEffects>();
+        NetworkPlayerVehicle npv = GetComponent<NetworkPlayerVehicle>();
+        myGunnerId = npv.GetGunnerID();
+        myGunnerId = npv.GetGunnerID();
         potatoEffects.ActivatePotatoEffects(myDriverId, myGunnerId);
     }
     public bool removePotato()
@@ -131,13 +146,14 @@ public class HotPotatoManager : MonoBehaviour
     [PunRPC]
     void RemovePotato_RPC()
     {
+        isPotato = false;
         PhotonView otherpv = GetComponent<PhotonView>();
         NetworkPlayerVehicle npv = otherpv.GetComponentInParent<NetworkPlayerVehicle>();
         HealthManager hm = otherpv.gameObject.GetComponentInChildren<HealthManager>();
         TeamNameSetup tns = otherpv.gameObject.GetComponentInParent<TeamNameSetup>();
         HotPotatoManager hpm = otherpv.gameObject.GetComponentInParent<HotPotatoManager>();
-
-
+        canPickupPotato = false;
+        Invoke(nameof(ReactivatePickupPotato), 5f);
         myDriverId = npv.GetDriverID();
         myGunnerId = npv.GetGunnerID();
         

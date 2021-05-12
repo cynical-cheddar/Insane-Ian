@@ -88,7 +88,7 @@ public class Weapon : Equipment
     protected int currentSalvo=0;
     [SerializeField] protected ReloadType reloadType;
     [SerializeField] protected float reloadTime = 1f;
-    [SerializeField] protected float fireRate = 0.5f;
+    [SerializeField] public float fireRate = 0.5f;
     protected float reloadProgress = 0f;
     protected float currentCooldown = 0f;
     [Header("Ammunition")]

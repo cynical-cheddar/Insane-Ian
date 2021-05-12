@@ -2,22 +2,42 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-
-public class ExplodingPropHealthManager : PropHealthManager
+using PhysX;
+public class ExplodingPropHealthManager : PropHealthManager, ICollisionEnterEvent
 {
     public float maxExplosionDamage = 50;
     public GameObject temporaryDeathExplosion;
     
+    public float crashShakeIntensity = 3f;
+
+   // public bool requiresData { get { return true; } }
+
+    public new void CollisionEnter() {}
+
 
     void explode(){
-        Debug.LogWarning("Exploding Prop Health Manager has not been ported to the new PhysX system");
-        Debug.LogWarning("I need to sort out overlap sphere stuff");
-        return;
+        //Debug.LogWarning("Exploding Prop Health Manager has not been ported to the new PhysX system");
+        //Debug.LogWarning("I need to sort out overlap sphere stuff");
         GameObject temporaryDeathExplosionInstance = Instantiate(temporaryDeathExplosion, transform.position, transform.rotation);
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5);
-        foreach (Collider collider in hitColliders){
-            if(collider.gameObject.GetComponent<HealthManager>()!=null){
-                collider.gameObject.GetComponent<HealthManager>().TakeDamage(maxExplosionDamage);
+
+        //Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5);
+        //foreach (Collider collider in hitColliders){
+        //    if(collider.gameObject.GetComponent<HealthManager>()!=null){
+        //        collider.gameObject.GetComponent<HealthManager>().TakeDamage(maxExplosionDamage);
+        //    }
+        //}
+    }
+
+
+    public new void CollisionEnter(PhysXCollision col){
+        if (col.rigidBody != null && col.rigidBody.velocity.magnitude > 3) {
+            
+            Die();
+            DriverCinematicCam cam = col.gameObject.transform.root.GetComponentInChildren<DriverCinematicCam>();
+                
+            if(cam != null){
+                Debug.Log("shake");
+                cam.ShakeCams(crashShakeIntensity,1f);
             }
         }
     }

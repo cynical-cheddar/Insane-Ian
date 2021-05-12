@@ -1777,7 +1777,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf7a1e308f820154dbc1443351d84d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultTimeLimit: 300
+  defaultTimeLimit: 180
   timerText: {fileID: 7934223546129997296}
   timer:
     timeLeft: 0
@@ -1941,7 +1941,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5447817751029254366
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4431,6 +4431,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.000076293945
+      objectReference: {fileID: 0}
+    - target: {fileID: 7344339450063440956, guid: a8af00eb431eee140a69d1aa4ffba7e5,
+        type: 3}
+      propertyPath: specialValueLimit
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1299457871528207649, guid: a8af00eb431eee140a69d1aa4ffba7e5, type: 3}

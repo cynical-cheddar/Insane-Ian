@@ -151,6 +151,8 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         gunnerId = gunnerEntry.id;
         botGunner = gunnerEntry.isBot;
 
+        GetComponentInChildren<GunnerWeaponManager>().StartWeaponManager();
+        GetComponentInChildren<PotatoEffects>().Setup();
         
         // firstly, if the gunner is a human, transfer the photonview ownership to the player's client
         
@@ -163,10 +165,9 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
 
         
 
-       
+
 
         
-        //GetComponentInChildren<GunnerWeaponManager>().SelectFirst();
     }
 
     [PunRPC]
@@ -202,7 +203,9 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
             GetComponent<TeamNameSetup>().SetupTeamName("");
         }
 
+        PhysXSceneManager physXSceneManager = FindObjectOfType<PhysXSceneManager>();
 
+        physXSceneManager.doPhysics = true;
 
         //Debug.Log("GOT HERE2");
         Debug.Log("Spawn success");

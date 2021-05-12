@@ -224,6 +224,9 @@ physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributesA, p
         pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
         pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
     }
+    else {
+        return physx::PxFilterFlag::eKILL;
+    }
 
     if ((dataA.word2 & CONTACT_BEGIN) || (dataB.word2 & CONTACT_BEGIN)) {
         pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
@@ -474,7 +477,11 @@ extern "C" {
         vectorArray->push_back(*vector);
     }
 
-    EXPORT_FUNC physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray) {
+    EXPORT_FUNC void GetVectorFromArray(std::vector<physx::PxVec3>* vectorArray, physx::PxVec3* vector, physx::PxU32 index) {
+        *vector = (*vectorArray)[index];
+    }
+
+    EXPORT_FUNC physx::PxGeometry* CreateConvexMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxVec3* scale) {
         physx::PxConvexMeshDesc convexDesc;
         convexDesc.points.count = vertexArray->size();
         convexDesc.points.stride = sizeof(physx::PxVec3);
@@ -492,12 +499,15 @@ extern "C" {
         physx::PxDefaultMemoryInputData input(buffer.getData(), buffer.getSize());
         
         physx::PxConvexMesh* mesh = gPhysics->createConvexMesh(input);
-        physx::PxConvexMeshGeometry* geometry = new physx::PxConvexMeshGeometry(mesh);
+
+        physx::PxMeshScale sc(*scale, physx::PxQuat(physx::PxIdentity));
+
+        physx::PxConvexMeshGeometry* geometry = new physx::PxConvexMeshGeometry(mesh, sc);
         geometry->meshFlags = physx::PxConvexMeshGeometryFlag::eTIGHT_BOUNDS;
         return geometry;
     }
 
-    EXPORT_FUNC physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount) {
+    EXPORT_FUNC physx::PxGeometry* CreateMeshGeometry(std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices, physx::PxU32 triCount, physx::PxVec3* scale) {
         physx::PxTriangleMeshDesc meshDesc;
         meshDesc.points.count = vertexArray->size();
         meshDesc.points.stride = sizeof(physx::PxVec3);
@@ -515,7 +525,38 @@ extern "C" {
         physx::PxDefaultMemoryInputData input(buffer.getData(), buffer.getSize());
         
         physx::PxTriangleMesh* mesh = gPhysics->createTriangleMesh(input);
-        return new physx::PxTriangleMeshGeometry(mesh);
+
+        physx::PxMeshScale sc(*scale, physx::PxQuat(physx::PxIdentity));
+
+        return new physx::PxTriangleMeshGeometry(mesh, sc);
+    }
+
+    EXPORT_FUNC physx::PxU32 GetMeshVertexCount(physx::PxTriangleMeshGeometry *mesh) {
+        return mesh->triangleMesh->getNbVertices();
+    }
+
+    EXPORT_FUNC physx::PxU32 GetMeshTriangleCount(physx::PxTriangleMeshGeometry *mesh) {
+        return mesh->triangleMesh->getNbTriangles();
+    }
+
+    EXPORT_FUNC void GetMeshGeometry(physx::PxTriangleMeshGeometry *mesh, std::vector<physx::PxVec3>* vertexArray, physx::PxU32* triIndices) {
+        const physx::PxVec3* vertices = mesh->triangleMesh->getVertices();
+        for (int i = 0; i < mesh->triangleMesh->getNbVertices(); i++) {
+            vertexArray->push_back(vertices[i]);
+        }
+
+        if ((mesh->triangleMesh->getTriangleMeshFlags() & physx::PxTriangleMeshFlag::e16_BIT_INDICES)) {
+            const physx::PxU16* triangles = (physx::PxU16*)mesh->triangleMesh->getTriangles();
+            for (int i = 0; i < mesh->triangleMesh->getNbTriangles() * 3; i++) {
+                triIndices[i] = triangles[i];
+            }
+        }
+        else {
+            const physx::PxU32* triangles = (physx::PxU32*)mesh->triangleMesh->getTriangles();
+            for (int i = 0; i < mesh->triangleMesh->getNbTriangles() * 3; i++) {
+                triIndices[i] = triangles[i];
+            }
+        }
     }
 
     EXPORT_FUNC physx::PxTransform* CreateTransform(physx::PxVec3* pos, physx::PxQuat* rot) {
@@ -863,7 +904,7 @@ extern "C" {
         ((ActorUserData*)actor->userData)->scene = scene;
     }
 
-    EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time) {
+    EXPORT_FUNC void StepPhysics(physx::PxScene* scene, float time, void* scratchMem, physx::PxU32 scratchMemSize) {
         SceneUserData* sceneUserData = ((SceneUserData*)scene->userData);
 
         physx::PxU32 vehicleCount = sceneUserData->vehicles.size();
@@ -890,13 +931,13 @@ extern "C" {
             }
         }
 
-        scene->simulate(time);
+        scene->simulate(time, NULL, scratchMem, scratchMemSize);
         scene->fetchResults(true);
     }
 
-    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time) {
+    EXPORT_FUNC void StepGhostPhysics(physx::PxScene* scene, float time, void* scratchMem, physx::PxU32 scratchMemSize) {
         SceneUserData* sceneUserData = ((SceneUserData*)scene->userData);
-        sceneUserData->ghostScene->simulate(time);
+        sceneUserData->ghostScene->simulate(time, NULL, scratchMem, scratchMemSize);
         sceneUserData->ghostScene->fetchResults(true);
 
         for (int i = 0; i < sceneUserData->hauntedBodies.size(); i++) {

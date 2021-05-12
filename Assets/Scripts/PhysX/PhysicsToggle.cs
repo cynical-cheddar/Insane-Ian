@@ -66,18 +66,4 @@ public class PhysicsToggle : MonoBehaviour
 
         return false;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Application.IsPlaying(gameObject)) {
-            if (Input.GetKeyDown(KeyCode.P)) {
-                doingPhysics = !doingPhysics;
-
-                PlayerLoopSystem loopSystemRoot = PlayerLoop.GetCurrentPlayerLoop();
-                EditPhysics(ref loopSystemRoot, doingPhysics);
-                PlayerLoop.SetPlayerLoop(loopSystemRoot);
-            }
-        }
-    }
 }

@@ -111,8 +111,7 @@ public class DriverAbilitySmall : Equipment
         }
 
         lastTarget = target;
-        if(target!=transform.root)
-        {
+        if (target != transform.root) {
 
             Vector3 aimPos = target.position;
             Vector3 screenPos = Camera.main.WorldToScreenPoint(aimPos);
@@ -121,10 +120,10 @@ public class DriverAbilitySmall : Equipment
             
             targetOverlay.GetComponent<RectTransform>().anchoredPosition = movePos;
 
-            if(Mathf.Abs(Vector3.SignedAngle(Camera.main.transform.forward,  aimPos - Camera.main.transform.position, transform.up)) > 90f){
+            if (Mathf.Abs(Vector3.SignedAngle(Camera.main.transform.forward,  aimPos - Camera.main.transform.position, transform.up)) > 90f){
                 targetOverlay.SetActive(false);
             }
-            else{
+            else {
                 targetOverlay.SetActive(true);
             }
         }

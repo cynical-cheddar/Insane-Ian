@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 1383375281293615284}
   - component: {fileID: 356674824559230015}
   - component: {fileID: -2342826808390285348}
-  - component: {fileID: 6923708266004218776}
+  - component: {fileID: 8511061080625191524}
+  - component: {fileID: 15220760296628030}
   m_Layer: 0
   m_Name: CactusRound
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 590604926223139169}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6.5, y: 6.5, z: 6.5}
   m_Children: []
@@ -122,12 +123,12 @@ MonoBehaviour:
   kinematic: 0
   useGravity: 1
   mass: 80
-  linearDamping: 0
-  angularDamping: 0
+  linearDamping: 0.6
+  angularDamping: 0.6
   maxVelocity: 3.4028235e+38
   ghostBlend: 0.8
   _centreOfMass: {x: 0, y: 0, z: 0}
---- !u!114 &6923708266004218776
+--- !u!114 &8511061080625191524
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -136,15 +137,49 @@ MonoBehaviour:
   m_GameObject: {fileID: 590604926223139169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b70393a1ebd9245eda71ab4f0b5976c3, type: 3}
+  m_Script: {fileID: 11500000, guid: 79e4824369e234a2584d9799d6735792, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ownLayers: 1
   collisionLayers: 3
   material: {fileID: 0}
   _trigger: 0
-  offset: {x: 0, y: 0.3, z: 0}
+  offset: {x: 0, y: 0.1, z: 0}
   collisionSoftener: {fileID: 0}
-  mesh: {fileID: -2218675821139366350, guid: 828ab295d82621f449378dd2fce2f023, type: 3}
-  convex: 1
-  scale: {x: 6.5, y: 6.5, z: 6.5}
+  x: 3
+  y: 3
+  z: 3
+--- !u!114 &15220760296628030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590604926223139169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ada17ee11e83b44a52885520c343e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 1
+  isDead: 0
+  rammingDamageResistance: 1
+  defaultCollisionResistance: 1
+  audioSourcePrefab: {fileID: 0}
+  crashSoundsSmallDamageThreshold: 5
+  crashSoundsLargeDamageThreshold: 40
+  crashSoundsSmall: []
+  crashSoundsLarge: []
+  crashMasterVolume: 1
+  environmentCollisionResistance: 1
+  collisionAreas: []
+  rammingDamageMultiplier: 1
+  maxCollisionRate: 0.2
+  collisionSparks: {fileID: 0}
+  markedTeamDamageIncrease: 3
+  markedGameObjectPrefab: {fileID: 0}
+  wreckPrefab: {fileID: 0}
+  maxExplosionDamage: 50
+  temporaryDeathExplosion: {fileID: 8148003641115075571, guid: 3bb33d9ba1fd1714cb2c79444055208d,
+    type: 3}
+  crashShakeIntensity: 1

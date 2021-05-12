@@ -10,6 +10,8 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
 {
     public bool requiresData { get { return true; } }
 
+    public void CollisionEnter() {}
+
     [Serializable]
     public struct CollisionArea {
         public bool show;
@@ -56,6 +58,10 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
     float collisionTimer = 0f;
 
     public GameObject collisionSparks;
+
+    protected List<int> markedByTeams = new List<int>();
+
+    public float markedTeamDamageIncrease = 3f;
     protected new void Start(){
         baseCollisionResistance = deathForce / maxHealth;
         myRb = GetComponent<PhysXRigidBody>();
@@ -63,20 +69,41 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             hasHotPotatoManager = true;
             hotPotatoManager = GetComponent<HotPotatoManager>();
             collisionNpv = GetComponent<NetworkPlayerVehicle>();
-            driverCrashDetector = GetComponent<DriverCrashDetector>();
+            if (collisionNpv != null && !collisionNpv.botDriver) driverCrashDetector = GetComponent<DriverCrashDetector>();
         }
         
         base.Start();
     }
+
+    public GameObject markedGameObjectPrefab;
+    protected GameObject markedGameObjectInstance;
+
+    [PunRPC]
+    public void MarkTeam_RPC(int team, int driver, int gunner){
+        markedByTeams.Add(team);
+        if(PhotonNetwork.LocalPlayer.ActorNumber == driver || PhotonNetwork.LocalPlayer.ActorNumber == gunner){
+            markedGameObjectInstance = Instantiate(markedGameObjectPrefab, transform.position, transform.rotation);
+            markedGameObjectInstance.transform.parent = GetComponentInChildren<TeamNameBehaviour>().transform;
+        }
+    }
+
+    [PunRPC]
+    public void RemoveMarkedTeam_RPC(int team, int driver, int gunner){
+        markedByTeams.Remove(team);
+        if(PhotonNetwork.LocalPlayer.ActorNumber == driver || PhotonNetwork.LocalPlayer.ActorNumber == gunner){
+            Destroy(markedGameObjectInstance);
+        }
+    }
+
     protected void Update(){
         timeSinceLastRam += Time.deltaTime;
         collisionTimer -= Time.deltaTime;
     }
 
-    public void CollisionEnter() {}
+    
 
     public void CollisionEnter(PhysXCollision collision) {
-        
+        // Debug.Log("crashed into: " + collision.gameObject);
         float dSpeed = myRb.velocity.magnitude;
 
         float impulse = collision.impulse.magnitude;
@@ -100,44 +127,39 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             }
             collisionPoint /= collision.contactCount;
 
-
-
-
             Vector3 contactDirection = transform.InverseTransformPoint(collisionPoint);
             float damage = CalculateCollisionDamage(collisionForce, contactDirection, otherVehicleManager != null);
            
-           
-    
-
-
-
-
             // instantiate damage sound over network
-            if((damage > crashSoundsSmallDamageThreshold || otherVehicleManager!=null ) && timeSinceLastRam > 0.15f) myPhotonView.RPC(nameof(PlayDamageSoundNetwork), RpcTarget.All, damage);
+            if((damage > crashSoundsSmallDamageThreshold || (otherVehicleManager!=null) ) && timeSinceLastRam > 0.25f) PlayDamageSoundNetwork(damage);
 
             damage = damage / rammingDamageResistance;
 
-          //  Debug.Log("collision damage taken: " + damage + " by " + gameObject.name);
+            if (myPhotonView.IsMine && hasHotPotatoManager && otherVehicleManager != null  && timeSinceLastRam > 0.25f){
+                if (collisionNpv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber || collisionNpv.GetGunnerID() == PhotonNetwork.LocalPlayer.ActorNumber){
+                    // Debug.LogError("Slow down should happen");
+                    hotPotatoManager.SlowedCollision();
+                }
+                if(collisionSparks!=null){
+                    GameObject a = Instantiate(collisionSparks, collisionPoint, Quaternion.identity);
+                    a.transform.parent = transform;
+                }
 
-            if(myPhotonView.IsMine && hasHotPotatoManager && otherVehicleManager != null){
-                        if(collisionNpv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber || collisionNpv.GetGunnerID() == PhotonNetwork.LocalPlayer.ActorNumber){
-                            Debug.LogError("Slow down should happen");
-                           hotPotatoManager.SlowedCollision();
-                        }
-                        if(collisionSparks!=null){
-                            GameObject a = Instantiate(collisionSparks, collisionPoint, Quaternion.identity);
-                            a.transform.parent = transform;
-                        }
-                    }
+                if (collisionNpv != null && !collisionNpv.botDriver) {
+                    if(damage > 4) driverCrashDetector.CrashCollisionCamera(collision, false);
+                    else driverCrashDetector.CrashCollisionCamera(collision, true);
+                }
+            }
             
             if(damage > 5){
                 if (otherVehicleManager != null) {
                     
-                    driverCrashDetector.CrashCollisionCamera(collision);
+                    
                     if(otherVehicleManager!=null)damage  *= otherVehicleManager.rammingDamageMultiplier;
                     Weapon.WeaponDamageDetails rammingDetails = otherVehicleManager.rammingDetails;
                     
                     rammingDetails.damage = damage;
+                    if(markedByTeams.Contains(rammingDetails.sourceTeamId)) rammingDetails.damage *= markedTeamDamageIncrease;
                     
                     TakeDamage(rammingDetails);
                 }
@@ -145,8 +167,9 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
                     TakeDamage(damage);
                 }
             }
-            timeSinceLastRam= 0f;
+            
         }
+        if(collision.rigidBody!=null) timeSinceLastRam= 0f;
     }
 
     protected IEnumerator ResetPreviousCOM(Vector3 com, float t)
@@ -204,6 +227,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
             }
             else
             {
+                Debug.LogError("audioSourcePrefab has no AudioSource");
                 Destroy(gameObject);
             }
         }

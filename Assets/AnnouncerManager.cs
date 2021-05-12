@@ -9,7 +9,7 @@ using Gamestate;
 public class AnnouncerManager : MonoBehaviour
 {
 
-    public enum AnnouncerShoutsTags{potatoPickup, potatoDrop, onKilled, suicide, matchStart, threeMinutes, twoMinutes, oneMinute, thirtySeconds, tenSecondCountdown, matchEnd};
+    public enum AnnouncerShoutsTags{potatoPickup, potatoDrop, onKilled, suicide, matchStart, twoMinutes, oneMinute, thirtySeconds, tenSecondCountdown, matchEnd};
     private AudioSource announcerAudioSource;
 
     [Serializable]
@@ -23,7 +23,6 @@ public class AnnouncerManager : MonoBehaviour
 
         public AnnouncerClipsToPlay matchStart;
 
-        public AnnouncerClipsToPlay threeMinutes;
 
         public AnnouncerClipsToPlay twoMinutes;
 
@@ -50,14 +49,7 @@ public class AnnouncerManager : MonoBehaviour
 
     Queue<AudioClip> clipQueue;
     
-    void Update()
-    {
-        /*
-        if (announcerAudioSource.isPlaying == false && clipQueue.Count > 0) {
-            announcerAudioSource.clip = clipQueue.Dequeue();
-            announcerAudioSource.Play();
-        }*/
-    }
+
         
 
     AnnouncerClipsToPlay GetAnnouncerClipsToPlay(AnnouncerShoutsTags shoutTag){
@@ -66,7 +58,6 @@ public class AnnouncerManager : MonoBehaviour
         if(announcerShouts.matchStart.announcerShoutsTag == shoutTag) return announcerShouts.matchStart;
         if(announcerShouts.onKilled.announcerShoutsTag == shoutTag) return announcerShouts.onKilled;
         if(announcerShouts.suicide.announcerShoutsTag == shoutTag) return announcerShouts.suicide;
-        if(announcerShouts.threeMinutes.announcerShoutsTag == shoutTag) return announcerShouts.threeMinutes;
         if(announcerShouts.twoMinutes.announcerShoutsTag == shoutTag) return announcerShouts.twoMinutes;
         if(announcerShouts.oneMinute.announcerShoutsTag == shoutTag) return announcerShouts.oneMinute;
         if(announcerShouts.thirtySeconds.announcerShoutsTag == shoutTag) return announcerShouts.thirtySeconds;
@@ -84,7 +75,7 @@ public class AnnouncerManager : MonoBehaviour
     // works out which announcer clip to play, then sends rpcs to everyone else telling em to play the correct synced clip
     public void PlayAnnouncerLine(AnnouncerClipsToPlay clipSelection, int driverId, int gunnerId)
     {
-            return;
+        //    return;
         AnnouncerShoutsTags shoutTag = GetShoutTag(clipSelection);
 
         int myClipIndex = -1;
@@ -104,7 +95,7 @@ public class AnnouncerManager : MonoBehaviour
     
     public void PlayAnnouncerLine(AnnouncerClipsToPlay clipSelection)
     {
-         return;
+       // return;
         AnnouncerShoutsTags shoutTag = GetShoutTag(clipSelection);
 
         int myClipIndex = -1;
@@ -135,16 +126,16 @@ public class AnnouncerManager : MonoBehaviour
 
             if((PhotonNetwork.LocalPlayer.ActorNumber == driverId || PhotonNetwork.LocalPlayer.ActorNumber == gunnerId)){
                // PlaySound(clipsToPlay.localClips[myClipIndex]);
-               announcerAudioSource.PlayOneShot(clipsToPlay.localClips[myClipIndex]);
+               if(!announcerAudioSource.isPlaying) announcerAudioSource.PlayOneShot(clipsToPlay.localClips[myClipIndex]);
             }
             else{
               //  PlaySound(clipsToPlay.otherClips[theirClipIndex]);
-              announcerAudioSource.PlayOneShot(clipsToPlay.otherClips[theirClipIndex]);
+              if(!announcerAudioSource.isPlaying) announcerAudioSource.PlayOneShot(clipsToPlay.otherClips[theirClipIndex]);
             }
         }
         else{
            // PlaySound(clipsToPlay.globalClips[globalClipIndex]);
-           announcerAudioSource.PlayOneShot(clipsToPlay.globalClips[globalClipIndex]);
+            if(!announcerAudioSource.isPlaying) announcerAudioSource.PlayOneShot(clipsToPlay.globalClips[globalClipIndex]);
         }
     }
     
@@ -154,11 +145,11 @@ public class AnnouncerManager : MonoBehaviour
     {
         announcerAudioSource = GetComponent<AudioSource>();
     }
-    /*
+    
     public void PlaySound(AudioClip clip)
         {
             clipQueue.Enqueue(clip);
-        }*/
+        }
 
 
 }

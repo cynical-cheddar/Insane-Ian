@@ -9,19 +9,21 @@ public class PropHealthManager : CollidableHealthManager
     public GameObject wreckPrefab;
     
     protected override void Die() {
-        //Debug.Log("Dead prop");
+        Debug.Log("Dead prop");
         health = 0;
         isDead = true;
-        myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
-        
+        myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.AllViaServer);
     }
     
     [PunRPC]
     protected override void PlayDeathEffects_RPC()
     {
-        if(wreckPrefab!=null){
+        Debug.Log("Playing death effects");
+        if (wreckPrefab != null) {
+            Debug.Log("Found wreck prafab");
             Instantiate(wreckPrefab, transform.position, transform.rotation);  
         }
-        PhotonNetwork.Destroy(gameObject);
+        Destroy(gameObject);
+
     }
 }

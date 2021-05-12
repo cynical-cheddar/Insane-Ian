@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class PlayerTransformTracker : MonoBehaviour
 {
 
     public float loopLength = 4f;
+
+    PickupHotPotato gubbinz;
     
     [Serializable]
     public struct VehicleTransformTeamIdPair
@@ -14,10 +17,13 @@ public class PlayerTransformTracker : MonoBehaviour
         public int teamId;
         public Transform vehicleTransform;
 
-        public VehicleTransformTeamIdPair(int id, Transform t)
+        public HotPotatoManager hotPotatoManager;
+
+        public VehicleTransformTeamIdPair(int id, Transform t, HotPotatoManager hpt)
         {
             teamId = id;
             vehicleTransform = t;
+            hotPotatoManager = hpt;
         }
     }
 
@@ -50,7 +56,7 @@ public class PlayerTransformTracker : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSecondsRealtime(loopLength);
+            yield return new WaitForSecondsRealtime(loopLength /2);
             vehicleTransformPairs.Clear();
             NetworkPlayerVehicle[] networkPlayerVehicles = FindObjectsOfType<NetworkPlayerVehicle>();
 
@@ -58,9 +64,33 @@ public class PlayerTransformTracker : MonoBehaviour
             {
                 // get id
                 int id = vehicle.teamId;
-                VehicleTransformTeamIdPair pair = new VehicleTransformTeamIdPair(id, vehicle.transform);
+                VehicleTransformTeamIdPair pair = new VehicleTransformTeamIdPair(id, vehicle.transform, vehicle.GetComponent<HotPotatoManager>());
                 vehicleTransformPairs.Add(pair);
             }
+
+             bool potatoDropped = false;
+
+
+
+            int count = 0;
+            int lastIndex = 0;
+            int i = 0;
+            foreach(VehicleTransformTeamIdPair pair in vehicleTransformPairs){
+                if(pair.hotPotatoManager.isPotato) {
+                    count ++;
+                    lastIndex = i;
+                }
+                i++;
+            }
+            if(count > 1){
+                // find first one with potato
+                vehicleTransformPairs[lastIndex].vehicleTransform.GetComponent<PhotonView>().RPC(nameof(HotPotatoManager.RemovePotatoNoDrop_RPC),RpcTarget.All);
+            }
+            else if (count >= 1 && FindObjectOfType<PickupHotPotato>() != null){
+                PhotonNetwork.Destroy(FindObjectOfType<PickupHotPotato>().gameObject);
+            }
+
+
 
         }
         //yield return new WaitForEndOfFrame();

@@ -14,7 +14,7 @@ namespace Photon.Pun
     using UnityEngine;
 
 
-    [RequireComponent(typeof(Rigidbody))]
+
     [AddComponentMenu("Photon Networking/Photon Rigidbody View")]
     public class PhotonRigidbodyView : MonoBehaviourPun, IPunObservable
     {

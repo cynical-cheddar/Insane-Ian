@@ -73,10 +73,22 @@ namespace PhysX {
 	    public static extern void AddVectorToArray(IntPtr vectorArray, [In] PhysXVec3 vector);
 
         [DllImport(dllName)]
-	    public static extern IntPtr CreateConvexMeshGeometry(IntPtr vertexArray);
+	    public static extern IntPtr CreateConvexMeshGeometry(IntPtr vertexArray, [In] PhysXVec3 scale);
 
         [DllImport(dllName)]
-        public static extern IntPtr CreateMeshGeometry(IntPtr vertexArray, [In] int[] triIndices, int triCount);
+        public static extern IntPtr CreateMeshGeometry(IntPtr vertexArray, [In] int[] triIndices, int triCount, [In] PhysXVec3 scale);
+
+        [DllImport(dllName)]
+        public static extern int GetMeshVertexCount(IntPtr mesh);
+
+        [DllImport(dllName)]
+        public static extern int GetMeshTriangleCount(IntPtr mesh);
+
+        [DllImport(dllName)]
+        public static extern void GetMeshGeometry(IntPtr mesh, IntPtr vertexArray, [Out] int[] triIndices);
+
+        [DllImport(dllName)]
+        public static extern void GetVectorFromArray(IntPtr vectorArray, [Out] PhysXVec3 vector, int index);
 
         [DllImport(dllName)]
         public static extern IntPtr CreateTransform([In] PhysXVec3 pos, [In] PhysXQuat rot);
@@ -262,10 +274,10 @@ namespace PhysX {
         public static extern void AddActorToScene(IntPtr scene, IntPtr actor);
 
         [DllImport(dllName)]
-        public static extern void StepPhysics(IntPtr scene, float time);
+        public static extern void StepPhysics(IntPtr scene, float time, IntPtr scratchMem, int scratchMemSize);
 
         [DllImport(dllName)]
-        public static extern void StepGhostPhysics(IntPtr scene, float time);
+        public static extern void StepGhostPhysics(IntPtr scene, float time, IntPtr scratchMem, int scratchMemSize);
 
         [DllImport(dllName)]
         public static extern IntPtr GetCentreOfMass(IntPtr rigidBody);

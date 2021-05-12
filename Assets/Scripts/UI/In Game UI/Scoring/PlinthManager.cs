@@ -5,11 +5,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Gamestate;
+using System.Runtime.InteropServices;
+using TMPro;
 
 public class PlinthManager : MonoBehaviour {
+
+    [DllImport("__Internal")]
+    private static extern void unmute();
+
     public List<TextMesh> plinthTexts;
     public List<Transform> spawnpoints;
-    public TextMesh scoreboardText;
+    public TextMeshProUGUI scoreboardText;
     public string defaultVehiclePrefabName;
     GamestateTracker gamestateTracker;
     readonly ScoringHelper scoringHelper = new ScoringHelper();
@@ -18,6 +24,9 @@ public class PlinthManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        unmute();
+        #endif
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         // Wait for the host to finish loading first
         //Invoke(nameof(UpdateText), 0.1f);
@@ -65,7 +74,7 @@ public class PlinthManager : MonoBehaviour {
 
         string newText = "";
         foreach (TeamEntry team in sortedTeams) {
-            newText += $"{GetTeamName(team)} -- Score: {scoringHelper.CalcScore(team)} -- K/D: {team.kills}/{team.deaths} -- Gubbins: {team.checkpoint}\n";
+            newText += $"{GetTeamName(team)} -- Score: {scoringHelper.CalcScore(team)} -- Kills: {team.kills} -- Deaths: {team.deaths} -- Gubbins: {team.checkpoint}\n";
         }
         scoreboardText.text = newText;
     }

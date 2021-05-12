@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Cinemachine;
 using PhysX;
+using Photon.Pun;
 
 [VehicleScript(ScriptType.playerDriverScript)]
 
@@ -70,6 +71,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
     private List<float> timeList = new List<float>();
    // [SerializeField]
     public CurrentSensorReportStruct currentSensorReport;
+    private NetworkPlayerVehicle npv;
     
     
     
@@ -87,19 +89,17 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
         }
     }
 
-        public void CollisionEnter() {}
     public bool requiresData { get { return true; } }
+    public void CollisionEnter() {}
 
-    private void Start()
-    {
-      //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
-       // return;
+    private void Start() {
+        //  Debug.LogWarning("Driver Crash Detector has not been ported to the new PhysX system");
+        // return;
 
-       
+        npv = GetComponent<NetworkPlayerVehicle>();
         myRb = GetComponent<PhysXRigidBody>();
         currentSensorReport = new CurrentSensorReportStruct();
         currentSensorReport.lastCrashedPlayer = transform.root;
-        
     }
 
 
@@ -108,7 +108,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
 
     }
 
-    public void CrashCollisionCamera(PhysXCollision other){
+    public void CrashCollisionCamera(PhysXCollision other, bool small){
 
             if (other.transform.root.CompareTag("Player"))
             {
@@ -136,10 +136,15 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
             
             
             
-                currentSensorReport.lastCrashedPlayer = other.transform.root;
+            currentSensorReport.lastCrashedPlayer = other.transform.root;
 
-              
+            
+            if (npv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber && !small) {
                 GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontLeftEnum);
+            }
+            if (npv.GetDriverID() == PhotonNetwork.LocalPlayer.ActorNumber && small) {
+                GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.carCrashFrontRightEnum);
+            }
              //   if(lastTargetPoint!=null) Destroy(lastTargetPoint);
               //  Vector3 point = contactPoints[0].point;
              //   lastTargetPoint = Instantiate(new GameObject(), point, Quaternion.identity);
@@ -164,7 +169,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
         
         currentSensorReport.crashed = false;
         //currentSensorReport.lastCrashedPlayer = transform.root;
-      //  GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.defaultCamEnum);
+
     }
 
     private Vector3 vel = Vector3.zero;
@@ -175,7 +180,7 @@ public class DriverCrashDetector : MonoBehaviour, ICollisionEnterEvent
         crashTimer += Time.deltaTime;
         if(crashTimer > 0.6){
             currentSensorReport.crashed = false;
-           // GetComponentInChildren<DriverCinematicCam>().SetCam(DriverCinematicCam.Cams.defaultCamEnum);
+
         }
         vel = myRb.velocity;
         localVel = transform.InverseTransformDirection(vel);

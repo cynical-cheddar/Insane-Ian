@@ -367,12 +367,14 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
                 gunnerEntry.Release();
             }
         }
-        
-        Debug.Log("Deleting team entry");
-        
-        
-        if(canRemove)teamEntry.Delete();
-        else teamEntry.Release();
+
+
+
+
+        if (canRemove) {
+            Debug.Log("Deleting team entry");
+            teamEntry.Delete();
+        } else teamEntry.Release();
 
         return canRemove;
     }
