@@ -14,7 +14,7 @@ public class PickupGunnerUlt : PickupItem
         // we only call Pickup() if "our" character collides with this PickupItem.
         // note: if you "position" remote characters by setting their translation, triggers won't be hit.
 
-        Debug.Log("gunner ult pickup");
+        // Debug.Log("gunner ult pickup");
         PhotonView otherpv = other.GetComponentInParent<PhotonView>();
         if (otherpv != null && otherpv.IsMine)
         {

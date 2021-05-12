@@ -18,6 +18,10 @@ var ExampleLibraryPlugin = {
 
     muteAll: function() {
         muteEveryone();
+    },
+
+    refresh: function() {
+        refreshPage();
     }
 
 };
