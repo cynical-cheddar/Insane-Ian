@@ -15,7 +15,6 @@ public class DefaultCameraBehaviour : BaseCameraBehaviour
                 animator.ResetTrigger(param.name);
             }
         }
-        _driverCinematicCam.SetCam(stateCam);
 
         StartState(animator);
     }
