@@ -22,54 +22,56 @@ public class AiGunnerController : MonoBehaviour
     uint rigidbodyVehicleId = 0;
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
+    public void Start() {
         gunnerWeaponManager = GetComponent<GunnerWeaponManager>();
         turretController = GetComponent<TurretController>();
-        Invoke(nameof(GetAllTargets), 1f);
+        // Invoke(nameof(GetAllTargets), 1f);
+        GetAllTargets();
+        if (enemies.Count == 0) {
+            Debug.Log("Gunner AI for " + transform.root.gameObject.name + " could not find any targets.");
+            return;
+        }
         rigidbodyVehicleId = transform.root.GetComponentInChildren<PhysXRigidBody>().vehicleId;
         StartCoroutine(GetBestTarget());
         StartCoroutine(YesOrNoFire());
         StartCoroutine(FireCoroutine());
     }
 
-    void GetAllTargets(){
+    void GetAllTargets() {
         NetworkPlayerVehicle[] npvs = FindObjectsOfType<NetworkPlayerVehicle>();
         enemies.Clear();
-        foreach(NetworkPlayerVehicle npv in npvs){
-            if(npv != transform.GetComponentInParent<NetworkPlayerVehicle>()){
+        foreach (NetworkPlayerVehicle npv in npvs) {
+            if (npv != transform.GetComponentInParent<NetworkPlayerVehicle>()) {
                 enemies.Add(npv.transform);
             }
         }
     }
 
-    IEnumerator YesOrNoFire(){
-        while (true){
+    IEnumerator YesOrNoFire() {
+        while (true) {
             int randNumber = Random.Range(0,7);
 
             if(randNumber < 4){
                 shouldFire = false;
-                yield return new WaitForSeconds(3f);
             }
             else if(randNumber >= 4){
                 shouldFire = true;
-                yield return new WaitForSeconds(3f);
             }
+
+            yield return new WaitForSeconds(3f);
         }
     }
 
-    IEnumerator GetBestTarget(){
+    IEnumerator GetBestTarget() {
         yield return new WaitForSeconds(1.5f);
-        while (true){
+        while (true) {
             target = GetClosestEnemy();
             turretController.SetTarget(target.gameObject);
             yield return new WaitForSeconds(3f);
         }
     }
 
-    Transform GetClosestEnemy()
-    {
+    Transform GetClosestEnemy() {
         Transform tMin = null;
         float minDist = Mathf.Infinity;
         Vector3 currentPos = transform.position;
@@ -86,13 +88,13 @@ public class AiGunnerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    IEnumerator FireCoroutine(){
-        while(true){
-            if(target !=null && shouldFire){
-                if(gunnerWeaponManager.CurrentWeaponGroupCanFire()){
+    IEnumerator FireCoroutine() {
+        while (true) {
+            if (target !=null && shouldFire) {
+                if (gunnerWeaponManager.CurrentWeaponGroupCanFire()) {
                     Vector3 hitpoint = CalculateTargetingHitpoint(transform.position, target.position);
                     
-                    if(hitpoint != Vector3.zero){
+                    if (hitpoint != Vector3.zero) {
                         gunnerWeaponManager.FireCurrentWeaponGroup(CalculateFireDeviation(target.position, 7f));
                         yield return new WaitForSeconds(gunnerWeaponManager.currentWeaponControlGroup.weapons[0].fireRate);
                     }
@@ -103,8 +105,7 @@ public class AiGunnerController : MonoBehaviour
         }
     }
 
-    protected Vector3 CalculateFireDeviation(Vector3 oldTargetPoint, float maxDegrees)
-    {
+    protected Vector3 CalculateFireDeviation(Vector3 oldTargetPoint, float maxDegrees) {
         if (maxDegrees == 0) return oldTargetPoint;
         float deviationDegreesTraverse = Random.Range(0, maxDegrees);
         float deviationDegreesElevation = Random.Range(0, maxDegrees);
@@ -136,45 +137,29 @@ public class AiGunnerController : MonoBehaviour
 
         if (hitTransform == null) {
             hp = Vector3.zero;
-
         }
         else if(!hitTransform.CompareTag("Player")){
             hp = Vector3.zero;
         }
-         else {
+        else {
             hp = hitVector;
-
         }
 
         return hp;
     }
 
     protected Transform FindClosestHitObject(Ray ray, out Vector3 hitPoint) {
-
-       // RaycastHit[] hits = Physics.RaycastAll(ray);
-       // colliders = transform.root.gameObject.GetComponentsInChildren<PhysXCollider>();
         Transform closestHit = null;
-        float distance = 0;
         hitPoint = Vector3.zero;
 
         PhysXRaycastHit hitPhysX = PhysXRaycast.GetRaycastHit();
-         if (PhysXRaycast.Fire(ray.origin, ray.direction, hitPhysX, 9999, raycastLayers, rigidbodyVehicleId)){
-             closestHit = hitPhysX.transform;
-             hitPoint = hitPhysX.point;
-         }
+        if (PhysXRaycast.Fire(ray.origin, ray.direction, hitPhysX, raycastLayers, rigidbodyVehicleId)) {
+            closestHit = hitPhysX.transform;
+            hitPoint = hitPhysX.point;
+        }
 
-         
-
-          PhysXRaycast.ReleaseRaycastHit(hitPhysX);
-
-
-        
-
-        // closestHit is now either still null (i.e. we hit nothing) OR it contains the closest thing that is a valid thing to hit
+        PhysXRaycast.ReleaseRaycastHit(hitPhysX);
 
         return closestHit;
-
     }
-
-
 }
