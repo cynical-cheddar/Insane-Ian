@@ -46,7 +46,7 @@ public class PickupHotPotato : PickupItem
         
         if(PhotonNetwork.IsMasterClient){
             NetworkPlayerVehicle npv = other.GetComponentInParent<NetworkPlayerVehicle>();
-            if(npv != null){
+            if(npv != null && !npv.GetComponent<VehicleHealthManager>().isDead){
                 if(this.SentPickup) return;
                 int gunnerID = npv.GetGunnerID();
                 int driverID = npv.GetDriverID();
