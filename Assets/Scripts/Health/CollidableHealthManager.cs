@@ -81,7 +81,7 @@ public class CollidableHealthManager : HealthManager, ICollisionEnterEvent
         markedByTeams.Add(team);
         if(PhotonNetwork.LocalPlayer.ActorNumber == driver || PhotonNetwork.LocalPlayer.ActorNumber == gunner){
             markedGameObjectInstance = Instantiate(markedGameObjectPrefab, transform.position, transform.rotation);
-            markedGameObjectInstance.transform.parent = transform;
+            markedGameObjectInstance.transform.parent = GetComponentInChildren<TeamNameBehaviour>().transform;
         }
     }
 
