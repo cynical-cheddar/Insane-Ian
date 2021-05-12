@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3321114836375740015}
   - component: {fileID: 8490033066206621912}
   - component: {fileID: 8626408493579554225}
-  - component: {fileID: 2813734141225697439}
   - component: {fileID: 8160504352115653886}
+  - component: {fileID: 8459371280207818444}
   m_Layer: 0
   m_Name: wholeshack
   m_TagString: Untagged
@@ -89,36 +89,6 @@ MonoBehaviour:
   x: 3.7
   y: 4.88
   z: 5
---- !u!114 &2813734141225697439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3321114836375740008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bb0ce2585d3f81479a665517c4cae41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 3
-  rammingDamageResistance: 0.52
-  defaultCollisionResistance: 1
-  audioSourcePrefab: {fileID: 0}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 40
-  crashSoundsSmall: []
-  crashSoundsLarge: []
-  crashMasterVolume: 1
-  environmentCollisionResistance: 1
-  collisionAreas: []
-  rammingDamageMultiplier: 1
-  maxCollisionRate: 0.2
-  collisionSparks: {fileID: 0}
-  markedTeamDamageIncrease: 3
-  markedGameObjectPrefab: {fileID: 0}
-  wreckPrefab: {fileID: 3030104684564936446, guid: 8315aa94b077264418f5d91f99a811dc,
-    type: 3}
 --- !u!114 &8160504352115653886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,6 +111,42 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &8459371280207818444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3321114836375740008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ada17ee11e83b44a52885520c343e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  isDead: 0
+  rammingDamageResistance: 1
+  defaultCollisionResistance: 1
+  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
+    type: 3}
+  crashSoundsSmallDamageThreshold: 5
+  crashSoundsLargeDamageThreshold: 40
+  crashSoundsSmall: []
+  crashSoundsLarge: []
+  crashMasterVolume: 1
+  environmentCollisionResistance: 1
+  collisionAreas: []
+  rammingDamageMultiplier: 1
+  maxCollisionRate: 0.2
+  collisionSparks: {fileID: 0}
+  markedTeamDamageIncrease: 3
+  markedGameObjectPrefab: {fileID: 0}
+  wreckPrefab: {fileID: 3030104684564936446, guid: 8315aa94b077264418f5d91f99a811dc,
+    type: 3}
+  maxExplosionDamage: 50
+  temporaryDeathExplosion: {fileID: 3030104684564936446, guid: 8315aa94b077264418f5d91f99a811dc,
+    type: 3}
+  crashShakeIntensity: 5
 --- !u!1001 &3321114836387496834
 PrefabInstance:
   m_ObjectHideFlags: 0

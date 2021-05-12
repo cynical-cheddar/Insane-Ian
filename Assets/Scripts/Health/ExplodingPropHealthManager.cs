@@ -2,12 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-
-public class ExplodingPropHealthManager : PropHealthManager
+using PhysX;
+public class ExplodingPropHealthManager : PropHealthManager, ICollisionEnterEvent
 {
     public float maxExplosionDamage = 50;
     public GameObject temporaryDeathExplosion;
     
+    public float crashShakeIntensity = 3f;
+
+   // public bool requiresData { get { return true; } }
+
+    public new void CollisionEnter() {}
+
 
     void explode(){
         //Debug.LogWarning("Exploding Prop Health Manager has not been ported to the new PhysX system");
@@ -20,6 +26,20 @@ public class ExplodingPropHealthManager : PropHealthManager
         //        collider.gameObject.GetComponent<HealthManager>().TakeDamage(maxExplosionDamage);
         //    }
         //}
+    }
+
+
+    public new void CollisionEnter(PhysXCollision col){
+        if(col.collider.attachedRigidBody.velocity.magnitude > 3){
+            
+            Die();
+            DriverCinematicCam cam = col.gameObject.transform.root.GetComponentInChildren<DriverCinematicCam>();
+                
+            if(cam != null){
+                Debug.Log("shake");
+                cam.ShakeCams(crashShakeIntensity,1f);
+            }
+        }
     }
 
     protected override void Die() {
