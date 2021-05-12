@@ -200,8 +200,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void ActivateVehicles()
     {
         NetworkPlayerVehicle[] npvs = FindObjectsOfType<NetworkPlayerVehicle>();
-        foreach (NetworkPlayerVehicle npv in npvs)
-        {
+        foreach (NetworkPlayerVehicle npv in npvs) {
             npv.GetComponent<PhotonView>().RPC(nameof(NetworkPlayerVehicle.ActivateVehicleInputs), RpcTarget.AllBufferedViaServer);
         }
         photonView.RPC(nameof(ActivateArrow_RPC), RpcTarget.All);
