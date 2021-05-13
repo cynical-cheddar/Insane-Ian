@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 911258900534210195}
   - component: {fileID: 4254400475707613494}
   - component: {fileID: 2084707001360635388}
-  - component: {fileID: 806083143545932148}
   - component: {fileID: 7738790931259492866}
   - component: {fileID: 3694299071668961913}
   - component: {fileID: 658289406774261459}
@@ -31,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 571571811472471081}
   m_LocalRotation: {x: 0, y: -0.7399365, z: 0, w: 0.6726768}
   m_LocalPosition: {x: 301.6, y: 19.54, z: 120.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.014285714, y: 0.0125, z: 0.014285714}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -88,28 +87,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &806083143545932148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 571571811472471081}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  observableSearch: 2
-  Synchronization: 3
-  OwnershipTransfer: 0
-  ObservedComponents: []
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!114 &7738790931259492866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,32 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ada17ee11e83b44a52885520c343e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
-  isDead: 0
-  rammingDamageResistance: 1
-  defaultCollisionResistance: 0.1
-  audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
-    type: 3}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 40
-  crashSoundsSmall:
-  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
-  crashSoundsLarge:
-  - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
-  crashMasterVolume: 1
-  environmentCollisionResistance: 1
-  collisionAreas: []
-  rammingDamageMultiplier: 1
-  maxCollisionRate: 0.2
-  collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
-    type: 3}
-  markedTeamDamageIncrease: 3
-  markedGameObjectPrefab: {fileID: 0}
-  wreckPrefab: {fileID: 0}
-  maxExplosionDamage: 50
-  temporaryDeathExplosion: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11,
-    type: 3}
-  crashShakeIntensity: 6
+  wreckPrefab: {fileID: 167312, guid: 8f6e0bdc9971d2848a1c6dd332649a11, type: 3}
 --- !u!114 &3694299071668961913
 MonoBehaviour:
   m_ObjectHideFlags: 0

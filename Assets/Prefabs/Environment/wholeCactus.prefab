@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3160635048619975051}
   - component: {fileID: 5838916759096382936}
   - component: {fileID: 2208744180106269377}
-  - component: {fileID: 6568206729791068926}
   m_Layer: 0
   m_Name: wholeCactus
   m_TagString: Untagged
@@ -91,50 +90,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bb0ce2585d3f81479a665517c4cae41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1
-  isDead: 0
-  rammingDamageResistance: 1
-  defaultCollisionResistance: 0.1
-  audioSourcePrefab: {fileID: 0}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 40
-  crashSoundsSmall:
-  - {fileID: 8300000, guid: c79eea7f7d154cd4aa3829ecf94c922c, type: 3}
-  crashSoundsLarge:
-  - {fileID: 8300000, guid: c79eea7f7d154cd4aa3829ecf94c922c, type: 3}
-  crashMasterVolume: 1
-  environmentCollisionResistance: 1
-  collisionAreas: []
-  rammingDamageMultiplier: 3
-  maxCollisionRate: 0.2
-  collisionSparks: {fileID: 1411798332169248197, guid: 13125ab3cef62994e9c8b94520aa7dd0,
-    type: 3}
-  markedTeamDamageIncrease: 3
-  markedGameObjectPrefab: {fileID: 0}
   wreckPrefab: {fileID: 8147950903815117826, guid: ea340abfa5be5b440bfb8bbfaaeb1662,
     type: 3}
---- !u!114 &6568206729791068926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8147950903815117826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  observableSearch: 2
-  Synchronization: 3
-  OwnershipTransfer: 0
-  ObservedComponents: []
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1001 &8928991319932833041
 PrefabInstance:
   m_ObjectHideFlags: 0
