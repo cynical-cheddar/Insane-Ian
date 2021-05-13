@@ -154,7 +154,7 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         GetComponentInChildren<PotatoEffects>().Setup();
         
         // firstly, if the gunner is a human, transfer the photonview ownership to the player's client
-        PhotonNetwork.AddCallbackTarget(GetComponentInChildren<GunnerWeaponManager>());
+        gunnerPhotonView.AddCallbackTarget(GetComponentInChildren<GunnerWeaponManager>());
         
         if (!botDriver) TransferDriverPhotonViewOwnership();
         if (!botGunner) TransferGunnerPhotonViewOwnership();
