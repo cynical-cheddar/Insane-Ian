@@ -75,8 +75,7 @@ public class VehicleHealthManager : CollidableHealthManager
         npv = GetComponent<NetworkPlayerVehicle>();
         announcerManager = FindObjectOfType<AnnouncerManager>();
 
-        GunnerWeaponManager gunnerWeaponManager = GetComponentInChildren<GunnerWeaponManager>();
-        gunnerWeaponManager.Reset();
+
 
         _rammingDetails = new Weapon.WeaponDamageDetails(null, 0, 0, Weapon.DamageType.ramming, 0, Vector3.zero);
 
