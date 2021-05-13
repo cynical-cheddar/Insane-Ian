@@ -67,7 +67,11 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
             "Raving Randy",
             "Frenzied Francine",
             "Furiosa",
-            "Unspecified Panel Member"
+            "Unspecified Panel Member",
+            "Sir Killalot",
+            "Lamp Oil",
+            "MEDIC!!!",
+            "Player1"
         };
     }
 
