@@ -7,7 +7,7 @@ using Photon.Realtime;
 using UnityEngine;
 
 
-public class GunnerWeaponManager : MonoBehaviourPun, IOnPhotonViewOwnerChange
+public class GunnerWeaponManager : MonoBehaviourPun, IPunOwnershipCallbacks
 {
     private UltimateUiManager ultimateUiManager;
     
@@ -49,8 +49,13 @@ public class GunnerWeaponManager : MonoBehaviourPun, IOnPhotonViewOwnerChange
             gunnerDamageDealt = (float)stream.ReceiveNext();
         }
     }
+    void IPunOwnershipCallbacks.OnOwnershipRequest(PhotonView targetView, Player requestingPlayer) {
 
-    void IOnPhotonViewOwnerChange.OnOwnerChange(Player newOwner, Player previousOwner) {
+    }
+
+    void IPunOwnershipCallbacks.OnOwnershipTransfered(PhotonView targetView, Player previousOwner) {
+        Debug.Log("ownership transferred");
+        Debug.Log(targetView.IsMine);
         StartWeaponManager();
     }
     
