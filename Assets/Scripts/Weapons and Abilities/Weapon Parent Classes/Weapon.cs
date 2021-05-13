@@ -523,19 +523,14 @@ public class Weapon : Equipment
             ReloadSalvo();
         }
         
-        
         if (currentCooldown <= 0 && myVehicleManager.health > 0)
         {
             GunnerUltimateUpdateCallback();
-            if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
+            if ((reloadType != ReloadType.noReload) && currentSalvo > 0) return true;
             else if (reloadType == ReloadType.noReload && currentSalvo > 0) return true;
         }
 
         SelectFirstIfEmpty();
-
-        
-        
-        
 
         return false;
     }

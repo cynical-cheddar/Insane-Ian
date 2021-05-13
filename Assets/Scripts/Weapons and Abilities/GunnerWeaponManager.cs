@@ -54,6 +54,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunOwnershipCallbacks
     }
 
     void IPunOwnershipCallbacks.OnOwnershipTransfered(PhotonView targetView, Player previousOwner) {
+        Debug.Log("ownership transferred");
         StartWeaponManager();
     }
     

@@ -162,12 +162,6 @@ public class NetworkPlayerVehicle : MonoBehaviourPunCallbacks, IPunInstantiateMa
         // transfer control to master client if bot
         if (botDriver) driverPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
         if (botGunner) gunnerPhotonView.TransferOwnership(PhotonNetwork.MasterClient);
-
-        
-
-
-
-        
     }
 
     [PunRPC]
