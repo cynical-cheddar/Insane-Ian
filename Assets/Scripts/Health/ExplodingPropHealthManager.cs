@@ -46,18 +46,15 @@ public class ExplodingPropHealthManager : PropHealthManager, ICollisionEnterEven
         //Debug.Log("Dead exploding prop");
         health = 0;
         isDead = true;        
-        
-        myPhotonView.RPC(nameof(PlayDeathEffects_RPC), RpcTarget.All);
-    }
-    
-    [PunRPC]
-    protected override void PlayDeathEffects_RPC()
-    {
+
         explode();
         if(wreckPrefab!=null){
             Instantiate(wreckPrefab, transform.position, transform.rotation);
         }
-        PhotonNetwork.Destroy(gameObject);
+        Destroy(gameObject);
+
     }
+    
+
 
 }
