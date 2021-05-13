@@ -52,10 +52,13 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
         roomsPerPage = pageBehaviour.roomsPerPage;
         randomNames = new List<string>() {
             "XxInsaneIanxX",
-            "Her Majesty The Queen TMè",
+            "Her Majesty The Queen TM",
             "James. Just James",
             "Not A Bot",
-            "Didn't Choose A Nickname"
+            "Didn't Choose A Nickname",
+            "Get Good, Get LmaoBox",
+            "Suave Announcer",
+            "Unspecified Panel Member"
         };
     }
 
