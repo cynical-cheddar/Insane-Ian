@@ -12,27 +12,27 @@ public class WeaponUi : MonoBehaviour
     public TextMeshProUGUI weaponNameText;
     public Text crosshair;
 
+    private bool initialCanvasSet = false;
+
     // Start is called before the first frame update
-    public void UpdateAmmo(int currentSalvo, int salvoSize, int reserveAmmo)
-    {
+    public void UpdateAmmo(int currentSalvo, int salvoSize, int reserveAmmo) {
         salvoText.text = currentSalvo.ToString() + "/" + salvoSize;
         reserveAmmoText.text = reserveAmmo.ToString();
     }
 
-    private void Start()
-    {
-        SetCanvasVisibility(false);
+    private void Start() {
+        if (!initialCanvasSet) SetCanvasVisibility(false);
     }
 
-    public void SetCanvasVisibility(bool set)
-    {
+    public void SetCanvasVisibility(bool set) {
+        initialCanvasSet = true;
+
         if (crosshair != null) crosshair.gameObject.SetActive(set);
+
         CanvasGroup[] canvasRenderers = GetComponentsInChildren<CanvasGroup>();
-        foreach (CanvasGroup cv in canvasRenderers)
-        {
-            
-            if(set) cv.alpha = 1;
-            if (!set) cv.alpha = 0;
+        foreach (CanvasGroup cv in canvasRenderers) {
+            if (set) cv.alpha = 1;
+            else cv.alpha = 0;
         }
     }
 

@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Gamestate;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 
-public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
+public class GunnerWeaponManager : MonoBehaviourPun, IPunOwnershipCallbacks
 {
     private UltimateUiManager ultimateUiManager;
     
@@ -48,9 +49,15 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
             gunnerDamageDealt = (float)stream.ReceiveNext();
         }
     }
-    
-    
-    
+    void IPunOwnershipCallbacks.OnOwnershipRequest(PhotonView targetView, Player requestingPlayer) {
+
+    }
+
+    void IPunOwnershipCallbacks.OnOwnershipTransfered(PhotonView targetView, Player previousOwner) {
+        Debug.Log("ownership transferred");
+        Debug.Log(targetView.IsMine);
+        StartWeaponManager();
+    }
     
     [Serializable]
     public struct WeaponControlGroups
@@ -90,6 +97,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
     {
        // gunnerUltimateProgress = 0;
        // SetGunnerUltimateProgress(0);
+       Debug.Log("reset first selected");
         SelectFirst();
         
         
@@ -155,6 +163,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
         ultimateUiManager = FindObjectOfType<UltimateUiManager>();
         if(ultimateUiManager!=null) ultimateUiManager.CacheRole();
         
+        Debug.Log("start first selected");
         SelectFirst();
         SetupWeaponOwnerships();
         
@@ -203,6 +212,7 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
         if (gunnerUltimateProgress >= maxGunnerUltimateProgress && myPhotonView.IsMine)
         {
             usingUltimate = true;
+            Debug.Log("ultimate selected");
             ResetWeaponGroup(weaponControlGroups.weaponControlGroupList[ultimateGroupWeaponIndex]);
             SelectWeaponGroup(weaponControlGroups.weaponControlGroupList[ultimateGroupWeaponIndex]);
         }

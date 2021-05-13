@@ -180,10 +180,6 @@ public class Weapon : Equipment
         rigidbodyVehicleId = GetComponentInParent<PhysXRigidBody>().vehicleId;
     }
 
-
-
-
-
     protected void ShakeCameras(float intensity, float time)
     {
 
@@ -316,9 +312,11 @@ public class Weapon : Equipment
     {
         if (!isSetup) SetupWeapon();
         
-        if(gunnerPhotonView!=null && weaponUi!=null){ if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);}
+        if (gunnerPhotonView != null && weaponUi != null) {
+            if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
+        }
         
-        weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);
+        // weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);
 
         UpdateHud();
     }
@@ -446,14 +444,14 @@ public class Weapon : Equipment
         
     }
 
-    [PunRPC]
-    protected void AnimatorSetTriggerNetwork(string triggerName)
-    {
-        if (weaponAnimator != null)
-        {
-         weaponAnimator.SetTrigger(triggerName);
-        }
-    }
+    // [PunRPC]
+    // protected void AnimatorSetTriggerNetwork(string triggerName)
+    // {
+    //     if (weaponAnimator != null)
+    //     {
+    //      weaponAnimator.SetTrigger(triggerName);
+    //     }
+    // }
     
 
     // called manually by player / ai to reload the gun
@@ -467,7 +465,7 @@ public class Weapon : Equipment
             ReloadBehaviour reloadIcon = FindObjectOfType<ReloadBehaviour>();
             if (reloadIcon != null) StartCoroutine(reloadIcon.Reload(reloadTime));
 
-            weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, reloadAnimatorTriggerName);
+            // weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, reloadAnimatorTriggerName);
             
             ReloadFull();
         }
@@ -525,19 +523,14 @@ public class Weapon : Equipment
             ReloadSalvo();
         }
         
-        
         if (currentCooldown <= 0 && myVehicleManager.health > 0)
         {
             GunnerUltimateUpdateCallback();
-            if((reloadType != ReloadType.noReload) && currentSalvo > 0)return true;
+            if ((reloadType != ReloadType.noReload) && currentSalvo > 0) return true;
             else if (reloadType == ReloadType.noReload && currentSalvo > 0) return true;
         }
 
         SelectFirstIfEmpty();
-
-        
-        
-        
 
         return false;
     }

@@ -58,7 +58,20 @@ public class ServerBrowserBehaviour : MonoBehaviourPunCallbacks {
             "Didn't Choose A Nickname",
             "Get Good, Get LmaoBox",
             "Suave Announcer",
-            "Unspecified Panel Member"
+            "Eggman",
+            "Cheesey",
+            "Barmy Barry",
+            "Nutty Natalie",
+            "Crazy Craig",
+            "Deranged Dave",
+            "Raving Randy",
+            "Frenzied Francine",
+            "Furiosa",
+            "Unspecified Panel Member",
+            "Sir Killalot",
+            "Lamp Oil",
+            "MEDIC!!!",
+            "Player1"
         };
     }
 

@@ -151,7 +151,7 @@ public class BeamWeapon : Weapon
 
     public override void ActivateWeapon()
     {
-        weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);
+        // weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);
         colliders = transform.root.GetComponentsInChildren<Collider>();
         newHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
         oldHit = new BeamHit(false, Vector3.zero, false, Vector3.zero, false,0, transform);
@@ -364,7 +364,7 @@ public class BeamWeapon : Weapon
 
     protected void FireBeamRoundEffectMiss(Vector3 targetPoint)
     {
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate impact particle with miss sound effect
         //InstantiateImpactEffect(missImpactParticle, targetPoint, impactParticleSoundMiss, missImpactParticleVolume, 2f);
         //PlayImpactSound();
@@ -372,7 +372,7 @@ public class BeamWeapon : Weapon
 
     protected void FireBeamRoundEffectHit(Vector3 targetPoint)
     {
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate impact particle with miss sound effect
         InstantiateImpactEffect(imapactParticle, targetPoint, impactParticleSound, imapactParticleVolume, 2f);
         PlayImpactSound();
@@ -397,7 +397,7 @@ public class BeamWeapon : Weapon
         newHit = new BeamHit(validHit, worldHit, hitPlayer, localHit, true, hitTeamId, newTargetVehicle);
         if (oldHit.active == false) oldHit = newHit;
         
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         turretFollowTarget.target = lookpoint;
         
         // if the beam effects are currently null, instantiate them
