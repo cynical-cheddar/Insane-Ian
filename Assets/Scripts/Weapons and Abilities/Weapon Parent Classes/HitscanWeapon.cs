@@ -103,7 +103,7 @@ public class HitscanWeapon : Weapon {
             // if valid target is null, then fire a ray effect with no impact
             else FireHitscanRoundEffectNoValidTarget(raycastTracerDetails.worldHitPoint);
             
-            AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+            // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
             Debug.Log("RemoteFiringEffects done");
             yield return new WaitForSeconds(fireRate);
         }
@@ -290,7 +290,7 @@ public class HitscanWeapon : Weapon {
     [PunRPC]
     protected void FireHitscanRoundEffectNoValidTarget(Vector3 targetPoint)
     {
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate muzzle particle
         InstantiateMuzzleFlash(muzzleflash, 2f, muzzleflashChildOfBarrel);
         // instantiate tracer (if exists)
@@ -300,7 +300,7 @@ public class HitscanWeapon : Weapon {
     [PunRPC]
     protected void FireHitscanRoundEffectMiss(Vector3 targetPoint)
     {
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate muzzle particle
         InstantiateMuzzleFlash(muzzleflash, 2f, muzzleflashChildOfBarrel);
         // instantiate impact particle with miss sound effect
@@ -314,7 +314,7 @@ public class HitscanWeapon : Weapon {
     [PunRPC]
     protected void FireHitscanRoundEffect(Vector3 targetPoint)
     {
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate muzzle particle
         InstantiateMuzzleFlash(muzzleflash, 2f, muzzleflashChildOfBarrel);
         
@@ -328,7 +328,7 @@ public class HitscanWeapon : Weapon {
     protected void FireHitscanRoundEffectCorrected(Vector3 localTargetPoint, int hitTeamId)
     {
         
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // the vehicle transform tracker should keep a reference of all vehicle transforms in the game
         
         // get transform from team id

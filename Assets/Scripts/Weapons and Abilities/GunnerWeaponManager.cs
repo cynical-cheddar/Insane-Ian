@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Gamestate;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 
-public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
+public class GunnerWeaponManager : MonoBehaviourPun, IPunOwnershipCallbacks
 {
     private UltimateUiManager ultimateUiManager;
     
@@ -48,9 +49,13 @@ public class GunnerWeaponManager : MonoBehaviourPun, IPunObservable
             gunnerDamageDealt = (float)stream.ReceiveNext();
         }
     }
-    
-    
-    
+    void IPunOwnershipCallbacks.OnOwnershipRequest(PhotonView targetView, Player requestingPlayer) {
+
+    }
+
+    void IPunOwnershipCallbacks.OnOwnershipTransfered(PhotonView targetView, Player previousOwner) {
+        StartWeaponManager();
+    }
     
     [Serializable]
     public struct WeaponControlGroups
