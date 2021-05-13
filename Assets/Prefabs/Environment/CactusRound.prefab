@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 250390277683944411}
   - component: {fileID: 3807313224963921022}
   - component: {fileID: 1383375281293615284}
-  - component: {fileID: 356674824559230015}
   - component: {fileID: -2342826808390285348}
   - component: {fileID: 8511061080625191524}
   - component: {fileID: 15220760296628030}
@@ -86,28 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &356674824559230015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 590604926223139169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  observableSearch: 2
-  Synchronization: 3
-  OwnershipTransfer: 0
-  ObservedComponents: []
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!114 &-2342826808390285348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,25 +138,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ada17ee11e83b44a52885520c343e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 1
-  isDead: 0
-  rammingDamageResistance: 1
-  defaultCollisionResistance: 1
-  audioSourcePrefab: {fileID: 0}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 40
-  crashSoundsSmall: []
-  crashSoundsLarge: []
-  crashMasterVolume: 1
-  environmentCollisionResistance: 1
-  collisionAreas: []
-  rammingDamageMultiplier: 1
-  maxCollisionRate: 0.2
-  collisionSparks: {fileID: 0}
-  markedTeamDamageIncrease: 3
-  markedGameObjectPrefab: {fileID: 0}
-  wreckPrefab: {fileID: 0}
-  maxExplosionDamage: 50
-  temporaryDeathExplosion: {fileID: 8148003641115075571, guid: 3bb33d9ba1fd1714cb2c79444055208d,
+  wreckPrefab: {fileID: 8148003641115075571, guid: 3bb33d9ba1fd1714cb2c79444055208d,
     type: 3}
-  crashShakeIntensity: 1
