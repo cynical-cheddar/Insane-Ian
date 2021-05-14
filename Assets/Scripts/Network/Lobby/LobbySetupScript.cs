@@ -12,10 +12,12 @@ using TMPro;
 public class LobbySetupScript : MonoBehaviour
 {
     public TextMeshProUGUI roomNameText;
+    public TextMeshProUGUI playerNameText;
     
     void Start()
     {
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
+        playerNameText.text = PhotonNetwork.LocalPlayer.NickName;
     }
 
     // Update is called once per frame
