@@ -57,6 +57,7 @@ public class MeshstateTracker : MonoBehaviour
         //System.GC.Collect();
         //Debug.Log("BikeMeshDone");
 
+        Debug.Log("Loading Main Menu...");
         SceneManager.LoadScene("MainMenu");
 
         //StartCoroutine(nameof(LoadMeshes));
