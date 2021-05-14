@@ -83,7 +83,6 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(float targetDirection) {
-        float targetAngle;
         float steerAngle;
 
         //Get the current steer angle
@@ -109,6 +108,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
 
 
+        //float targetAngle;
         //targetAngle is the angle we want to tend towards
         // targetAngle = targetDirection * maxSteerAngle;
 
