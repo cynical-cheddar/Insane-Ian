@@ -274,8 +274,8 @@ public class VehicleHealthManager : CollidableHealthManager
     {
         PlayDeathTrailEffects(true);
         inputDriver.enabled = false;
-        rb.linearDamping = 0.75f;
-        rb.angularDamping = 0.75f;
+        rb.linearDamping = 75f;
+        rb.angularDamping = 75f;
         icd4.isDead = true;
         float x, y, z;
         x = Random.Range(-0.2f, 0.2f);

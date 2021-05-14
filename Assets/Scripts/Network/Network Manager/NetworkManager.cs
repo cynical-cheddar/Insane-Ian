@@ -269,7 +269,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 // Reset stats
                 //vehicle.GetComponent<PhotonView>().RPC(nameof(VehicleHealthManager.ResetProperties), RpcTarget.AllViaServer);
 
-                vehicle.ResetProperties();
+                
 
                 // Move to spawnpoint
                 vehicle.GetComponent<InputDriver>().enabled = true;
@@ -282,6 +282,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 PhysXRigidBody rigidBody = vehicle.GetComponent<PhysXRigidBody>();
                 rigidBody.position = spawnPoint.position;
                 rigidBody.rotation = spawnPoint.rotation;
+
+                vehicle.ResetProperties();
 
                 // Add back damping on camera after move
                 yield return new WaitForSecondsRealtime(0.5f);
