@@ -14,7 +14,7 @@ public class InputDriver : MonoBehaviour
         Reverse();
         Brake();
         Handbrake();
-        UpdateWheelPoses();
+        //UpdateWheelPoses(); moved this to WheelUpdater.cs
     }
 
     private void Handbrake() {
