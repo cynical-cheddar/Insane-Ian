@@ -36,8 +36,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     public float brakeTorque = 8000;
     [Range(0, 30000)]
     public float brakeForce = 16000;
-    [Range(0.001f, 0.5f)]
-    public float steerRateLerp = 0.1f;
+    [Range(10, 1000)]
+    public float steerRate = 0.1f;
     [Range(0, 1)]
     public float baseExtremiumSlip = 0.3f;
     [Range(0, 20000)]
@@ -83,16 +83,36 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
 
     //direction is -1 for left and +1 for right, 0 for center
     void IDrivable.Steer(float targetDirection) {
-        float targetAngle;
         float steerAngle;
 
         //Get the current steer angle
         steerAngle = frontLeftW.steerAngle;
 
-        //targetAngle is the angle we want to tend towards
-        targetAngle = targetDirection * maxSteerAngle;
+        if (targetDirection == 0) {
+            if (steerAngle > 0) {
+                steerAngle -= steerRate * Time.deltaTime;
+                if (steerAngle < 0) steerAngle = 0;
+            }
+            else if (steerAngle < 0) {
+                steerAngle += steerRate * Time.deltaTime;
+                if (steerAngle > 0) steerAngle = 0;
+            }
+        }
+        else {
+            steerAngle += steerRate * targetDirection * Time.deltaTime;
 
-        steerAngle = Mathf.Lerp(steerAngle, targetAngle, steerRateLerp);
+            if (steerAngle > maxSteerAngle) steerAngle = maxSteerAngle;
+            else if (steerAngle < -maxSteerAngle) steerAngle = -maxSteerAngle;
+        }
+
+
+
+
+        //float targetAngle;
+        //targetAngle is the angle we want to tend towards
+        // targetAngle = targetDirection * maxSteerAngle;
+
+        // steerAngle = Mathf.Lerp(steerAngle, targetAngle, steerRate);
 
 
         //set the steer angle

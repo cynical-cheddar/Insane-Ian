@@ -313,7 +313,7 @@ public class Weapon : Equipment
         if (!isSetup) SetupWeapon();
         
         if (gunnerPhotonView != null && weaponUi != null) {
-            if (gunnerPhotonView.IsMine && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
+            if (_networkPlayerVehicle.GetGunnerID() == PhotonNetwork.LocalPlayer.ActorNumber && !_networkPlayerVehicle.botGunner) weaponUi.SetCanvasVisibility(true);
         }
         
         // weaponPhotonView.RPC(nameof(AnimatorSetTriggerNetwork), RpcTarget.All, weaponSelectTriggerName);

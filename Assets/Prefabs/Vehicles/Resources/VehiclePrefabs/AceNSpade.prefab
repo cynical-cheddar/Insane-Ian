@@ -460,6 +460,7 @@ GameObject:
   - component: {fileID: 7601505587869675759}
   - component: {fileID: 6942342458153007772}
   - component: {fileID: 5186423232709554915}
+  - component: {fileID: 9145839474632433132}
   m_Layer: 8
   m_Name: AceNSpade
   m_TagString: Player
@@ -565,7 +566,7 @@ MonoBehaviour:
   health: 160
   isDead: 0
   rammingDamageResistance: 1
-  defaultCollisionResistance: 1
+  defaultCollisionResistance: 2
   audioSourcePrefab: {fileID: 3306505398464978976, guid: 3f0c48229a945754e95699f0654436b8,
     type: 3}
   crashSoundsSmallDamageThreshold: 10
@@ -583,7 +584,7 @@ MonoBehaviour:
     rotation: {x: 0, y: 0, z: 0, w: 0}
     width: 60
     height: 90
-    collisionResistance: 2.3
+    collisionResistance: 3
   - show: 1
     rotationEuler: {x: -90, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0, w: 0}
@@ -632,7 +633,7 @@ MonoBehaviour:
   motorTorque: 5300
   brakeTorque: 6000
   brakeForce: 16000
-  steerRateLerp: 0.07
+  steerRate: 90
   baseExtremiumSlip: 0.3
   antiRollStiffness: 7000
   baseStiffness: 2
@@ -881,6 +882,26 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &9145839474632433132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482493435927083060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ecbf9f3ce6a6594f903d6ccdce2f2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frontLeftW: {fileID: 6284213321502439188}
+  frontRightW: {fileID: 8854317719780993745}
+  rearLeftW: {fileID: 5955917007552040847}
+  rearRightW: {fileID: 2152480262730069359}
+  frontLeftT: {fileID: 2780470772048150252}
+  frontRightT: {fileID: 2892731658112772128}
+  rearLeftT: {fileID: 2892731658112772128}
+  rearRightT: {fileID: 1837069385729047062}
 --- !u!1 &536847921422926874
 GameObject:
   m_ObjectHideFlags: 0
@@ -2288,7 +2309,7 @@ Transform:
   m_LocalScale: {x: 1.1, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 3817323749009844743}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6463501246696562299
 MeshFilter:
@@ -2706,7 +2727,7 @@ Transform:
   m_LocalScale: {x: 1.1, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 3817323749009844743}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!33 &5312676277277327261
 MeshFilter:
@@ -4315,8 +4336,8 @@ Transform:
   m_Children:
   - {fileID: 2780470772048150252}
   - {fileID: 2892731658112772128}
-  - {fileID: 1837069385729047062}
   - {fileID: 1602233068931317639}
+  - {fileID: 1837069385729047062}
   - {fileID: 8162372966168475643}
   m_Father: {fileID: 486267010860937132}
   m_RootOrder: 1
@@ -6745,15 +6766,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ae988ca85ffc842a018ede235b751e, type: 3}
---- !u!4 &8128958307668246929 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 72ae988ca85ffc842a018ede235b751e,
-    type: 3}
-  m_PrefabInstance: {fileID: 4445019983079566938}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &7943912479382061059 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 6021752850087161433, guid: 72ae988ca85ffc842a018ede235b751e,
+    type: 3}
+  m_PrefabInstance: {fileID: 4445019983079566938}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8128958307668246929 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5575525181448695755, guid: 72ae988ca85ffc842a018ede235b751e,
     type: 3}
   m_PrefabInstance: {fileID: 4445019983079566938}
   m_PrefabAsset: {fileID: 0}
