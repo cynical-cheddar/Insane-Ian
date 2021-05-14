@@ -205,7 +205,7 @@ public class LightningWeapon : Weapon
     [PunRPC]
     protected void FireHitscanRoundEffectNoValidTarget(Vector3 targetPoint)
     {
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate muzzle particle
         InstantiateMuzzleFlash(muzzleflash, 2f, muzzleflashChildOfBarrel);
         
@@ -215,7 +215,7 @@ public class LightningWeapon : Weapon
     [PunRPC]
     protected void FireHitscanRoundEffectMiss(Vector3 targetPoint)
     {
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate muzzle particle
         InstantiateMuzzleFlash(muzzleflash, 2f, muzzleflashChildOfBarrel);
         // instantiate impact particle with miss sound effect
@@ -229,7 +229,7 @@ public class LightningWeapon : Weapon
     [PunRPC]
     protected void FireHitscanRoundEffect(Vector3 targetPoint)
     {
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // instantiate muzzle particle
         InstantiateMuzzleFlash(muzzleflash, 2f, muzzleflashChildOfBarrel);
         
@@ -238,11 +238,12 @@ public class LightningWeapon : Weapon
 
         InstantiateLightning(targetPoint, lightningBoltDuration);
     }
+    
     [PunRPC]
     protected void FireHitscanRoundEffectCorrected(Vector3 localTargetPoint, int hitTeamId)
     {
         
-        AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
+        // AnimatorSetTriggerNetwork(primaryFireAnimatorTriggerName);
         // the vehicle transform tracker should keep a reference of all vehicle transforms in the game
         
         // get transform from team id

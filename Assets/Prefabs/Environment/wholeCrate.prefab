@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4989782703589158281}
   - component: {fileID: 8901593058326831544}
-  - component: {fileID: 922886657766527007}
   - component: {fileID: 952386793103780559}
   - component: {fileID: 5717036803958465350}
   m_Layer: 0
@@ -27,9 +26,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4989782703589158280}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -128.12091, y: 121.9, z: 84.19882}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.014285715, y: 0.0125, z: 0.014285715}
   m_Children:
   - {fileID: 4989782704935982675}
   - {fileID: 7595561929111956802}
@@ -61,28 +60,6 @@ MonoBehaviour:
   x: 2.4
   y: 2.4
   z: 2.4
---- !u!114 &922886657766527007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4989782703589158280}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  observableSearch: 2
-  Synchronization: 3
-  OwnershipTransfer: 0
-  ObservedComponents: []
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!114 &952386793103780559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,18 +92,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bb0ce2585d3f81479a665517c4cae41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 3
-  rammingDamageResistance: 1
-  defaultCollisionResistance: 0.1
-  audioSourcePrefab: {fileID: 0}
-  crashSoundsSmallDamageThreshold: 5
-  crashSoundsLargeDamageThreshold: 40
-  crashSoundsSmall: []
-  crashSoundsLarge: []
-  crashMasterVolume: 1
-  environmentCollisionResistance: 1
-  collisionAreas: []
-  rammingDamageMultiplier: 1
   wreckPrefab: {fileID: 4989782703589158280, guid: 0e5f18005e75f3243ab7f0a6b4315345,
     type: 3}
 --- !u!1001 &4989782703787073078

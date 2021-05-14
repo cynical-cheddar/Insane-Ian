@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3018589080085771468}
-  - component: {fileID: 6038838927741836434}
   - component: {fileID: 9169573693584621889}
   - component: {fileID: 4192702181741464944}
   - component: {fileID: 7383789448859697702}
@@ -35,28 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6038838927741836434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8469828967294466763}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  observableSearch: 2
-  Synchronization: 3
-  OwnershipTransfer: 0
-  ObservedComponents: []
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!114 &9169573693584621889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +113,7 @@ MonoBehaviour:
   maxExplosionDamage: 1
   temporaryDeathExplosion: {fileID: 8147950903815117826, guid: ea340abfa5be5b440bfb8bbfaaeb1662,
     type: 3}
+  crashShakeIntensity: 3
 --- !u!1001 &8910568245687613815
 PrefabInstance:
   m_ObjectHideFlags: 0

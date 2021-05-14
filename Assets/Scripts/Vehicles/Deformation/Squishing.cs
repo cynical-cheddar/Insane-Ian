@@ -37,6 +37,7 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     public float vertexWeight = 1;
     public float stretchiness = 1000000.1f;
     public float minPenetration = 0.2f;
+    public float minDeformationMass = 50;
     //public float maxEdgeLength = 0.6f;
     private List<DeformableMesh> deformableMeshes = null;
     private List<float> oldEdgeSqrLengths = new List<float>();
@@ -219,7 +220,9 @@ public class Squishing : MonoBehaviour, ICollisionStayEvent, ICollisionEnterEven
     public void CollisionStay(PhysXCollision collision) {
 
         if (collision.contactCount > 0 && collision.GetContact(0).separation < -minPenetration) {
-            if (!collision.collider.gameObject.CompareTag("DustGround")) {
+            if ((collision.rigidBody == null || collision.rigidBody.mass >= minDeformationMass) &&
+                !collision.collider.gameObject.CompareTag("DustGround")) {
+
                 meshDeformationMarker.Begin();
             
                 bool isInconvenient = collision.collider is PhysXMeshCollider && !((PhysXMeshCollider)collision.collider).convex;
