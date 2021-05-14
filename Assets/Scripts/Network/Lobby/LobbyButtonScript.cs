@@ -88,7 +88,8 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             PlayerEntry driverEntry = gamestateTracker.players.Get((short) driverId);
             driverPlayerText.text = driverEntry.name;
             driverEntry.Release();
-            driverFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
+            if (driverId == PhotonNetwork.LocalPlayer.ActorNumber) driverFillImage.color = new Color32(0x65, 0xC5, 0x6B, 0xFF);
+            else driverFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
             driverButton.interactable = false;
         }
         else
@@ -105,7 +106,8 @@ public class LobbyButtonScript : MonoBehaviourPunCallbacks
             PlayerEntry gunnerEntry = gamestateTracker.players.Get((short) gunnerId);
             gunnerPlayerText.text = gunnerEntry.name;
             gunnerEntry.Release();
-            gunnerFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
+            if (gunnerId == PhotonNetwork.LocalPlayer.ActorNumber) gunnerFillImage.color = new Color32(0x65, 0xC5, 0x6B, 0xFF);
+            else gunnerFillImage.color = new Color32(0x44, 0x91, 0xCA, 0xFF);
             gunnerButton.interactable = false;
         }
         else
