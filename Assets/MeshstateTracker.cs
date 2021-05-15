@@ -52,11 +52,12 @@ public class MeshstateTracker : MonoBehaviour
         Debug.Log("BomberMeshDone");
 
         //DeformableMesh.Subdivide(maxEdgeLength, bikeMeshFilter);
-        bikeMeshGraph = new MeshGraph(bikeMeshFilter, groupRadius);
+        //bikeMeshGraph = new MeshGraph(bikeMeshFilter, groupRadius);
 
-        System.GC.Collect();
-        Debug.Log("BikeMeshDone");
+        //System.GC.Collect();
+        //Debug.Log("BikeMeshDone");
 
+        Debug.Log("Loading Main Menu...");
         SceneManager.LoadScene("MainMenu");
 
         //StartCoroutine(nameof(LoadMeshes));
