@@ -556,26 +556,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
-      propertyPath: Loop
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
-      propertyPath: m_Volume
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: 706d2cb459033ac41ae126e3fec4daee, type: 3}
     - target: {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 24300002, guid: 1fe1dae0a8ecebf4c870faae0c13ae2e,
-        type: 2}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4944834673390313609, guid: a33b35d7dab690c47ae55e4c4043ab6a,
         type: 3}
       propertyPath: m_Name
@@ -653,7 +640,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1685484985, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
-    - {fileID: 1685484989, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a33b35d7dab690c47ae55e4c4043ab6a, type: 3}
 --- !u!1 &380114157 stripped
 GameObject:
@@ -727,6 +713,18 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &380114160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380114157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39f99204b3958d041a9b511c0a080138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &436308545
 PrefabInstance:
   m_ObjectHideFlags: 0
