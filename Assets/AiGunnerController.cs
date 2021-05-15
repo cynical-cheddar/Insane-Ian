@@ -95,7 +95,7 @@ public class AiGunnerController : MonoBehaviour
                     Vector3 hitpoint = CalculateTargetingHitpoint(transform.position, target.position);
                     
                     if (hitpoint != Vector3.zero) {
-                        gunnerWeaponManager.FireCurrentWeaponGroup(CalculateFireDeviation(target.position, 7f));
+                        gunnerWeaponManager.FireCurrentWeaponGroup(CalculateFireDeviation(target.position, 10f));
                         yield return new WaitForSeconds(gunnerWeaponManager.currentWeaponControlGroup.weapons[0].fireRate);
                     }
                     else yield return new WaitForSeconds(0.5f);
