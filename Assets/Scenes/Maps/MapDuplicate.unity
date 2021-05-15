@@ -2215,11 +2215,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1765109016}
     m_Modifications:
-    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 1301917233457879357, guid: 4ddd12421d90cd44e952d61183d701f1,
         type: 3}
       propertyPath: m_RootOrder
@@ -2294,6 +2289,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GunnerUltPickupSmall
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ddd12421d90cd44e952d61183d701f1, type: 3}
@@ -3603,11 +3603,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1765109016}
     m_Modifications:
-    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 1301917233457879357, guid: 4ddd12421d90cd44e952d61183d701f1,
         type: 3}
       propertyPath: m_RootOrder
@@ -3682,6 +3677,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GunnerUltPickupSmall (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ddd12421d90cd44e952d61183d701f1, type: 3}
@@ -4727,11 +4727,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1765109016}
     m_Modifications:
-    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 1301917233457879357, guid: 4ddd12421d90cd44e952d61183d701f1,
         type: 3}
       propertyPath: m_RootOrder
@@ -4806,6 +4801,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GunnerUltPickupSmall (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ddd12421d90cd44e952d61183d701f1, type: 3}
@@ -9361,6 +9361,8 @@ MonoBehaviour:
       otherClips:
       - {fileID: 8300000, guid: 3c6f6a5552fb9e64ca4ba7a89f286618, type: 3}
       - {fileID: 8300000, guid: 7e5a87eaf301bbd44a7c1689110644ff, type: 3}
+      - {fileID: 8300000, guid: 1890110ba6079164c82bf989b68cba2c, type: 3}
+      - {fileID: 8300000, guid: 99fee29c8e71d2c4d8274f29d8f795b5, type: 3}
       globalClips: []
     potatoDrop:
       announcerShoutsTag: 1
@@ -9368,6 +9370,7 @@ MonoBehaviour:
       - {fileID: 8300000, guid: 36fcbc26aeda8e54ca32a791c30eb54b, type: 3}
       otherClips:
       - {fileID: 8300000, guid: f86d9905ff642f94199a97592ec59652, type: 3}
+      - {fileID: 8300000, guid: bd8235686c4dfef44895e4aec804eb9c, type: 3}
       globalClips:
       - {fileID: 8300000, guid: bd8235686c4dfef44895e4aec804eb9c, type: 3}
     onKilled:
@@ -9378,6 +9381,10 @@ MonoBehaviour:
       otherClips:
       - {fileID: 8300000, guid: e1588006917638e4d8ceb37ff6ab03a2, type: 3}
       - {fileID: 8300000, guid: 1d1ad5d3ee65ec34d8ee52eff9a17b9c, type: 3}
+      - {fileID: 8300000, guid: 43b0d398514fbc14bbe690cfdc22f08f, type: 3}
+      - {fileID: 8300000, guid: f4451e1d8bbfa5f49aff19401d05011c, type: 3}
+      - {fileID: 8300000, guid: 60ec8c42c19538542b310a0090c7f09f, type: 3}
+      - {fileID: 8300000, guid: 124aca4b0e680544280b7ce90e33ecd6, type: 3}
       globalClips: []
     suicide:
       announcerShoutsTag: 3
@@ -9432,7 +9439,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.971
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -13923,11 +13930,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1765109016}
     m_Modifications:
-    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 1301917233457879357, guid: 4ddd12421d90cd44e952d61183d701f1,
         type: 3}
       propertyPath: m_RootOrder
@@ -14002,6 +14004,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GunnerUltPickupSmall (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ddd12421d90cd44e952d61183d701f1, type: 3}
@@ -15974,11 +15981,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1765109016}
     m_Modifications:
-    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 1301917233457879357, guid: 4ddd12421d90cd44e952d61183d701f1,
         type: 3}
       propertyPath: m_RootOrder
@@ -16053,6 +16055,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GunnerUltPickupSmall (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 01da0c64a15d9cb488035d8e41cdbad9,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ddd12421d90cd44e952d61183d701f1, type: 3}
