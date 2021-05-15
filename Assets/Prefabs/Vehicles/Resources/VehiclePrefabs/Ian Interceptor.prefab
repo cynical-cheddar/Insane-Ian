@@ -5112,8 +5112,10 @@ MonoBehaviour:
   crashSoundsSmall:
   - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
   - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
+  - {fileID: 8300000, guid: 79fdb44949dda1d4c833b8eb8af6f96b, type: 3}
   crashSoundsLarge:
   - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
+  - {fileID: 8300000, guid: f27105ce41305a34bb3d6faf1a020b1b, type: 3}
   crashMasterVolume: 0.3
   environmentCollisionResistance: 2
   collisionAreas:
@@ -7008,8 +7010,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9092603378300101305, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}
+      propertyPath: salvoSize
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 9092603378300101305, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
       propertyPath: baseDamage
-      value: 30
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 9092603378300101305, guid: c08dd695c7a00924cb5237b8fd04570b,
+        type: 3}
+      propertyPath: ammoPerShot
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9092603378300101305, guid: c08dd695c7a00924cb5237b8fd04570b,
         type: 3}

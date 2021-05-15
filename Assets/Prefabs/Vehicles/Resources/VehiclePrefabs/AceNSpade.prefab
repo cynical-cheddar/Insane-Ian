@@ -574,8 +574,10 @@ MonoBehaviour:
   crashSoundsSmall:
   - {fileID: 8300000, guid: 049c3d63bcd762e43a17525e3380e342, type: 3}
   - {fileID: 8300000, guid: 523b331705774c04ba67c4d2006701e2, type: 3}
+  - {fileID: 8300000, guid: 79fdb44949dda1d4c833b8eb8af6f96b, type: 3}
   crashSoundsLarge:
   - {fileID: 8300000, guid: 7c56404b2de7e6448bca7d8200c52753, type: 3}
+  - {fileID: 8300000, guid: f27105ce41305a34bb3d6faf1a020b1b, type: 3}
   crashMasterVolume: 1
   environmentCollisionResistance: 2
   collisionAreas:
@@ -5308,7 +5310,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageMultiplierPlateuDistance: 100
   damageMultiplierClosestRampupThreshold: 10
-  salvoSize: 35
+  salvoSize: 20
   reloadType: 2
   reloadTime: 3
   fireRate: 0.2
@@ -5321,7 +5323,7 @@ MonoBehaviour:
   damageType: 0
   damageMultiplier: 1
   weaponAnimator: {fileID: 6759460623684840980}
-  weaponSelectTriggerName: Primary
+  weaponSelectTriggerName: Ultimate
   reloadAnimatorTriggerName: Reload
   primaryFireAnimatorTriggerName: Fire
   weaponPhotonView: {fileID: 3356230760161381985}
@@ -6337,6 +6339,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AceNSpadeGunner
+      objectReference: {fileID: 0}
+    - target: {fileID: 3288995559967620321, guid: a206521bc6d08364393b512d26ce2129,
+        type: 3}
+      propertyPath: baseDamage
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3288995559967620321, guid: a206521bc6d08364393b512d26ce2129,
         type: 3}
