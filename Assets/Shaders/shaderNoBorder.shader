@@ -1,4 +1,4 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+// The main toon shader
 
 Shader "Shader No Border"
 {
@@ -29,7 +29,6 @@ Shader "Shader No Border"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile_fwdbase
             #pragma target 3.0
@@ -38,6 +37,8 @@ Shader "Shader No Border"
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
 
+
+            // structures for the shader, stating what details will be included in appdata and vertex to frag
 
             struct appdata
             {
@@ -50,8 +51,6 @@ Shader "Shader No Border"
             {
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
-                
-                //SHADOW_COORDS(2)
                 float3 worldNormal : NORMAL;
                 float3 viewDir : TEXCOORD1;
                 float4 pos : SV_POSITION;
@@ -76,6 +75,7 @@ Shader "Shader No Border"
             int _IsSeeThrough;
             int _NumberOfSections;
 
+            // vertex aspect of shader, applies information for vertexes and sends it to frag shader
             v2f vert (appdata v)
             {
                 
@@ -88,34 +88,33 @@ Shader "Shader No Border"
                 return o;
             }
 
+            //calculates the colour of each individual toon pixel
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
-                // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 float3 normal = normalize(i.worldNormal);
-                float NdotL = dot(_WorldSpaceLightPos0, normal);
-
+                float NdL = dot(_WorldSpaceLightPos0, normal);
+                
 
                 float shadow = SHADOW_ATTENUATION(i);
                 float lightIntensity = 0;
                 float4 light = 0;
 
                 for (int j = -_NumberOfSections; j < _NumberOfSections; j++) {
-                    lightIntensity = NdotL > (1.0 / (j + 1)) ? 1 : 0;
+                    lightIntensity = NdL > (1.0 / (j + 1)) ? 1 : 0;
                     light += (0.5 / _NumberOfSections) * (lightIntensity * _LightColor0);
                 }
                 float3 viewDir = normalize(i.viewDir);
                 float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
-                float NdotH = dot(normal, halfVector);
-                float specularIntensity = pow(NdotH * lightIntensity, _Glossiness * _Glossiness);
+                float NdH = dot(normal, halfVector);
+                float specularIntensity = pow(NdH * lightIntensity, _Glossiness * _Glossiness);
 
                 float specularIntensitySmooth = smoothstep(0.01, 0.01, specularIntensity);
                 float4 specular = specularIntensitySmooth * _SpecularColor;
 
                 float4 rimDot = 1 - dot(viewDir, normal);
-                float rimIntensity = rimDot * pow(NdotL, _RimThreshold);
+                float rimIntensity = rimDot * pow(NdL, _RimThreshold);
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 float4 rim = rimIntensity * _RimColor;
 

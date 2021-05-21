@@ -1,3 +1,5 @@
+// a version of the shader with a border around the object
+
 Shader "Unlit/shader 1"
 {
     Properties
@@ -27,7 +29,6 @@ Shader "Unlit/shader 1"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // make fog work
             #pragma multi_compile_fog
             #pragma multi_compile_fwdbase
 
@@ -87,33 +88,32 @@ Shader "Unlit/shader 1"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
-                // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 float3 normal = normalize(i.worldNormal);
-                float NdotL = dot(_WorldSpaceLightPos0, normal);
+                float NdL = dot(_WorldSpaceLightPos0, normal);
 
 
                 float shadow = SHADOW_ATTENUATION(i);
 
-                float lightIntensity = smoothstep(0, 0.01, NdotL * shadow);
+                float lightIntensity = smoothstep(0, 0.01, NdL * shadow);
 
                 float4 light = lightIntensity * _LightColor0;
 
                 float3 viewDir = normalize(i.viewDir);
                 float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
-                float NdotH = dot(normal, halfVector);
-                float specularIntensity = pow(NdotH * lightIntensity, _Glossiness * _Glossiness);
+                float NdH = dot(normal, halfVector);
+                float specularIntensity = pow(NdH * lightIntensity, _Glossiness * _Glossiness);
 
                 float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);
                 float4 specular = specularIntensitySmooth * _SpecularColor;
 
                 float4 rimDot = 1 - dot(viewDir, normal);
-                float rimIntensity = rimDot * pow(NdotL, _RimThreshold);
+                float rimIntensity = rimDot * pow(NdL, _RimThreshold);
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 float4 rim = rimIntensity * _RimColor;
 
+                // Where the border is applied, the rest of the shader is identical to shaderNoBorder
                 float4 borderDot = 1 - dot(viewDir, normal);
                 float borderIntensity = smoothstep(_BorderAmount - 0.01, _BorderAmount + 0.01, borderDot);
                 float4 border = borderIntensity * _BorderColor;
