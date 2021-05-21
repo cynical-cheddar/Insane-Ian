@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
+    //Interface Car Drive 4W is the main control script for vehicles
     public float maxSpeed = 30f;
 
     [Header("Wheel Colliders:")]
@@ -253,6 +254,7 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
     }
 
     private void AntiRoll(PhysXWheelCollider left, PhysXWheelCollider right) {
+        //anti-roll bar simulations. Keeps the vehicle stable
 
         PhysXWheelHit lHit = PhysXWheelHit.GetWheelHit();
         PhysXWheelHit rHit = PhysXWheelHit.GetWheelHit();
@@ -349,6 +351,8 @@ public class InterfaceCarDrive4W : InterfaceCarDrive, IDrivable {
         }
     }
     private void AutoRight() {
+        // keep the vehicle from tipping over
+     
         float angle = Mathf.Abs(Vector3.Angle(transform.up, Vector3.up));
 
         // if tipping by at least 45 degrees, nudge back

@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WheelUpdater : MonoBehaviour {
+    // Wheel updater is a simple script to match the position of the wheel models to the position of the physics component
 
     [Header("Wheel Colliders:")]
     public PhysXWheelCollider frontLeftW;
@@ -17,9 +16,7 @@ public class WheelUpdater : MonoBehaviour {
     public Transform rearLeftT;
     public Transform rearRightT;
 
-    // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         UpdateWheelPose(frontLeftW, frontLeftT, true);
         UpdateWheelPose(frontRightW, frontRightT, false);
         UpdateWheelPose(rearLeftW, rearLeftT, true);
