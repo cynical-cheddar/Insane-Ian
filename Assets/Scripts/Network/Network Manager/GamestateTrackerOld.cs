@@ -45,8 +45,7 @@ public class GamestateTrackerOld : MonoBehaviourPunCallbacks
         public bool isBot;
         public bool ready;
         
-        public PlayerDetails(string n, int p, string r, string c, int t, bool b, string v, bool isReady)
-        {
+        public PlayerDetails(string n, int p, string r, string c, int t, bool b, string v, bool isReady) {
             nickName = n;
             playerId = p;
             role = r;
