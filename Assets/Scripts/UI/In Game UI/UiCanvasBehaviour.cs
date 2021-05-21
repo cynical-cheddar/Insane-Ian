@@ -8,7 +8,7 @@ public class UiCanvasBehaviour : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
-        ControlNotifier.SetActive(false); // Not a good fix, but I think that TMPro has a bug.
+        ControlNotifier.SetActive(false); // Not a good fix, but I think that TMPro has a bug where it won't be disabled by default if it has an animation.
     }
 
     // Update is called once per frame

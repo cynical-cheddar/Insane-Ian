@@ -15,6 +15,7 @@ public class ArrowBehaviour : MonoBehaviour
     GamestateTracker gamestateTracker;
     MeshRenderer meshRenderer;
 
+    // Enable the arrow and find the player's own vehicle. Shouldn't be called until all vehicles are activated.
     public void ReadyUp() {
         hpms = FindObjectsOfType<HotPotatoManager>().ToList();
         gamestateTracker = FindObjectOfType<GamestateTracker>();
@@ -44,6 +45,7 @@ public class ArrowBehaviour : MonoBehaviour
     }
 
     private void Update() {
+        // Each frame, point towards the hot potato. Disbaled if you are holding the potato.
         if (isEnabled) {
             if (playerHPM.isPotato) {
                 meshRenderer.enabled = false;
