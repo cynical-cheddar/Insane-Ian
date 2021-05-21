@@ -27,6 +27,7 @@ public class HealthBehaviour : MonoBehaviour {
         SetHealth();
     }
 
+    // Calculate the player's rounded health and display it on the UI.
     public void SetHealth() {
         List<VehicleHealthManager> vehicles = new List<VehicleHealthManager>(FindObjectsOfType<VehicleHealthManager>());
 

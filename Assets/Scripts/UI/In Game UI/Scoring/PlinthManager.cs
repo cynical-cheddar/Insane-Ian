@@ -25,11 +25,10 @@ public class PlinthManager : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         #if UNITY_WEBGL && !UNITY_EDITOR
-        unmute();
+        unmute(); // Allow players to speak to everyone again in the VC.
         #endif
         gamestateTracker = FindObjectOfType<GamestateTracker>();
-        // Wait for the host to finish loading first
-        //Invoke(nameof(UpdateText), 0.1f);
+
         UpdateText();
         Cursor.lockState = CursorLockMode.None;
     }
