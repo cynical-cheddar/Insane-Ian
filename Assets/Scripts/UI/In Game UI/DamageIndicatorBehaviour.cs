@@ -14,6 +14,7 @@ public class DamageIndicatorBehaviour : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
+        // display either a damager or a healing indicator.
         healthBehaviour = FindObjectOfType<HealthBehaviour>();
         damageText.text = healthBehaviour.damageTaken.ToString();
         if (healthBehaviour.damageTaken > 0) {

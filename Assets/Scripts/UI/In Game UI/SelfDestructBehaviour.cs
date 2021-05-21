@@ -24,6 +24,7 @@ public class SelfDestructBehaviour : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+        // Display a countdown on the UI and blow up the car if K is held for three seconds.
         if (Input.GetKeyDown(KeyCode.K)) {
             shouldBlowUp = true;
             title.gameObject.SetActive(true);

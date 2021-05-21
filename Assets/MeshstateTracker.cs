@@ -33,6 +33,7 @@ public class MeshstateTracker : MonoBehaviour
 
     void LateStart()
     {
+        // Split each mesh ready for deformations.
         DeformableMesh.Subdivide(maxEdgeLength, interceptorMeshFilter);
         interceptorMeshGraph = new MeshGraph(interceptorMeshFilter, groupRadius);
 
@@ -61,38 +62,6 @@ public class MeshstateTracker : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
 
         //StartCoroutine(nameof(LoadMeshes));
-    }
-
-    IEnumerator LoadMeshes() {
-        DeformableMesh.Subdivide(maxEdgeLength, interceptorMeshFilter);
-        interceptorMeshGraph = new MeshGraph(interceptorMeshFilter, groupRadius);
-
-        System.GC.Collect();
-
-        yield return new WaitForSecondsRealtime(5f);
-
-        DeformableMesh.Subdivide(maxEdgeLength, aceMeshFilter);
-        aceMeshGraph = new MeshGraph(aceMeshFilter, groupRadius);
-
-        System.GC.Collect();
-
-        yield return new WaitForSecondsRealtime(5f);
-
-        DeformableMesh.Subdivide(maxEdgeLength, bomberMeshFilter);
-        bomberMeshGraph = new MeshGraph(bomberMeshFilter, groupRadius);
-
-        System.GC.Collect();
-
-        yield return new WaitForSecondsRealtime(5f);
-
-        DeformableMesh.Subdivide(maxEdgeLength, bikeMeshFilter);
-        bikeMeshGraph = new MeshGraph(bikeMeshFilter, groupRadius);
-
-        System.GC.Collect();
-
-        yield return new WaitForSecondsRealtime(5f);
-
-        SceneManager.LoadScene("MainMenu");
     }
 
     public MeshGraph GetMyMeshGraph(MeshTypes meshType){

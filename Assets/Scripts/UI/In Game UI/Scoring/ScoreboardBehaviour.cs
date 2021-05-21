@@ -12,7 +12,7 @@ public class ScoreboardBehaviour : MonoBehaviour {
     GamestateTracker gamestateTracker;
     readonly ScoringHelper scoringHelper = new ScoringHelper();
 
-    // Start is called before the first frame update
+    // Called once the network manager deems it ready to display the scores.
     public void StartScoreboard() {
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         SetUpScoreboard();
