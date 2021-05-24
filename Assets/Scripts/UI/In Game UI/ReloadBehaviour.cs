@@ -11,7 +11,7 @@ public class ReloadBehaviour : MonoBehaviour
         image = GetComponent<Image>();
     }
 
-
+    // Only enable the reload icon for a given time
     public IEnumerator Reload(float reloadTime) {
         image.enabled = true;
         yield return new WaitForSecondsRealtime(reloadTime);

@@ -19,20 +19,14 @@ public class TeamPanelBehaviour : MonoBehaviour
     Vector3 initialPosition;
 
     public void Setup() {
-        // Debug.Log(" scoreboard team panel start called");
         if (isFirstPanel) initialPosition = new Vector3(90f, 20f, 0f);
         else initialPosition = transform.localPosition;
         UpdateTransform(isCurrentTeam);
-        // Debug.Log(" scoreboard team panel start done");
     }
     
     
-
+    // Set the team panels to be in the correct position, the pkayer's own team will be larger.
     public void UpdateTransform(bool isCurrentTeam) {
-        // Debug.Log(" scoreboard team panel update transform called");
-        // Debug.Log(" parentPanel: " + parentPanel);
-        // Debug.Log(" parentPanel.transform: " + parentPanel.transform);
-        // Debug.Log(" parentTeamPanelBehaviour: " + parentTeamPanelBehaviour);
         this.isCurrentTeam = isCurrentTeam;
         if (isFirstPanel) {
             if (isCurrentTeam) {
@@ -54,7 +48,6 @@ public class TeamPanelBehaviour : MonoBehaviour
                 transform.localPosition = parentPanel.transform.localPosition + new Vector3(0f, -90f, 0f);
             }
         }
-        // Debug.Log(" scoreboard team panel update transform dome");
     }
 
 }

@@ -1,4 +1,4 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+﻿// Shader to highlight car with Gubbinz through wall
 
 Shader "Unlit/Hot Potato Shader"
 {
@@ -25,7 +25,6 @@ Shader "Unlit/Hot Potato Shader"
 #include "UnityCG.cginc"
 #pragma vertex vert
 #pragma fragment frag
-            // make fog work
 #pragma multi_compile_fog
 #pragma multi_compile_fwdbase
 #pragma target 3.0
@@ -42,9 +41,7 @@ Shader "Unlit/Hot Potato Shader"
         struct v2f {
             float2 uv : TEXCOORD0;
             UNITY_FOG_COORDS(1)
-
-                //SHADOW_COORDS(2)
-                float3 worldNormal : NORMAL;
+            float3 worldNormal : NORMAL;
             float3 viewDir : TEXCOORD1;
             float4 pos : SV_POSITION;
             float4 color : COLOR;
@@ -69,7 +66,6 @@ Shader "Unlit/Hot Potato Shader"
         int _NumberOfSections;
 
         v2f vert(appdata v) {
-            // just make a copy of incoming vertex data but scaled according to normal direction
             v2f o;
             o.pos = UnityObjectToClipPos(v.vertex);
             o.uv = TRANSFORM_TEX(v.uv, _MainTex);
@@ -77,93 +73,85 @@ Shader "Unlit/Hot Potato Shader"
             o.viewDir = WorldSpaceViewDir(v.vertex);
             o.color = _SeeThroughColour;
             TRANSFER_SHADOW(o)
-                return o;
+            return o;
         }
         ENDCG
 
-
-            SubShader
+        SubShader
         {
-            
+            //FIRST PASS: will render the see through colour through all other objects
             LOD 100
-
-            Pass
-            {
-                
-}
-    Pass {
-        Name "OUTLINE"
-        Tags { "LightMode" = "Always" }
-        Cull Off
-        ZWrite Off
-        ZTest Always
-        Blend SrcAlpha OneMinusSrcAlpha
-
-CGPROGRAM
-#pragma vertex vert
-#pragma fragment frag
-
-half4 frag(v2f i) :COLOR {
-    return i.color;
-}
-ENDCG
-        }
             Pass {
-    Name "BASE"
-    Tags { "RenderType" = "Opaque"
-                   "LightMode" = "ForwardBase"
-                   "PassFlags" = "OnlyDirectional"}
-    ZWrite On
-    ZTest LEqual
-    CGPROGRAM
+                Name "OUTLINE"
+                Tags { "LightMode" = "Always" }
+                Cull Off
+                ZWrite Off
+                ZTest Always
+                Blend SrcAlpha OneMinusSrcAlpha
+
+        CGPROGRAM
+        #pragma vertex vert
+        #pragma fragment frag
+
+        half4 frag(v2f i) :COLOR {
+            return i.color;
+        }
+        ENDCG
+        }
+            //SECOND PASS: will render the normal "shaderNoBorder" shader
+            Pass {
+                Name "BASE"
+                Tags { "RenderType" = "Opaque"
+                               "LightMode" = "ForwardBase"
+                               "PassFlags" = "OnlyDirectional"}
+                ZWrite On
+                ZTest LEqual
+                CGPROGRAM
                 #pragma vertex vert
                 #pragma fragment frag
-    // make fog work
-    #pragma multi_compile_fog
-    #pragma multi_compile_fwdbase
-    #pragma target 3.0
+                #pragma multi_compile_fog
+                #pragma multi_compile_fwdbase
+                #pragma target 3.0
 
-    #include "UnityCG.cginc"
-    #include "Lighting.cginc"
-    #include "AutoLight.cginc"
+                #include "UnityCG.cginc"
+                #include "Lighting.cginc"
+                #include "AutoLight.cginc"
 
-    fixed4 frag(v2f i) : SV_Target
-    {
-                    // sample the texture
+                fixed4 frag(v2f i) : SV_Target
+                {
                     fixed4 col = tex2D(_MainTex, i.uv);
-// apply fog
-UNITY_APPLY_FOG(i.fogCoord, col);
-float3 normal = normalize(i.worldNormal);
-float NdotL = dot(_WorldSpaceLightPos0, normal);
+                    UNITY_APPLY_FOG(i.fogCoord, col);
+                    float3 normal = normalize(i.worldNormal);
+                    float NdL = dot(_WorldSpaceLightPos0, normal);
 
 
-float shadow = SHADOW_ATTENUATION(i);
-float lightIntensity = 0;
-float4 light = 0;
+                    float shadow = SHADOW_ATTENUATION(i);
+                    float lightIntensity = 0;
+                    float4 light = 0;
 
-for (int j = -_NumberOfSections; j < _NumberOfSections; j++) {
-    lightIntensity = NdotL > (1.0 / (j + 1)) ? 1 : 0;
-    light += (0.5 / _NumberOfSections) * (lightIntensity * _LightColor0);
-}
-float3 viewDir = normalize(i.viewDir);
-float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
-float NdotH = dot(normal, halfVector);
-float specularIntensity = pow(NdotH * lightIntensity, _Glossiness * _Glossiness);
+                    for (int j = -_NumberOfSections; j < _NumberOfSections; j++) {
+                        lightIntensity = NdL > (1.0 / (j + 1)) ? 1 : 0;
+                        light += (0.5 / _NumberOfSections) * (lightIntensity * _LightColor0);
+                    }
+                    float3 viewDir = normalize(i.viewDir);
+                    float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
+                    float NdH = dot(normal, halfVector);
+                    float specularIntensity = pow(NdH * lightIntensity, _Glossiness * _Glossiness);
 
-float specularIntensitySmooth = smoothstep(0.01, 0.01, specularIntensity);
-float4 specular = specularIntensitySmooth * _SpecularColor;
+                    float specularIntensitySmooth = smoothstep(0.01, 0.01, specularIntensity);
+                    float4 specular = specularIntensitySmooth * _SpecularColor;
 
-float4 rimDot = 1 - dot(viewDir, normal);
-float rimIntensity = rimDot * pow(NdotL, _RimThreshold);
-rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
-float4 rim = rimIntensity * _RimColor;
+                    float4 rimDot = 1 - dot(viewDir, normal);
+                    float rimIntensity = rimDot * pow(NdL, _RimThreshold);
+                    rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
+                    float4 rim = rimIntensity * _RimColor;
 
-float attenuation = LIGHT_ATTENUATION(i);
+                    float attenuation = LIGHT_ATTENUATION(i);
 
-return attenuation * _Color * col * (_AmbientColor + light + specular + rim);
-}
-ENDCG
-}
+                    return attenuation * _Color * col * (_AmbientColor + light + specular + rim);
+                    }
+            ENDCG
+            }
     UsePass "Legacy Shaders/VertexLit/SHADOWCASTER"
 
         }

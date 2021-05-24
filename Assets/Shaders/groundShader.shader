@@ -1,3 +1,4 @@
+// Standard ground shader used to render the ground cleanly
 Shader "Custom/groundShader"
 {
     Properties

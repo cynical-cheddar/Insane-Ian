@@ -55,37 +55,32 @@ public class TimerBehaviour : MonoBehaviour
         }
     }
 
-
-
-    private void Update() {
-        timer.timeLeft -= Time.deltaTime;
-
-        if(timer.timeLeft < 11 && !tenSecondsTimerFired && PhotonNetwork.IsMasterClient){
+    void AnnouncerChecks() {
+        if (timer.timeLeft < 11 && !tenSecondsTimerFired && PhotonNetwork.IsMasterClient) {
             announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.tenSecondCountdown);
             tenSecondsTimerFired = true;
             thirtySecondsTimerFired = true;
             oneMinTimerFired = true;
             twoMinTimerFired = true;
-        }
-
-        else if(timer.timeLeft < 30 && !thirtySecondsTimerFired && PhotonNetwork.IsMasterClient){
+        } else if (timer.timeLeft < 30 && !thirtySecondsTimerFired && PhotonNetwork.IsMasterClient) {
             announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.thirtySeconds);
             thirtySecondsTimerFired = true;
             oneMinTimerFired = true;
             twoMinTimerFired = true;
-        }
-
-        else if(timer.timeLeft < 60 && !oneMinTimerFired && PhotonNetwork.IsMasterClient){
+        } else if (timer.timeLeft < 60 && !oneMinTimerFired && PhotonNetwork.IsMasterClient) {
             announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.oneMinute);
             oneMinTimerFired = true;
             twoMinTimerFired = true;
-        }
-
-
-        else if(timer.timeLeft < 120 && !twoMinTimerFired && PhotonNetwork.IsMasterClient){
+        } else if (timer.timeLeft < 120 && !twoMinTimerFired && PhotonNetwork.IsMasterClient) {
             announcerManager.PlayAnnouncerLine(announcerManager.announcerShouts.twoMinutes);
             twoMinTimerFired = true;
-        }    
+        }
+    }
+
+    private void Update() {
+        timer.timeLeft -= Time.deltaTime;
+
+        AnnouncerChecks();
 
         int minutes = Mathf.FloorToInt(timer.timeLeft / 60f);
         int seconds = Mathf.FloorToInt(timer.timeLeft - minutes * 60f);
@@ -110,6 +105,7 @@ public class TimerBehaviour : MonoBehaviour
     }
 
     IEnumerator SyncTime() {
+        // Synchronise timer every five seconds to ensure players don't stray from the host.
         while (true) {
             yield return new WaitForSecondsRealtime(5);
             UpdateTimersForClients();

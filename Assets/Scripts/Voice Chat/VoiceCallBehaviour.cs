@@ -28,15 +28,20 @@ public class VoiceCallBehaviour : MonoBehaviour
     public PhotonView myPhotonView;
 
     private void Start() {
+
+        // if in webgl, initialize the voice chat. Otherwise, disable it.
+        /* VOICE CHAT DISABLED AS THE PEERJS AND COTURN SERVERS ARE NO LONGER HOSTED
 #if UNITY_WEBGL && !UNITY_EDITOR
         gamestateTracker = FindObjectOfType<GamestateTracker>();
         initializeA($"{PhotonNetwork.CurrentRoom.Name}{PhotonNetwork.LocalPlayer.ActorNumber}");
 #else
+        */
         gameObject.GetComponent<Button>().interactable = false;
         gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "VC Disabled";
-#endif
+//#endif
     }
 
+    // Called when Join Voice Call button is pressed. Calls all the players already in the VC.
     public void JoinPeerJSSession() {
         PlayerEntry self = gamestateTracker.players.Get((short)PhotonNetwork.LocalPlayer.ActorNumber);
         self.isInVC = true;
@@ -58,6 +63,7 @@ public class VoiceCallBehaviour : MonoBehaviour
     }
 
 
+    // Mute every player that isn't your teammate.
     [PunRPC]
     void SeparateIntoTeams_RPC() {
         #if UNITY_WEBGL && !UNITY_EDITOR
